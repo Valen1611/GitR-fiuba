@@ -1,0 +1,1 @@
+/home/valen1611/code/taller/gitr/gitr_cliente/target/debug/gitr_cliente: /home/valen1611/code/taller/gitr/gitr_cliente/src/commands/commands.rs /home/valen1611/code/taller/gitr/gitr_cliente/src/commands/handler.rs /home/valen1611/code/taller/gitr/gitr_cliente/src/commands/mod.rs /home/valen1611/code/taller/gitr/gitr_cliente/src/main.rs
