@@ -2,14 +2,15 @@
 
  use super::commands; 
 
+pub fn parse_input(input: String) -> Vec<String> {
+    return input.split_whitespace().map(|s| s.to_string()).collect();
+}
+
+/// ["command", "flag1", "flag2", ...]
 pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
-    let command = argv[2].clone();
+    let command = argv[0].clone();
 
-    if argv[1] != "gitr" {
-        return Err("Usage: gitr <command> <args>".into());
-    }
-
-    let flags = argv[3..].to_vec();
+    let flags = argv[1..].to_vec();
 
     match command.as_str() {
         "hash-object" => commands::hash_object(flags),
@@ -50,8 +51,6 @@ mod tests {
     #[test]
     fn handler_funciona_input_correcto() {
         let argv = vec![
-            "target/debug/gitr".to_string(),
-            "gitr".to_string(),
             "add".to_string(),
             "main.rs".to_string(),
         ];
@@ -59,21 +58,8 @@ mod tests {
     }
 
     #[test]
-    fn handler_error_input_incorrecto() {
-        let argv = vec![
-            "target/debug/gitr".to_string(),
-            "no_gitr".to_string(),
-            "add".to_string(),
-            "main.rs".to_string(),
-        ];
-        assert!(command_handler(argv).is_err());
-    }
-
-    #[test]
     fn handler_error_comando_incorrecto() {
         let argv = vec![
-            "target/debug/gitr".to_string(),
-            "gitr".to_string(),
             "comando_no_existe".to_string(),
             "main.rs".to_string(),
         ];
