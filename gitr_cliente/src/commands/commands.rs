@@ -1,4 +1,4 @@
-use std::{io::prelude::*, fs::{File, self}};
+use std::{io::prelude::*, fs::{File, self}, error::Error};
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 
@@ -9,55 +9,42 @@ use sha1::{Sha1, Digest};
     (y hay que modificar el llamado desde handler.rs tambien)
 */
 
-fn sha1hashing(input: String) {
+fn sha1hashing(input: String) -> Vec<u8> {
     let mut hasher = Sha1::new();
     hasher.update(input);
     let result = hasher.finalize();
-
+    result.to_vec()
 }
 
-fn flate2compress(input: String) -> Result<Vec<u8>, Box<dyn std::error::Error>>{
+fn flate2compress(input: Vec<u8>) -> Result<Vec<u8>, Box<dyn std::error::Error>>{
     let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
-    encoder.write_all(input.as_bytes())?;
+    encoder.write_all(&input)?;
     let compressed_bytes = encoder.finish()?;
     Ok(compressed_bytes)
 }
 
 /// Computes the object ID value for an object with the contents of the named file 
 /// When <type> is not specified, it defaults to "blob".
-pub fn hash_object(flags: Vec<String>) {
+pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
     let mut file_path = String::new();
     if flags.len() == 1 {
         file_path = flags[0].clone();
     }
-    // USAR ?
-    let mut file = match fs::read_to_string(file_path) {
-        Ok(file) => file,
-        Err(e) => panic!("Error: {}", e),
-    };
-    let mut compressed_file = match flate2compress(file) {
-        Ok(compressed_bytes) => {
-            compressed_bytes
-        },
-        Err(e) => panic!("Error: {}", e),
-    };
 
-    let mut hashed_file = match sha1hashing(compressed_file) {
-        Ok(hashed_file) => hashed_file,
-        Err(e) => panic!("Error: {}", e),
-    };
+    let file = fs::read_to_string(file_path)?;
+    println!("file: \n{}", file);
+    
+    let hashed_file = sha1hashing(file);
+    println!("hashed_file: ");
+    hashed_file.iter().for_each(|b| print!("{:02x}", b));
+
+    let compressed_file = flate2compress(hashed_file)?;
+    println!("\ncompressed_file: ");
+    compressed_file.iter().for_each(|b| print!("{:02x}", b));
+
     
 
-    // create a Sha1 object
-    let mut hasher = Sha1::new();
-
-    // process input message
-    hasher.update(b"hello world");
-    // acquire hash digest in the form of GenericArray,
-    // which in this case is equivalent to [u8; 20]
-    let result = hasher.finalize();
-    result.iter().for_each(|b| print!("{:02x}", b));
-    println!("{:?}", result);
+    Ok(())
 }
 
 pub fn cat_file(flags: Vec<String>) {
