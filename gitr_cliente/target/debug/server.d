@@ -1,0 +1,1 @@
+C:\Users\drjua\OneDrive\Documentos\Aaa_FIUBA\Rust\23C2-La-Liga-De-La-Rusticia\gitr_cliente\target\debug\server.exe: C:\Users\drjua\OneDrive\Documentos\Aaa_FIUBA\Rust\23C2-La-Liga-De-La-Rusticia\gitr_cliente\src\server.rs
