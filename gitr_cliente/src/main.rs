@@ -1,6 +1,9 @@
 use std::error::Error;
 use std::{env, io};
 mod commands;
+mod objects;
+mod file_manager;
+mod gitr_errors;
 use std::io::{stdin,stdout,Write};
 
 
