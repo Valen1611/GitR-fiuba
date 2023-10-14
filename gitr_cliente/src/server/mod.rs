@@ -5,6 +5,7 @@ use std::fs::File;
 use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
+use std::str::from_utf8;
 use std::thread;
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
@@ -47,15 +48,50 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
         if let Ok(request) = decode(&buffer) { 
 
             // Hacer cosas con el request
-            // request = handler_del_server(request, r_path);
+            let reply = server_handler(request, &r_path)?;
 
-            if let Ok(response) = code(&request){
-                stream.write(&response)?;
+            if let Ok(reply) = code(&reply){
+                stream.write(&reply)?;
 
             } 
         }
     }
     Ok(())
+}
+
+fn server_handler(request: Vec<u8>, r_path: &str) -> std::io::Result<Vec<u8>> {
+
+    // ej: 003egit-upload-pack/project.git\0host=myserver.com\0
+    let pkt_line = from_utf8(&request).unwrap_or(""); 
+    is_valid_pkt_line(pkt_line)?;
+    let elems = split_n_validate_elems(pkt_line)?;
+
+
+    Ok(request)
+}
+
+fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
+    if pkt_line == ""|| pkt_line.len() <= 4 || usize::from_str_radix(pkt_line.split_at(4).0,16) != Ok(pkt_line.len()) {
+        return Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
+    }
+    Ok(())
+}
+
+fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
+    let line = pkt_line.split_at(4).1;
+    let div1: Vec<&str> = line.split("/").collect(); // [comando , resto] 
+    let div2: Vec<&str> = div1[1].split("\'").collect(); // [repo_local_path, "0" + gitr.com???, "0"]
+    let mut elems: Vec<&str> = vec![];
+    if (div1.len() != 2) || div2.len()!= 3 {
+        return Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
+    }
+    elems.push(div1[0]);
+    elems.push(div2[0]);
+    if let Some(host) = div2[1].strip_prefix("0") {
+        elems.push(host);
+        return Ok(elems)
+    }
+    Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
 }
 
 fn create_dirs(r_path: &str) -> std::io::Result<()> {
