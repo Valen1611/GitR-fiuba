@@ -15,7 +15,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
     match command.as_str() {
         "hash-object" | "h" => commands::hash_object(flags)?, //"h" para testear mas rapido mientras la implementamos
         "cat-file" => commands::cat_file(flags),
-        "init" => commands::init(flags),
+        "init" => commands::init(flags)?,
         "status" => commands::status(flags),
         "add" => commands::add(flags),
         "rm" => commands::rm(flags),
