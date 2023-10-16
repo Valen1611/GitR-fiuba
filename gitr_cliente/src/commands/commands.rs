@@ -1,20 +1,78 @@
+use std::{io::prelude::*, fs::{File, self}, error::Error};
+use flate2::Compression;
+use flate2::write::ZlibEncoder;
+use crate::{objects::blob::Blob, file_manager};
+
+use sha1::{Sha1, Digest};
 /*
     NOTA: Puede que no todos los comandos requieran de flags,
     si ya esta hecha la funcion y no se uso, se puede borrar
     (y hay que modificar el llamado desde handler.rs tambien)
 */
 
+pub fn sha1hashing(input: String) -> Vec<u8> {
+    let mut hasher = Sha1::new();
+    hasher.update(input.as_bytes());
+    let result = hasher.finalize();
+    result.to_vec()
+}
 
-pub fn hash_object(flags: Vec<String>) {
-    println!("hash_object");
+pub fn flate2compress(input: String) -> Result<Vec<u8>, Box<dyn std::error::Error>>{
+    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+    encoder.write_all(input.as_bytes())?;
+    let compressed_bytes = encoder.finish()?;
+    Ok(compressed_bytes)
+}
+
+/// Computes the object ID value for an object with the contents of the named file 
+/// When <type> is not specified, it defaults to "blob".
+pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
+    // hash-object -w <file>
+    // hash-object <file>
+
+    let mut file_path = String::new();
+    let mut write = false;
+
+    if flags.len() == 1 {
+        file_path = flags[0].clone();
+    }
+
+    if flags.len() == 2 {
+        if flags[0] == "-w" {
+            file_path = flags[1].clone();
+            write = true;
+        }
+    }
+    let raw_data = fs::read_to_string(file_path)?;
+    
+    let blob = Blob::new(raw_data)?;
+    // cuando haga falta, aca con un switch podemos 
+    // crear tree o commit tambien
+    
+    println!("{}", blob.get_hash());
+   
+    println!();
+
+    if write {
+        blob.save()?;
+    }
+
+    Ok(())
 }
 
 pub fn cat_file(flags: Vec<String>) {
-    println!("cat_file");
+    if flags.len() != 2  || flags[0] != "-p" || flags[0] != "-t" {
+        println!("Error: invalid number of arguments");
+        return;
+    }
+    
+
 }
 
-pub fn init(flags: Vec<String>) {
-    println!("init");
+pub fn init(flags: Vec<String>) -> Result<(), Box<dyn Error>> {
+    file_manager::init_repository(&flags[0])?;
+    println!("Initialized empty Gitr repository");
+    Ok(())
 }
 
 pub fn status(flags: Vec<String>) {
