@@ -19,7 +19,6 @@ impl Blob{
         let format_data = format!("blob {}\0{}", raw_data.len(), raw_data);
         
         let compressed_data = flate2compress(format_data.clone())?;
-
         let hashed_file = sha1hashing(format_data);
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
         Ok(Blob { 

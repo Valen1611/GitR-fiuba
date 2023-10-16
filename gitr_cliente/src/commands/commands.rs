@@ -49,8 +49,8 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
     // cuando haga falta, aca con un switch podemos 
     // crear tree o commit tambien
     
-    println!("el nuestro: {}", blob.get_hash());
-    println!("El de git: 3c2774f158d5c3dec0814a7bd3874f29a99a2c42");
+    println!("{}", blob.get_hash());
+   
     println!();
 
     if write {
@@ -65,6 +65,7 @@ pub fn cat_file(flags: Vec<String>) {
         println!("Error: invalid number of arguments");
         return;
     }
+    
 
 }
 

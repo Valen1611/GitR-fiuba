@@ -10,11 +10,6 @@ use flate2::Compression;
 /// A diferencia de write_file, esta funcion recibe un vector de bytes
 /// como data, y lo escribe en el archivo de path.
 fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
-    //let file = File::create(path)?;
-    //let mut encoder = ZlibEncoder::new(file, Compression::default());
-    //encoder.write_all(data)?;
-    //encoder.finish()?;
-
     let mut file = match File::create(path) {
         Ok(file) => file,
         Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
@@ -72,10 +67,6 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     println!("voy a crear: {}", folder_dir.clone() + "/" + &file_name);
     println!("data: {:?}", data);
     write_compressed_data(&(folder_dir.clone() + "/" + &file_name),  &data)?;
-
-    // h -w src/hello.rs
-
-    //write_file(folder_dir.clone() + "/" + &file_name, file_name)?;
     Ok(())
 }
 
@@ -115,14 +106,6 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
         Err(_) => return Err(GitrError::FileReadError(path)),
     };
     Ok(data)
-    
-    
-    
-
-    
-
-    
-
 }
 
 #[cfg(test)]
