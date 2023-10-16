@@ -1,7 +1,7 @@
-use crate::{file_manager, commands::commands::{flate2compress, sha1hashing}};
+use crate::{file_manager};
 use std::error::Error;
 use crate::objects::tree::Tree;
-
+use crate::command_utils::{flate2compress, sha1hashing};
 pub enum TreeEntry {
     Blob(Blob),
     Tree(Tree),
