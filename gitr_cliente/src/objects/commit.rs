@@ -29,9 +29,9 @@ impl Commit{
         format_data.push_str("\n");
         format_data.push_str(&message);
         let compressed_file = flate2compress(format_data)?;
-        let hashed_file = sha1hashing(compressed_file);
-        let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        Ok(Commit {data:compressed_file,hash: hashed_file_str, tree, parents, author, committer, message })
+        //let hashed_file = sha1hashing(compressed_file.clone());
+        //let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
+        Ok(Commit {data:compressed_file,hash: "a".into(), tree, parents, author, committer, message })
     }
 
     pub fn save(&self) -> Result<(), Box<dyn Error>>{

@@ -7,12 +7,24 @@ use flate2::write::ZlibEncoder;
 use flate2::Compression;
 
 
-fn write_compressed_data(path: &str, data: &[u8]) -> std::io::Result<()> {
-    let file = File::create(path)?;
-    let mut encoder = ZlibEncoder::new(file, Compression::default());
-    encoder.write_all(data)?;
-    encoder.finish()?;
-    Ok(())
+/// A diferencia de write_file, esta funcion recibe un vector de bytes
+/// como data, y lo escribe en el archivo de path.
+fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
+    //let file = File::create(path)?;
+    //let mut encoder = ZlibEncoder::new(file, Compression::default());
+    //encoder.write_all(data)?;
+    //encoder.finish()?;
+
+    let mut file = match File::create(path) {
+        Ok(file) => file,
+        Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
+    };
+
+    match fs::write(path, data) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(GitrError::FileCreationError(path.to_string()))
+    }
+
 }
 
 fn read_compressed_file(path: &str) -> std::io::Result<Vec<u8>> {
@@ -36,18 +48,34 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
 fn create_directory(path: &String)->Result<(), GitrError>{
     match fs::create_dir(path){
         Ok(_) => Ok(()),
-        Err(_) => Err(GitrError::DirectoryCreationError)
+        Err(_) => {
+            // print the error
+            println!("Error creating directory: {}", path);
+            //
+            Err(GitrError::DirectoryCreationError)}
     }
 }
 
-pub fn write_object(data:Vec<u8>, hashed_file:String) -> Result<(), GitrError>{
-    let folder_name = hashed_file[0..2].to_string();
-    let file_name = hashed_file[2..].to_string();
+pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
+    let folder_name = hashed_name[0..2].to_string();
+    let file_name = hashed_name[2..].to_string();
     let dir = String::from("gitr/objects/");
     let folder_dir = dir.clone() + &folder_name;
+    println!("folder dir: {}", folder_dir);
+    
+    println!("file name: {}", file_name);
+    
+    if !fs::metadata(&folder_dir).is_ok() {
+        create_directory(&folder_dir)?;
+    }
+    
+    println!("voy a crear: {}", folder_dir.clone() + "/" + &file_name);
+    println!("data: {:?}", data);
+    write_compressed_data(&(folder_dir.clone() + "/" + &file_name),  &data)?;
 
-    create_directory(&folder_dir)?;
-    write_compressed_data(&folder_dir, &data);
+    // h -w src/hello.rs
+
+    //write_file(folder_dir.clone() + "/" + &file_name, file_name)?;
     Ok(())
 }
 

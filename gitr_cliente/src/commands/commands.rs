@@ -10,9 +10,9 @@ use sha1::{Sha1, Digest};
     (y hay que modificar el llamado desde handler.rs tambien)
 */
 
-pub fn sha1hashing(input: Vec<u8>) -> Vec<u8> {
+pub fn sha1hashing(input: String) -> Vec<u8> {
     let mut hasher = Sha1::new();
-    hasher.update(input);
+    hasher.update(input.as_bytes());
     let result = hasher.finalize();
     result.to_vec()
 }
@@ -43,23 +43,19 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
             write = true;
         }
     }
-    let data = fs::read_to_string(file_path)?;
+    let raw_data = fs::read_to_string(file_path)?;
     
-    let format_data = format!("blob {}\0{}", data.len(), data);
-
-    let compressed_file = flate2compress(format_data)?;
+    let blob = Blob::new(raw_data)?;
+    // cuando haga falta, aca con un switch podemos 
+    // crear tree o commit tambien
     
-    let hashed_file = sha1hashing(compressed_file);
-    
-    let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-    println!("{}", hashed_file_str);
+    println!("el nuestro: {}", blob.get_hash());
+    println!("El de git: 3c2774f158d5c3dec0814a7bd3874f29a99a2c42");
     println!();
 
     if write {
-        let blob = Blob::new(data);
-        blob?.save()?;
+        blob.save()?;
     }
-
 
     Ok(())
 }
