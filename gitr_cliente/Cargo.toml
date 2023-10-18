@@ -10,4 +10,4 @@ flate2 = "1.0"
 
 [[bin]]
 name = "server"
-path = "src/server.rs" 
+path = "src/server/mod.rs" 

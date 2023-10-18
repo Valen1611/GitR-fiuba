@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        ".\\gitr_cliente\\Cargo.toml"
+    ]
+}

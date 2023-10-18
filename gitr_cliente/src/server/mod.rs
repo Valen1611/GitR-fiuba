@@ -1,5 +1,6 @@
 extern crate flate2;
 use std::collections::HashSet;
+use std::fmt::format;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Error;
@@ -17,12 +18,14 @@ use flate2::read::ZlibDecoder;
 
 pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
     create_dirs(&r_path)?;
+    println!("{}",s_addr);
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
 
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
+                println!("{:?}",stream);
                 let clon = r_path.to_string();
                 childs.push(thread::spawn(|| {handle_client(stream,clon)}));
             }
@@ -39,10 +42,13 @@ pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
     }
     Ok(())
 }
-
 fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
 
     let mut buffer = [0; 1024];
+    let mut paso = 1;
+    let mut guardados_id: HashSet<String> = HashSet::new();
+    let mut refs_string :String;
+
     while let Ok(n) = stream.read(&mut buffer) {
         if n == 0 {
             // La conexión se cerró
@@ -50,19 +56,63 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
         }
         if let Ok(request) = decode(&buffer) { 
 
-            // Hacer cosas con el request
-            let reply = server_handler(request, &r_path)?;
+            if paso == 1 {
 
-            if let Ok(reply) = code(&reply){
-                stream.write(&reply)?;
+                // ########## HANDSHAKE ##########
+                let pkt_line = from_utf8(&request).unwrap_or(""); 
+                is_valid_pkt_line(pkt_line)?;
+                let _elems = split_n_validate_elems(pkt_line)?;
+                
+                // ########## REFERENCE DISCOVERY ##########
+                (refs_string, guardados_id) = ref_discovery(&r_path)?;
+                if let Ok(reply) = code(refs_string.as_bytes()){
+                    stream.write(&reply)?;
+                    paso += 1;
+                    continue;
+                }
+                return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal con"))
 
-            } 
+            } else if paso == 2 {
+
+                // ##########  PACKFILE NEGOTIATION ##########
+                let pkt_line = from_utf8(&request).unwrap_or("");
+                if pkt_line == "0000" { // Cliente esta al dia
+                    return Ok(())
+                }
+                if pkt_line == "0009done\n" {
+                    paso +=1;
+                    continue;
+                }
+                let (wants_id, haves_id) = wants_n_haves("cadena que envio el cliente".to_string())?;
+                let mut shared = "".to_string();
+                for want in wants_id {
+                    if !guardados_id.contains(&want) {
+                        shared = "Error".to_string()
+                    }
+                }
+                for have in haves_id {
+                    if guardados_id.contains(&have){
+                        shared = have.clone();
+                        break
+                    }
+                }
+                let reply = match shared.as_str() {
+                    "" => "0008NAK\n".to_string(),
+                    _ => format!("003aACK {}\n",shared)
+                };
+
+                
+
+            }
+                
+
         }
     }
     Err(Error::new(std::io::ErrorKind::Other, "Error en la conexion"))
 }
 
-fn server_handler(request: Vec<u8>, r_path: &str) -> std::io::Result<Vec<u8>> {
+
+fn server_handler(request: Vec<u8>, r_path: &str, stream: &TcpStream ) -> std::io::Result<Vec<u8>> {
 
     // 1) comando inicial y datos
     // ej: 003egit-upload-pack/project.git\0host=myserver.com\0
@@ -178,9 +228,9 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
 
 fn create_dirs(r_path: &str) -> std::io::Result<()> {
     let p_str = r_path.to_string();
-    write_file(p_str.clone() + "HEAD", "ToDo".to_string())?;
-    fs::create_dir(p_str.clone() + "HEAD")?;
-    fs::create_dir(p_str.clone() + "refs")?;
+    fs::create_dir(p_str.clone())?;
+    write_file(p_str.clone() + "/HEAD", "ToDo".to_string())?;
+    fs::create_dir(p_str.clone() + "/refs")?;
     fs::create_dir(p_str.clone() +"refs/heads")?;
     fs::create_dir(p_str.clone() +"refs/remotes")?;
     fs::create_dir(p_str.clone() +"refs/remotes/origin")?;
@@ -205,4 +255,33 @@ fn decode(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
     let mut decoded_data = Vec::new();
     decoder.read_to_end(&mut decoded_data)?;
     Ok(decoded_data)
+}
+
+fn main(){
+    let handler = thread::spawn(||{
+        server_init("remote_repo", "127.0.0.1:5454");
+    });
+
+    handler.join().unwrap();
+}
+
+#[cfg(test)]
+mod tests{
+    use super::*;
+
+    #[test]
+    fn inicializo_el_server_correctamente(){
+        let address =  "127.0.0.1:5454";
+        let server = thread::spawn(||{
+            server_init("remote_repo", address);
+        });
+
+        let client = thread::spawn(move||{
+            let mut socket = TcpStream::connect(address).unwrap();
+            socket.write("Hola server".as_bytes());
+        });
+
+        server.join().unwrap();
+        client.join().unwrap();
+    }
 }
