@@ -4,6 +4,7 @@ use std::io::prelude::*;
 use std::fs;
 use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
+use crate::objects::blob::TreeEntry;
 use flate2::read::ZlibDecoder;
 use flate2::write::{ZlibEncoder, self};
 use flate2::Compression;
@@ -151,7 +152,10 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
     let compressed_index = flate2compress(index)?;
     let _ = write_compressed_data("gitr/index", compressed_index.as_slice());
     Ok(())
+
 }
+
+
 #[cfg(test)]
 mod tests {
     use super::*;

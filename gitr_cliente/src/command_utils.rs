@@ -1,4 +1,4 @@
-use std::{io::Write, fs};
+use std::{io::Write, fs, path::Path};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
@@ -61,7 +61,7 @@ pub fn print_commit_data(raw_data: &str){
     println!("{}", raw_data);
 }
 
-pub fn visit_dirs(dir: &std::path::Path) -> Vec<String> {
+pub fn visit_dirs(dir: &Path) -> Vec<String> {
     let mut files = Vec::new();
     if let Ok(entries) = fs::read_dir(dir) {
         for entry in entries {
@@ -70,13 +70,13 @@ pub fn visit_dirs(dir: &std::path::Path) -> Vec<String> {
                 if path.is_dir() {
                     let mut subfiles = visit_dirs(&path);
                     files.append(&mut subfiles);
-                } else if let Some(file_name) = path.file_name() {
-                    if let Some(name) = file_name.to_str() {
-                        files.push(name.to_string());
-                    }
+                } else if let Some(path_str) = path.to_str() {
+                    files.push(path_str.to_string());
+                    println!("{}", path.display());
                 }
             }
         }
     }
     files
 }
+//agergo

@@ -138,7 +138,7 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     // check if flags[0] is an existing file
     let file_path = &flags[0];
     if file_path == "."{
-        let files = visit_dirs(&std::path::Path::new("."));
+        let files = visit_dirs(&std::path::Path::new("src"));
         for file in files{
             let raw_data = fs::read_to_string(file.clone())?;
             let blob = Blob::new(raw_data)?;
@@ -162,7 +162,7 @@ pub fn rm(flags: Vec<String>) {
 } 
 
 pub fn commit(flags: Vec<String>) {
-    println!("commit");
+    
 }
 
 pub fn checkout(flags: Vec<String>) {
