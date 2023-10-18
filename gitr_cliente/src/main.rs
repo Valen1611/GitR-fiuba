@@ -5,6 +5,7 @@ mod objects;
 mod file_manager;
 mod gitr_errors;
 use std::io::{stdin,stdout,Write};
+mod command_utils;
 
 
 fn get_input() -> Result<String, Box<dyn Error>> {

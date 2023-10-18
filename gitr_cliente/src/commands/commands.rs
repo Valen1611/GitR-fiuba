@@ -2,6 +2,9 @@ use std::{io::prelude::*, fs::{File, self}, error::Error};
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use crate::{objects::blob::Blob, file_manager};
+use crate::command_utils::*;
+
+
 
 use sha1::{Sha1, Digest};
 /*
@@ -10,19 +13,6 @@ use sha1::{Sha1, Digest};
     (y hay que modificar el llamado desde handler.rs tambien)
 */
 
-pub fn sha1hashing(input: String) -> Vec<u8> {
-    let mut hasher = Sha1::new();
-    hasher.update(input.as_bytes());
-    let result = hasher.finalize();
-    result.to_vec()
-}
-
-pub fn flate2compress(input: String) -> Result<Vec<u8>, Box<dyn std::error::Error>>{
-    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
-    encoder.write_all(input.as_bytes())?;
-    let compressed_bytes = encoder.finish()?;
-    Ok(compressed_bytes)
-}
 
 /// Computes the object ID value for an object with the contents of the named file 
 /// When <type> is not specified, it defaults to "blob".
@@ -60,12 +50,73 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
-pub fn cat_file(flags: Vec<String>) {
-    if flags.len() != 2  || flags[0] != "-p" || flags[0] != "-t" {
+
+///tree <size-of-tree-in-bytes>\0
+// <file-1-mode> <file-1-path>\0<file-1-blob-hash>
+// <file-2-mode> <file-2-path>\0<file-2-blob-hash>
+// ...
+// <file-n-mode> <file-n-path>\0<file-n-blob-hash>
+
+
+
+// commit <size-of-commit-data-in-bytes>'\0'
+// <tree-SHA1-hash>
+// <parent-1-commit-id>
+// <parent-2-commit-id>
+// ...
+// <parent-N-commit-id>
+// author ID email date
+// committer ID email date
+
+// user comment
+pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
+    if flags.len() != 2 {
         println!("Error: invalid number of arguments");
-        return;
+        return Ok(())
+    } 
+    let res_output = file_manager::read_object(&flags[1])?;
+    let object_type = res_output.split(" ").collect::<Vec<&str>>()[0];
+    let _size = res_output.split(" ").collect::<Vec<&str>>()[1];
+    let size = _size.split("\0").collect::<Vec<&str>>()[0];
+
+    
+    if flags[0] == "-t"{
+        println!("{}", object_type);
+    }
+    if flags[0] == "-s"{
+        println!("{}", size);
+    }
+    if flags[0] == "-p"{
+        
+        let raw_data_index = match res_output.find("\0") {
+            Some(index) => index,
+            None => {
+                println!("Error: invalid object type");
+                return Ok(())
+            }
+        };
+
+        let raw_data = &res_output[(raw_data_index + 1)..];
+        println!("object type: {}", object_type);
+        match object_type {
+            "blob" => print_blob_data(raw_data),
+            "tree" => print_tree_data(raw_data),
+            "commit" => println!("{}", res_output.split("\0").collect::<Vec<&str>>()[1]),
+            _ => println!("Error: invalid object type"),
+        }
     }
     
+
+
+    let info_data = res_output.split("\0").collect::<Vec<&str>>();
+
+    let type_size = info_data[0].split(" ").collect::<Vec<&str>>();    
+    let object_type = type_size[0];
+    let size = type_size[1];
+    let raw_data = info_data[1];
+
+    
+    Ok(())
 
 }
 
@@ -79,9 +130,31 @@ pub fn status(flags: Vec<String>) {
     println!("status");
 }
 
-pub fn add(flags: Vec<String>) {
-    println!("add");
-    println!("flags: {:?}", flags);
+pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
+    if flags.len() != 1 {
+        println!("Error: invalid number of arguments");
+        return Ok(())
+    }
+    // check if flags[0] is an existing file
+    let file_path = &flags[0];
+    if file_path == "."{
+        let files = visit_dirs(&std::path::Path::new("src"));
+        for file in files{
+            let raw_data = fs::read_to_string(file.clone())?;
+            let blob = Blob::new(raw_data)?;
+            blob.save()?;
+            let hash = blob.get_hash();
+            file_manager::add_to_index(&file, &hash)?;
+        }
+    }else{
+        let raw_data = fs::read_to_string(file_path)?;
+        let blob = Blob::new(raw_data)?;
+        blob.save()?;
+        let hash = blob.get_hash();
+        file_manager::add_to_index(file_path, &hash)?;
+    }
+    Ok(())
+    
 }
 
 pub fn rm(flags: Vec<String>) {
@@ -89,7 +162,7 @@ pub fn rm(flags: Vec<String>) {
 } 
 
 pub fn commit(flags: Vec<String>) {
-    println!("commit");
+    
 }
 
 pub fn checkout(flags: Vec<String>) {
@@ -126,4 +199,12 @@ pub fn push(flags: Vec<String>) {
 
 pub fn branch(flags: Vec<String>) {
     println!("branch");
+}
+
+pub fn ls_files(flags: Vec<String>) {
+    if flags[0] == "--stage"{
+        let res_output = file_manager::read_index().unwrap();
+        println!("{}", res_output);
+    }
+
 }
