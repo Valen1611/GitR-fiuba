@@ -1,16 +1,18 @@
+use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
 use std::fs;
+use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
 use flate2::read::ZlibDecoder;
-use flate2::write::ZlibEncoder;
+use flate2::write::{ZlibEncoder, self};
 use flate2::Compression;
 
 
 /// A diferencia de write_file, esta funcion recibe un vector de bytes
 /// como data, y lo escribe en el archivo de path.
 fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
-    let mut file = match File::create(path) {
+    let mut file: File = match File::create(path) {
         Ok(file) => file,
         Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
     };
@@ -108,6 +110,48 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
     Ok(data)
 }
 
+pub fn read_index() -> Result<String, GitrError>{
+    let path = String::from("gitr/index");
+    let data = read_compressed_file(&path);
+    let data = match data{
+        Ok(data) => data,
+        Err(_) => return Err(GitrError::FileReadError(path)),
+    };
+    let data = String::from_utf8(data);
+    let data = match data{
+        Ok(data) => data,
+        Err(_) => return Err(GitrError::FileReadError(path)),
+    };
+    Ok(data)
+}
+
+pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
+    let mut index;
+    let new_blob = format!("100644 {} 0 {}", hash, path);
+    if !fs::metadata("gitr/index").is_ok(){
+        let _ = write_file(String::from("gitr/index"), String::from(""));
+        index = new_blob;
+    }else {
+        index = read_index()?;
+        let mut overwrited = false;
+        for line in index.clone().lines(){
+            let attributes = line.split(" ").collect::<Vec<&str>>();
+            println!("attributes: {:?}", attributes);
+            if attributes[3] == path{
+                index = index.replace(line, &new_blob);
+                overwrited = true;
+                break;
+            }
+
+        }
+        if !overwrited{
+            index = index + "\n" + &new_blob;
+        }
+    }
+    let compressed_index = flate2compress(index)?;
+    let _ = write_compressed_data("gitr/index", compressed_index.as_slice());
+    Ok(())
+}
 #[cfg(test)]
 mod tests {
     use super::*;

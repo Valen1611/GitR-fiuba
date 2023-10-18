@@ -29,6 +29,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
         "pull" => commands::pull(flags),
         "push" => commands::push(flags),
         "branch" =>commands::branch(flags),
+        "ls-files" => commands::ls_files(flags),
         _ => {
             let message = format!("invalid command: {}", command);
             return Err(message.into());

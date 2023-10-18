@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::{io::Write, fs};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
@@ -59,4 +59,24 @@ pub fn print_tree_data(raw_data: &str){
 
 pub fn print_commit_data(raw_data: &str){
     println!("{}", raw_data);
+}
+
+pub fn visit_dirs(dir: &std::path::Path) -> Vec<String> {
+    let mut files = Vec::new();
+    if let Ok(entries) = fs::read_dir(dir) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                if path.is_dir() {
+                    let mut subfiles = visit_dirs(&path);
+                    files.append(&mut subfiles);
+                } else if let Some(file_name) = path.file_name() {
+                    if let Some(name) = file_name.to_str() {
+                        files.push(name.to_string());
+                    }
+                }
+            }
+        }
+    }
+    files
 }

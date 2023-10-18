@@ -137,10 +137,24 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     }
     // check if flags[0] is an existing file
     let file_path = &flags[0];
-    let raw_data = fs::read_to_string(file_path)?;
-    let blob = Blob::new(raw_data)?;
-    blob.save()?;
+    if file_path == "."{
+        let files = visit_dirs(&std::path::Path::new("."));
+        for file in files{
+            let raw_data = fs::read_to_string(file.clone())?;
+            let blob = Blob::new(raw_data)?;
+            blob.save()?;
+            let hash = blob.get_hash();
+            file_manager::add_to_index(&file, &hash)?;
+        }
+    }else{
+        let raw_data = fs::read_to_string(file_path)?;
+        let blob = Blob::new(raw_data)?;
+        blob.save()?;
+        let hash = blob.get_hash();
+        file_manager::add_to_index(file_path, &hash)?;
+    }
     Ok(())
+    
 }
 
 pub fn rm(flags: Vec<String>) {
@@ -185,4 +199,12 @@ pub fn push(flags: Vec<String>) {
 
 pub fn branch(flags: Vec<String>) {
     println!("branch");
+}
+
+pub fn ls_files(flags: Vec<String>) {
+    if flags[0] == "--stage"{
+        let res_output = file_manager::read_index().unwrap();
+        println!("{}", res_output);
+    }
+
 }
