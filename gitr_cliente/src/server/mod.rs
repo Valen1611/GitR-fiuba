@@ -85,22 +85,27 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
                     continue;
                 }
                 let (wants_id, haves_id) = wants_n_haves("cadena que envio el cliente".to_string())?;
-                let mut shared = "".to_string();
-                for want in wants_id {
+                let mut reply = "0008NAK\n".to_string();
+                for want in wants_id.clone() {
                     if !guardados_id.contains(&want) {
-                        shared = "Error".to_string()
+                        reply = "Error: wanted object not recognized\n".to_string()
                     }
                 }
                 for have in haves_id {
-                    if guardados_id.contains(&have){
-                        shared = have.clone();
+                    if guardados_id.contains(&have) && reply == "0008NAK\n".to_string() {
+                        reply = format!("003aACK {}\n", have.clone());
                         break
                     }
                 }
-                let reply = match shared.as_str() {
-                    "" => "0008NAK\n".to_string(),
-                    _ => format!("003aACK {}\n",shared)
-                };
+                if let Ok(reply) = code(reply.as_bytes()){
+                    stream.write(&reply)?;
+                    
+                } else {
+                    return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal\n"))
+                }
+                
+                // ########## PACKFILE DATA ##########
+                let pack = pack_data(wants_id, &r_path);
 
                 
 
@@ -112,32 +117,15 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
     Err(Error::new(std::io::ErrorKind::Other, "Error en la conexion"))
 }
 
-
-fn server_handler(request: Vec<u8>, r_path: &str, stream: &TcpStream ) -> std::io::Result<Vec<u8>> {
-
-    // 1) comando inicial y datos
-    // ej: 003egit-upload-pack/project.git\0host=myserver.com\0
-    let pkt_line = from_utf8(&request).unwrap_or(""); 
-    is_valid_pkt_line(pkt_line)?;
-    let _elems = split_n_validate_elems(pkt_line)?;
-    //  por ahi juntar estas 3 lineas en una funcion
-
-    // Server presenta lo que tiene
-    let (_refs_string, guardados) = ref_discovery(r_path)?;
-
-    // Negociacion: 
-    // - Cliente manda [want-lines, NUL, *de a 32 have-lines terminados por NUL, done]
-    let (wants, haves) = wants_n_haves("cadena que envio el cliente".to_string())?;
-
-    // - Server responde [*Err (si hay un obj-id que no tiene), *ACK obj-id en el primero que compartan/ NAK si no comparten nada todavia]
-
-    //    -- Despues del done el Server manda [ACK + (id del ultimo comit que comparten)/ NAK si no comparten nada]
-
-    // [Envio de PACKFILE DATA]
-
-
-
-    Ok(request)
+fn pack_data(wants: Vec<String>, r_path: &String) -> std::io::Result<String> {
+    if wants.len() > 9999 {
+        return Err(Error::new(std::io::ErrorKind::Other, "Error: paquete demasiado grande"))
+    }
+    let mut txt = format!("PACK 0001 {}",wants.len());
+    // ahora van todos los objetos asi: 
+    // -  n-byte type and length (3-bit type, (n-1)*7+4-bit length)
+    // -  compressed data
+    Ok(format!("ToDo"));
 }
 
 fn wants_n_haves(requests: String) -> std::io::Result<(Vec<String>,Vec<String>)> {
