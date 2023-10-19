@@ -17,15 +17,15 @@ use flate2::read::ZlibDecoder;
 
 
 pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
-    create_dirs(&r_path)?;
+    //create_dirs(&r_path)?;
     println!("{}",s_addr);
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
+    println!("entre al server init");
 
     for stream in listener.incoming() {
         match stream {
-            Ok(stream) => {
-                println!("{:?}",stream);
+            Ok(mut stream) => {                
                 let clon = r_path.to_string();
                 childs.push(thread::spawn(|| {handle_client(stream,clon)}));
             }
@@ -42,6 +42,7 @@ pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
     }
     Ok(())
 }
+
 fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
 
     let mut buffer = [0; 1024];
@@ -258,11 +259,18 @@ fn decode(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
 }
 
 fn main(){
-    let handler = thread::spawn(||{
-        server_init("remote_repo", "127.0.0.1:5454");
+    let address =  "127.0.0.1:5454";
+    let server = thread::spawn(||{
+        server_init("remote_repo", address);
     });
 
-    handler.join().unwrap();
+    let client = thread::spawn(move||{
+        let mut socket = TcpStream::connect(address).unwrap();
+        socket.write("Hola server".as_bytes());
+    });
+
+    server.join().unwrap();
+    client.join().unwrap();    
 }
 
 #[cfg(test)]
