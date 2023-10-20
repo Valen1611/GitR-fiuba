@@ -25,7 +25,9 @@ pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
         match stream {
             Ok(stream) => {                
                 let clon = r_path.to_string();
-                childs.push(thread::spawn(|| {handle_client(stream,clon)}));
+                let builder = thread::Builder::new().name("cliente_random".to_string());
+
+                childs.push(builder.spawn(|| {handle_client(stream,clon)})?);
             }
             Err(e) => {
                 eprintln!("Error al aceptar la conexión: {}", e);
@@ -62,9 +64,9 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
                 let pkt_line = from_utf8(&request).unwrap_or(""); 
                 match is_valid_pkt_line(pkt_line) {
                     Ok(_) => {},
-                    Err(_) => {let _ = stream.write(&code("Error: no se respeta el formato pkt-line".as_bytes()).unwrap());}
+                    Err(_) => {let _ = stream.write(&code("Error: no se respeta el formato pkt-line".as_bytes()).unwrap_or(vec![]));
+                                return Ok(())}
                 }
-                print!("No error");
                 let _elems = split_n_validate_elems(pkt_line)?;
                 
                 // ########## REFERENCE DISCOVERY ##########
@@ -126,7 +128,7 @@ fn pack_data(wants: Vec<String>, r_path: &String) -> std::io::Result<String> {
     if wants.len() > 9999 {
         return Err(Error::new(std::io::ErrorKind::Other, "Error: paquete demasiado grande"))
     }
-    let mut txt = format!("PACK 0001 {}",wants.len());
+    let mut txt = format!("PACK 0002 {}\n",wants.len());
     // ahora van todos los objetos asi: 
     // -  n-byte type and length (3-bit type, (n-1)*7+4-bit length)
     // -  compressed data
@@ -145,17 +147,17 @@ fn wants_n_haves(requests: String) -> std::io::Result<(Vec<String>,Vec<String>)>
     let mut nuls_cont = 0;
 
     for line in requests.lines() {
-        is_valid_pkt_line(line)?;
+        is_valid_pkt_line(&(line.to_string()+"\n"))?;
         let elems: Vec<&str> = line.split_at(4).1.split(" ").collect(); // [want/have, obj-id]
         if nuls_cont == 0 {
             match elems[0] {
-                "have" => {haves.push(elems[1].to_string())},
-                "0000" => {nuls_cont += 1;},   
+                "want" => {wants.push(elems[1].to_string())},
+                "" => {nuls_cont += 1;},   
                 _ => return Err(Error::new(std::io::ErrorKind::Other, "Error: Negociacion Fallida"))
             }
         } else if nuls_cont == 1 {
             match elems[0] {
-                "want" => {wants.push(elems[1].to_string())},
+                "have" => {haves.push(elems[1].to_string())},
                 "0000" => {nuls_cont += 1;},
                 "done" => {break},
                 _ => return Err(Error::new(std::io::ErrorKind::Other, "Error: Negociacion Fallida"))
@@ -171,7 +173,7 @@ fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
     let mut contenido_total = String::new();
     let mut guardados: HashSet<String> = HashSet::new();
     ref_discovery_rec(r_path, &mut contenido_total,&mut guardados)?;
-    contenido_total.push_str("0000");
+    contenido_total.push_str("0000\n");
     Ok((contenido_total,guardados))
 }
 
@@ -185,11 +187,15 @@ fn ref_discovery_rec(dir_path: &str,contenido_total: &mut String, guardados: &mu
             
             BufReader::new(archivo).read_line(&mut contenido)?;
             guardados.insert(contenido.clone());
+            let path_str = ruta.to_str().unwrap_or("ERROR").strip_prefix(&format!("{}\\",dir_path)).unwrap_or("ERROR");
+            let longitud = contenido.len() + path_str.len() + 6;
+            let longitud_hex = format!("{:04x}", longitud);
+            contenido_total.push_str(&longitud_hex);
             contenido_total.push_str(&contenido);
-            contenido_total.push_str(&(" ".to_string() + elem.path().to_str().unwrap_or("ERROR")));
-            if let Some("HEAD") = elem.file_name().to_str() {
-                contenido_total.push_str(&capacidades())
-            }
+            contenido_total.push_str(&(" ".to_string() + path_str));
+            // if let Some("HEAD") = elem.file_name().to_str() {
+            //     contenido_total.push_str(&capacidades())
+            // }
             contenido_total.push('\n');
 
         } else if ruta.is_dir() {
@@ -204,36 +210,39 @@ fn capacidades() -> String {
 }
 
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
-    if pkt_line != "" && pkt_line.len() < 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) != Ok(pkt_line.len()) || pkt_line == "0000" ) {
+    if pkt_line != "" && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" ) {
         return Ok(())
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
 }
 
 fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
+    // 0033git-upload-pack /project.githost=myserver.com\0
     let line = pkt_line.split_at(4).1;
-    let div1: Vec<&str> = line.split("/").collect(); // [comando , resto] 
-    let div2: Vec<&str> = div1[1].split("\'").collect(); // [repo_local_path, "0" + gitr.com???, "0"]
+    let div1: Vec<&str> = line.split(" ").collect(); // [comando , resto] 
+    if div1.len() < 2 {
+        return Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
+    }
+
+    let div2: Vec<&str> = div1[1].split("\0").collect(); // [/repo_local_path, "0" + gitr.com???, "0"]
     let mut elems: Vec<&str> = vec![];
     if (div1.len() == 2) || div2.len() == 3 {
-        if let Some(host) = div2[1].strip_prefix("0") {
-            elems.push(div1[0]);
-            elems.push(div2[0]);
-            elems.push(host);
+        elems.push(div1[0]);
+        elems.push(div2[0]);
+        elems.push(div2[1]);
             return Ok(elems)
-        }
+
     }
+    
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
 }
 
 fn create_dirs(r_path: &str) -> std::io::Result<()> {
     let p_str = r_path.to_string();
     fs::create_dir(p_str.clone())?;
-    write_file(p_str.clone() + "/HEAD", "ToDo".to_string())?;
+    write_file(p_str.clone() + "/HEAD", "7217a7c7e582c46cec22a130adf4b9d7d950fba0".to_string())?;
     fs::create_dir(p_str.clone() + "/refs")?;
     fs::create_dir(p_str.clone() +"/refs/heads")?;
-    fs::create_dir(p_str.clone() +"/refs/remotes")?;
-    fs::create_dir(p_str.clone() +"/refs/remotes/origin")?;
     fs::create_dir(p_str.clone() +"/refs/tags")?;
     Ok(())
 }
@@ -268,20 +277,85 @@ mod tests{
     #[test]
     fn inicializo_el_server_correctamente(){
         let address =  "127.0.0.1:5454";
-        let server = thread::spawn(||{
-            server_init("remote_repo", address);
-        });
+        let builder_s = thread::Builder::new().name("server".to_string());
+        let builder_c = thread::Builder::new().name("cliente".to_string());
 
-        let client = thread::spawn(move||{
+        let server = builder_s.spawn(||{
+            server_init("remote_repo", address).unwrap();
+        }).unwrap();
+        
+        let client = builder_c.spawn(move||{
             let mut socket = TcpStream::connect(address).unwrap();
             socket.write(&code("Hola server".as_bytes()).unwrap());
             let mut buffer = [0; 1024];
-
+            
             socket.read(&mut buffer).unwrap();
-            assert_eq!(decode(&buffer).unwrap(), "Error: no se respeta el formato pkt-line".as_bytes())
-        });
+            println!("llego antes del assert");
+            println!("[[[[[[{:?}]]]]]]]]",from_utf8(&decode(&buffer).unwrap()).unwrap());
+            assert_eq!(from_utf8(&decode(&buffer).unwrap()), Ok("Error: no se respeta el formato pkt-line"));
+            print!("ok");
+            return ;
+        }).unwrap();
 
         server.join().unwrap();
         client.join().unwrap();
+    }
+
+    #[test]
+    fn test01_encoder_decoder() {
+        let input = "Hola mundo".as_bytes();
+        let encoded = code(input).unwrap();
+        let decoded = decode(&encoded).unwrap();
+        assert_eq!(input, decoded.as_slice());
+    }
+
+    #[test]
+    fn test02_split_n_validate(){
+        let pkt_line = "0033git-upload-pack /project.git\0host=myserver.com\0".to_string();
+        let elems = split_n_validate_elems(&pkt_line).unwrap();
+        assert_eq!(elems[0], "git-upload-pack");
+        assert_eq!(elems[1], "/project.git");
+        assert_eq!(elems[2], "host=myserver.com");
+    }
+
+    #[test]
+    fn test03_is_valid_pkt_line(){
+        is_valid_pkt_line("")
+            .expect_err("Error: No se sigue el estandar de PKT-LINE");
+        is_valid_pkt_line("132")
+            .expect_err("Error: No se sigue el estandar de PKT-LINE");
+        is_valid_pkt_line("0000hola")
+            .expect_err("Error: No se sigue el estandar de PKT-LINE");
+        is_valid_pkt_line("kkkkhola")
+            .expect_err("Error: No se sigue el estandar de PKT-LINE");
+        assert!(is_valid_pkt_line("0000").is_ok());
+        assert!(is_valid_pkt_line("000ahola:)").is_ok());
+        assert!(is_valid_pkt_line("0033git-upload-pack /project.git\0host=myserver.com\0").is_ok());
+    }
+
+    #[test]
+    fn test04_wants_n_haves(){
+        let input = {
+            "0032want 74730d410fcb6603ace96f1dc55ea6196122532d
+0032want 7d1665144a3a975c05f1f43902ddaf084e784dbe
+0032want 5a3f6be755bbb7deae50065988cbfa1ffa9ab68a
+0032want 7e47fe2bd8d01d481f44d7af0531bd93d3b21c01
+0032want 74730d410fcb6603ace96f1dc55ea6196122532d
+0000
+0009done"};
+        let (wants,haves) = wants_n_haves(input.to_string()).unwrap();
+        assert_eq!(wants[0], "74730d410fcb6603ace96f1dc55ea6196122532d");
+        assert_eq!(wants[1], "7d1665144a3a975c05f1f43902ddaf084e784dbe");
+        assert_eq!(wants[2], "5a3f6be755bbb7deae50065988cbfa1ffa9ab68a");
+        assert_eq!(wants[3], "7e47fe2bd8d01d481f44d7af0531bd93d3b21c01");
+        assert_eq!(wants[4], "74730d410fcb6603ace96f1dc55ea6196122532d");
+        assert!(haves.is_empty());
+    }
+
+    #[test]
+    fn test05_ref_discovery() {
+        let (refs_string,_guardados) = ref_discovery("remote_repo").unwrap();
+        print!("{}\n",refs_string);
+        assert_eq!(refs_string, "00327217a7c7e582c46cec22a130adf4b9d7d950fba0 HEAD\n0000\n")
     }
 }
