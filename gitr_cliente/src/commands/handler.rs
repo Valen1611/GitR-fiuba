@@ -14,10 +14,10 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
 
     match command.as_str() {
         "hash-object" | "h" => commands::hash_object(flags)?, //"h" para testear mas rapido mientras la implementamos
-        "cat-file" => commands::cat_file(flags),
+        "cat-file" | "c" => commands::cat_file(flags)?,
         "init" => commands::init(flags)?,
         "status" => commands::status(flags),
-        "add" => commands::add(flags),
+        "add" => commands::add(flags)?,
         "rm" => commands::rm(flags),
         "commit" => commands::commit(flags),
         "checkout" => commands::checkout(flags),
@@ -29,6 +29,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
         "pull" => commands::pull(flags),
         "push" => commands::push(flags),
         "branch" =>commands::branch(flags),
+        "ls-files" => commands::ls_files(flags),
         _ => {
             let message = format!("invalid command: {}", command);
             return Err(message.into());
