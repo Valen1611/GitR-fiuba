@@ -17,15 +17,13 @@ use flate2::read::ZlibDecoder;
 
 
 pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
-    //create_dirs(&r_path)?;
-    println!("{}",s_addr);
+    let _ = create_dirs(&r_path);
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
-    println!("entre al server init");
 
     for stream in listener.incoming() {
         match stream {
-            Ok(mut stream) => {                
+            Ok(stream) => {                
                 let clon = r_path.to_string();
                 childs.push(thread::spawn(|| {handle_client(stream,clon)}));
             }
@@ -55,13 +53,18 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
             // La conexión se cerró
             return Ok(());
         }
+
         if let Ok(request) = decode(&buffer) { 
 
             if paso == 1 {
 
                 // ########## HANDSHAKE ##########
                 let pkt_line = from_utf8(&request).unwrap_or(""); 
-                is_valid_pkt_line(pkt_line)?;
+                match is_valid_pkt_line(pkt_line) {
+                    Ok(_) => {},
+                    Err(_) => {let _ = stream.write(&code("Error: no se respeta el formato pkt-line".as_bytes()).unwrap());}
+                }
+                print!("No error");
                 let _elems = split_n_validate_elems(pkt_line)?;
                 
                 // ########## REFERENCE DISCOVERY ##########
@@ -71,7 +74,7 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
                     paso += 1;
                     continue;
                 }
-                return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal con"))
+                return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal con el reference discovery"))
 
             } else if paso == 2 {
 
@@ -113,6 +116,8 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
                 
 
         }
+        println!("caca");
+
     }
     Err(Error::new(std::io::ErrorKind::Other, "Error en la conexion"))
 }
@@ -125,7 +130,13 @@ fn pack_data(wants: Vec<String>, r_path: &String) -> std::io::Result<String> {
     // ahora van todos los objetos asi: 
     // -  n-byte type and length (3-bit type, (n-1)*7+4-bit length)
     // -  compressed data
-    Ok(format!("ToDo"));
+
+    // 1. 3-bit type: 1 = OBJ_COMMIT, 2 = OBJ_TREE, 3 = OBJ_BLOB, 4 = OBJ_TAG
+    // 2. (n-1)*7+4-bit length: length of compressed data
+    // 3. compressed data: zlib-compressed content of the object
+
+
+    Ok(format!("ToDo"))
 }
 
 fn wants_n_haves(requests: String) -> std::io::Result<(Vec<String>,Vec<String>)> {
@@ -220,10 +231,10 @@ fn create_dirs(r_path: &str) -> std::io::Result<()> {
     fs::create_dir(p_str.clone())?;
     write_file(p_str.clone() + "/HEAD", "ToDo".to_string())?;
     fs::create_dir(p_str.clone() + "/refs")?;
-    fs::create_dir(p_str.clone() +"refs/heads")?;
-    fs::create_dir(p_str.clone() +"refs/remotes")?;
-    fs::create_dir(p_str.clone() +"refs/remotes/origin")?;
-    fs::create_dir(p_str.clone() +"refs/tags")?;
+    fs::create_dir(p_str.clone() +"/refs/heads")?;
+    fs::create_dir(p_str.clone() +"/refs/remotes")?;
+    fs::create_dir(p_str.clone() +"/refs/remotes/origin")?;
+    fs::create_dir(p_str.clone() +"/refs/tags")?;
     Ok(())
 }
 
@@ -247,18 +258,7 @@ fn decode(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
 }
 
 fn main(){
-    let address =  "127.0.0.1:5454";
-    let server = thread::spawn(||{
-        server_init("remote_repo", address);
-    });
-
-    let client = thread::spawn(move||{
-        let mut socket = TcpStream::connect(address).unwrap();
-        socket.write("Hola server".as_bytes());
-    });
-
-    server.join().unwrap();
-    client.join().unwrap();    
+      
 }
 
 #[cfg(test)]
@@ -274,7 +274,11 @@ mod tests{
 
         let client = thread::spawn(move||{
             let mut socket = TcpStream::connect(address).unwrap();
-            socket.write("Hola server".as_bytes());
+            socket.write(&code("Hola server".as_bytes()).unwrap());
+            let mut buffer = [0; 1024];
+
+            socket.read(&mut buffer).unwrap();
+            assert_eq!(decode(&buffer).unwrap(), "Error: no se respeta el formato pkt-line".as_bytes())
         });
 
         server.join().unwrap();
