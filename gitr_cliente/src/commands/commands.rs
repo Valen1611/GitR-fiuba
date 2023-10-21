@@ -157,12 +157,42 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     
 }
 
-pub fn rm(flags: Vec<String>) {
-    println!("rm");
+pub fn rm(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
+    let mut removed:bool = false;
+    if flags.len() != 1 {
+        println!("Error: invalid number of arguments");
+        return Ok(())
+    }
+    let mut index = file_manager::read_index()?;
+    index = index + "\n";
+    for line in index.lines(){
+        let attributes = line.split(" ").collect::<Vec<&str>>();
+        if attributes[3] == flags[0]{
+            let complete_line = format!("{}\n", line);
+            index = index.replace(&complete_line, "");
+            let res = index.trim_end().to_string();
+            removed = true;
+            let compressed_index = flate2compress(res)?;
+            let _ = file_manager::write_compressed_data("gitr/index", compressed_index.as_slice());
+            break
+        }
+    }
+    if removed{
+        println!("rm '{}'", flags[0]);
+    }else{
+        println!("Error: file not found");
+    }
+    Ok(())
+  
 } 
 
+
 pub fn commit(flags: Vec<String>) {
-    
+    if flags.len() != 2 || flags[0] != "-m"{
+        println!("Error: invalid number of arguments");
+        return
+    }
+    let _ = get_tree_entries(flags[1].clone());
 }
 
 pub fn checkout(flags: Vec<String>) {
@@ -206,5 +236,4 @@ pub fn ls_files(flags: Vec<String>) {
         let res_output = file_manager::read_index().unwrap();
         println!("{}", res_output);
     }
-
 }

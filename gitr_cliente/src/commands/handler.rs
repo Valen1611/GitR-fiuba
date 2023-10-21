@@ -18,7 +18,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
         "init" => commands::init(flags)?,
         "status" => commands::status(flags),
         "add" => commands::add(flags)?,
-        "rm" => commands::rm(flags),
+        "rm" => commands::rm(flags)?,
         "commit" => commands::commit(flags),
         "checkout" => commands::checkout(flags),
         "log" => commands::log(flags),
