@@ -211,7 +211,7 @@ pub fn get_current_commit()->Result<String, Box<dyn Error>>{
 }
 
 pub fn delete_branch(branch:String, moving: bool){
-    let path = format!("refs/heads/{}", branch);
+    let path = format!("gitr/refs/heads/{}", branch);
     let head = get_head();
     if moving == true{
         let _ = fs::remove_file(path);
@@ -224,6 +224,11 @@ pub fn delete_branch(branch:String, moving: bool){
     let _ = fs::remove_file(path);
     println!("Deleted branch {}", branch);
 }
+
+pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), Box<dyn Error>> {
+    fs::rename(old_branch, new_branch)?;
+    Ok(())
+}   
 
 #[cfg(test)]
 mod tests {

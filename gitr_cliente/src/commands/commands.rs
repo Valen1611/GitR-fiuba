@@ -231,14 +231,6 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
     if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
         print_branches()?;
     }
-    if flags.len() == 1 && flags[0] != "-l" && flags[0] != "--list"{
-        if branch_exists(flags[0].clone()){
-            println!("fatal: A branch named '{}' already exists.", flags[0]);
-            return Ok(())
-        }
-        let current_commit = file_manager::get_current_commit()?;
-        let _ = file_manager::write_file(format!("gitr/refs/heads/{}", flags[0]), current_commit);
-    }
     if flags.len() == 2 && flags[0] == "-d"{
         // falta chequear si el branch está al día, xq sino se usa -D
         if !branch_exists(flags[1].clone()){
@@ -265,13 +257,22 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
             println!("error: a branch named '{}' already exists.", flags[2]);
             return Ok(())
         }
-        let _ = file_manager::delete_branch(flags[1].clone(), true);
-        let current_commit = file_manager::get_current_commit()?;
-        let _ = file_manager::write_file(format!("gitr/refs/heads/{}", flags[2]), current_commit);
-        let path = format!("refs/heads/{}", flags[2]);
-        let _ = file_manager::update_head(&path);
+
+        
+        let old_path = format!("gitr/refs/heads/{}", flags[1]);
+        let new_path = format!("gitr/refs/heads/{}", flags[2]);
+        file_manager::move_branch(old_path.clone(), new_path.clone())?;
+        let _ = file_manager::update_head(&new_path);
         return Ok(())
 
+    }
+    if flags.len() == 1 && flags[0] != "-l" && flags[0] != "--list"{
+        if branch_exists(flags[0].clone()){
+            println!("fatal: A branch named '{}' already exists.", flags[0]);
+            return Ok(())
+        }
+        let current_commit = file_manager::get_current_commit()?;
+        let _ = file_manager::write_file(format!("gitr/refs/heads/{}", flags[0]), current_commit);
     }
     Ok(())
 }
