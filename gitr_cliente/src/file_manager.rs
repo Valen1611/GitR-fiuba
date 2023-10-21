@@ -12,6 +12,7 @@ use flate2::Compression;
 
 /// A diferencia de write_file, esta funcion recibe un vector de bytes
 /// como data, y lo escribe en el archivo de path.
+
 pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
     let mut file: File = match File::create(path) {
         Ok(file) => file,
@@ -137,6 +138,9 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
         let mut overwrited = false;
         for line in index.clone().lines(){
             let attributes = line.split(" ").collect::<Vec<&str>>();
+
+            println!("attributes: {:?}", attributes);
+
             if attributes[3] == path{
                 index = index.replace(line, &new_blob);
                 overwrited = true;
@@ -153,6 +157,7 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
     Ok(())
 
 }
+
 
 pub fn get_head() ->  String{
     if !fs::metadata("gitr/HEAD").is_ok(){
@@ -174,6 +179,7 @@ pub fn update_head(head: &String) -> Result<(), Box<dyn Error>>{
     let _ = write_file(String::from("gitr/HEAD"), format!("ref: {}", head));
     Ok(())
 }
+
 
 #[cfg(test)]
 mod tests {
