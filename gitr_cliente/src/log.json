@@ -1,0 +1,2 @@
+{"type": "Action","timestamp": "21-10-2023 18:24:27","message": "calling hash-object with flags: ["asd"]"}
+{"type": "Error","timestamp": "21-10-2023 18:24:27","message": "No such file or directory (os error 2)"}

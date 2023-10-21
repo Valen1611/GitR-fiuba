@@ -1,6 +1,9 @@
  use std::error::Error;
 
- use super::commands; 
+
+use crate::logger;
+
+use super::commands; 
 
 pub fn parse_input(input: String) -> Vec<String> {
     return input.split_whitespace().map(|s| s.to_string()).collect();
@@ -13,7 +16,10 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
     let flags = argv[1..].to_vec();
 
     match command.as_str() {
-        "hash-object" | "h" => commands::hash_object(flags)?, //"h" para testear mas rapido mientras la implementamos
+        "hash-object" | "h" => {
+            let message = format!("calling hash-object with flags: {:?}", flags);
+            logger::log_action(message)?;
+            commands::hash_object(flags)?;}, //"h" para testear mas rapido mientras la implementamos
         "cat-file" | "c" => commands::cat_file(flags)?,
         "init" => commands::init(flags)?,
         "status" => commands::status(flags),
@@ -30,6 +36,8 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
         "push" => commands::push(flags),
         "branch" =>commands::branch(flags),
         "ls-files" => commands::ls_files(flags),
+        "q" => return Ok(()),
+        "l" => logger::log(flags)?,
         _ => {
             let message = format!("invalid command: {}", command);
             return Err(message.into());
@@ -52,7 +60,7 @@ mod tests {
     #[test]
     fn handler_funciona_input_correcto() {
         let argv = vec![
-            "add".to_string(),
+            "log".to_string(),
             "main.rs".to_string(),
         ];
         assert!(command_handler(argv).is_ok());

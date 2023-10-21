@@ -1,5 +1,5 @@
 use std::error::Error;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
 use std::fs;
 use crate::command_utils::flate2compress;
@@ -74,6 +74,14 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     Ok(())
 }
 
+pub fn append_to_file(path: String, text: String) -> Result<(), Box<dyn Error>> {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(path)?;
+    writeln!(file, "{}", text)?;
+    Ok(())
+}
 
 pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
     let mut archivo = match File::create(&path) {

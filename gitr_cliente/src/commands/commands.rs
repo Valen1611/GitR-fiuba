@@ -1,12 +1,9 @@
-use std::{io::prelude::*, fs::{File, self}, error::Error};
-use flate2::Compression;
-use flate2::write::ZlibEncoder;
+use std::{fs::{self}, error::Error};
+
 use crate::{objects::blob::Blob, file_manager};
 use crate::command_utils::*;
 
 
-
-use sha1::{Sha1, Digest};
 /*
     NOTA: Puede que no todos los comandos requieran de flags,
     si ya esta hecha la funcion y no se uso, se puede borrar
@@ -71,8 +68,7 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
 // user comment
 pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
     if flags.len() != 2 {
-        println!("Error: invalid number of arguments");
-        return Ok(())
+        return Err("Error: invalid number of arguments".into());
     } 
     let res_output = file_manager::read_object(&flags[1])?;
     let object_type = res_output.split(" ").collect::<Vec<&str>>()[0];
