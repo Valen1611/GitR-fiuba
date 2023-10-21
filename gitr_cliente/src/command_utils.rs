@@ -4,7 +4,7 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 
-use crate::{file_manager::read_index, objects::{blob::{TreeEntry, Blob}, tree::Tree}};
+use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}};
 
 
 
@@ -30,9 +30,13 @@ pub fn print_tree_data(raw_data: &str){
     let files = raw_data.split("\n").collect::<Vec<&str>>();
     
     for object in files {
-        println!("{}", object);
+
         let file_atributes = object.split(" ").collect::<Vec<&str>>();
         let file_mode = file_atributes[0];
+        let file_path_hash = file_atributes[1];
+        
+        let file_path = file_path_hash.split("\0").collect::<Vec<&str>>()[0];
+        let file_hash = file_path_hash.split("\0").collect::<Vec<&str>>()[1];
 
         let mut file_type = "";  
         if file_mode == "100644"{
@@ -44,7 +48,7 @@ pub fn print_tree_data(raw_data: &str){
 
         //let file_hash = file_atributes[2];
 
-        //println!("{} {} {} {}", file_mode, file_type, file_hash, file_path );
+        println!("{} {} {} {}", file_mode, file_type, file_hash, file_path);
         
     }
    
@@ -61,7 +65,7 @@ pub fn print_tree_data(raw_data: &str){
 
 
 pub fn print_commit_data(raw_data: &str){
-    println!("{}", raw_data);
+    println!("tree {}", raw_data);
 }
 
 pub fn visit_dirs(dir: &Path) -> Vec<String> {
@@ -137,78 +141,73 @@ pub fn create_trees (tree_map:HashMap<String, Vec<String>>, current_dir: String)
     Ok(tree)
 }
 
-pub fn get_tree_entries() -> Result<(), Box<dyn Error>>{
-    
+pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); // orden en el que insertamos carpetas
- 
-
     let index_files = read_index()?;
     for file_info in index_files.split("\n") {
         let file_path = file_info.split(" ").collect::<Vec<&str>>()[3];
-
         let splitted_file_path = file_path.split("/").collect::<Vec<&str>>();
-
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
             if let Some(last_element) = splitted_file_path.last() {
                 if dir == last_element {
-                    // es un blob
-                    println!("blob: {}", dir);
                     if tree_map.contains_key(splitted_file_path[i-1]) {
                         match tree_map.get_mut(splitted_file_path[i-1]) {
                             Some(folder) => {
-                                //let file_hash = file_info.split(" ").collect::<Vec<&str>>()[1];
                                 folder.push(file_path.to_string());
                             },
                             None => {
                                 println!("No se encontro el folder");
                             }
-
                         }
                     }
-
                 }else {
-                    
                         if !tree_map.contains_key(dir as &str) {
                             tree_map.insert(dir.to_string(), vec![]);
                             tree_order.push(dir.to_string());
                         }
-
                         if i == 0 {
                             continue;
-
                         }
-                    
-
                     if tree_map.contains_key(splitted_file_path[i-1]) {
                         match tree_map.get_mut(splitted_file_path[i-1]) {
                             Some(folder) => {
                                 if !folder.contains(&dir.to_string()) {
                                     folder.push(dir.to_string());
-                                }
-                                
+                                }             
                             },
                             None => {
                                 println!("No se encontro el folder");
                             }
-
                         }
-                    }
-                    
-                    
-                    
+                    }        
                 } 
             }
         }
     }
-
-
-    //println!("{:?}", tree_map);
-    //println!("{:?}", tree_order);
-
-
-    create_trees(tree_map, tree_order[0].clone())?;
-
+    let tree_all = create_trees(tree_map, tree_order[0].clone())?;
+    let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
+    final_tree.save()?;
+    let head = file_manager::get_head();
+    let commit = Commit::new(final_tree.get_hash(), head.clone(), get_current_username(), get_current_username(), message)?;
+    commit.save()?;
+    if head == "None"{
+        let _ = file_manager::write_file(String::from("gitr/refs/heads/master"), commit.get_hash());
+    }else{
+        let path = format!("gitr/{}", head);
+        let _ = file_manager::write_file(path.clone(), commit.get_hash());
+    }
     Ok(())
+}
 
+
+pub fn get_current_username() -> String{
+    if let Some(username) = std::env::var_os("USER") {
+        match username.to_str(){
+            Some(username) => username.to_string(),
+            None => String::from("User"),
+        }
+    } else{
+        String::from("User")
+    }
 }

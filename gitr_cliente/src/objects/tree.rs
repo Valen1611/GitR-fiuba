@@ -11,6 +11,14 @@ pub struct Tree{
     hash: String,
 }
 
+
+
+
+/*
+commit -> tree -> src ->
+
+*/
+
 impl Tree{
     pub fn new(entries: Vec<(String,TreeEntry)>) ->  Result<Self, Box<dyn Error>>{
         let mut format_data = String::new();
@@ -26,6 +34,7 @@ impl Tree{
                 }
             }
         }
+        format_data = format_data.trim_end().to_string();
         let compressed_file = flate2compress(format_data.clone())?;
         let hashed_file = sha1hashing(format_data.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
@@ -37,6 +46,9 @@ impl Tree{
         Ok(())
     }
     
+    pub fn get_hash(&self) -> String{
+        self.hash.clone()
+    }
 
     
 }

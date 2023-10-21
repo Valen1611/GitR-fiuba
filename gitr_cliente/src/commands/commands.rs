@@ -157,46 +157,42 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     
 }
 
-pub fn rm(flags: Vec<String>) {
-    println!("rm");
+pub fn rm(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
+    let mut removed:bool = false;
+    if flags.len() != 1 {
+        println!("Error: invalid number of arguments");
+        return Ok(())
+    }
+    let mut index = file_manager::read_index()?;
+    index = index + "\n";
+    for line in index.lines(){
+        let attributes = line.split(" ").collect::<Vec<&str>>();
+        if attributes[3] == flags[0]{
+            let complete_line = format!("{}\n", line);
+            index = index.replace(&complete_line, "");
+            let res = index.trim_end().to_string();
+            removed = true;
+            let compressed_index = flate2compress(res)?;
+            let _ = file_manager::write_compressed_data("gitr/index", compressed_index.as_slice());
+            break
+        }
+    }
+    if removed{
+        println!("rm '{}'", flags[0]);
+    }else{
+        println!("Error: file not found");
+    }
+    Ok(())
+  
 } 
 
 
-/*
-100644 cde52ee64ce41d6cdd26720ea294ffb1c4c7835f 0 src/command_utils.rs
-100644 3aa76051467c0484ced4aaf6e1c1645929b86bdd 0 src/commands/mod.rs
-100644 e9a736e818411bd73d57a991423a00c128fbbd1c 0 src/commands/handler.rs
-100644 5483d3ebb9a1d1c9d24f9f622f9513ab5e4636e7 0 src/commands/commands.rs
-100644 ed4c92bffcd03151f42eae6440e5486ab1fd8227 0 src/objects/tree.rs
-100644 681a8eab050aee5019f74412930c320d001b151d 0 src/objects/blob.rs
-100644 91fe76f4819cabd9c66705f876411a5d1b92d979 0 src/objects/mod.rs
-100644 67d10bb5a8777c10348f20c6e4a827eb1bdca43b 0 src/objects/commit.rs
-100644 56c1f4951f789aa306f3f8db5fff8aabaa9c40ef 0 src/file_manager.rs
-100644 8f5fedb7b69dd90f768c818ee085eca518e6520b 0 src/gitr_errors.rs
-100644 782b63f6e510ac248a2a02dc1b002f315a3832f1 0 src/main.rs
-
-{
-src: [command_utils.rs, commands, objects, file_manager.rs, gitr_errors.rs, main.rs]
-commands:[mod.rs, handler.rs, commands.rs]
-objects:[tree.rs, blob.rs, mods.rs, commit.rs]
-}
-commit->tree
-        |-src
-            |-command_utils.rs
-            |-main.rs
-            |-gitr_errors.rs
-            |-commands
-                |-commands.rs
-                |-handler.rs
-                |-mod.rs
-            |-objects
-                |-tree.rs
-                |-blob.rs
-                |-mods.rs
-                |-commit.rs
-*/
 pub fn commit(flags: Vec<String>) {
-    get_tree_entries();
+    if flags.len() != 2 || flags[0] != "-m"{
+        println!("Error: invalid number of arguments");
+        return
+    }
+    let _ = get_tree_entries(flags[1].clone());
 }
 
 pub fn checkout(flags: Vec<String>) {
@@ -240,5 +236,4 @@ pub fn ls_files(flags: Vec<String>) {
         let res_output = file_manager::read_index().unwrap();
         println!("{}", res_output);
     }
-
 }
