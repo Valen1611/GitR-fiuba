@@ -175,6 +175,50 @@ pub fn update_head(head: &String) -> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
+pub fn get_branches()-> Result<Vec<String>, Box<dyn Error>>{
+    let mut branches: Vec<String> = Vec::new();
+    let dir = String::from("gitr/refs/heads");
+    let paths = fs::read_dir(dir)?;
+    for path in paths {
+        let path = path?;
+        let path = path.path();
+        let path = path.to_str();
+        let path = match path{
+            Some(path) => path,
+            None => return Err(Box::new(GitrError::FileReadError(String::from("gitr/refs/heads"))))
+        };
+        let path = path.split("/").collect::<Vec<&str>>();
+        let path = path[path.len()-1];
+        branches.push(path.to_string());
+    }
+    Ok(branches)
+    
+}
+
+pub fn get_current_commit()->Result<String, Box<dyn Error>>{
+    let head_path = get_head();
+    if head_path == "None"{
+        return Err(Box::new(GitrError::NoHead));
+    }
+    let head_path = format!("gitr/{}", head_path);
+    let head = fs::read_to_string(head_path);
+    Ok(head?)
+}
+
+pub fn delete_branch(branch:String, moving: bool){
+    let path = format!("refs/heads/{}", branch);
+    let head = get_head();
+    if moving == true{
+        let _ = fs::remove_file(path);
+        return
+    }
+    if head == path || head == "None"{
+        println!("cannot delete branch '{}': HEAD points to it", branch);
+        return
+    }
+    let _ = fs::remove_file(path);
+    println!("Deleted branch {}", branch);
+}
 #[cfg(test)]
 mod tests {
     use super::*;

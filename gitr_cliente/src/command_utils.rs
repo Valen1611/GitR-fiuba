@@ -211,3 +211,33 @@ pub fn get_current_username() -> String{
         String::from("User")
     }
 }
+
+pub fn print_branches()-> Result<(), Box<dyn Error>>{
+    let head = file_manager::get_head();
+    let head_vec = head.split("/").collect::<Vec<&str>>();
+    let head = head_vec[head_vec.len()-1];
+    let branches = file_manager::get_branches()?;
+        for branch in branches{
+            if head == branch{
+                let index_branch = format!("* {}", branch);
+                println!("{}",index_branch);
+                continue;
+            }
+            println!("{}", branch);
+        }
+    Ok(())
+}
+
+pub fn branch_exists(branch: String) -> bool{
+    let branches = file_manager::get_branches();
+    let branches = match branches{
+        Ok(branches) => branches,
+        Err(_) => return false,
+    };
+    for branch_name in branches{
+        if branch_name == branch{
+            return true;
+        }
+    }
+    false
+}

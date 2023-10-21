@@ -227,8 +227,53 @@ pub fn push(flags: Vec<String>) {
     println!("push");
 }
 
-pub fn branch(flags: Vec<String>) {
-    println!("branch");
+pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
+    if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
+        print_branches()?;
+    }
+    if flags.len() == 1 && flags[0] != "-l" && flags[0] != "--list"{
+        if branch_exists(flags[0].clone()){
+            println!("fatal: A branch named '{}' already exists.", flags[0]);
+            return Ok(())
+        }
+        let current_commit = file_manager::get_current_commit()?;
+        let _ = file_manager::write_file(format!("gitr/refs/heads/{}", flags[0]), current_commit);
+    }
+    if flags.len() == 2 && flags[0] == "-d"{
+        // falta chequear si el branch está al día, xq sino se usa -D
+        if !branch_exists(flags[1].clone()){
+            println!("error: branch '{}' not found.", flags[1]);
+            return Ok(())
+        }
+        let _ = file_manager::delete_branch(flags[1].clone(), false);
+        return Ok(())
+    }
+    if flags.len() == 2 && flags[0] == "-D"{
+        if !branch_exists(flags[1].clone()){
+            println!("error: branch '{}' not found.", flags[1]);
+            return Ok(())
+        }
+        let _ = file_manager::delete_branch(flags[1].clone(), false);
+        return Ok(())
+    }
+    if flags.len() == 3 && flags[0] == "-m"{
+        if !branch_exists(flags[1].clone()){
+            println!("error: branch '{}' not found.", flags[1]);
+            return Ok(())
+        }
+        if branch_exists(flags[2].clone()){
+            println!("error: a branch named '{}' already exists.", flags[2]);
+            return Ok(())
+        }
+        let _ = file_manager::delete_branch(flags[1].clone(), true);
+        let current_commit = file_manager::get_current_commit()?;
+        let _ = file_manager::write_file(format!("gitr/refs/heads/{}", flags[2]), current_commit);
+        let path = format!("refs/heads/{}", flags[2]);
+        let _ = file_manager::update_head(&path);
+        return Ok(())
+
+    }
+    Ok(())
 }
 
 pub fn ls_files(flags: Vec<String>) {
