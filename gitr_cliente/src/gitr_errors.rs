@@ -8,6 +8,7 @@ pub enum GitrError{
     FileWriteError(String),
     ObjectNotFound,
     FileReadError(String),
+    NoHead,
 }
 
 impl fmt::Display for GitrError{
@@ -18,6 +19,7 @@ impl fmt::Display for GitrError{
             Self::FileWriteError(path)=>write!(f, "ERROR: No se pudo escribir el archivo {}", path),
             Self::ObjectNotFound => write!(f, "ERROR: No se encontro el objeto"),
             Self::FileReadError(path) => write!(f, "ERROR: No se pudo leer el archivo {}", path),
+            Self::NoHead => write!(f, "ERROR: No se encontro HEAD"),
     }
 }
 }
