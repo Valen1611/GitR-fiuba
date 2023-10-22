@@ -229,6 +229,39 @@ pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), Box<dyn
     fs::rename(old_branch, new_branch)?;
     Ok(())
 }   
+pub fn get_commit(branch:String)->Result<String, Box<dyn Error>>{
+    let path = format!("gitr/refs/heads/{}", branch);
+    let commit = fs::read_to_string(path);
+    let commit = match commit{
+        Ok(commit) => commit,
+        Err(_) => return Err(Box::new(GitrError::FileReadError(String::from("gitr/refs/heads"))))
+    };
+    Ok(commit)
+}
+
+pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
+    let main_tree = get_main_tree(commit)?;
+    let tree = read_object(&main_tree)?;
+    let entries = tree.split("\n").collect::<Vec<&str>>();
+    for entry in entries{
+        let object = entry.split(" ").collect::<Vec<&str>>()[1];
+        if object == "tree"{
+            
+        } else{
+            
+        }
+    }
+    Ok(())
+
+
+}
+
+pub fn get_main_tree(commit:String)->Result<String, Box<dyn Error>>{
+    let commit = read_object(&commit)?;
+    let commit = commit.split("\n").collect::<Vec<&str>>();
+    Ok(commit[0].to_string())
+}
+
 
 #[cfg(test)]
 mod tests {

@@ -97,7 +97,6 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
         };
 
         let raw_data = &res_output[(raw_data_index + 1)..];
-        println!("object type: {}", object_type);
         match object_type {
             "blob" => print_blob_data(raw_data),
             "tree" => print_tree_data(raw_data),
@@ -196,7 +195,15 @@ pub fn commit(flags: Vec<String>) {
 }
 
 pub fn checkout(flags: Vec<String>) {
-    println!("checkout");
+    if flags.len() == 1{
+        if !branch_exists(flags[0].clone()){
+            println!("error: pathspec '{}' did not match any file(s) known to git.", flags[0]);
+            return
+        }
+        let current_commit = file_manager::get_commit(flags[0]);
+        let _ = file_manager::update_working_directory();
+        let _ = file_manager::update_head(&flags[0]);
+    }
 }
 
 pub fn log(flags: Vec<String>) {
@@ -283,3 +290,4 @@ pub fn ls_files(flags: Vec<String>) {
         println!("{}", res_output);
     }
 }
+
