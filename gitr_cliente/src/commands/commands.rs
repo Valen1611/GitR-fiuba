@@ -126,6 +126,15 @@ pub fn status(flags: Vec<String>) {
     println!("status");
 }
 
+pub fn create_blob_from_file(file_path: &String) -> Result<(), Box<dyn Error>> {
+    let raw_data = fs::read_to_string(file_path)?;
+    let blob = Blob::new(raw_data)?;
+    blob.save()?;
+    let hash = blob.get_hash();
+    file_manager::add_to_index(file_path, &hash)?;
+    Ok(())
+}
+
 pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     if flags.len() != 1 {
         println!("Error: invalid number of arguments");
@@ -136,18 +145,20 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     if file_path == "."{
         let files = visit_dirs(&std::path::Path::new("src"));
         for file in files{
-            let raw_data = fs::read_to_string(file.clone())?;
-            let blob = Blob::new(raw_data)?;
-            blob.save()?;
-            let hash = blob.get_hash();
-            file_manager::add_to_index(&file, &hash)?;
+            create_blob_from_file(&file)?;
+            // let raw_data = fs::read_to_string(file.clone())?;
+            // let blob = Blob::new(raw_data)?;
+            // blob.save()?;
+            // let hash = blob.get_hash();
+            // file_manager::add_to_index(&file, &hash)?;
         }
     }else{
-        let raw_data = fs::read_to_string(file_path)?;
-        let blob = Blob::new(raw_data)?;
-        blob.save()?;
-        let hash = blob.get_hash();
-        file_manager::add_to_index(file_path, &hash)?;
+        create_blob_from_file(file_path)?;
+        // let raw_data = fs::read_to_string(file_path)?;
+        // let blob = Blob::new(raw_data)?;
+        // blob.save()?;
+        // let hash = blob.get_hash();
+        // file_manager::add_to_index(file_path, &hash)?;
     }
     Ok(())
     

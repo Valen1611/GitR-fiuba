@@ -1,2 +1,13 @@
-{"type": "Action","timestamp": "21-10-2023 18:24:27","message": "calling hash-object with flags: ["asd"]"}
-{"type": "Error","timestamp": "21-10-2023 18:24:27","message": "No such file or directory (os error 2)"}
+{"type": "Action","timestamp": "22-10-2023 18:01:15","message": "calling h with flags: ["hello.rs"]"}
+{"type": "Action","timestamp": "22-10-2023 18:02:03","message": "calling c with flags: ["-t", "b8d7489a6a5db220428da6c6d04be50bbbc9a77f"]"}
+{"type": "FileOperation","timestamp": "22-10-2023 18:02:03","message": "reading data from: gitr/objects/b8/d7489a6a5db220428da6c6d04be50bbbc9a77f"}
+{"type": "Action","timestamp": "22-10-2023 18:02:28","message": "calling h with flags: ["hello.rs"]"}
+{"type": "Action","timestamp": "22-10-2023 18:02:36","message": "calling c with flags: ["-t", "aa41844e2e63a6675c37f74e4ee11a7e985b32dc"]"}
+{"type": "Error","timestamp": "22-10-2023 18:02:36","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "22-10-2023 19:32:40","message": "calling add with flags: ["hello.rs"]"}
+{"type": "FileOperation","timestamp": "22-10-2023 19:32:40","message": "writing data to: gitr/objects/aa/41844e2e63a6675c37f74e4ee11a7e985b32dc"}
+{"type": "FileOperation","timestamp": "22-10-2023 19:32:40","message": "reading data from: gitr/index"}
+{"type": "Action","timestamp": "22-10-2023 19:32:40","message": "adding hello.rs to index"}
+{"type": "FileOperation","timestamp": "22-10-2023 19:32:40","message": "writing data to: gitr/index"}
+{"type": "Action","timestamp": "22-10-2023 19:33:20","message": "calling c with flags: ["-p", "aa41844e2e63a6675c37f74e4ee11a7e985b32dc"]"}
+{"type": "FileOperation","timestamp": "22-10-2023 19:33:20","message": "reading data from: gitr/objects/aa/41844e2e63a6675c37f74e4ee11a7e985b32dc"}

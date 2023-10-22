@@ -4,6 +4,7 @@ use std::io::prelude::*;
 use std::fs;
 use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
+use crate::logger;
 use crate::objects::blob::{TreeEntry, Blob};
 use flate2::read::ZlibDecoder;
 use flate2::write::{ZlibEncoder, self};
@@ -12,8 +13,9 @@ use flate2::Compression;
 
 /// A diferencia de write_file, esta funcion recibe un vector de bytes
 /// como data, y lo escribe en el archivo de path.
-
 pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
+    let log_msg = format!("writing data to: {}", path);
+    logger::log_file_operation(log_msg);
     let mut file: File = match File::create(path) {
         Ok(file) => file,
         Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
@@ -27,6 +29,8 @@ pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
 }
 
 fn read_compressed_file(path: &str) -> std::io::Result<Vec<u8>> {
+    let log_msg = format!("reading data from: {}", path);
+    logger::log_file_operation(log_msg);
     let file = File::open(path)?;
     let mut decoder = ZlibDecoder::new(file);
     let mut buffer = Vec::new();
@@ -60,16 +64,16 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     let file_name = hashed_name[2..].to_string();
     let dir = String::from("gitr/objects/");
     let folder_dir = dir.clone() + &folder_name;
-    println!("folder dir: {}", folder_dir);
+    //println!("folder dir: {}", folder_dir);
     
-    println!("file name: {}", file_name);
+    //println!("file name: {}", file_name);
     
     if !fs::metadata(&folder_dir).is_ok() {
         create_directory(&folder_dir)?;
     }
     
-    println!("voy a crear: {}", folder_dir.clone() + "/" + &file_name);
-    println!("data: {:?}", data);
+    //println!("voy a crear: {}", folder_dir.clone() + "/" + &file_name);
+    //println!("data: {:?}", data);
     write_compressed_data(&(folder_dir.clone() + "/" + &file_name),  &data)?;
     Ok(())
 }
@@ -84,6 +88,8 @@ pub fn append_to_file(path: String, text: String) -> Result<(), Box<dyn Error>> 
 }
 
 pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
+    let log_msg = format!("writing data to: {}", path);
+    logger::log_file_operation(log_msg); 
     let mut archivo = match File::create(&path) {
         Ok(archivo) => archivo,
         Err(_) => return Err(GitrError::FileCreationError(path)),
@@ -146,10 +152,11 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
         let mut overwrited = false;
         for line in index.clone().lines(){
             let attributes = line.split(" ").collect::<Vec<&str>>();
-
-            println!("attributes: {:?}", attributes);
-
+            //println!("attributes: {:?}", attributes);
+            
             if attributes[3] == path{
+                let log_msg = format!("adding {} to index", path);
+                logger::log_action(log_msg);
                 index = index.replace(line, &new_blob);
                 overwrited = true;
                 break;
@@ -188,6 +195,10 @@ pub fn update_head(head: &String) -> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
+pub fn read_file(path: String) -> Result<String, Box<dyn Error>> {
+    let data = fs::read_to_string(path)?;
+    Ok(data)
+}
 
 #[cfg(test)]
 mod tests {

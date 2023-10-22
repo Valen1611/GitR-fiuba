@@ -54,7 +54,33 @@ pub fn log_action(message: String) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+pub fn log_file_operation(message: String) -> Result<(), Box<dyn std::error::Error>> {
+    let logger = Logger::new(EntryType::FileOperation, message);
+    logger.save()?;
+    Ok(())
+}
+
 pub fn log (flags: Vec<String>) -> Result<(), Box<dyn std::error::Error>>{
-    log_error(String::from("error mesaage"))?;
+    let n = flags[0].parse::<usize>()?;
+
+    let log = file_manager::read_file("src/log.json".to_string())?;
+    
+    //esto se emprolija cuando al abrir se abre un json object y se filtra por tipo
+    for line in log.lines().rev().take(n){
+        let msg = line.split("message\": ").collect::<Vec<&str>>()[1];
+        if line.contains("Error") {
+            println!("\x1b[31m{}\x1b[0m", msg);
+        }
+        else if line.contains("Action") {
+            println!("\x1b[34m{}\x1b[0m", msg);
+        }
+        else if line.contains("FileOperation") {
+            println!("\x1b[93m{}\x1b[0m", msg);
+        }
+        else {
+            println!("{}", msg);
+        }
+    }
+
     Ok(())
 }
