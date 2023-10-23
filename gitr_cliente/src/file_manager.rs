@@ -277,6 +277,7 @@ pub fn create_blob (entry: String) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
+    delete_all_files();
     let main_tree = get_main_tree(commit)?;
     let tree = read_object(&main_tree)?;
     let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
@@ -301,16 +302,12 @@ pub fn get_main_tree(commit:String)->Result<String, Box<dyn Error>>{
 }
 
 pub fn delete_all_files(){
-    if let Ok(entries) = fs::read_dir(dir) {
+    let actual_dir = std::env::current_dir().unwrap();
+    if let Ok(entries) = fs::read_dir(actual_dir) {
         for entry in entries {
             if let Ok(entry) = entry {
-                let path = entry.path();
-                if path.is_dir() {
-                    let mut subfiles = visit_dirs(&path);
-                    files.append(&mut subfiles);
-                } else if let Some(path_str) = path.to_str() {
-                    files.push(path_str.to_string());
-                    println!("{}", path.display());
+                if entry.file_name() != "gitr"{
+                    let _ = fs::remove_dir_all(entry.path());
                 }
             }
         }
