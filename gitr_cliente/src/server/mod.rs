@@ -141,6 +141,8 @@ fn pack_data(wants: Vec<String>, r_path: &String) -> std::io::Result<String> {
     Ok(format!("ToDo"))
 }
 
+
+
 fn wants_n_haves(requests: String) -> std::io::Result<(Vec<String>,Vec<String>)> {
     let mut wants:Vec<String> = Vec::new();
     let mut haves: Vec<String> = Vec::new();
@@ -152,13 +154,13 @@ fn wants_n_haves(requests: String) -> std::io::Result<(Vec<String>,Vec<String>)>
         if nuls_cont == 0 {
             match elems[0] {
                 "want" => {wants.push(elems[1].to_string())},
-                "" => {nuls_cont += 1;},   
+                "" => {nuls_cont += 1;},// 0000
                 _ => return Err(Error::new(std::io::ErrorKind::Other, "Error: Negociacion Fallida"))
             }
         } else if nuls_cont == 1 {
             match elems[0] {
                 "have" => {haves.push(elems[1].to_string())},
-                "0000" => {nuls_cont += 1;},
+                "" => {nuls_cont += 1;}, // 0000
                 "done" => {break},
                 _ => return Err(Error::new(std::io::ErrorKind::Other, "Error: Negociacion Fallida"))
             }
@@ -244,6 +246,7 @@ fn create_dirs(r_path: &str) -> std::io::Result<()> {
     fs::create_dir(p_str.clone() + "/refs")?;
     fs::create_dir(p_str.clone() +"/refs/heads")?;
     fs::create_dir(p_str.clone() +"/refs/tags")?;
+    fs::create_dir(p_str.clone() +"/objects")?;
     Ok(())
 }
 
