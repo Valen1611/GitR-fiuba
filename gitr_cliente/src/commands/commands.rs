@@ -191,7 +191,9 @@ pub fn commit(flags: Vec<String>) {
         println!("Error: invalid number of arguments");
         return
     }
-    let _ = get_tree_entries(flags[1].clone());
+    let message = &flags[1..];
+    let message = message.join(" ");
+    let _ = get_tree_entries(message);
 }
 
 pub fn checkout(flags: Vec<String>)->Result<(), Box<dyn Error>> {
@@ -201,8 +203,8 @@ pub fn checkout(flags: Vec<String>)->Result<(), Box<dyn Error>> {
             return Ok(())
         }
         let current_commit = file_manager::get_commit(flags[0].clone())?;
-        let _ = file_manager::update_working_directory(current_commit);
-        let _ = file_manager::update_head(&flags[0]);
+        let _ = file_manager::update_working_directory(current_commit)?;
+        let _ = file_manager::update_head(&flags[0])?;
     }
     Ok(())
 }
