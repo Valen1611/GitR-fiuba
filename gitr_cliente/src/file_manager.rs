@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
 use std::fs;
+use std::thread::current;
 use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
 use crate::objects::blob::{TreeEntry, Blob};
@@ -259,7 +260,7 @@ pub fn create_tree (path: String, hash: String) -> Result<(), Box<dyn Error>> {
             let _new_path_hash = entry.split(" ").collect::<Vec<&str>>()[1];
             let new_path = _new_path_hash.split("\0").collect::<Vec<&str>>()[0]; 
             let hash = _new_path_hash.split("\0").collect::<Vec<&str>>()[1];
-            create_tree(path.clone() + "/" + new_path, hash.to_string());
+            create_tree(path.clone() + "/" + new_path, hash.to_string())?;
         }
     }
 
@@ -272,12 +273,11 @@ pub fn create_blob (entry: String) -> Result<(), Box<dyn Error>> {
     let blob_hash = _blob_path_hash.split("\0").collect::<Vec<&str>>()[1];
 
     let new_blob = read_object(&(blob_hash.to_string()))?;
-    write_file(blob_path.to_string(), new_blob);
+    write_file(blob_path.to_string(), new_blob)?;
     Ok(())
 }
 
 pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
-    delete_all_files();
     let main_tree = get_main_tree(commit)?;
     let tree = read_object(&main_tree)?;
     let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
@@ -287,9 +287,9 @@ pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
             let _new_path_hash = entry.split(" ").collect::<Vec<&str>>()[1];
             let new_path = _new_path_hash.split("\0").collect::<Vec<&str>>()[0]; 
             let hash = _new_path_hash.split("\0").collect::<Vec<&str>>()[1];
-            create_tree(new_path.to_string(), hash.to_string());
+            create_tree(new_path.to_string(), hash.to_string())?;
         } else{
-            create_blob(entry.to_string().clone());
+            create_blob(entry.to_string().clone())?;
         }
     }
     Ok(())
@@ -302,13 +302,14 @@ pub fn get_main_tree(commit:String)->Result<String, Box<dyn Error>>{
 }
 
 pub fn delete_all_files(){
-    let actual_dir = std::env::current_dir().unwrap();
-    if let Ok(entries) = fs::read_dir(actual_dir) {
+    let current_dir = std::env::current_dir().unwrap();
+    if let Ok(entries) = fs::read_dir(current_dir) {
         for entry in entries {
             if let Ok(entry) = entry {
-                if entry.file_name() != "gitr"{
+                if entry.file_name() != "gitr" {
                     let _ = fs::remove_dir_all(entry.path());
                 }
+
             }
         }
     }
