@@ -20,7 +20,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
         "add" => commands::add(flags)?,
         "rm" => commands::rm(flags)?,
         "commit" => commands::commit(flags),
-        "checkout" => commands::checkout(flags),
+        "checkout" => commands::checkout(flags)?,
         "log" => commands::log(flags),
         "clone" => commands::clone(flags),
         "fetch" => commands::fetch(flags),

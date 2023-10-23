@@ -44,3 +44,23 @@ fn main() {
     }
 
 }
+
+
+/*
+
+
+
+status (git man page) ✶✶✶
+
+checkout (git man page) ✶✶✶✶✶
+
+log (git man page)  ✶✶
+
+clone (git man page)
+fetch (git man page)
+merge (git man page)
+remote (git man page)
+pull (git man page)
+push (git man page)
+
+*/

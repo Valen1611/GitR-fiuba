@@ -194,19 +194,21 @@ pub fn commit(flags: Vec<String>) {
     let _ = get_tree_entries(flags[1].clone());
 }
 
-pub fn checkout(flags: Vec<String>) {
+pub fn checkout(flags: Vec<String>)->Result<(), Box<dyn Error>> {
     if flags.len() == 1{
         if !branch_exists(flags[0].clone()){
             println!("error: pathspec '{}' did not match any file(s) known to git.", flags[0]);
-            return
+            return Ok(())
         }
-        let current_commit = file_manager::get_commit(flags[0]);
-        let _ = file_manager::update_working_directory();
+        let current_commit = file_manager::get_commit(flags[0].clone())?;
+        let _ = file_manager::update_working_directory(current_commit);
         let _ = file_manager::update_head(&flags[0]);
     }
+    Ok(())
 }
 
 pub fn log(flags: Vec<String>) {
+    println!("current dir: {}", std::env::current_dir().unwrap().display());
     println!("log");
 }
 

@@ -26,9 +26,11 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
+
+
 pub fn print_tree_data(raw_data: &str){
     let files = raw_data.split("\n").collect::<Vec<&str>>();
-    
+    println!("files: {:?} ", files);
     for object in files {
 
         let file_atributes = object.split(" ").collect::<Vec<&str>>();

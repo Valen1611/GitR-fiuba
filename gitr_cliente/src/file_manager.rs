@@ -238,22 +238,60 @@ pub fn get_commit(branch:String)->Result<String, Box<dyn Error>>{
     };
     Ok(commit)
 }
+/*
+///tree <size-of-tree-in-bytes>\0
+// <file-1-mode> path\0<hash
+// <file-2-mode> path\0<file-2-blob-hash>
+// ...
+// <file-n-mode> <file-n-path>\0<file-n-blob-hash>
+*/ 
+
+pub fn create_tree (path: String, hash: String) -> Result<(), Box<dyn Error>> {
+    fs::create_dir(path.clone())?;
+    let tree_raw_data = read_object(&hash)?;
+    let tree_entries = tree_raw_data.split("\0").collect::<Vec<&str>>()[1];
+    for entry in tree_entries.split("\n") {
+        let object = entry.split(" ").collect::<Vec<&str>>()[0];
+        if object == "100644"{ //blob
+            create_blob(entry.to_string())?;
+
+        } else { //tree
+            let _new_path_hash = entry.split(" ").collect::<Vec<&str>>()[1];
+            let new_path = _new_path_hash.split("\0").collect::<Vec<&str>>()[0]; 
+            let hash = _new_path_hash.split("\0").collect::<Vec<&str>>()[1];
+            create_tree(path.clone() + "/" + new_path, hash.to_string());
+        }
+    }
+
+    Ok(())
+}
+
+pub fn create_blob (entry: String) -> Result<(), Box<dyn Error>> {
+    let _blob_path_hash = entry.split(" ").collect::<Vec<&str>>()[1];
+    let blob_path = _blob_path_hash.split("\0").collect::<Vec<&str>>()[0];
+    let blob_hash = _blob_path_hash.split("\0").collect::<Vec<&str>>()[1];
+
+    let new_blob = read_object(&(blob_hash.to_string()))?;
+    write_file(blob_path.to_string(), new_blob);
+    Ok(())
+}
 
 pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
     let main_tree = get_main_tree(commit)?;
     let tree = read_object(&main_tree)?;
-    let entries = tree.split("\n").collect::<Vec<&str>>();
-    for entry in entries{
-        let object = entry.split(" ").collect::<Vec<&str>>()[1];
+    let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
+    for entry in tree_entries.split("\n"){
+        let object = entry.split(" ").collect::<Vec<&str>>()[0];
         if object == "tree"{
-            
+            let _new_path_hash = entry.split(" ").collect::<Vec<&str>>()[1];
+            let new_path = _new_path_hash.split("\0").collect::<Vec<&str>>()[0]; 
+            let hash = _new_path_hash.split("\0").collect::<Vec<&str>>()[1];
+            create_tree(new_path.to_string(), hash.to_string());
         } else{
-            
+            create_blob(entry.to_string().clone());
         }
     }
     Ok(())
-
-
 }
 
 pub fn get_main_tree(commit:String)->Result<String, Box<dyn Error>>{
@@ -262,6 +300,22 @@ pub fn get_main_tree(commit:String)->Result<String, Box<dyn Error>>{
     Ok(commit[0].to_string())
 }
 
+pub fn delete_all_files(){
+    if let Ok(entries) = fs::read_dir(dir) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                if path.is_dir() {
+                    let mut subfiles = visit_dirs(&path);
+                    files.append(&mut subfiles);
+                } else if let Some(path_str) = path.to_str() {
+                    files.push(path_str.to_string());
+                    println!("{}", path.display());
+                }
+            }
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
