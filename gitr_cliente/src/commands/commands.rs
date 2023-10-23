@@ -1,6 +1,6 @@
 use std::{fs::{self}, error::Error};
 
-use crate::{objects::blob::Blob, file_manager};
+use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
 use crate::command_utils::*;
 
 
@@ -66,10 +66,10 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
 // committer ID email date
 
 // user comment
-pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
+pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
     if flags.len() != 2 {
-        return Err("Error: invalid number of arguments".into());
-    } 
+        return Err(GitrError::InvalidNumberOfArguments(2, flags.len()));
+    }
     let res_output = file_manager::read_object(&flags[1])?;
     let object_type = res_output.split(" ").collect::<Vec<&str>>()[0];
     let _size = res_output.split(" ").collect::<Vec<&str>>()[1];
@@ -83,7 +83,6 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
         println!("{}", size);
     }
     if flags[0] == "-p"{
-        
         let raw_data_index = match res_output.find("\0") {
             Some(index) => index,
             None => {

@@ -51,12 +51,9 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
 fn create_directory(path: &String)->Result<(), GitrError>{
     match fs::create_dir(path){
         Ok(_) => Ok(()),
-        Err(_) => {
-            // print the error
-            println!("Error creating directory: {}", path);
-            //
-            Err(GitrError::DirectoryCreationError)}
-    }
+        Err(_) => Err(GitrError::DirectoryCreationError(path.clone()))
+        }
+    
 }
 
 pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
@@ -102,16 +99,19 @@ pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
 }
 
 pub fn read_object(object: &String) -> Result<String, GitrError>{
+    if object.len() < 3{
+        return Err(GitrError::ObjectNotFound(object.clone()));
+    }
     let folder_name = object[0..2].to_string();
     let file_name = object[2..].to_string();
     let dir = String::from("gitr/objects/");
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name +  "/" + &file_name;
     if !fs::metadata(&folder_dir).is_ok(){
-        return Err(GitrError::ObjectNotFound);
+        return Err(GitrError::ObjectNotFound(object.clone()));
     }
     if !fs::metadata(&path).is_ok(){
-        return Err(GitrError::ObjectNotFound);
+        return Err(GitrError::ObjectNotFound(object.clone()));
     }
     let data = read_compressed_file(&path);
     let data = match data{

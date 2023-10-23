@@ -11,3 +11,34 @@
 {"type": "FileOperation","timestamp": "22-10-2023 19:32:40","message": "writing data to: gitr/index"}
 {"type": "Action","timestamp": "22-10-2023 19:33:20","message": "calling c with flags: ["-p", "aa41844e2e63a6675c37f74e4ee11a7e985b32dc"]"}
 {"type": "FileOperation","timestamp": "22-10-2023 19:33:20","message": "reading data from: gitr/objects/aa/41844e2e63a6675c37f74e4ee11a7e985b32dc"}
+{"type": "Action","timestamp": "22-10-2023 21:54:14","message": "calling c with flags: ["a"]"}
+{"type": "Error","timestamp": "22-10-2023 21:54:14","message": "Error: invalid number of arguments"}
+{"type": "Action","timestamp": "22-10-2023 21:54:18","message": "calling c with flags: ["-t", "asdjask"]"}
+{"type": "Error","timestamp": "22-10-2023 21:54:18","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "22-10-2023 21:56:28","message": "calling c with flags: ["-t", "asdas"]"}
+{"type": "Error","timestamp": "22-10-2023 21:56:28","message": "No se encontro el objeto gitr/objects/as"}
+{"type": "Action","timestamp": "22-10-2023 21:56:53","message": "calling c with flags: ["-t", "asdsad"]"}
+{"type": "Error","timestamp": "22-10-2023 21:56:53","message": "No se encontro el objeto asdsad"}
+{"type": "Action","timestamp": "22-10-2023 21:57:13","message": "calling l with flags: ["5"]"}
+{"type": "Action","timestamp": "22-10-2023 22:19:17","message": "calling c with flags: []"}
+{"type": "Error","timestamp": "22-10-2023 22:19:17","message": "Invalid arguments: "}
+{"type": "Action","timestamp": "22-10-2023 22:21:09","message": "calling c with flags: ["a"]"}
+{"type": "Error","timestamp": "22-10-2023 22:21:09","message": "Invalid number of arguments. Expected 2, got 1"}
+{"type": "Action","timestamp": "22-10-2023 22:21:39","message": "calling c with flags: ["a", "b"]"}
+{"type": "Action","timestamp": "22-10-2023 22:23:33","message": "calling c with flags: ["b", "aa"]"}
+{"type": "FileOperation","timestamp": "22-10-2023 22:23:33","message": "reading data from: gitr/objects/aa/"}
+{"type": "Error","timestamp": "22-10-2023 22:23:33","message": "No se pudo leer el archivo gitr/objects/aa/"}
+{"type": "Action","timestamp": "22-10-2023 22:24:06","message": "calling c with flags: ["b", "b"]"}
+{"type": "Action","timestamp": "22-10-2023 22:25:39","message": "calling a with flags: ["b", "aaa"]"}
+{"type": "Error","timestamp": "22-10-2023 22:25:39","message": "invalid command: a"}
+{"type": "Action","timestamp": "22-10-2023 22:25:45","message": "calling c with flags: ["a", "aaa"]"}
+{"type": "Error","timestamp": "22-10-2023 22:25:45","message": "No se encontro el objeto aaa"}
+{"type": "Action","timestamp": "22-10-2023 22:25:50","message": "calling c with flags: ["a", "aa"]"}
+{"type": "FileOperation","timestamp": "22-10-2023 22:25:50","message": "reading data from: gitr/objects/aa/"}
+{"type": "Error","timestamp": "22-10-2023 22:25:50","message": "No se pudo leer el archivo gitr/objects/aa/"}
+{"type": "Action","timestamp": "22-10-2023 22:27:31","message": "calling c with flags: ["a", "aa"]"}
+{"type": "Error","timestamp": "22-10-2023 22:27:31","message": "No se encontro el objeto aa"}
+{"type": "Action","timestamp": "22-10-2023 22:27:35","message": "calling c with flags: ["a", "a"]"}
+{"type": "Error","timestamp": "22-10-2023 22:27:35","message": "No se encontro el objeto a"}
+{"type": "Action","timestamp": "22-10-2023 22:27:37","message": "calling c with flags: []"}
+{"type": "Error","timestamp": "22-10-2023 22:27:37","message": "Invalid number of arguments. Expected 2, got 0"}
