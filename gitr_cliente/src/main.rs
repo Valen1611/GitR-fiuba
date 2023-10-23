@@ -5,12 +5,7 @@ use std::{thread, net::{TcpStream, TcpListener}, io::{Write, Read}};
 use flate2::write::ZlibEncoder;
 use flate2::read::ZlibDecoder;
 
-fn decode(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
-    let mut decoder = ZlibDecoder::new(input);
-    let mut decoded_data = Vec::new();
-    decoder.read_to_end(&mut decoded_data)?;
-    Ok(decoded_data)
-}
+
 
 fn main(){
     let mut socket = TcpStream::connect("localhost:9418").unwrap();
@@ -25,7 +20,7 @@ fn main(){
 
     while bytes_read != 0{
         let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
-        println!("String recibido: {:?}", received_data);
+        println!("String recibido: {}", received_data);
         if received_data == "0000"{
             println!("corto por recibir 0000");
             break;
@@ -37,15 +32,15 @@ fn main(){
     println!("ok pasó el git-upload-pack, vemos el want");
 
 
-    let _ =socket.write("0032want cf6335a864bda2ee027ea7083a72d10e32921b15\n00000009done\n".as_bytes());
+    let _ =socket.write("0032want fe73cee75ed037afbe156f6d1edfb2af22023c4b\n0032want fe73cee75ed037afbe156f6d1edfb2af22023c4b\n0032want fe73cee75ed037afbe156f6d1edfb2af22023c4b\n00000009done\n".as_bytes());
     print!("ok mando want\n");
     
-    let mut buffer = [0;500];
+    let mut buffer = [0;1024];
 
     let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");  //leo el ack  
     println!("Leo {} bytes por el socket",bytes_read);
     let received_data = String::from_utf8_lossy(&buffer);
-    println!("String recibido: --{:?}--", received_data);
+    // println!("String recibido: --{:?}--", received_data);
 
     let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket"); //aca llega el packfile
     println!("Leo {} bytes por el socket",bytes_read);
@@ -53,5 +48,7 @@ fn main(){
     println!("String recibido: --{:?}--", buffer);
     pack_file::new_from(&mut buffer[..]).unwrap();
     //println!("No panickeo porque recibió un PACK");
+    // descomprimir_bruto(&buffer);
+    
 
 }

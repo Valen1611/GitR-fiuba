@@ -15,11 +15,13 @@ pub struct pack_file{
 
 }
 
-fn decode(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
+fn decode(input: &[u8]) -> Result<(Vec<u8>,usize), std::io::Error> {
     let mut decoder = ZlibDecoder::new(input);
+    let traducidos = decoder.total_in();
+    print!("traducidos: {}\n",traducidos);
     let mut decoded_data = Vec::new();
-    decoder.read_to_end(&mut decoded_data)?;
-    Ok(decoded_data)
+    let leidos = decoder.read_to_end(&mut decoded_data)?;
+    Ok((decoded_data, leidos))
 }
 
 fn verify_header(header_slice: &[u8])->Result<(),String>{
@@ -41,7 +43,7 @@ fn extract_version(version_slice:&[u8])->Result<u32,String>{
 }
 
 fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), &'static str> {
-    println!("{:?}",data);
+    // println!("{:?}",data);
     // Verifica si hay suficientes bytes para el encabezado mínimo
     if data.len() < 2 {
         return Err("No hay suficientes bytes para el encabezado del objeto Git");
@@ -49,18 +51,24 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), &'static st
 
     // Tipo del objeto (solo los primeros 3 bits)
     // print!("----->{:?}<------",data);
-    let object_type = (data[0] << 1 >> 4) & 0x07;
+    let object_type = (data[0] << 1 >> 5) & 0x07;
+    print!("data[0]:-{:#010b}\n",data[0]);
+    print!("tipo de objeto: {:#010b} - {}\n",object_type,object_type);
 
     // Longitud del objeto
     let mut length = (data[0]<<4>>4) as usize;
+    print!("len1-{:#010b} - {}\n",length,length);
     let mut cursor = 1;
     let mut shift = 4;
 
    
     // Decodifica la longitud en formato de longitud variable
     while (data[cursor-1] & 0x80) != 0 {
-        print!("entro al while\n");
+        // print!("entro al while\n");
+        
         length |= (data[cursor] as usize & 0x7F) << shift;
+        print!("data[{}]--{:#010b}\n",cursor,data[cursor]);
+        print!("len1-{:#010b} - {}\n",length,length);
         cursor += 1;
         shift += 7;
         
@@ -69,9 +77,9 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), &'static st
             return Err("Longitud de objeto Git no válida");
         }
     }
-    print!("cursor:{:b}\n",data[cursor]);
+    print!("cursor:{:#010b}\n",data[cursor]);
     // length |= (data[cursor] as usize & 0x7F) << shift;
-    print!("len{}\n",length);
+    // print!("len3-{}\n",length);
     // cursor += 1;
 
     // Verifica si hay suficientes bytes para el contenido del objeto
@@ -80,7 +88,9 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), &'static st
     }
 
     // Extrae el contenido del objeto
+    length = length -75;
     let object_content = &data[cursor..cursor + length];
+    print!("len obj:::{}\n",object_content.len());
     println!("CONTENIDO DEL OBJETO EN EL PARSER {:?}", object_content);
     Ok((object_type, length, object_content,cursor + length))
 }
@@ -98,13 +108,15 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<(), String> {
 
     let mut index: usize = 0;
     for i in 0..num_objects {
-        print!("=========index: {}, vuelta {}\n",index, i);
+        print!("=========index: {}, vuelta {}\n",index + 12, i);
         match parse_git_object(&buffer[12+index..]) {
             Ok((object_type, length, object_content,ind)) => {
                 println!("Tipo del objeto: {}", object_type);
                 println!("Longitud del objeto: {}", length);
-                println!("Contenido del objeto: {:?}", String::from_utf8_lossy(&decode(object_content).unwrap()));
-                index += ind
+                let (decodeado, leidos) = decode(object_content).unwrap();
+                print!("leidos: {}\n",leidos);
+                println!("Contenido del objeto: {:?}", String::from_utf8_lossy(&decodeado[..]));
+                index += ind;
             }
             Err(err) => {
                 println!("Error: {}", err);
@@ -134,4 +146,20 @@ mod tests{
         let mut buffer= [(13),(14),(23),(44)];
         assert!(pack_file::new_from(&mut buffer).is_err());
     }
+}
+
+pub fn descomprimir_bruto(data: &[u8]) {
+    let mut finall = "".to_string();
+    for byte in data {
+        match decode(data) {
+            Ok((decoded_data, _leidos)) => {
+                finall = finall + &String::from_utf8_lossy(&decoded_data[..]).to_string();
+            }
+            Err(err) => {
+                finall = finall + &String::from_utf8_lossy(&[*byte]).to_string(); 
+            }
+            
+        }
+    }
+    print!("[[[[[[[[[[[[finall: {}",finall)
 }
