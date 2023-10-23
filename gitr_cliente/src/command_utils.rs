@@ -196,8 +196,7 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     if head == "None"{
         let _ = file_manager::write_file(String::from("gitr/refs/heads/master"), commit.get_hash());
     }else{
-        let path = format!("gitr/{}", head);
-        let _ = file_manager::write_file(path.clone(), commit.get_hash());
+        let _ = file_manager::write_file(head.clone(), commit.get_hash())?;
     }
     Ok(())
 }
@@ -221,8 +220,7 @@ pub fn print_branches()-> Result<(), Box<dyn Error>>{
     let branches = file_manager::get_branches()?;
         for branch in branches{
             if head == branch{
-                let index_branch = format!("* {}", branch);
-                println!("{}",index_branch);
+                println!("* {}",branch);
                 continue;
             }
             println!("{}", branch);

@@ -206,7 +206,7 @@ pub fn get_current_commit()->Result<String, Box<dyn Error>>{
     if head_path == "None"{
         return Err(Box::new(GitrError::NoHead));
     }
-    let head_path = format!("gitr/{}", head_path);
+    let head_path = format!("{}", head_path);
     let head = fs::read_to_string(head_path);
     Ok(head?)
 }
@@ -279,6 +279,7 @@ pub fn create_blob (entry: String) -> Result<(), Box<dyn Error>> {
 
 pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
     let main_tree = get_main_tree(commit)?;
+    println!("main tree: {}", main_tree);
     let tree = read_object(&main_tree)?;
     let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
     for entry in tree_entries.split("\n"){
@@ -298,7 +299,8 @@ pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
 pub fn get_main_tree(commit:String)->Result<String, Box<dyn Error>>{
     let commit = read_object(&commit)?;
     let commit = commit.split("\n").collect::<Vec<&str>>();
-    Ok(commit[0].to_string())
+    let tree = commit[0].split(" ").collect::<Vec<&str>>()[1];
+    Ok(tree.to_string())
 }
 
 pub fn delete_all_files(){
