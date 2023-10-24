@@ -179,7 +179,7 @@ pub fn get_head() ->  Result<String, GitrError>{
     let path = repo + "/gitr/HEAD";
     if !fs::metadata(path.clone()).is_ok(){
         let _ = write_file(String::from(path.clone()), String::from("ref: refs/heads/master"));
-        return Err(GitrError::NoHead)
+        return Ok("None".to_string())
     }
     let head = fs::read_to_string(path.clone());
     let head = match head{
@@ -224,8 +224,8 @@ pub fn get_current_commit()->Result<String, Box<dyn Error>>{
         return Err(Box::new(GitrError::NoHead));
     }
     let repo = get_current_repo()?;
-    let head_path = format!("{}/gitr/{}",repo, head_path);
-
+    //let head_path = format!("{}/gitr/{}",repo, head_path);
+    println!("{}", head_path);
     let head = fs::read_to_string(head_path);
     Ok(head?)
 }
@@ -271,6 +271,7 @@ pub fn get_commit(branch:String)->Result<String, Box<dyn Error>>{
 */ 
 
 pub fn create_tree (path: String, hash: String) -> Result<(), Box<dyn Error>> {
+    println!("carpeta que deberia crear: {}", path);
     fs::create_dir(path.clone())?;
     let tree_raw_data = read_object(&hash)?;
     let tree_entries = tree_raw_data.split("\0").collect::<Vec<&str>>()[1];
@@ -306,9 +307,11 @@ pub fn create_blob (entry: String) -> Result<(), Box<dyn Error>> {
     let _blob_path_hash = entry.split(" ").collect::<Vec<&str>>()[1];
     let blob_path = _blob_path_hash.split("\0").collect::<Vec<&str>>()[0];
     let blob_hash = _blob_path_hash.split("\0").collect::<Vec<&str>>()[1];
-
+    println!("blob hash: {}", blob_hash);
     let new_blob = read_object(&(blob_hash.to_string()))?;
-    write_file(blob_path.to_string(), new_blob)?;
+    
+    let new_blob_only_data = new_blob.split("\0").collect::<Vec<&str>>()[1];
+    write_file(blob_path.to_string(), new_blob_only_data.to_string())?;
     Ok(())
 }
 
@@ -332,9 +335,8 @@ pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
             return Ok(())
         }
     };
-
     let raw_data = &tree[(raw_data_index + 1)..];
-
+    println!("raw data: {}", raw_data);
 
     for entry in raw_data.split("\n"){
         let object: &str = entry.split(" ").collect::<Vec<&str>>()[0];

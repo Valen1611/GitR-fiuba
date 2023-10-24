@@ -287,7 +287,6 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
             return Ok(())
         }
         let current_commit = file_manager::get_current_commit()?;
-        println!("aca llego");
         let repo = file_manager::get_current_repo()?;
         let _ = file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo, flags[0]), current_commit);
     }
