@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
 use std::fs;
+use std::path::Path;
 use std::thread::current;
 use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
@@ -200,22 +201,22 @@ pub fn update_head(head: &String) -> Result<(), GitrError>{
 
 pub fn get_branches()-> Result<Vec<String>, Box<dyn Error>>{
     let mut branches: Vec<String> = Vec::new();
-    let dir = String::from("gitr/refs/heads");
-    let paths = fs::read_dir(dir)?;
+    let repo = get_current_repo()?;
+    let dir = repo + "/gitr/refs/heads";
+    let paths = fs::read_dir(dir.clone())?;
     for path in paths {
         let path = path?;
         let path = path.path();
         let path = path.to_str();
         let path = match path{
             Some(path) => path,
-            None => return Err(Box::new(GitrError::FileReadError(String::from("gitr/refs/heads"))))
+            None => return Err(Box::new(GitrError::FileReadError(dir))),
         };
         let path = path.split("/").collect::<Vec<&str>>();
         let path = path[path.len()-1];
         branches.push(path.to_string());
     }
     Ok(branches)
-    
 }
 
 pub fn get_current_commit()->Result<String, Box<dyn Error>>{
@@ -249,12 +250,12 @@ pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), Box<dyn
     Ok(())
 }   
 pub fn get_commit(branch:String)->Result<String, Box<dyn Error>>{
-    
-    let path = format!("gitr/refs/heads/{}", branch);
-    let commit = fs::read_to_string(path);
+    let repo = get_current_repo()?;
+    let path = format!("{}/gitr/refs/heads/{}",repo, branch);
+    let commit = fs::read_to_string(path.clone());
     let commit = match commit{
         Ok(commit) => commit,
-        Err(_) => return Err(Box::new(GitrError::FileReadError(String::from("gitr/refs/heads"))))
+        Err(_) => return Err(Box::new(GitrError::FileReadError(path)))
     };
     Ok(commit)
 }
@@ -316,6 +317,7 @@ pub fn create_blob (entry: String) -> Result<(), Box<dyn Error>> {
 // <file-n-mode> <file-n-path>\0<file-n-blob-hash>
 */ 
 pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
+    let _ = delete_all_files();
     let main_tree = get_main_tree(commit)?;
     let tree = read_object(&main_tree)?;
     let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
@@ -364,9 +366,10 @@ pub fn get_main_tree(commit:String)->Result<String, Box<dyn Error>>{
     Ok(tree_hash.to_string())
 }
 
-pub fn delete_all_files(){
-    let current_dir = std::env::current_dir().unwrap();
-    if let Ok(entries) = fs::read_dir(current_dir) {
+pub fn delete_all_files()-> Result<(), Box<dyn Error>>{  
+    let repo = get_current_repo()?;
+    let path = Path::new(&repo);
+    if let Ok(entries) = fs::read_dir(path) {
         for entry in entries {
             if let Ok(entry) = entry {
                 if entry.file_name() != "gitr" {
@@ -377,6 +380,7 @@ pub fn delete_all_files(){
             }
         }
     }
+    Ok(())
 }
 
 
