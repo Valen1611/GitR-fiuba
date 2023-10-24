@@ -6,6 +6,7 @@ use sha1::{Sha1, Digest};
 
 use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}};
 
+pub static mut REPO_NAME: String = String::new();
 
 
 pub fn sha1hashing(input: String) -> Vec<u8> {
@@ -190,7 +191,7 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let tree_all = create_trees(tree_map, tree_order[0].clone())?;
     let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
     final_tree.save()?;
-    let head = file_manager::get_head();
+    let head = file_manager::get_head()?;
     let commit = Commit::new(final_tree.get_hash(), head.clone(), get_current_username(), get_current_username(), message)?;
     commit.save()?;
     if head == "None"{
@@ -214,13 +215,14 @@ pub fn get_current_username() -> String{
 }
 
 pub fn print_branches()-> Result<(), Box<dyn Error>>{
-    let head = file_manager::get_head();
+    let head = file_manager::get_head()?;
     let head_vec = head.split("/").collect::<Vec<&str>>();
     let head = head_vec[head_vec.len()-1];
     let branches = file_manager::get_branches()?;
         for branch in branches{
             if head == branch{
-                println!("* {}",branch);
+                let index_branch = format!("* {}", branch);
+                println!("{}",index_branch);
                 continue;
             }
             println!("{}", branch);

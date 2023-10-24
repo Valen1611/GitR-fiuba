@@ -120,6 +120,7 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
 }
 
 pub fn init(flags: Vec<String>) -> Result<(), Box<dyn Error>> {
+    file_manager::update_current_dir(&flags[0])?;
     file_manager::init_repository(&flags[0])?;
     println!("Initialized empty Gitr repository");
     Ok(())
@@ -282,6 +283,7 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
             println!("fatal: A branch named '{}' already exists.", flags[0]);
             return Ok(())
         }
+        println!("aca llego");
         let current_commit = file_manager::get_current_commit()?;
         let _ = file_manager::write_file(format!("gitr/refs/heads/{}", flags[0]), current_commit);
     }

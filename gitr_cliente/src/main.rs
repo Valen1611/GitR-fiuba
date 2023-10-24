@@ -8,6 +8,7 @@ use std::io::{stdin,stdout,Write};
 mod command_utils;
 
 
+
 fn get_input() -> Result<String, Box<dyn Error>> {
     print!("gitr: $ ");
     io::stdout().flush()?;
