@@ -46,80 +46,72 @@ pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
 fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
 
     let mut buffer = [0; 1024];
-    let mut paso = 1;
     let mut guardados_id: HashSet<String> = HashSet::new();
     let mut refs_string :String;
-
+    
     while let Ok(n) = stream.read(&mut buffer) {
         if n == 0 {
             // La conexión se cerró
             return Ok(());
         }
-
-        if let Ok(request) = decode(&buffer) { 
-
-            if paso == 1 {
-
-                // ########## HANDSHAKE ##########
-                let pkt_line = from_utf8(&request).unwrap_or(""); 
-                match is_valid_pkt_line(pkt_line) {
-                    Ok(_) => {},
-                    Err(_) => {let _ = stream.write(&code("Error: no se respeta el formato pkt-line".as_bytes()).unwrap_or(vec![]));
-                                return Ok(())}
-                }
-                let _elems = split_n_validate_elems(pkt_line)?;
-                
-                // ########## REFERENCE DISCOVERY ##########
-                (refs_string, guardados_id) = ref_discovery(&r_path)?;
-                if let Ok(reply) = code(refs_string.as_bytes()){
-                    stream.write(&reply)?;
-                    paso += 1;
-                    continue;
-                }
-                return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal con el reference discovery"))
-
-            } else if paso == 2 {
-
-                // ##########  PACKFILE NEGOTIATION ##########
-                let pkt_line = from_utf8(&request).unwrap_or("");
-                if pkt_line == "0000" { // Cliente esta al dia
-                    return Ok(())
-                }
-                if pkt_line == "0009done\n" {
-                    paso +=1;
-                    continue;
-                }
-                let (wants_id, haves_id) = wants_n_haves("cadena que envio el cliente".to_string())?;
-                let mut reply = "0008NAK\n".to_string();
-                for want in wants_id.clone() {
-                    if !guardados_id.contains(&want) {
-                        reply = "Error: wanted object not recognized\n".to_string()
-                    }
-                }
-                for have in haves_id {
-                    if guardados_id.contains(&have) && reply == "0008NAK\n".to_string() {
-                        reply = format!("003aACK {}\n", have.clone());
-                        break
-                    }
-                }
-                if let Ok(reply) = code(reply.as_bytes()){
-                    stream.write(&reply)?;
-                    
-                } else {
-                    return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal\n"))
-                }
-                
-                // ########## PACKFILE DATA ##########
-                let pack = pack_data(wants_id, &r_path);
-
-                
-
-            }
-                
-
+        
+        // ########## HANDSHAKE ##########
+        let pkt_line = from_utf8(&buffer).unwrap_or(""); 
+        match is_valid_pkt_line(pkt_line) {
+            Ok(_) => {},
+            Err(_) => {let _ = stream.write(&"Error: no se respeta el formato pkt-line".as_bytes());
+            return Ok(())}
         }
-        println!("caca");
+        let _elems = split_n_validate_elems(pkt_line)?;
+        
+        // ########## REFERENCE DISCOVERY ##########
+        
+        (refs_string, guardados_id) = ref_discovery(&r_path)?;
+        stream.write(&refs_string.as_bytes())?;
+        // ##########  PACKFILE NEGOTIATION ##########
 
+        let mut reply = "0008NAK\n".to_string();
+        let wants_id: Vec<String> = Vec::new();
+        let haves_id: Vec<String> = Vec::new();
+        loop {
+
+            stream.read(&mut buffer)?;
+            let pkt_line = from_utf8(&buffer).unwrap_or("");
+            if pkt_line == "0000" { // si la primera linea es 0000, el cliente esta al dia y no hay mas que hacer con el
+                return Ok(())
+            }
+            if pkt_line == "0009done\n" { // el cliente cierra el packet-file
+                break;
+            }
+            let (wants_id, haves_id) = wants_n_haves("cadena que envio el cliente".to_string())?;
+            let mut reply = "0008NAK\n".to_string();
+            for want in wants_id.clone() {
+                if !guardados_id.contains(&want) {
+                    reply = format!("Error: not our ref: {}\n",want);
+
+                }
+            }
+            for have in haves_id {
+                if guardados_id.contains(&have) && reply == "0008NAK\n".to_string() {
+                    reply = format!("003aACK {}\n", have.clone());
+                    stream.write(&reply.as_bytes())?;
+                    break
+                }
+            }  
+        }
+        if reply == "0008NAK\n".to_string() {
+            stream.write(&reply.as_bytes())?;
+            break;
+        }
+            
+        // ########## PACKFILE DATA ##########
+        let pack = pack_data(wants_id, &r_path);
+        if let Ok(pack_string) = pack {
+            stream.write(&pack_string.as_bytes())?;
+        } else {
+            return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal\n"))
+        }
+        
     }
     Err(Error::new(std::io::ErrorKind::Other, "Error en la conexion"))
 }
@@ -217,9 +209,9 @@ fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
 }
-
+/// Devuelve un vector con los elementos de la linea de pkt_line { orden, repo_local_path, host }
 fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
-    // 0033git-upload-pack /project.githost=myserver.com\0
+    // 0033git-upload-pack /project.git\0host=myserver.com\0
     let line = pkt_line.split_at(4).1;
     let div1: Vec<&str> = line.split(" ").collect(); // [comando , resto] 
     if div1.len() < 2 {
@@ -232,7 +224,7 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
         elems.push(div1[0]);
         elems.push(div2[0]);
         elems.push(div2[1]);
-            return Ok(elems)
+        return Ok(elems)
 
     }
     
