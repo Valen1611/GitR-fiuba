@@ -32,7 +32,7 @@ fn main(){
     println!("ok pasó el git-upload-pack, vemos el want");
 
 
-    let _ =socket.write("0032want fe73cee75ed037afbe156f6d1edfb2af22023c4b\n0032want fe73cee75ed037afbe156f6d1edfb2af22023c4b\n0032want fe73cee75ed037afbe156f6d1edfb2af22023c4b\n00000009done\n".as_bytes());
+    let _ =socket.write("0032want cf6335a864bda2ee027ea7083a72d10e32921b15\n00000009done\n".as_bytes());
     print!("ok mando want\n");
     
     let mut buffer = [0;1024];

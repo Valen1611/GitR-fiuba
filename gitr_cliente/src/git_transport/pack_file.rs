@@ -1,6 +1,7 @@
 use core::num;
 use std::{fs::File, io::Read};
 extern crate flate2;
+use flate2::Decompress;
 use flate2::write::ZlibEncoder;
 use flate2::read::ZlibDecoder;
 //Info util:
@@ -15,13 +16,18 @@ pub struct pack_file{
 
 }
 
-fn decode(input: &[u8]) -> Result<(Vec<u8>,usize), std::io::Error> {
-    let mut decoder = ZlibDecoder::new(input);
-    let traducidos = decoder.total_in();
-    print!("traducidos: {}\n",traducidos);
-    let mut decoded_data = Vec::new();
-    let leidos = decoder.read_to_end(&mut decoded_data)?;
-    Ok((decoded_data, leidos))
+fn decode(input: &[u8]) -> Result<([u8;256],u64), std::io::Error> {
+    let mut decoder = Decompress::new(true);
+    let mut output:[u8; 256] = [0;256];
+    //println!("Input al decompress:{:?}", input);
+    decoder.decompress(input, &mut output, flate2::FlushDecompress::Finish)?;
+    let cant_leidos = decoder.total_in();
+    println!("Input de tamaño: {} genera output de tamaño {}", cant_leidos, decoder.total_out());
+
+    //let traducidos = decoder.total_in();
+    //print!("traducidos: {}\n",traducidos);
+    //let mut decoded_data = Vec::new();
+    Ok((output, cant_leidos))
 }
 
 fn verify_header(header_slice: &[u8])->Result<(),String>{
@@ -43,7 +49,7 @@ fn extract_version(version_slice:&[u8])->Result<u32,String>{
 }
 
 fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), &'static str> {
-    // println!("{:?}",data);
+    println!("Entrada a parse_object {:?}",data);
     // Verifica si hay suficientes bytes para el encabezado mínimo
     if data.len() < 2 {
         return Err("No hay suficientes bytes para el encabezado del objeto Git");
@@ -52,23 +58,22 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), &'static st
     // Tipo del objeto (solo los primeros 3 bits)
     // print!("----->{:?}<------",data);
     let object_type = (data[0] << 1 >> 5) & 0x07;
-    print!("data[0]:-{:#010b}\n",data[0]);
-    print!("tipo de objeto: {:#010b} - {}\n",object_type,object_type);
+    //print!("data[0]:-{:#010b}\n",data[0]);
+    //print!("tipo de objeto: {:#010b} - {}\n",object_type,object_type);
 
     // Longitud del objeto
     let mut length = (data[0]<<4>>4) as usize;
-    print!("len1-{:#010b} - {}\n",length,length);
     let mut cursor = 1;
     let mut shift = 4;
-
-   
+    
+    
     // Decodifica la longitud en formato de longitud variable
     while (data[cursor-1] & 0x80) != 0 {
         // print!("entro al while\n");
         
         length |= (data[cursor] as usize & 0x7F) << shift;
-        print!("data[{}]--{:#010b}\n",cursor,data[cursor]);
-        print!("len1-{:#010b} - {}\n",length,length);
+        //print!("data[{}]--{:#010b}\n",cursor,data[cursor]);
+        //print!("len1-{:#010b} - {}\n",length,length);
         cursor += 1;
         shift += 7;
         
@@ -77,9 +82,10 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), &'static st
             return Err("Longitud de objeto Git no válida");
         }
     }
-    print!("cursor:{:#010b}\n",data[cursor]);
-    // length |= (data[cursor] as usize & 0x7F) << shift;
-    // print!("len3-{}\n",length);
+    print!("longitud del objeto descomprimido-{:#010b} - {}\n",length,length);
+    print!("cursor: {}\n",cursor);
+    //length |= (data[cursor] as usize & 0x7F) << shift;
+    //print!("len3-{}\n",length);
     // cursor += 1;
 
     // Verifica si hay suficientes bytes para el contenido del objeto
@@ -88,11 +94,11 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), &'static st
     }
 
     // Extrae el contenido del objeto
-    length = length -75;
-    let object_content = &data[cursor..cursor + length];
-    print!("len obj:::{}\n",object_content.len());
-    println!("CONTENIDO DEL OBJETO EN EL PARSER {:?}", object_content);
-    Ok((object_type, length, object_content,cursor + length))
+    //length = length -75;
+    let object_content = &data[cursor..];
+    //print!("len obj:::{}\n",object_content.len());
+    //println!("CONTENIDO DEL OBJETO EN EL PARSER {:?}", object_content);
+    Ok((object_type, length, object_content, cursor))
 }
 
 pub fn read_pack_file(buffer: &mut[u8]) -> Result<(), String> {
@@ -110,13 +116,13 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<(), String> {
     for i in 0..num_objects {
         print!("=========index: {}, vuelta {}\n",index + 12, i);
         match parse_git_object(&buffer[12+index..]) {
-            Ok((object_type, length, object_content,ind)) => {
+            Ok((object_type, length, object_content,cursor)) => {
                 println!("Tipo del objeto: {}", object_type);
                 println!("Longitud del objeto: {}", length);
                 let (decodeado, leidos) = decode(object_content).unwrap();
                 print!("leidos: {}\n",leidos);
                 println!("Contenido del objeto: {:?}", String::from_utf8_lossy(&decodeado[..]));
-                index += ind;
+                index += leidos as usize + cursor;
             }
             Err(err) => {
                 println!("Error: {}", err);
@@ -124,6 +130,7 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<(), String> {
             }
         }
     }
+    println!("Sali del for, lei todos los objetos");
     Ok(())
 }
 
