@@ -136,14 +136,14 @@ pub fn read_index() -> Result<String, GitrError>{
         Ok(data) => data,
         Err(_) => return Err(GitrError::FileReadError(path)),
     };
+    println!("index: {}", data);
     Ok(data)
 }
 
 pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
     let mut index;
-    let new_blob = format!("100644 {} 0 {}", hash, path);
-    
     let repo = get_current_repo()?;
+    let new_blob = format!("100644 {} 0 {}", hash, path);
     let dir = repo + "/gitr/index";
     
     if !fs::metadata(dir.clone()).is_ok(){
@@ -155,7 +155,6 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
         for line in index.clone().lines(){
             let attributes = line.split(" ").collect::<Vec<&str>>();
 
-            println!("attributes: {:?}", attributes);
 
             if attributes[3] == path{
                 index = index.replace(line, &new_blob);
@@ -224,19 +223,23 @@ pub fn get_current_commit()->Result<String, Box<dyn Error>>{
     if head_path == "None"{
         return Err(Box::new(GitrError::NoHead));
     }
-    let head_path = format!("{}", head_path);
+    let repo = get_current_repo()?;
+    let head_path = format!("{}/gitr/{}",repo, head_path);
+
     let head = fs::read_to_string(head_path);
     Ok(head?)
 }
 
 pub fn delete_branch(branch:String, moving: bool)-> Result<(), GitrError>{
-    let path = format!("gitr/refs/heads/{}", branch);
+    let repo = get_current_repo()?;
+    let path = format!("{}/gitr/refs/heads/{}", repo, branch);
     let head = get_head()?;
     if moving == true{
         let _ = fs::remove_file(path);
         return Ok(())
     }
-    if head == path || head == "None"{
+    let current_head = repo + "/gitr/" + &head;
+    if current_head== path || head == "None"{
         println!("cannot delete branch '{}': HEAD points to it", branch);
         return Ok(())
     }
@@ -334,7 +337,6 @@ pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
 
 
     for entry in raw_data.split("\n"){
-        println!("entry");
         let object: &str = entry.split(" ").collect::<Vec<&str>>()[0];
         if object == "40000"{
             let _new_path_hash = entry.split(" ").collect::<Vec<&str>>()[1];
@@ -384,7 +386,7 @@ pub fn delete_all_files()-> Result<(), Box<dyn Error>>{
 }
 
 
-pub fn update_current_dir(dir_name: &String) -> Result<(), GitrError> {
+pub fn update_current_repo(dir_name: &String) -> Result<(), GitrError> {
     if let Ok(entries) = std::fs::read_dir(".head_repo") {
         let dir_name_string = dir_name.to_string();
         for entry in entries {

@@ -120,7 +120,7 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
 }
 
 pub fn init(flags: Vec<String>) -> Result<(), Box<dyn Error>> {
-    file_manager::update_current_dir(&flags[0])?;
+    file_manager::update_current_repo(&flags[0])?;
     file_manager::init_repository(&flags[0])?;
     println!("Initialized empty Gitr repository");
     Ok(())
@@ -138,7 +138,8 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     // check if flags[0] is an existing file
     let file_path = &flags[0];
     if file_path == "."{
-        let files = visit_dirs(&std::path::Path::new("src"));
+        let repo = file_manager::get_current_repo()?;
+        let files = visit_dirs(&std::path::Path::new(&repo));
         for file in files{
             let raw_data = fs::read_to_string(file.clone())?;
             let blob = Blob::new(raw_data)?;
@@ -147,11 +148,13 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
             file_manager::add_to_index(&file, &hash)?;
         }
     }else{
-        let raw_data = fs::read_to_string(file_path)?;
+        let repo = file_manager::get_current_repo()?;
+        let full_file_path = &(repo + "/" + file_path);
+        let raw_data = fs::read_to_string(full_file_path)?;
         let blob = Blob::new(raw_data)?;
         blob.save()?;
         let hash = blob.get_hash();
-        file_manager::add_to_index(file_path, &hash)?;
+        file_manager::add_to_index(full_file_path, &hash)?;
     }
     Ok(())
     
@@ -187,14 +190,15 @@ pub fn rm(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
 } 
 
 
-pub fn commit(flags: Vec<String>) {
+pub fn commit(flags: Vec<String>)-> Result<(), Box<dyn Error>>{
     if flags.len() != 2 || flags[0] != "-m"{
         println!("Error: invalid number of arguments");
-        return
+        return Ok(())
     }
     let message = &flags[1..];
     let message = message.join(" ");
-    let _ = get_tree_entries(message);
+    let _ = get_tree_entries(message)?;
+    Ok(())
 }
 
 pub fn checkout(flags: Vec<String>)->Result<(), Box<dyn Error>> {
@@ -269,10 +273,9 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
             println!("error: a branch named '{}' already exists.", flags[2]);
             return Ok(())
         }
-
-        
-        let old_path = format!("gitr/refs/heads/{}", flags[1]);
-        let new_path = format!("gitr/refs/heads/{}", flags[2]);
+        let repo = file_manager::get_current_repo()?;
+        let old_path = format!("{}/gitr/refs/heads/{}", repo, flags[1]);
+        let new_path = format!("{}/gitr/refs/heads/{}", repo, flags[2]);
         file_manager::move_branch(old_path.clone(), new_path.clone())?;
         let _ = file_manager::update_head(&new_path);
         return Ok(())
@@ -283,9 +286,10 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
             println!("fatal: A branch named '{}' already exists.", flags[0]);
             return Ok(())
         }
-        println!("aca llego");
         let current_commit = file_manager::get_current_commit()?;
-        let _ = file_manager::write_file(format!("gitr/refs/heads/{}", flags[0]), current_commit);
+        println!("aca llego");
+        let repo = file_manager::get_current_repo()?;
+        let _ = file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo, flags[0]), current_commit);
     }
     Ok(())
 }

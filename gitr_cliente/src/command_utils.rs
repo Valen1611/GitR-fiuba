@@ -144,6 +144,14 @@ pub fn create_trees (tree_map:HashMap<String, Vec<String>>, current_dir: String)
     Ok(tree)
 }
 
+/*
+
+src -> commands -> commands.rs
+    -> objects -> blob.rs
+    -> hello.rs
+*/
+
+
 pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); // orden en el que insertamos carpetas
@@ -195,9 +203,13 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let commit = Commit::new(final_tree.get_hash(), head.clone(), get_current_username(), get_current_username(), message)?;
     commit.save()?;
     if head == "None"{
-        let _ = file_manager::write_file(String::from("gitr/refs/heads/master"), commit.get_hash());
+        let repo = file_manager::get_current_repo()?;
+        let dir = repo + "/gitr/refs/heads/master";
+        let _ = file_manager::write_file(dir, commit.get_hash())?;
     }else{
-        let _ = file_manager::write_file(head.clone(), commit.get_hash())?;
+        let repo = file_manager::get_current_repo()?;
+        let dir = repo + "/gitr/" + head.as_str();
+        let _ = file_manager::write_file(dir, commit.get_hash())?;
     }
     Ok(())
 }
