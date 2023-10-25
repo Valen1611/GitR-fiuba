@@ -102,7 +102,7 @@ fn gitr_receive_pack (stream: &mut TcpStream, r_path: String) -> std::io::Result
     // ########## *PACKFILE DATA ##########
     let ids: Vec<String> = vec![];
     if pkt_needed {
-        let (ids, content) = rcv_packfile(stream)?;
+        let (ids, content) = rcv_packfile_bruno(stream)?;
         update_contents(ids, content, r_path.clone())?;
     } 
    
@@ -120,7 +120,7 @@ fn _make_push_cert(ids: Vec<String>, r_path: String, host: String) -> std::io::R
     let mut obj: String;
     for id in ids {
         obj = get_object(id, r_path.clone())?;
-        if is_commit(obj.clone()) {
+        if _is_commit(obj.clone()) {
             let div1: Vec<&str> = obj.split("committer ").collect();
             let div2: Vec<&str> = div1[1].split(">").collect();
             ident = div2[0].split(" <").collect();
@@ -137,7 +137,7 @@ fn _make_push_cert(ids: Vec<String>, r_path: String, host: String) -> std::io::R
     Ok("".to_string())
 }
 
-fn is_commit(obj: String) -> bool {
+fn _is_commit(obj: String) -> bool {
     let mut lines = obj.lines();
     let first_line = lines.next().unwrap_or("");
     if first_line == "tree" {
@@ -151,24 +151,33 @@ fn get_object(id: String, r_path: String) -> std::io::Result<String> {
     let mut archivo = File::open(&format!("{}/{}",dir_path,id.split_at(2).1))?; // si no existe tira error
     let mut contenido = String::new();
     archivo.read_to_string(&mut contenido)?;
-    Ok(contenido)
+    let descomprimido = String::from_utf8_lossy(&decode(&contenido.as_bytes())?).to_string();
+    Ok(descomprimido)
 }
 
 fn update_contents(ids: Vec<String>, content: Vec<String>, r_path: String) -> std::io::Result<()> {
+    if ids.len() != content.len() {
+        return Err(Error::new(std::io::ErrorKind::Other, "Error: no coinciden los ids con los contenidos"))
+    }
     let mut i = 0;
     for id in ids {
         
         let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
         let _ = fs::create_dir(dir_path.clone()); // si ya existe tira error pero no pasa nada
         let mut archivo = File::create(&format!("{}/{}",dir_path,id.split_at(2).1))?;
-        archivo.write_all(content[i].as_bytes())?;
+        archivo.write_all(&code(content[i].as_bytes())?)?;
         i += 1;
     }
     Ok(())
 }
 
 fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<String>, r_path: String) -> std::io::Result<()> {
-    if let Ok(pack_string) = pack_data(wants_id, haves_id, &r_path) {
+    let mut contents: Vec<String> = vec![];
+    for id in wants_id.clone() {
+        contents.push(get_object(id, r_path.clone())?);
+    }
+
+    if let Ok(pack_string) = pack_data_bruno(wants_id, contents) {
         stream.write(&pack_string.as_bytes())?;
     } else {
         return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal\n"))
@@ -208,7 +217,7 @@ fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>, r
     Ok((wants_id, haves_id))
 }
 
-fn rcv_packfile(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, Vec<String>)> {
+fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, Vec<String>)> {
     let mut buffer: [u8;1024] = [0; 1024];
     stream.read(&mut buffer)?;
     Ok((vec![],vec![]))
@@ -218,13 +227,13 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
     let nul_obj = "0000000000000000000000000000000000000000";
     let mut pkt_needed = false;
     for i in 0..old.len() {
-        let path = r_path.clone() + &names[i];
-        if old[i] == nul_obj { // caso de creacion de archivo
+        let path = r_path.clone() + "/" + &names[i];
+        if old[i] == nul_obj  && new[i] != nul_obj{ // caso de creacion de archivo
             let mut new_file = File::create(&path)?;
             new_file.write_all(new[i].as_bytes())?;
             pkt_needed = true;
             continue
-        } else if new[i] == nul_obj { // caso de borrado de archivo
+        } else if new[i] == nul_obj && old[i] != nul_obj { // caso de borrado de archivo
             fs::remove_file(&path)?;
             continue
         } else if old[i] == new[i] { // caso de archivo sin cambios
@@ -261,13 +270,13 @@ fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<S
         }
         old.push(elems[0].to_string());
         new.push(elems[1].to_string());
-        names.push(elems[2].strip_suffix("\n").unwrap_or("").to_string());
+        names.push(elems[2].to_string());
     }
 
     Ok((old, new, names))
 }
 
-fn pack_data(wants: Vec<String>,haves: Vec<String>, r_path: &String) -> std::io::Result<String> {
+fn pack_data_bruno(ids: Vec<String>, contents: Vec<String>) -> std::io::Result<String> {
     
     Ok(format!("ToDo"))
 }
@@ -341,7 +350,8 @@ fn capacidades() -> String {
 }
 
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
-    if pkt_line != "" && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" ) {
+    println!("ok {:?}\n",pkt_line);
+    if pkt_line != "" && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" || pkt_line == "0000" ) {
         return Ok(())
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
@@ -407,6 +417,8 @@ mod tests{
     use super::*;
 
     #[test]
+    #[ignore = "Hay que frenarlo manualmente"]
+
     fn inicializo_el_server_correctamente(){
         let address =  "127.0.0.1:5454";
         let builder_s = thread::Builder::new().name("server".to_string());
@@ -418,14 +430,11 @@ mod tests{
         
         let client = builder_c.spawn(move||{
             let mut socket = TcpStream::connect(address).unwrap();
-            socket.write(&code("Hola server".as_bytes()).unwrap());
+            socket.write(&"Hola server".as_bytes()).unwrap();
             let mut buffer = [0; 1024];
             
             socket.read(&mut buffer).unwrap();
-            println!("llego antes del assert");
-            println!("[[[[[[{:?}]]]]]]]]",from_utf8(&decode(&buffer).unwrap()).unwrap());
             assert_eq!(from_utf8(&decode(&buffer).unwrap()), Ok("Error: no se respeta el formato pkt-line"));
-            print!("ok");
             return ;
         }).unwrap();
 
@@ -489,5 +498,57 @@ mod tests{
         let (refs_string,_guardados) = ref_discovery("remote_repo").unwrap();
         print!("{}\n",refs_string);
         assert_eq!(refs_string, "00327217a7c7e582c46cec22a130adf4b9d7d950fba0 HEAD\n0000\n")
+    }
+
+    #[test]
+    fn test06_get_changes() {
+        let input = {
+            "00677d1665144a3a975c05f1f43902ddaf084e784dbe 74730d410fcb6603ace96f1dc55ea6196122532d refs/heads/debug
+006874730d410fcb6603ace96f1dc55ea6196122532d 5a3f6be755bbb7deae50065988cbfa1ffa9ab68a refs/heads/master
+0000"};
+        let (old,new,names) = get_changes(input.as_bytes()).unwrap();
+        assert_eq!(old[0], "7d1665144a3a975c05f1f43902ddaf084e784dbe");
+        assert_eq!(old[1], "74730d410fcb6603ace96f1dc55ea6196122532d");
+        assert_eq!(new[0], "74730d410fcb6603ace96f1dc55ea6196122532d");
+        assert_eq!(new[1], "5a3f6be755bbb7deae50065988cbfa1ffa9ab68a");
+        assert_eq!(names[0], "refs/heads/debug");
+        assert_eq!(names[1], "refs/heads/master");
+    }
+
+    #[test]
+    fn test07_update_refs() {
+        let r_path = "remote_repo";
+        let _ = create_dirs(r_path);
+        assert!(fs::metadata(format!("{}/refs/heads/debug",r_path)).is_err());
+        assert!(fs::metadata(format!("{}/refs/heads/master",r_path)).is_err());
+        // caso de creacion de archivo
+        let old = vec!["0000000000000000000000000000000000000000".to_string(),"0000000000000000000000000000000000000000".to_string()];
+        let new = vec!["74730d410fcb6603ace96f1dc55ea6196122532d".to_string(),"5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string()];
+        let names = vec!["refs/heads/debug".to_string(),"refs/heads/master".to_string()];
+        let pkt_needed = update_refs(old, new, names, r_path.to_string()).unwrap();
+        assert!(pkt_needed);
+        assert!(fs::metadata(format!("{}/refs/heads/debug",r_path)).is_ok());
+        assert!(fs::metadata(format!("{}/refs/heads/master",r_path)).is_ok());
+        assert_eq!(fs::read_to_string(format!("{}/refs/heads/debug",r_path)).unwrap_or("".to_string()), "74730d410fcb6603ace96f1dc55ea6196122532d");
+        assert_eq!(fs::read_to_string(format!("{}/refs/heads/master",r_path)).unwrap_or("".to_string()), "5a3f6be755bbb7deae50065988cbfa1ffa9ab68a");
+        
+        // caso modificacion de archivo
+        let old = vec!["74730d410fcb6603ace96f1dc55ea6196122532d".to_string(),"5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string()];
+        let new = vec!["7d1665144a3a975c05f1f43902ddaf084e784dbe".to_string(),"74730d410fcb6603ace96f1dc55ea6196122532d".to_string()];
+        let names = vec!["refs/heads/debug".to_string(),"refs/heads/master".to_string()];
+        let pkt_needed = update_refs(old, new, names, r_path.to_string()).unwrap();
+        assert!(pkt_needed);
+        assert!(fs::metadata(format!("{}/refs/heads/debug",r_path)).is_ok());
+        assert!(fs::metadata(format!("{}/refs/heads/master",r_path)).is_ok());
+        assert_eq!(fs::read_to_string(format!("{}/refs/heads/debug",r_path)).unwrap_or("".to_string()), "7d1665144a3a975c05f1f43902ddaf084e784dbe");
+        assert_eq!(fs::read_to_string(format!("{}/refs/heads/master",r_path)).unwrap_or("".to_string()), "74730d410fcb6603ace96f1dc55ea6196122532d");
+        // caso de borrado de archivo
+        let old = vec!["7d1665144a3a975c05f1f43902ddaf084e784dbe".to_string(),"74730d410fcb6603ace96f1dc55ea6196122532d".to_string()];
+        let new = vec!["0000000000000000000000000000000000000000".to_string(),"0000000000000000000000000000000000000000".to_string()];
+        let names = vec!["refs/heads/debug".to_string(),"refs/heads/master".to_string()];
+        let pkt_needed = update_refs(old, new, names, r_path.to_string()).unwrap();
+        assert!(!pkt_needed);
+        assert!(fs::metadata(format!("{}/refs/heads/debug",r_path)).is_err());
+        assert!(fs::metadata(format!("{}/refs/heads/master",r_path)).is_err());
     }
 }
