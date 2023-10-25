@@ -1,5 +1,6 @@
 extern crate flate2;
 use std::collections::HashSet;
+use std::f32::consts::E;
 use std::fmt::format;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -46,10 +47,10 @@ pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
 fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
 
     let mut buffer = [0; 1024];
-    let mut guardados_id: HashSet<String> = HashSet::new();
-    let mut refs_string :String;
+    let guardados_id: HashSet<String>;
+    let refs_string :String;
     
-    while let Ok(n) = stream.read(&mut buffer) {
+    if let Ok(n) = stream.read(&mut buffer) {
         if n == 0 {
             // La conexión se cerró
             return Ok(());
@@ -62,78 +63,214 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
             Err(_) => {let _ = stream.write(&"Error: no se respeta el formato pkt-line".as_bytes());
             return Ok(())}
         }
-        let _elems = split_n_validate_elems(pkt_line)?;
+        let elems = split_n_validate_elems(pkt_line)?;
         
         // ########## REFERENCE DISCOVERY ##########
         
         (refs_string, guardados_id) = ref_discovery(&r_path)?;
         stream.write(&refs_string.as_bytes())?;
-        // ##########  PACKFILE NEGOTIATION ##########
 
-        let mut reply = "0008NAK\n".to_string();
-        let wants_id: Vec<String> = Vec::new();
-        let haves_id: Vec<String> = Vec::new();
-        loop {
-
-            stream.read(&mut buffer)?;
-            let pkt_line = from_utf8(&buffer).unwrap_or("");
-            if pkt_line == "0000" { // si la primera linea es 0000, el cliente esta al dia y no hay mas que hacer con el
-                return Ok(())
-            }
-            if pkt_line == "0009done\n" { // el cliente cierra el packet-file
-                break;
-            }
-            let (wants_id, haves_id) = wants_n_haves("cadena que envio el cliente".to_string())?;
-            let mut reply = "0008NAK\n".to_string();
-            for want in wants_id.clone() {
-                if !guardados_id.contains(&want) {
-                    reply = format!("Error: not our ref: {}\n",want);
-
-                }
-            }
-            for have in haves_id {
-                if guardados_id.contains(&have) && reply == "0008NAK\n".to_string() {
-                    reply = format!("003aACK {}\n", have.clone());
-                    stream.write(&reply.as_bytes())?;
-                    break
-                }
-            }  
+        // ########## ELECCION DE COMANDO ##########
+        match elems[0] {
+            "gitr-upload-pack" => {gitr_upload_pack(&mut stream, guardados_id, r_path)?;},
+            "gitr-receive-pack" => {gitr_receive_pack(&mut stream, r_path)?;},
+            _ => {stream.write(&"Error: comando git no reconocido".as_bytes())?;}
         }
-        if reply == "0008NAK\n".to_string() {
-            stream.write(&reply.as_bytes())?;
+    }
+    Ok(())
+}
+
+fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_path: String) -> std::io::Result<()>{
+
+    // ##########  PACKFILE NEGOTIATION ##########
+    let (wants_id, haves_id) = packfile_negotiation(stream, guardados_id, r_path.clone())?;
+    
+    // ########## PACKFILE DATA ##########
+    snd_packfile(stream, wants_id,haves_id, r_path)?;
+
+    Ok(())
+}
+
+fn gitr_receive_pack (stream: &mut TcpStream, r_path: String) -> std::io::Result<()> {
+
+    // ##########  REFERENCE UPDATE ##########
+    let mut buffer = [0; 1024];
+    stream.read(&mut buffer)?;
+    let (old,new, names ) = get_changes(&buffer)?;
+    let pkt_needed = update_refs(old, new, names, r_path.clone())?;
+
+    // ########## *PACKFILE DATA ##########
+    let ids: Vec<String> = vec![];
+    if pkt_needed {
+        let (ids, content) = rcv_packfile(stream)?;
+        update_contents(ids, content, r_path.clone())?;
+    } 
+   
+    Ok(())
+}
+
+/// INCOMPLETA -> ERA DEL CLIENTE
+fn _make_push_cert(ids: Vec<String>, r_path: String, host: String) -> std::io::Result<String> {
+    let mut push_cert = String::new();
+    let mut line: &str = "push-cert0\n";
+    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+    line = "certificate version 0.1\n";
+    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+    let mut ident: Vec<&str> = vec!["nombre","mail"];
+    let mut obj: String;
+    for id in ids {
+        obj = get_object(id, r_path.clone())?;
+        if is_commit(obj.clone()) {
+            let div1: Vec<&str> = obj.split("committer ").collect();
+            let div2: Vec<&str> = div1[1].split(">").collect();
+            ident = div2[0].split(" <").collect();
+            break
+        }
+    }
+    let line: &str = &format!("pusher {} {}\n",ident[0],ident[1]);
+    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+    let line: &str = &format!("pushee {}\n",host);
+    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+    // ...
+    // ... ...
+    // ... ... ...
+    Ok("".to_string())
+}
+
+fn is_commit(obj: String) -> bool {
+    let mut lines = obj.lines();
+    let first_line = lines.next().unwrap_or("");
+    if first_line == "tree" {
+        return true
+    }
+    false
+}
+
+fn get_object(id: String, r_path: String) -> std::io::Result<String> {
+    let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
+    let mut archivo = File::open(&format!("{}/{}",dir_path,id.split_at(2).1))?; // si no existe tira error
+    let mut contenido = String::new();
+    archivo.read_to_string(&mut contenido)?;
+    Ok(contenido)
+}
+
+fn update_contents(ids: Vec<String>, content: Vec<String>, r_path: String) -> std::io::Result<()> {
+    let mut i = 0;
+    for id in ids {
+        
+        let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
+        let _ = fs::create_dir(dir_path.clone()); // si ya existe tira error pero no pasa nada
+        let mut archivo = File::create(&format!("{}/{}",dir_path,id.split_at(2).1))?;
+        archivo.write_all(content[i].as_bytes())?;
+        i += 1;
+    }
+    Ok(())
+}
+
+fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<String>, r_path: String) -> std::io::Result<()> {
+    if let Ok(pack_string) = pack_data(wants_id, haves_id, &r_path) {
+        stream.write(&pack_string.as_bytes())?;
+    } else {
+        return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal\n"))
+    }
+    Ok(())
+}
+
+fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>, r_path: String) -> std::io::Result<(Vec<String>, Vec<String>)> {
+    let (mut buffer, mut reply) = ([0; 1024], "0008NAK\n".to_string());
+    let (mut wants_id, mut haves_id): (Vec<String>, Vec<String>) = (Vec::new(), Vec::new());    
+    loop {
+        stream.read(&mut buffer)?;
+        let pkt_line = from_utf8(&buffer).unwrap_or("");
+        if pkt_line == "0000" { // si la primera linea es 0000, el cliente esta al dia y no hay mas que hacer con el
+            return Ok((wants_id, haves_id));
+        } else if pkt_line == "0009done\n" { // el cliente cierra el packet-file
             break;
         }
-            
-        // ########## PACKFILE DATA ##########
-        let pack = pack_data(wants_id, &r_path);
-        if let Ok(pack_string) = pack {
-            stream.write(&pack_string.as_bytes())?;
-        } else {
-            return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal\n"))
+        (wants_id, haves_id) = wants_n_haves("cadena que envio el cliente".to_string())?;
+        for want in wants_id.clone() {
+            if !guardados_id.contains(&want) {
+                reply = format!("Error: not our ref: {}\n",want);
+
+            }
         }
-        
+        for have in haves_id.clone() {
+            if guardados_id.contains(&have) && reply == "0008NAK\n".to_string() {
+                reply = format!("003aACK {}\n", have.clone());
+                stream.write(&reply.as_bytes())?;
+                break
+            }
+        }  
     }
-    Err(Error::new(std::io::ErrorKind::Other, "Error en la conexion"))
+    if reply == "0008NAK\n".to_string() {
+        stream.write(&reply.as_bytes())?;
+    }
+    Ok((wants_id, haves_id))
 }
 
-fn pack_data(wants: Vec<String>, r_path: &String) -> std::io::Result<String> {
-    if wants.len() > 9999 {
-        return Err(Error::new(std::io::ErrorKind::Other, "Error: paquete demasiado grande"))
+fn rcv_packfile(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, Vec<String>)> {
+    let mut buffer: [u8;1024] = [0; 1024];
+    stream.read(&mut buffer)?;
+    Ok((vec![],vec![]))
+}
+
+fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: String) -> std::io::Result<bool> {
+    let nul_obj = "0000000000000000000000000000000000000000";
+    let mut pkt_needed = false;
+    for i in 0..old.len() {
+        let path = r_path.clone() + &names[i];
+        if old[i] == nul_obj { // caso de creacion de archivo
+            let mut new_file = File::create(&path)?;
+            new_file.write_all(new[i].as_bytes())?;
+            pkt_needed = true;
+            continue
+        } else if new[i] == nul_obj { // caso de borrado de archivo
+            fs::remove_file(&path)?;
+            continue
+        } else if old[i] == new[i] { // caso de archivo sin cambios
+            return Err(Error::new(std::io::ErrorKind::Other, "Error: el archivo no cambio")); // no se si es el error correcto
+        } else { // caso de archivo modificado
+            pkt_needed = true;
+            let old_file = fs::File::open(&path)?;
+            let mut old_ref = String::new();
+            BufReader::new(old_file).read_line(&mut old_ref)?;
+            if old_ref == old[i] {
+                let mut new_file = File::create(&path)?;
+                new_file.write_all(new[i].as_bytes())?;
+            } else {
+                return Err(Error::new(std::io::ErrorKind::Other, "Error: nombre de archivo incorrecto"))
+            }
+        }
     }
-    let mut txt = format!("PACK 0002 {}\n",wants.len());
-    // ahora van todos los objetos asi: 
-    // -  n-byte type and length (3-bit type, (n-1)*7+4-bit length)
-    // -  compressed data
+    Ok(pkt_needed)
+}
 
-    // 1. 3-bit type: 1 = OBJ_COMMIT, 2 = OBJ_TREE, 3 = OBJ_BLOB, 4 = OBJ_TAG
-    // 2. (n-1)*7+4-bit length: length of compressed data
-    // 3. compressed data: zlib-compressed content of the object
+fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<String>)> {
+    let changes = from_utf8(&buffer).unwrap_or("");
+    let mut old: Vec<String> = vec![];
+    let mut new: Vec<String> = vec![];
+    let mut names: Vec<String> = vec![];
+    for change in changes.lines() {
+        is_valid_pkt_line(&format!("{}\n",change))?;
+        if change == "0000" {
+            break
+        }
+        let elems: Vec<&str> = change.split_at(4).1.split(" ").collect(); // [old, new, ref-name]
+        if elems.len() != 3 {
+            return Err(Error::new(std::io::ErrorKind::Other, "Error: Negociacion Fallida"))
+        }
+        old.push(elems[0].to_string());
+        new.push(elems[1].to_string());
+        names.push(elems[2].strip_suffix("\n").unwrap_or("").to_string());
+    }
 
+    Ok((old, new, names))
+}
 
+fn pack_data(wants: Vec<String>,haves: Vec<String>, r_path: &String) -> std::io::Result<String> {
+    
     Ok(format!("ToDo"))
 }
-
-
 
 fn wants_n_haves(requests: String) -> std::io::Result<(Vec<String>,Vec<String>)> {
     let mut wants:Vec<String> = Vec::new();
