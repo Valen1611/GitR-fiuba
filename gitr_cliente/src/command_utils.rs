@@ -26,9 +26,11 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
+
+
 pub fn print_tree_data(raw_data: &str){
     let files = raw_data.split("\n").collect::<Vec<&str>>();
-    
+    println!("files: {:?} ", files);
     for object in files {
 
         let file_atributes = object.split(" ").collect::<Vec<&str>>();
@@ -75,11 +77,13 @@ pub fn visit_dirs(dir: &Path) -> Vec<String> {
             if let Ok(entry) = entry {
                 let path = entry.path();
                 if path.is_dir() {
+                    if path.ends_with("gitr") {
+                        continue;
+                    }
                     let mut subfiles = visit_dirs(&path);
                     files.append(&mut subfiles);
                 } else if let Some(path_str) = path.to_str() {
                     files.push(path_str.to_string());
-                    println!("{}", path.display());
                 }
             }
         }
@@ -141,6 +145,14 @@ pub fn create_trees (tree_map:HashMap<String, Vec<String>>, current_dir: String)
     Ok(tree)
 }
 
+/*
+
+src -> commands -> commands.rs
+    -> objects -> blob.rs
+    -> hello.rs
+*/
+
+
 pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); // orden en el que insertamos carpetas
@@ -188,15 +200,19 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let tree_all = create_trees(tree_map, tree_order[0].clone())?;
     let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
     final_tree.save()?;
-    let head = file_manager::get_head();
+    let head = file_manager::get_head()?;
     let commit = Commit::new(final_tree.get_hash(), head.clone(), get_current_username(), get_current_username(), message)?;
     commit.save()?;
     if head == "None"{
-        let _ = file_manager::write_file(String::from("gitr/refs/heads/master"), commit.get_hash());
+        let repo = file_manager::get_current_repo()?;
+        let dir = repo + "/gitr/refs/heads/master";
+        let _ = file_manager::write_file(dir, commit.get_hash())?;
     }else{
-        let path = format!("gitr/{}", head);
-        let _ = file_manager::write_file(path.clone(), commit.get_hash());
-    }
+        let repo = file_manager::get_current_repo()?;
+        let dir = repo + "/gitr/" + &head;
+        let _ = file_manager::write_file(dir, commit.get_hash())?;
+        
+    }   
     Ok(())
 }
 
@@ -210,4 +226,34 @@ pub fn get_current_username() -> String{
     } else{
         String::from("User")
     }
+}
+
+pub fn print_branches()-> Result<(), Box<dyn Error>>{
+    let head = file_manager::get_head()?;
+    let head_vec = head.split("/").collect::<Vec<&str>>();
+    let head = head_vec[head_vec.len()-1];
+    let branches = file_manager::get_branches()?;
+        for branch in branches{
+            if head == branch{
+                let index_branch = format!("* {}", branch);
+                println!("{}",index_branch);
+                continue;
+            }
+            println!("{}", branch);
+        }
+    Ok(())
+}
+
+pub fn branch_exists(branch: String) -> bool{
+    let branches = file_manager::get_branches();
+    let branches = match branches{
+        Ok(branches) => branches,
+        Err(_) => return false,
+    };
+    for branch_name in branches{
+        if branch_name == branch{
+            return true;
+        }
+    }
+    false
 }

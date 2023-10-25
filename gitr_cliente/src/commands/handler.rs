@@ -1,4 +1,4 @@
- use std::error::Error;
+use std::error::Error;
 
 
 use crate::logger;
@@ -24,8 +24,8 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
         "status" => commands::status(flags),
         "add" => commands::add(flags)?,
         "rm" => commands::rm(flags)?,
-        "commit" => commands::commit(flags),
-        "checkout" => commands::checkout(flags),
+        "commit" => commands::commit(flags)?,
+        "checkout" => commands::checkout(flags)?,
         "log" => commands::log(flags),
         "clone" => commands::clone(flags),
         "fetch" => commands::fetch(flags),
@@ -33,7 +33,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
         "remote" =>commands::remote(flags),
         "pull" => commands::pull(flags),
         "push" => commands::push(flags),
-        "branch" =>commands::branch(flags),
+        "branch" =>commands::branch(flags)?,
         "ls-files" => commands::ls_files(flags),
         "q" => return Ok(()),
         "l" => logger::log(flags)?,
