@@ -1,6 +1,8 @@
 use std::error::Error;
 use std::fmt;
 
+
+
 #[derive(Debug)]
 pub enum GitrError{
     DirectoryCreationError,

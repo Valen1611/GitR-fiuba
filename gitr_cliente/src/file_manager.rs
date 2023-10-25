@@ -56,6 +56,7 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
     Ok(())
 }
 /// Reads a file and returns the content as String
+/// On Error returns a FileReadError
 pub fn read_file(path: String) -> Result<String, GitrError> {
     match fs::read_to_string(path.clone()) {
         Ok(data) => Ok(data),
@@ -71,15 +72,17 @@ pub fn get_current_repo() -> Result<String, GitrError>{
     Ok(current_repo)
 }
 
+/// Creates a directory in the current path
+/// On Error returns a AlreadyInitialized
 fn create_directory(path: &String)->Result<(), GitrError>{
     match fs::create_dir(path){
         Ok(_) => Ok(()),
         Err(_) => {
-            Err(GitrError::DirectoryCreationError)}
+            Err(GitrError::AlreadyInitialized)}
     }
 
 }
-
+///receive compressed raw data from a file with his hash and write it in the objects folder
 pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     let folder_name = hashed_name[0..2].to_string();
     let file_name = hashed_name[2..].to_string();
@@ -413,21 +416,6 @@ pub fn delete_all_files()-> Result<(), Box<dyn Error>>{
 
 
 pub fn update_current_repo(dir_name: &String) -> Result<(), GitrError> {
-    if let Ok(entries) = std::fs::read_dir(".head_repo") {
-        let dir_name_string = dir_name.to_string();
-        for entry in entries {
-            if let Ok(entry) = entry {
-                let path = entry.path();
-                if let Some(file_name) = path.file_name().as_deref() {
-                    let path_string = file_name.to_string_lossy().to_string();
-                    if path_string == dir_name_string {
-                        return Err(GitrError::AlreadyInitialized);
-                    }
-                }
-            }
-        }
-    }
-
     write_file(".head_repo".to_string(), dir_name.to_string())?;
 
     Ok(())

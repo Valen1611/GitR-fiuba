@@ -115,9 +115,9 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
 
 }
 
-pub fn init(flags: Vec<String>) -> Result<(), Box<dyn Error>> {
-    file_manager::update_current_repo(&flags[0])?;
+pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
     file_manager::init_repository(&flags[0])?;
+    file_manager::update_current_repo(&flags[0])?;
     println!("Initialized empty Gitr repository");
     Ok(())
 }
