@@ -141,6 +141,11 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
         let repo = file_manager::get_current_repo()?;
         let files = visit_dirs(&std::path::Path::new(&repo));
         for file in files{
+            //if the file containts gitr continue
+            println!("{}", file);
+            if file.contains("gitr"){
+                continue
+            }
             let raw_data = fs::read_to_string(file.clone())?;
             let blob = Blob::new(raw_data)?;
             blob.save()?;
@@ -209,7 +214,8 @@ pub fn checkout(flags: Vec<String>)->Result<(), Box<dyn Error>> {
         }
         let current_commit = file_manager::get_commit(flags[0].clone())?;
         let _ = file_manager::update_working_directory(current_commit)?;
-        let _ = file_manager::update_head(&flags[0])?;
+        let path_head = format!("refs/heads/{}", flags[0]);
+        let _ = file_manager::update_head(&path_head)?;
     }
     Ok(())
 }
@@ -287,8 +293,10 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
             return Ok(())
         }
         let current_commit = file_manager::get_current_commit()?;
+        //println!("current commit: {}", current_commit);
         let repo = file_manager::get_current_repo()?;
-        let _ = file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo, flags[0]), current_commit);
+        println!("vamos a escribir {} en {}",current_commit ,  format!("{}/gitr/refs/heads/{}", repo, flags[0]));
+        let _ = file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo, flags[0]), current_commit)?;
     }
     Ok(())
 }

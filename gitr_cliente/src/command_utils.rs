@@ -6,7 +6,6 @@ use sha1::{Sha1, Digest};
 
 use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}};
 
-pub static mut REPO_NAME: String = String::new();
 
 
 pub fn sha1hashing(input: String) -> Vec<u8> {
@@ -78,11 +77,13 @@ pub fn visit_dirs(dir: &Path) -> Vec<String> {
             if let Ok(entry) = entry {
                 let path = entry.path();
                 if path.is_dir() {
+                    if path.ends_with("gitr") {
+                        continue;
+                    }
                     let mut subfiles = visit_dirs(&path);
                     files.append(&mut subfiles);
                 } else if let Some(path_str) = path.to_str() {
                     files.push(path_str.to_string());
-                    println!("{}", path.display());
                 }
             }
         }
@@ -207,8 +208,11 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
         let dir = repo + "/gitr/refs/heads/master";
         let _ = file_manager::write_file(dir, commit.get_hash())?;
     }else{
-        let _ = file_manager::write_file(head, commit.get_hash())?;
-    }
+        let repo = file_manager::get_current_repo()?;
+        let dir = repo + "/gitr/" + &head;
+        let _ = file_manager::write_file(dir, commit.get_hash())?;
+        
+    }   
     Ok(())
 }
 
