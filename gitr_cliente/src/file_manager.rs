@@ -1,11 +1,12 @@
 use std::error::Error;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
 use std::fs;
 use std::path::Path;
 use std::thread::current;
 use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
+use crate::logger;
 use crate::objects::blob::{TreeEntry, Blob};
 use flate2::read::ZlibDecoder;
 use flate2::write::{ZlibEncoder, self};
@@ -14,8 +15,9 @@ use flate2::Compression;
 
 /// A diferencia de write_file, esta funcion recibe un vector de bytes
 /// como data, y lo escribe en el archivo de path.
-
 pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
+    let log_msg = format!("writing data to: {}", path);
+    logger::log_file_operation(log_msg);
     let mut file: File = match File::create(path) {
         Ok(file) => file,
         Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
@@ -29,6 +31,8 @@ pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
 }
 
 fn read_compressed_file(path: &str) -> std::io::Result<Vec<u8>> {
+    let log_msg = format!("reading data from: {}", path);
+    logger::log_file_operation(log_msg);
     let file = File::open(path)?;
     let mut decoder = ZlibDecoder::new(file);
     let mut buffer = Vec::new();
@@ -60,6 +64,7 @@ fn create_directory(path: &String)->Result<(), GitrError>{
         Err(_) => {
             Err(GitrError::DirectoryCreationError)}
     }
+
 }
 
 pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
@@ -68,7 +73,7 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     let repo = get_current_repo()?;
     let dir = repo + "/gitr/objects/";
     let folder_dir = dir.clone() + &folder_name;
-    
+
     if !fs::metadata(&folder_dir).is_ok() {
         create_directory(&folder_dir)?;
     }
@@ -78,8 +83,18 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     Ok(())
 }
 
+pub fn append_to_file(path: String, text: String) -> Result<(), Box<dyn Error>> {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(path)?;
+    writeln!(file, "{}", text)?;
+    Ok(())
+}
 
 pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
+    let log_msg = format!("writing data to: {}", path);
+    logger::log_file_operation(log_msg); 
     let mut archivo = match File::create(&path) {
         Ok(archivo) => archivo,
         Err(_) => return Err(GitrError::FileCreationError(path)),
@@ -92,6 +107,9 @@ pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
 }
 
 pub fn read_object(object: &String) -> Result<String, GitrError>{
+    if object.len() < 3{
+        return Err(GitrError::ObjectNotFound(object.clone()));
+    }
     let folder_name = object[0..2].to_string();
     let file_name = object[2..].to_string();
 
@@ -101,10 +119,10 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name +  "/" + &file_name;
     if !fs::metadata(&folder_dir).is_ok(){
-        return Err(GitrError::ObjectNotFound);
+        return Err(GitrError::ObjectNotFound(object.clone()));
     }
     if !fs::metadata(&path).is_ok(){
-        return Err(GitrError::ObjectNotFound);
+        return Err(GitrError::ObjectNotFound(object.clone()));
     }
     let data = read_compressed_file(&path);
     let data = match data{
@@ -150,8 +168,9 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
         for line in index.clone().lines(){
             let attributes = line.split(" ").collect::<Vec<&str>>();
 
-
             if attributes[3] == path{
+                let log_msg = format!("adding {} to index", path);
+                logger::log_action(log_msg);
                 index = index.replace(line, &new_blob);
                 overwrited = true;
                 break;
@@ -193,6 +212,7 @@ pub fn update_head(head: &String) -> Result<(), GitrError>{
     let _ = write_file(String::from(path), format!("ref: {}", head))?;
     Ok(())
 }
+
 
 pub fn get_branches()-> Result<Vec<String>, Box<dyn Error>>{
     let mut branches: Vec<String> = Vec::new();

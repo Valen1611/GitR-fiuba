@@ -1,12 +1,9 @@
-use std::{io::prelude::*, fs::{File, self}, error::Error};
-use flate2::Compression;
-use flate2::write::ZlibEncoder;
-use crate::{objects::blob::Blob, file_manager};
+use std::{fs::{self}, error::Error};
+
+use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
 use crate::command_utils::*;
 
 
-
-use sha1::{Sha1, Digest};
 /*
     NOTA: Puede que no todos los comandos requieran de flags,
     si ya esta hecha la funcion y no se uso, se puede borrar
@@ -69,11 +66,11 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
 // committer ID email date
 
 // user comment
-pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
+pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
     if flags.len() != 2 {
-        println!("Error: invalid number of arguments");
-        return Ok(())
-    } 
+        //return Err(GitrError::InvalidNumberOfArguments(2, flags.len()));
+        return Err(GitrError::ObjectNotFound("CAMBIAR ESTE".into()))
+    }
     let res_output = file_manager::read_object(&flags[1])?;
     let object_type = res_output.split(" ").collect::<Vec<&str>>()[0];
     let _size = res_output.split(" ").collect::<Vec<&str>>()[1];
@@ -87,7 +84,6 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),Box<dyn Error>> {
         println!("{}", size);
     }
     if flags[0] == "-p"{
-        
         let raw_data_index = match res_output.find("\0") {
             Some(index) => index,
             None => {
@@ -128,6 +124,15 @@ pub fn init(flags: Vec<String>) -> Result<(), Box<dyn Error>> {
 
 pub fn status(flags: Vec<String>) {
     println!("status");
+}
+
+pub fn create_blob_from_file(file_path: &String) -> Result<(), Box<dyn Error>> {
+    let raw_data = fs::read_to_string(file_path)?;
+    let blob = Blob::new(raw_data)?;
+    blob.save()?;
+    let hash = blob.get_hash();
+    file_manager::add_to_index(file_path, &hash)?;
+    Ok(())
 }
 
 pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {

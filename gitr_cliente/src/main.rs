@@ -6,7 +6,7 @@ mod file_manager;
 mod gitr_errors;
 use std::io::{stdin,stdout,Write};
 mod command_utils;
-
+mod logger;
 
 
 fn get_input() -> Result<String, Box<dyn Error>> {
@@ -39,7 +39,9 @@ fn main() {
         // argv = ["command", "flag1", "flag2", ...]
         match commands::handler::command_handler(argv) {
             Ok(_) => println!("Handler Success"),
-            Err(e) => println!("Handler Error: {}", e),
+            Err(e) => {
+                logger::log_error(e.to_string());
+                println!("Handler Error: {}", e);}
         };
         input = String::new();
     }
