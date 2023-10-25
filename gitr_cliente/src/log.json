@@ -42,3 +42,26 @@
 {"type": "Error","timestamp": "22-10-2023 22:27:35","message": "No se encontro el objeto a"}
 {"type": "Action","timestamp": "22-10-2023 22:27:37","message": "calling c with flags: []"}
 {"type": "Error","timestamp": "22-10-2023 22:27:37","message": "Invalid number of arguments. Expected 2, got 0"}
+{"type": "Action","timestamp": "25-10-2023 16:46:39","message": "calling log with flags: ["main.rs"]"}{"type": "Action","timestamp": "25-10-2023 16:46:39","message": "calling comando_no_existe with flags: ["main.rs"]"}
+{"type": "FileOperation","timestamp": "25-10-2023 16:46:39","message": "writing data to: test3/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+
+{"type": "FileOperation","timestamp": "25-10-2023 16:46:39","message": "writing data to: test3/gitr/objects/57/dfba7fb86d4531a8e7926c26cfe9f92f1f2ebb"}
+{"type": "Action","timestamp": "25-10-2023 16:47:11","message": "calling comando_no_existe with flags: ["main.rs"]"}{"type": "Action","timestamp": "25-10-2023 16:47:11","message": "calling log with flags: ["main.rs"]"}
+
+{"type": "FileOperation","timestamp": "25-10-2023 16:47:11","message": "writing data to: test3/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "25-10-2023 16:47:11","message": "writing data to: test3/gitr/objects/57/dfba7fb86d4531a8e7926c26cfe9f92f1f2ebb"}
+{"type": "Action","timestamp": "25-10-2023 16:54:32","message": "calling comando_no_existe with flags: ["main.rs"]"}{"type": "Action","timestamp": "25-10-2023 16:54:32","message": "calling log with flags: ["main.rs"]"}
+
+{"type": "FileOperation","timestamp": "25-10-2023 16:54:32","message": "writing data to: test3/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "25-10-2023 16:54:32","message": "writing data to: test3/gitr/objects/57/dfba7fb86d4531a8e7926c26cfe9f92f1f2ebb"}
+{"type": "Action","timestamp": "25-10-2023 16:54:58","message": "calling log with flags: ["main.rs"]"}{"type": "Action","timestamp": "25-10-2023 16:54:58","message": "calling comando_no_existe with flags: ["main.rs"]"}
+
+{"type": "FileOperation","timestamp": "25-10-2023 16:54:58","message": "writing data to: test3/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "25-10-2023 16:54:58","message": "writing data to: test3/gitr/objects/57/dfba7fb86d4531a8e7926c26cfe9f92f1f2ebb"}
+{"type": "Action","timestamp": "25-10-2023 16:56:26","message": "calling comando_no_existe with flags: ["main.rs"]"}{"type": "Action","timestamp": "25-10-2023 16:56:26","message": "calling log with flags: ["main.rs"]"}
+
+{"type": "FileOperation","timestamp": "25-10-2023 16:56:26","message": "writing data to: test3/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "25-10-2023 16:56:26","message": "writing data to: test3/gitr/objects/57/dfba7fb86d4531a8e7926c26cfe9f92f1f2ebb"}
+{"type": "FileOperation","timestamp": "25-10-2023 16:57:27","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "25-10-2023 16:57:35","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "25-10-2023 16:58:37","message": "writing data to: .head_repo"}

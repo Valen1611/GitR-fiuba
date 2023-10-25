@@ -4,7 +4,7 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 
-use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}};
+use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
 
@@ -15,10 +15,16 @@ pub fn sha1hashing(input: String) -> Vec<u8> {
     result.to_vec()
 }
 
-pub fn flate2compress(input: String) -> Result<Vec<u8>, Box<dyn std::error::Error>>{
+pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
     let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
-    encoder.write_all(input.as_bytes())?;
-    let compressed_bytes = encoder.finish()?;
+    match encoder.write_all(input.as_bytes()) {
+        Ok(_) => {},
+        Err(e) => return Err(GitrError::CompressionError),
+    };
+    let compressed_bytes = match encoder.finish() {
+        Ok(bytes) => bytes,
+        Err(e) => return Err(GitrError::CompressionError),
+    };
     Ok(compressed_bytes)
 }
 

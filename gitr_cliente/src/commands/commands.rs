@@ -30,7 +30,7 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
             write = true;
         }
     }
-    let raw_data = fs::read_to_string(file_path)?;
+    let raw_data = file_manager::read_file(file_path)?;
     
     let blob = Blob::new(raw_data)?;
     // cuando haga falta, aca con un switch podemos 
@@ -127,7 +127,7 @@ pub fn status(flags: Vec<String>) {
 }
 
 pub fn create_blob_from_file(file_path: &String) -> Result<(), Box<dyn Error>> {
-    let raw_data = fs::read_to_string(file_path)?;
+    let raw_data = file_manager::read_file(file_path.to_string())?;
     let blob = Blob::new(raw_data)?;
     blob.save()?;
     let hash = blob.get_hash();
@@ -312,4 +312,5 @@ pub fn ls_files(flags: Vec<String>) {
         println!("{}", res_output);
     }
 }
+
 

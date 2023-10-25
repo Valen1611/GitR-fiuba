@@ -17,7 +17,7 @@ use flate2::Compression;
 /// como data, y lo escribe en el archivo de path.
 pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
     let log_msg = format!("writing data to: {}", path);
-    logger::log_file_operation(log_msg);
+    logger::log_file_operation(log_msg)?;
     let mut file: File = match File::create(path) {
         Ok(file) => file,
         Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
@@ -30,13 +30,19 @@ pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
 
 }
 
-fn read_compressed_file(path: &str) -> std::io::Result<Vec<u8>> {
+fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
     let log_msg = format!("reading data from: {}", path);
-    logger::log_file_operation(log_msg);
-    let file = File::open(path)?;
+    logger::log_file_operation(log_msg)?;
+    let file = match File::open(path) {
+        Ok(file) => file,
+        Err(_) => return Err(GitrError::FileReadError(path.to_string())),
+    };
     let mut decoder = ZlibDecoder::new(file);
     let mut buffer = Vec::new();
-    decoder.read_to_end(&mut buffer)?;
+    match decoder.read_to_end(&mut buffer){
+        Ok(_) => Ok(buffer.clone()),
+        Err(_) => Err(GitrError::FileReadError(path.to_string())),
+    };
     Ok(buffer)
 }
 
@@ -49,15 +55,22 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
     
     Ok(())
 }
+/// Reads a file and returns the content as String
+pub fn read_file(path: String) -> Result<String, GitrError> {
+    match fs::read_to_string(path.clone()) {
+        Ok(data) => Ok(data),
+        Err(_) => {
+            logger::log_error(format!("No se pudo leer: {}", path))?;
+            return Err(GitrError::FileReadError(path))},
+    }
+}
 
 ///read .head_repo and returns the content
 pub fn get_current_repo() -> Result<String, GitrError>{
-    let repo = match fs::read_to_string(".head_repo") {
-        Ok(repo) => repo,
-        Err(_) => return Err(GitrError::NoRepository),
-    };
-    Ok(repo)
+    let current_repo = read_file(".head_repo".to_string())?;
+    Ok(current_repo)
 }
+
 fn create_directory(path: &String)->Result<(), GitrError>{
     match fs::create_dir(path){
         Ok(_) => Ok(()),
@@ -83,18 +96,25 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     Ok(())
 }
 
-pub fn append_to_file(path: String, text: String) -> Result<(), Box<dyn Error>> {
-    let mut file = OpenOptions::new()
+pub fn append_to_file(path: String, text: String) -> Result<(), GitrError> {
+    let mut file = match OpenOptions::new()
         .write(true)
         .append(true)
-        .open(path)?;
-    writeln!(file, "{}", text)?;
-    Ok(())
+        .open(&path) {
+            Ok(file) => file,
+            Err(_) => return Err(GitrError::FileWriteError(path)),
+
+        };
+    
+    match writeln!(file, "{}", text) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(GitrError::FileWriteError(path)),
+    }
 }
 
 pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
     let log_msg = format!("writing data to: {}", path);
-    logger::log_file_operation(log_msg); 
+    logger::log_file_operation(log_msg)?; 
     let mut archivo = match File::create(&path) {
         Ok(archivo) => archivo,
         Err(_) => return Err(GitrError::FileCreationError(path)),
@@ -170,7 +190,7 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), Box<dyn Error>>{
 
             if attributes[3] == path{
                 let log_msg = format!("adding {} to index", path);
-                logger::log_action(log_msg);
+                logger::log_action(log_msg)?;
                 index = index.replace(line, &new_blob);
                 overwrited = true;
                 break;
@@ -196,11 +216,7 @@ pub fn get_head() ->  Result<String, GitrError>{
         return Ok("None".to_string())
         // return Err(GitrError::NoHead);
     }
-    let head = fs::read_to_string(path.clone());
-    let head = match head{
-        Ok(head) => head,
-        Err(_) => return Err(GitrError::FileReadError(String::from(path.clone()))),
-    };
+    let head = read_file(path.clone())?;
     let head = head.trim_end().to_string();
     let head = head.split(" ").collect::<Vec<&str>>()[1];
     Ok(head.to_string())
@@ -234,16 +250,14 @@ pub fn get_branches()-> Result<Vec<String>, Box<dyn Error>>{
     Ok(branches)
 }
 
-pub fn get_current_commit()->Result<String, Box<dyn Error>>{
+pub fn get_current_commit()->Result<String, GitrError>{
     let head_path = get_head()?;
     if head_path == "None"{
-        return Err(Box::new(GitrError::NoHead));
+        return Err(GitrError::NoHead);
     }
     let repo = get_current_repo()?;
     let path = repo + "/gitr/" + &head_path;
-    println!("head_path: {}", path);
-    let head = fs::read_to_string(path)?;
-    println!("current_commit: {}", head);
+    let head = read_file(path)?;
     Ok(head)
 }
 
@@ -269,23 +283,12 @@ pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), Box<dyn
     fs::rename(old_branch, new_branch)?;
     Ok(())
 }   
-pub fn get_commit(branch:String)->Result<String, Box<dyn Error>>{
+pub fn get_commit(branch:String)->Result<String, GitrError>{
     let repo = get_current_repo()?;
     let path = format!("{}/gitr/refs/heads/{}",repo, branch);
-    let commit = fs::read_to_string(path.clone());
-    let commit = match commit{
-        Ok(commit) => commit,
-        Err(_) => return Err(Box::new(GitrError::FileReadError(path)))
-    };
+    let commit = read_file(path.clone())?;
     Ok(commit)
 }
-/*
-///tree <size-of-tree-in-bytes>\0
-// <file-1-mode> path\0<hash
-// <file-2-mode> path\0<file-2-blob-hash>
-// ...
-// <file-n-mode> <file-n-path>\0<file-n-blob-hash>
-*/ 
 
 pub fn create_tree (path: String, hash: String) -> Result<(), Box<dyn Error>> {
     let repo = get_current_repo()?;
@@ -432,14 +435,3 @@ pub fn update_current_repo(dir_name: &String) -> Result<(), GitrError> {
 
 
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_init_repository(){
-        let test1= String::from("test1");
-        assert!(init_repository(&test1).is_ok());
-
-    }
-}

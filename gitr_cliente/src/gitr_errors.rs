@@ -16,6 +16,8 @@ pub enum GitrError{
     AlreadyInitialized,
     NoRepository,
 
+    LogError,
+    CompressionError,
 }
 
 impl fmt::Display for GitrError{
@@ -26,11 +28,12 @@ impl fmt::Display for GitrError{
             Self::FileCreationError(path) => write!(f, "ERROR: No se pudo crear el archivo {}", path),
             Self::FileWriteError(path)=>write!(f, "ERROR: No se pudo escribir el archivo {}", path),
             Self::ObjectNotFound(obj) => write!(f, "ERROR: No se encontro el objeto"),
-            Self::FileReadError(path) => write!(f, "ERROR: No se pudo leer el archivo {}", path),
+            Self::FileReadError(path) => write!(f, "No se pudo leer el archivo {}", path),
             Self::NoHead => write!(f, "ERROR: No se encontro HEAD"),
             Self::AlreadyInitialized => write!(f, "ERROR: El repositorio ya esta inicializado"),
             Self::NoRepository => write!(f, "ERROR: No se encontro el repositorio"),
-
+            Self::LogError => write!(f, "ERROR: No se pudo escribir en el log"),
+            Self::CompressionError => write!(f, "No se pudo comprimir el archivo"),
     }
 }
 }

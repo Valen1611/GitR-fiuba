@@ -1,5 +1,5 @@
 use std::{mem, error::Error};
-
+use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing};
 
 pub struct Commit{
@@ -13,7 +13,7 @@ pub struct Commit{
 }
 
 impl Commit{
-    pub fn new(tree: String, parent: String, author: String, committer: String, message: String) -> Result<Self, Box<dyn Error>>{
+    pub fn new(tree: String, parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
         let init = format!("commit {}\0",mem::size_of::<Self>());
         format_data.push_str(&init);
@@ -31,7 +31,7 @@ impl Commit{
 
     }
 
-    pub fn save(&self) -> Result<(), Box<dyn Error>>{
+    pub fn save(&self) -> Result<(), GitrError>{
         crate::file_manager::write_object(self.data.clone(), self.hash.clone())?;
         Ok(())
     }
