@@ -20,7 +20,7 @@ fn main(){
 
     while bytes_read != 0{
         let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
-        println!("String recibido: {}", received_data);
+        println!("String recibido: \n {}", received_data);
         if received_data == "0000"{
             println!("corto por recibir 0000");
             break;
@@ -30,7 +30,6 @@ fn main(){
     }
 
     println!("ok pasó el git-upload-pack, vemos el want");
-
 
     let _ =socket.write("0032want cf6335a864bda2ee027ea7083a72d10e32921b15\n00000009done\n".as_bytes());
     print!("ok mando want\n");
@@ -47,8 +46,4 @@ fn main(){
     let received_data = String::from_utf8_lossy(&buffer);
     println!("String recibido: --{:?}--", buffer);
     pack_file::new_from(&mut buffer[..]).unwrap();
-    //println!("No panickeo porque recibió un PACK");
-    // descomprimir_bruto(&buffer);
-    
-
 }
