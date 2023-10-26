@@ -1,5 +1,6 @@
 extern crate flate2;
 use flate2::Decompress;
+use sha1::digest::typenum::Length;
 //Info util:
 //El packfile tiene varios chunks de datos, algunos codificados en UTF8 (leibles con rust), otros comprimidos con ZLib.
 //El packfile trae un header con información en UTF8, luego hay miniheaders para cada objeto, la info comprimida y un checksum.
@@ -8,7 +9,7 @@ use flate2::Decompress;
 //Tambien se me ocurre que podemos usar esta misma estructura para inicializar un pack file para enviarlo por el socket.
 //A priori: se reciben 4 bytes de la signature: Tiene que ser PACK sino tira error.
 //Luego cae el numero de versión: Son 4 bytes
-pub struct pack_file{
+pub struct PackFile{
 
 }
 
@@ -23,7 +24,7 @@ fn decode(input: &[u8]) -> Result<([u8;256],u64), std::io::Error> {
 
 fn verify_header(header_slice: &[u8])->Result<(),String>{
     let str_received = String::from_utf8_lossy(header_slice);
-    if (str_received != "PACK"){
+    if str_received != "PACK"{
         return Err("Signature incorrect: is not PACK".to_string());
     }
     Ok(())
@@ -119,7 +120,6 @@ fn extract_head_hash(head_slice: &str)->String{
 
 fn extract_hash_and_ref(ref_slice: &str)->(String,String){
     let split = ref_slice.split(' ').collect::<Vec<&str>>();
-    println!("Split: {:?}", split);
     let hash = split[0];
     let reference = split[1];
     (hash.to_string().split_off(4), reference.to_string())
@@ -128,10 +128,8 @@ fn extract_hash_and_ref(ref_slice: &str)->(String,String){
 pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>,String>{
     let mut references: Vec<(String,String)> = vec![];
     let iter_refs: Vec<&str> = received_data.split('\n').collect();
-    println!("{:?}", iter_refs);
     //Extraigo el primer hash al que apunta HEAD
     let head_hash = extract_head_hash(iter_refs[0]);
-    println!("Llegué al discover ref {}",head_hash);
     references.push((head_hash,"HEAD".to_string()));
     
     for refs in &iter_refs[1..]{
@@ -140,18 +138,29 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
         }
         references.push(extract_hash_and_ref(refs));
     }
-    
-
+    println!("Pares hash - ref{:?}", references);
     Ok(references)
 }
 
-impl pack_file{
-    pub fn new_from(buffer: &mut[u8])->Result<pack_file, String>{
+fn assemble_want_message(references: &Vec<(String,String)>)->Result<String,String>{
+    let mut want_message = String::new();
+    for refer in references{
+        let length_hexa = format!("{:04X}",8 + refer.0.len() + 2);
+        println!("Para el hash {} el largo del mensaje es {}", refer.0,length_hexa);
+        want_message = length_hexa + "want " + &refer.0 + "\n";
+    }
+    want_message = want_message + "00000009done\n";
+    println!("{:?}", want_message);
+    Ok(want_message)
+}
+
+impl PackFile{
+    pub fn new_from(buffer: &mut[u8])->Result<PackFile, String>{
         verify_header(&buffer[..=3])?;
         let _version = extract_version(&buffer[4..=7])?;
         let _objects = read_pack_file(buffer);
 
-        Ok(pack_file {  })
+        Ok(PackFile {  })
     }
 }
 
@@ -171,7 +180,7 @@ mod tests{
     #[test]
     fn test00_receiveing_wrong_signature_throws_error(){
         let mut buffer= [(13),(14),(23),(44)];
-        assert!(pack_file::new_from(&mut buffer).is_err());
+        assert!(PackFile::new_from(&mut buffer).is_err());
     }
 
     #[test]
@@ -190,7 +199,32 @@ mod tests{
         let mut _bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         
-        let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string());
-        println!("References: {:?}", references);   
+        let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
+        println!("References: {:?}", references);
+    }
+    
+    #[test]
+    fn test03_hago_el_want_y_decodeo_los_objetos(){
+        //let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
+        //socket.write(assemble_want_message(&references).unwrap().as_bytes()).unwrap();
+        let mut socket = TcpStream::connect("localhost:9418").unwrap();
+        let _ =socket.write("003cgit-upload-pack /mi-repo\0host=localhost:9418\0\0version=1\0".as_bytes());
+        println!("Envío git-upload-pack al daemon");
+
+        let mut buffer = [0;1024];
+        let mut _bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        
+        let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
+        println!("References: {:?}", references);
+        while bytes_read != 0{
+            let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        }
+        println!("Vacié el socket");
+        let mut buffer = [0;1024];
+        
+        let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        println!("Recibido: {}",String::from_utf8_lossy(&buffer));
+
     }
 }

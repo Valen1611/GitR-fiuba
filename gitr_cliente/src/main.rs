@@ -45,5 +45,5 @@ fn main(){
     println!("Leo {} bytes por el socket",bytes_read);
     let received_data = String::from_utf8_lossy(&buffer);
     println!("String recibido: --{:?}--", buffer);
-    pack_file::new_from(&mut buffer[..]).unwrap();
+    PackFile::new_from(&mut buffer[..]).unwrap();
 }
