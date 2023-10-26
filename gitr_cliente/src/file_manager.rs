@@ -4,7 +4,7 @@ use std::io::prelude::*;
 use std::fs;
 use std::path::Path;
 use std::thread::current;
-use crate::command_utils::flate2compress;
+use crate::command_utils::{flate2compress, print_commit_data};
 use crate::gitr_errors::GitrError;
 use crate::logger;
 use crate::objects::blob::{TreeEntry, Blob};
@@ -422,4 +422,25 @@ pub fn update_current_repo(dir_name: &String) -> Result<(), GitrError> {
 }
 
 
+pub fn print_commit_log(quantity: String)-> Result<(), GitrError>{
+    let mut current_commit = get_current_commit()?;
+    let limit = match quantity.parse::<i32>(){
+        Ok(quantity) => quantity,
+        Err(_) => return Err(GitrError::InvalidArgumentError),
+    };
+    let mut counter = 0;
+    loop{
+        counter += 1;
+        let commit = read_object(&current_commit)?;
+        print_commit_data(&commit);
+        println!("\n");
+        let commit = commit.split("\n").collect::<Vec<&str>>();
+        let parent = commit[1].split(" ").collect::<Vec<&str>>()[1];
+        if parent == "None" || counter == limit{
+            break;
+        }
+        current_commit = parent.to_string();
+    }
 
+    Ok(())
+}

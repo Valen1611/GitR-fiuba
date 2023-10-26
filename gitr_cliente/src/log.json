@@ -107,3 +107,300 @@
 {"type": "FileOperation","timestamp": "25-10-2023 17:46:14","message": "writing data to: .head_repo"}
 {"type": "FileOperation","timestamp": "25-10-2023 17:46:14","message": "writing data to: .head_repo"}
 {"type": "FileOperation","timestamp": "25-10-2023 17:46:14","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "26-10-2023 01:10:36","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:10:36","message": "writing data to: test_init_exists/gitr/HEAD"}
+{"type": "Error","timestamp": "26-10-2023 01:10:36","message": "ERROR: No se encontro HEAD"}
+{"type": "Action","timestamp": "26-10-2023 01:11:02","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:11:02","message": "reading data from: test3/gitr/objects/5c/362570c017f87ba2ea2475115f22f12482c58a"}
+{"type": "Error","timestamp": "26-10-2023 01:11:02","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:12:15","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:12:15","message": "reading data from: test3/gitr/objects/5c/362570c017f87ba2ea2475115f22f12482c58a"}
+{"type": "Error","timestamp": "26-10-2023 01:12:15","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:12:52","message": "calling c with flags: ["-p", "5c362570c017f87ba2ea2475115f22f12482c58a"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:12:52","message": "reading data from: test3/gitr/objects/5c/362570c017f87ba2ea2475115f22f12482c58a"}
+{"type": "Action","timestamp": "26-10-2023 01:16:58","message": "calling init with flags: ["test_log"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:16:58","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "26-10-2023 01:17:42","message": "calling git with flags: ["add", "."]"}
+{"type": "Error","timestamp": "26-10-2023 01:17:42","message": "invalid command: git"}
+{"type": "Action","timestamp": "26-10-2023 01:17:44","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:44","message": "writing data to: test_log/gitr/objects/aa/41844e2e63a6675c37f74e4ee11a7e985b32dc"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:44","message": "writing data to: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:44","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:17:50","message": "calling commit with flags: ["-m", "primero"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:50","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:50","message": "writing data to: test_log/gitr/objects/9a/bce47013fd9a886123a9e374f8d43f57d9de99"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:50","message": "writing data to: test_log/gitr/objects/0f/ab208444bf439ef2a92ebc2f479e83cfe7609b"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:50","message": "writing data to: test_log/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:50","message": "writing data to: test_log/gitr/objects/2c/87d218732af80914d133dbe7f7cae91ab31282"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:17:50","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:18:20","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:20","message": "writing data to: test_log/gitr/objects/ca/6f83bf25612899a9930bca8ed5a9162ca870f2"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:20","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:18:20","message": "adding test_log/hello.rs to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:20","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:18:23","message": "calling commit with flags: ["-m", "segundo"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:23","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:23","message": "writing data to: test_log/gitr/objects/67/5ddc95ca0af74353909acaf921c5a1fc394429"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:23","message": "writing data to: test_log/gitr/objects/b7/0ff5e95a1ece4ce249254d88b7ab3459934ae5"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:23","message": "writing data to: test_log/gitr/objects/62/65b335865af5a3682e619d7c772e41d6e096d6"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:23","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:18:34","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:34","message": "writing data to: test_log/gitr/objects/16/c4f44a803099e266659335b6ac2a7e3d43e2f4"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:34","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:18:34","message": "adding test_log/hello.rs to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:34","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:18:37","message": "calling commit with flags: ["-m", "tercero"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:37","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:37","message": "writing data to: test_log/gitr/objects/98/2d4db1207680f8dfe2c208e112f328dc7c2592"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:37","message": "writing data to: test_log/gitr/objects/05/bab6fc04be6fc14e5905e74bcb898f322a6365"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:37","message": "writing data to: test_log/gitr/objects/61/4bafab039e372ef7b4b3bacc6b18e87ceb0499"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:37","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:18:40","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:18:40","message": "reading data from: test_log/gitr/objects/61/4bafab039e372ef7b4b3bacc6b18e87ceb0499"}
+{"type": "Error","timestamp": "26-10-2023 01:18:40","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:21:42","message": "calling init with flags: ["test_log"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:21:42","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "26-10-2023 01:22:04","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:22:04","message": "writing data to: test_log/gitr/objects/82/dd291722ef93d95ad340765b81dcb9ae067db8"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:22:04","message": "writing data to: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:22:04","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:22:08","message": "calling commit with flags: ["-m", "primero"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:22:08","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:22:08","message": "writing data to: test_log/gitr/objects/b2/212d2ccb8bbd46d4c8dabec737ae447fa3b10a"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:22:08","message": "writing data to: test_log/gitr/objects/99/b6d64ee361465a803949ac622ee22f5fc6eb8a"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:22:08","message": "writing data to: test_log/gitr/HEAD"}
+{"type": "Error","timestamp": "26-10-2023 01:22:08","message": "No se pudo leer: test_log/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "26-10-2023 01:22:08","message": "No se pudo leer el archivo test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:25:19","message": "calling commit with flags: ["-m", "otro"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:25:19","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:25:19","message": "writing data to: test_log/gitr/objects/b2/212d2ccb8bbd46d4c8dabec737ae447fa3b10a"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:25:19","message": "writing data to: test_log/gitr/objects/99/b6d64ee361465a803949ac622ee22f5fc6eb8a"}
+{"type": "Error","timestamp": "26-10-2023 01:25:19","message": "No se pudo leer: test_log/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "26-10-2023 01:25:19","message": "No se pudo leer el archivo test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:27:17","message": "calling log with flags: []"}
+{"type": "Error","timestamp": "26-10-2023 01:27:17","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:27:21","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:21","message": "writing data to: test_log/gitr/objects/82/dd291722ef93d95ad340765b81dcb9ae067db8"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:21","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:27:21","message": "adding test_log/teting to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:21","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:27:24","message": "calling commit with flags: ["-m", "primero"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:24","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:24","message": "writing data to: test_log/gitr/objects/b2/212d2ccb8bbd46d4c8dabec737ae447fa3b10a"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:24","message": "writing data to: test_log/gitr/objects/99/b6d64ee361465a803949ac622ee22f5fc6eb8a"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:24","message": "writing data to: test_log/gitr/objects/23/ce289d02b1387f18646b453cddb92c8b98bfad"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:24","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:27:27","message": "calling log with flags: []"}
+{"type": "Error","timestamp": "26-10-2023 01:27:27","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:27:43","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:43","message": "writing data to: test_log/gitr/objects/bc/b92c3232685e9b9824aa5241f96e441ab53e7e"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:43","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:27:43","message": "adding test_log/teting to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:43","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:27:46","message": "calling commit with flags: ["-m", "seg"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:46","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:46","message": "writing data to: test_log/gitr/objects/fb/68bd53989da95ef4ca8e6a65072b70c9f6cd86"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:46","message": "writing data to: test_log/gitr/objects/1a/2e62bd575b031644df30fd1f262f118181546d"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:46","message": "writing data to: test_log/gitr/objects/a4/fea924ffdf4800165aa4c315c8f1bf24830311"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:27:46","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:27:48","message": "calling log with flags: []"}
+{"type": "Error","timestamp": "26-10-2023 01:27:48","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:28:15","message": "calling init with flags: ["test_log"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:15","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "26-10-2023 01:28:27","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:27","message": "writing data to: test_log/gitr/objects/a5/54413fdce1b95664fa5732deb2248fa4f62009"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:27","message": "writing data to: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:27","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:28:31","message": "calling commit with flags: ["-m", "primero"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:31","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:31","message": "writing data to: test_log/gitr/objects/5d/f17a0b57ea1898e6bcad872e944482dca92600"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:31","message": "writing data to: test_log/gitr/objects/67/05c900b696aafa8db3e976d250b1c10d95f3e2"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:31","message": "writing data to: test_log/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:31","message": "writing data to: test_log/gitr/objects/3e/5b6bdbfc63691bdf104131c467825748c1f4e3"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:31","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:28:38","message": "calling commit with flags: ["-m", "segundo"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:38","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:38","message": "writing data to: test_log/gitr/objects/a4/5d94ae6a745753e682773e4f5751b6a23fc0c3"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:38","message": "writing data to: test_log/gitr/objects/79/17ffb564da1db108ecd8e21307135699e2309e"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:38","message": "writing data to: test_log/gitr/objects/95/486058145c3109e1e46256d030f04dc875e721"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:28:38","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:28:41","message": "calling log with flags: []"}
+{"type": "Error","timestamp": "26-10-2023 01:28:41","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:32:55","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:32:55","message": "writing data to: test_log/gitr/objects/52/b7d4301392ade05799b44a1324a9d61bb7bd73"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:32:55","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:32:55","message": "adding test_log/nuevo_file to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:32:55","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:32:58","message": "calling commit with flags: ["-m", "primero"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:32:58","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:32:58","message": "writing data to: test_log/gitr/objects/a4/5d94ae6a745753e682773e4f5751b6a23fc0c3"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:32:58","message": "writing data to: test_log/gitr/objects/79/17ffb564da1db108ecd8e21307135699e2309e"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:32:58","message": "writing data to: test_log/gitr/objects/ee/d4b7ccf18227ba50858552a9d3799d0f0238f9"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:32:58","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:33:01","message": "calling commit with flags: ["-m", "segundo"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:33:01","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:33:01","message": "writing data to: test_log/gitr/objects/a4/5d94ae6a745753e682773e4f5751b6a23fc0c3"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:33:01","message": "writing data to: test_log/gitr/objects/79/17ffb564da1db108ecd8e21307135699e2309e"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:33:01","message": "writing data to: test_log/gitr/objects/58/ca71122034c149b266f6f90843fc68c099d118"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:33:01","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:33:04","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:33:04","message": "reading data from: test_log/gitr/objects/58/ca71122034c149b266f6f90843fc68c099d118"}
+{"type": "Error","timestamp": "26-10-2023 01:33:04","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:34:39","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:39","message": "writing data to: test_log/gitr/objects/52/b7d4301392ade05799b44a1324a9d61bb7bd73"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:39","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:34:39","message": "adding test_log/nuevo_file to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:39","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:34:42","message": "calling commit with flags: ["-m", "\"otro\""]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:42","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:42","message": "writing data to: test_log/gitr/objects/a4/5d94ae6a745753e682773e4f5751b6a23fc0c3"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:42","message": "writing data to: test_log/gitr/objects/79/17ffb564da1db108ecd8e21307135699e2309e"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:42","message": "writing data to: test_log/gitr/objects/17/ec2ef8823c649e3d78e35413945fff163fc5a5"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:42","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:34:51","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:51","message": "reading data from: test_log/gitr/objects/17/ec2ef8823c649e3d78e35413945fff163fc5a5"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:34:51","message": "reading data from: test_log/gitr/objects/58/ca71122034c149b266f6f90843fc68c099d118"}
+{"type": "Error","timestamp": "26-10-2023 01:34:51","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:35:23","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:23","message": "reading data from: test_log/gitr/objects/17/ec2ef8823c649e3d78e35413945fff163fc5a5"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:23","message": "reading data from: test_log/gitr/objects/58/ca71122034c149b266f6f90843fc68c099d118"}
+{"type": "Error","timestamp": "26-10-2023 01:35:23","message": "ERROR: No se encontro el objeto"}
+{"type": "Action","timestamp": "26-10-2023 01:35:38","message": "calling init with flags: ["test_log"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:38","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "26-10-2023 01:35:50","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:50","message": "writing data to: test_log/gitr/objects/a5/54413fdce1b95664fa5732deb2248fa4f62009"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:50","message": "writing data to: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:50","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:35:54","message": "calling commit with flags: ["-m", "primero"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:54","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:54","message": "writing data to: test_log/gitr/objects/a0/65e74365b6d8b68b26954ba64a362ed0280745"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:54","message": "writing data to: test_log/gitr/objects/da/c6f083a205d7324e84eafe8f06e7817b084be3"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:54","message": "writing data to: test_log/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:54","message": "writing data to: test_log/gitr/objects/55/9a1c49df9070091673e1a8ea4ac8eb702c06c8"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:54","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:35:59","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:59","message": "writing data to: test_log/gitr/objects/52/b7d4301392ade05799b44a1324a9d61bb7bd73"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:59","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:35:59","message": "adding test_log/uno to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:35:59","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:36:02","message": "calling commit with flags: ["-m", "segundo"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:02","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:02","message": "writing data to: test_log/gitr/objects/6e/43aa71655a7122af4e169900b82d6f540e8099"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:02","message": "writing data to: test_log/gitr/objects/93/e77ca6c46f37a39c97021053f40d587fc28a35"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:02","message": "writing data to: test_log/gitr/objects/8e/129c014bf1091487a4cc1a6e4c521025e2fe62"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:02","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:36:10","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:10","message": "writing data to: test_log/gitr/objects/fb/fc58d83fcccf6d243be0e769b6254c8d8286a2"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:10","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:36:10","message": "adding test_log/uno to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:10","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:36:12","message": "calling commit with flags: ["-m", "tercero"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:12","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:12","message": "writing data to: test_log/gitr/objects/b7/a9d6ee714cc298056904e85a277de419d79a39"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:12","message": "writing data to: test_log/gitr/objects/a0/557b8f25dea500fde7bb9a93ab1fa6f68caf99"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:12","message": "writing data to: test_log/gitr/objects/2f/5a28a3d4a4dd176fdbd7c2aeda7773ee8a2a7c"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:12","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:36:13","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:13","message": "reading data from: test_log/gitr/objects/2f/5a28a3d4a4dd176fdbd7c2aeda7773ee8a2a7c"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:13","message": "reading data from: test_log/gitr/objects/8e/129c014bf1091487a4cc1a6e4c521025e2fe62"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:36:13","message": "reading data from: test_log/gitr/objects/55/9a1c49df9070091673e1a8ea4ac8eb702c06c8"}
+{"type": "Action","timestamp": "26-10-2023 01:38:15","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:38:15","message": "reading data from: test_log/gitr/objects/2f/5a28a3d4a4dd176fdbd7c2aeda7773ee8a2a7c"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:38:15","message": "reading data from: test_log/gitr/objects/8e/129c014bf1091487a4cc1a6e4c521025e2fe62"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:38:15","message": "reading data from: test_log/gitr/objects/55/9a1c49df9070091673e1a8ea4ac8eb702c06c8"}
+{"type": "Action","timestamp": "26-10-2023 01:51:32","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:51:32","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:51:48","message": "calling rm with flags: ["uno"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:51:48","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:54:10","message": "calling rm with flags: ["uno"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:54:10","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:54:10","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:54:14","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:54:14","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:57:11","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:57:11","message": "writing data to: test_log/gitr/objects/fb/fc58d83fcccf6d243be0e769b6254c8d8286a2"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:57:11","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:57:11","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:57:15","message": "calling commit with flags: ["-m", "\"la", "casa\""]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:57:15","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:58:37","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:58:37","message": "writing data to: test_log/gitr/objects/fb/fc58d83fcccf6d243be0e769b6254c8d8286a2"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:58:37","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:59:15","message": "calling init with flags: ["test_log"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:15","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "26-10-2023 01:59:25","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:25","message": "writing data to: test_log/gitr/objects/11/d35eca06ffa628a09a0343fc244ac2401fc12a"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:25","message": "writing data to: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:25","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 01:59:29","message": "calling commit with flags: ["-m", "\"pruebo", "asi\""]"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:29","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:29","message": "writing data to: test_log/gitr/objects/85/b725ee1713dde1cbeb542fd146d264c6db6341"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:29","message": "writing data to: test_log/gitr/objects/24/6a52293c8d8770ef083931ac469daaa084c76e"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:29","message": "writing data to: test_log/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:29","message": "writing data to: test_log/gitr/objects/de/f82209e9859706d7e644773e8a843bf0a2b73b"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:29","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 01:59:33","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 01:59:33","message": "reading data from: test_log/gitr/objects/de/f82209e9859706d7e644773e8a843bf0a2b73b"}
+{"type": "Action","timestamp": "26-10-2023 02:03:26","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:26","message": "writing data to: test_log/gitr/objects/11/d35eca06ffa628a09a0343fc244ac2401fc12a"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:26","message": "reading data from: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 02:03:26","message": "adding test_log/probanding to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:26","message": "writing data to: test_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 02:03:32","message": "calling commit with flags: ["-m", "\"pruebo", "de", "nuevo\""]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "writing data to: test_log/gitr/objects/85/b725ee1713dde1cbeb542fd146d264c6db6341"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "writing data to: test_log/gitr/objects/24/6a52293c8d8770ef083931ac469daaa084c76e"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "writing data to: test_log/gitr/objects/6b/8110a7efc2768cf9fd30695218c6ac5fc3c785"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "reading data from: test_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "writing data to: test_log/gitr/objects/85/b725ee1713dde1cbeb542fd146d264c6db6341"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "writing data to: test_log/gitr/objects/24/6a52293c8d8770ef083931ac469daaa084c76e"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "writing data to: test_log/gitr/objects/f0/4376f7257217f7a9fde71e1f8b1b117eccbcf6"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:32","message": "writing data to: test_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 02:03:33","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:33","message": "reading data from: test_log/gitr/objects/f0/4376f7257217f7a9fde71e1f8b1b117eccbcf6"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:33","message": "reading data from: test_log/gitr/objects/6b/8110a7efc2768cf9fd30695218c6ac5fc3c785"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:03:33","message": "reading data from: test_log/gitr/objects/de/f82209e9859706d7e644773e8a843bf0a2b73b"}
+{"type": "Action","timestamp": "26-10-2023 02:10:30","message": "calling branch with flags: ["nueva"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:10:30","message": "writing data to: test_log/gitr/refs/heads/nueva"}
+{"type": "Action","timestamp": "26-10-2023 02:19:57","message": "calling log with flags: ["-n", "1"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:19:57","message": "writing data to: test_log/gitr/HEAD"}
+{"type": "Error","timestamp": "26-10-2023 02:19:57","message": "ERROR: No se encontro HEAD"}
+{"type": "Action","timestamp": "26-10-2023 02:20:00","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:00","message": "writing data to: test_log/gitr/HEAD"}
+{"type": "Error","timestamp": "26-10-2023 02:20:00","message": "ERROR: No se encontro HEAD"}
+{"type": "Action","timestamp": "26-10-2023 02:20:27","message": "calling init with flags: ["repo_log"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:27","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "26-10-2023 02:20:40","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:40","message": "writing data to: repo_log/gitr/objects/46/74134a9b9455bd3da3ff0fcb64c38e3ae57782"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:40","message": "writing data to: repo_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:40","message": "writing data to: repo_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 02:20:46","message": "calling commit with flags: ["-m", "\"hola", "como", "andas\""]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:46","message": "reading data from: repo_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:46","message": "writing data to: repo_log/gitr/objects/c6/9bf3a20129384b64b19cd94b4e9e40e58c0ea9"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:46","message": "writing data to: repo_log/gitr/objects/47/f4fe88055c26b1d757f4b1f4f1952d987d07f0"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:46","message": "writing data to: repo_log/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:46","message": "writing data to: repo_log/gitr/objects/12/ec0a2358e084bd2ce224cb382327f594036710"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:46","message": "writing data to: repo_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 02:20:53","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:53","message": "writing data to: repo_log/gitr/objects/f5/b9a0e3938d2fabff1a7d012ff155aa9e46b215"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:53","message": "reading data from: repo_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 02:20:53","message": "adding repo_log/probando to index"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:53","message": "writing data to: repo_log/gitr/index"}
+{"type": "Action","timestamp": "26-10-2023 02:20:57","message": "calling commit with flags: ["-m", "\"bien", "y", "vos\""]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:57","message": "reading data from: repo_log/gitr/index"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:57","message": "writing data to: repo_log/gitr/objects/0c/287366842203dac87a8a3b55f1d83f67866c11"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:57","message": "writing data to: repo_log/gitr/objects/b6/57da738463a203a943edeb695e20765fb94321"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:57","message": "writing data to: repo_log/gitr/objects/e3/e42144cd732df93a9d2c3780437fed8f5f530f"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:20:57","message": "writing data to: repo_log/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "26-10-2023 02:21:00","message": "calling log with flags: ["-n", "1"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:21:00","message": "reading data from: repo_log/gitr/objects/e3/e42144cd732df93a9d2c3780437fed8f5f530f"}
+{"type": "Action","timestamp": "26-10-2023 02:21:09","message": "calling log with flags: ["-n", "100"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:21:09","message": "reading data from: repo_log/gitr/objects/e3/e42144cd732df93a9d2c3780437fed8f5f530f"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:21:09","message": "reading data from: repo_log/gitr/objects/12/ec0a2358e084bd2ce224cb382327f594036710"}
+{"type": "Action","timestamp": "26-10-2023 02:21:11","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:21:11","message": "reading data from: repo_log/gitr/objects/e3/e42144cd732df93a9d2c3780437fed8f5f530f"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:21:11","message": "reading data from: repo_log/gitr/objects/12/ec0a2358e084bd2ce224cb382327f594036710"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:25:58","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:25:58","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 02:25:58","message": "writing data to: .head_repo"}

@@ -4,7 +4,7 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 
-use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
+use crate::{file_manager::{read_index, self, get_current_commit}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
 
@@ -73,7 +73,7 @@ pub fn print_tree_data(raw_data: &str){
 
 
 pub fn print_commit_data(raw_data: &str){
-    println!("tree {}", raw_data);
+    println!("{}", raw_data);
 }
 
 pub fn visit_dirs(dir: &Path) -> Vec<String> {
@@ -207,17 +207,18 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
     final_tree.save()?;
     let head = file_manager::get_head()?;
-    let commit = Commit::new(final_tree.get_hash(), head.clone(), get_current_username(), get_current_username(), message)?;
-    commit.save()?;
+    let repo = file_manager::get_current_repo()?;
     if head == "None"{
-        let repo = file_manager::get_current_repo()?;
         let dir = repo + "/gitr/refs/heads/master";
+        let commit = Commit::new(final_tree.get_hash(), "None".to_string(), get_current_username(), get_current_username(), message)?;
+        commit.save()?;
         let _ = file_manager::write_file(dir, commit.get_hash())?;
     }else{
-        let repo = file_manager::get_current_repo()?;
         let dir = repo + "/gitr/" + &head;
+        let current_commit = file_manager::get_current_commit()?;
+        let commit = Commit::new(final_tree.get_hash(), current_commit, get_current_username(), get_current_username(), message)?;
+        commit.save()?;
         let _ = file_manager::write_file(dir, commit.get_hash())?;
-        
     }   
     Ok(())
 }

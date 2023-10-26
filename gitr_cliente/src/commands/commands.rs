@@ -1,6 +1,6 @@
 use std::{fs::{self}, error::Error};
 
-use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
+use crate::{objects::blob::Blob, file_manager::{self, print_commit_log}, gitr_errors::GitrError};
 use crate::command_utils::*;
 
 
@@ -47,25 +47,6 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
-
-///tree <size-of-tree-in-bytes>\0
-// <file-1-mode> <file-1-path>\0<file-1-blob-hash>
-// <file-2-mode> <file-2-path>\0<file-2-blob-hash>
-// ...
-// <file-n-mode> <file-n-path>\0<file-n-blob-hash>
-
-
-
-// commit <size-of-commit-data-in-bytes>'\0'
-// <tree-SHA1-hash>
-// <parent-1-commit-id>
-// <parent-2-commit-id>
-// ...
-// <parent-N-commit-id>
-// author ID email date
-// committer ID email date
-
-// user comment
 pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
     if flags.len() != 2 {
         //return Err(GitrError::InvalidNumberOfArguments(2, flags.len()));
@@ -178,15 +159,17 @@ pub fn rm(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     }
     let mut index = file_manager::read_index()?;
     index = index + "\n";
+    let current_repo = file_manager::get_current_repo()?;
+    let file_to_rm_path = format!("{}/{}", current_repo, flags[0]);
     for line in index.lines(){
         let attributes = line.split(" ").collect::<Vec<&str>>();
-        if attributes[3] == flags[0]{
+        if attributes[3] == file_to_rm_path{
             let complete_line = format!("{}\n", line);
             index = index.replace(&complete_line, "");
             let res = index.trim_end().to_string();
             removed = true;
             let compressed_index = flate2compress(res)?;
-            let _ = file_manager::write_compressed_data("gitr/index", compressed_index.as_slice());
+            let _ = file_manager::write_compressed_data(&(current_repo +"/gitr/index"), compressed_index.as_slice());
             break
         }
     }
@@ -201,13 +184,19 @@ pub fn rm(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
 
 
 pub fn commit(flags: Vec<String>)-> Result<(), Box<dyn Error>>{
-    if flags.len() != 2 || flags[0] != "-m"{
+    if flags[0] != "-m"{
         println!("Error: invalid number of arguments");
         return Ok(())
     }
-    let message = &flags[1..];
-    let message = message.join(" ");
-    let _ = get_tree_entries(message)?;
+    let message = &flags[1];
+    if flags[1].starts_with("\""){
+        let message = &flags[1..];
+        let message = message.join(" ");
+        let _ = get_tree_entries(message.to_string())?;
+        return Ok(())
+    }
+    let _ = get_tree_entries(message.to_string())?;
+    
     Ok(())
 }
 
@@ -225,9 +214,14 @@ pub fn checkout(flags: Vec<String>)->Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn log(flags: Vec<String>) {
-    println!("current dir: {}", std::env::current_dir().unwrap().display());
-    println!("log");
+pub fn log(flags: Vec<String>)->Result<(), GitrError> {
+    if flags.len() == 0{
+       print_commit_log("-1".to_string())?;
+    }
+    if flags.len() == 2 && flags[0] == "-n" && flags[1].parse::<usize>().is_ok(){
+        print_commit_log(flags[1].to_string())?;
+    }
+    Ok(())
 }
 
 pub fn clone(flags: Vec<String>) {
@@ -298,9 +292,7 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
             return Ok(())
         }
         let current_commit = file_manager::get_current_commit()?;
-        //println!("current commit: {}", current_commit);
         let repo = file_manager::get_current_repo()?;
-        println!("vamos a escribir {} en {}",current_commit ,  format!("{}/gitr/refs/heads/{}", repo, flags[0]));
         let _ = file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo, flags[0]), current_commit)?;
     }
     Ok(())

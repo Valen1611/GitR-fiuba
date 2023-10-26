@@ -19,6 +19,7 @@ impl Commit{
         format_data.push_str(&init);
         format_data.push_str(&tree);
         format_data.push_str("\n");
+        format_data.push_str(&format!("parent {}\n", parent));
         format_data.push_str(&format!("author {}\n", author));
         format_data.push_str(&format!("committer {}\n", committer));
         format_data.push_str("\n");
