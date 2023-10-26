@@ -155,7 +155,7 @@ fn assemble_want_message(references: &Vec<(String,String)>)->Result<String,Strin
 }
 
 impl PackFile{
-    pub fn new_from(buffer: &mut[u8])->Result<PackFile, String>{
+    pub fn new_from_server_packfile(buffer: &mut[u8])->Result<PackFile, String>{
         verify_header(&buffer[..=3])?;
         let _version = extract_version(&buffer[4..=7])?;
         let _objects = read_pack_file(buffer);
@@ -180,7 +180,7 @@ mod tests{
     #[test]
     fn test00_receiveing_wrong_signature_throws_error(){
         let mut buffer= [(13),(14),(23),(44)];
-        assert!(PackFile::new_from(&mut buffer).is_err());
+        assert!(PackFile::new_from_server_packfile(&mut buffer).is_err());
     }
 
     #[test]
@@ -213,18 +213,38 @@ mod tests{
 
         let mut buffer = [0;1024];
         let mut _bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        println!("Recibido: {}",String::from_utf8_lossy(&buffer));
+
         let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        println!("Recibido: {}",String::from_utf8_lossy(&buffer));
+
         
         let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
         println!("References: {:?}", references);
+
+        let mut want = assemble_want_message(&references).unwrap();
+        println!("Mando el want: {:?}", want);
+        socket.write(want.as_bytes());
+
+
         while bytes_read != 0{
-            let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+            bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+            let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
+            println!("String recibido: \n {}", received_data);
+            if received_data == "0008NAK\n"{
+                println!("corto por recibir NAK");
+                break;
+            }
+            println!("Cantidad leida: {}",bytes_read);
         }
-        println!("Vacié el socket");
-        let mut buffer = [0;1024];
         
         let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
-        println!("Recibido: {}",String::from_utf8_lossy(&buffer));
+        println!("Aca tendria que estar el packfile: {}",String::from_utf8_lossy(&buffer));
+        let _packfile = PackFile::new_from_server_packfile(&mut buffer[..bytes_read]).unwrap();
+    }
+
+    #[test]
+    fn test04_armo_un_packfile_con_lo_decodeado(){
 
     }
 }
