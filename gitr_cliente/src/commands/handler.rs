@@ -16,7 +16,10 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), Box<dyn Error>> {
     let flags = argv[1..].to_vec();
     
     let message = format!("calling {} with flags: {:?}", command, flags);
-    logger::log_action(message.clone())?;
+    match logger::log_action(message.clone()) {
+        Ok(_) => (),
+        Err(e) => println!("Error: {}", e),
+    };
     match command.as_str() {
         "hash-object" | "h" => commands::hash_object(flags)?, //"h" para testear mas rapido mientras la implementamos
         "cat-file" | "c" => commands::cat_file(flags)?,

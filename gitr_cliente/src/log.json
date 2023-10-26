@@ -404,3 +404,27 @@
 {"type": "FileOperation","timestamp": "26-10-2023 02:25:58","message": "writing data to: .head_repo"}
 {"type": "FileOperation","timestamp": "26-10-2023 02:25:58","message": "writing data to: .head_repo"}
 {"type": "FileOperation","timestamp": "26-10-2023 02:25:58","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:07:44","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:07:44","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:07:44","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:07:44","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "26-10-2023 15:17:12","message": "calling h with flags: ["hello.rs"]"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:42:40","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:43:37","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:43:37","message": "writing data to: testing_hash_object_repo/gitr/objects/95/d09f2b10159347eece71399a7e2e907ea3df4f"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:46:19","message": "writing data to: .head_repo"}{"type": "FileOperation","timestamp": "26-10-2023 15:46:19","message": "writing data to: .head_repo"}
+
+{"type": "FileOperation","timestamp": "26-10-2023 15:46:19","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:46:19","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:47:02","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:47:02","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:47:02","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:47:02","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:47:02","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:47:02","message": "writing data to: testing_hash_object_repo/gitr/objects/95/d09f2b10159347eece71399a7e2e907ea3df4f"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:49:08","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:49:08","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:49:08","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:49:08","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:49:08","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "26-10-2023 15:49:08","message": "writing data to: testing_hash_object_repo/gitr/objects/95/d09f2b10159347eece71399a7e2e907ea3df4f"}
