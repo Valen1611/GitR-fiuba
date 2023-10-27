@@ -17,6 +17,10 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), GitrError>{
     // hash-object -w <file>
     // hash-object <file>
 
+    if flags.len() != 1 && flags.len() != 2 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "hash-object [<-w>] <file>".to_string()));
+    }
+
     let mut file_path = String::new();
     let mut write = false;
 
@@ -29,6 +33,8 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), GitrError>{
         write = true;
     }
     
+    file_path = file_manager::get_current_repo()?.to_string() + "/" + &file_path;
+
     let raw_data = file_manager::read_file(file_path)?;
     
     let blob = Blob::new(raw_data)?;
@@ -47,15 +53,16 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), GitrError>{
 
 pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
     if flags.len() != 2 {
-        //return Err(GitrError::InvalidNumberOfArguments(2, flags.len()));
-        return Err(GitrError::ObjectNotFound("CAMBIAR ESTE".into()))
+        let flags_str = flags.join(" ");
+        return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
     let res_output = file_manager::read_object(&flags[1])?;
+    println!("data cruda: {:?}", res_output);
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
 
-    
+
     if flags[0] == "-t"{
         println!("{}", object_type);
     }
@@ -84,6 +91,10 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
 }
 
 pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
+    if flags.is_empty() || flags.len() > 1  {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "init <new_repo_name>".to_string()));
+    }
+
     file_manager::init_repository(&flags[0])?;
     file_manager::update_current_repo(&flags[0])?;
     println!("Initialized empty Gitr repository");
@@ -113,10 +124,9 @@ fn save_and_add_blob_to_index(file_path: String) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
+pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
     if flags.len() != 1 {
-        println!("Error: invalid number of arguments");
-        return Ok(())
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "add <[file/.]>".to_string()))
     }
     // check if flags[0] is an existing file
     let file_path = &flags[0];
@@ -139,11 +149,10 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     
 }
 
-pub fn rm(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
+pub fn rm(flags: Vec<String>)-> Result<(), GitrError> {
     let mut removed:bool = false;
     if flags.len() != 1 {
-        println!("Error: invalid number of arguments");
-        return Ok(())
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "rm <file>".to_string()))
     }
     let mut index = file_manager::read_index()?;
     index += "\n";
@@ -170,13 +179,14 @@ pub fn rm(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
   
 } 
 
-
-pub fn commit(flags: Vec<String>)-> Result<(), Box<dyn Error>>{
-    if flags[0] != "-m"{
-        println!("Error: invalid number of arguments");
-        return Ok(())
+// estamos haciendo un tree de mas
+pub fn commit(flags: Vec<String>)-> Result<(), GitrError>{
+    if flags[0] != "-m" || flags.len() < 2 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m <commit_message>".to_string()))
     }
+    
     let message = &flags[1];
+    println!("message: {:?}", message);
     if flags[1].starts_with('\"'){
         let message = &flags[1..];
         let message = message.join(" ");
@@ -188,17 +198,20 @@ pub fn commit(flags: Vec<String>)-> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
-pub fn checkout(flags: Vec<String>)->Result<(), Box<dyn Error>> {
-    if flags.len() == 1{
-        if !branch_exists(flags[0].clone()){
-            println!("error: pathspec '{}' did not match any file(s) known to git.", flags[0]);
-            return Ok(())
-        }
-        let current_commit = file_manager::get_commit(flags[0].clone())?;
-        file_manager::update_working_directory(current_commit)?;
-        let path_head = format!("refs/heads/{}", flags[0]);
-        file_manager::update_head(&path_head)?;
+pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
+    if flags.len() != 1 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "checkout <branch>".to_string()));
     }
+
+    if !branch_exists(flags[0].clone()){
+        println!("error: pathspec '{}' did not match any file(s) known to git.", flags[0]);
+        return Ok(())
+    }
+    let current_commit = file_manager::get_commit(flags[0].clone())?;
+    file_manager::update_working_directory(current_commit)?;
+    let path_head = format!("refs/heads/{}", flags[0]);
+    file_manager::update_head(&path_head)?;
+    
     Ok(())
 }
 
@@ -286,20 +299,25 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
     Ok(())
 }
 
-pub fn ls_files(flags: Vec<String>) {
+pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
+    if flags.len() != 1 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "),"ls-files --stage".to_string() ))
+    }
+
     if flags[0] == "--stage"{
         let res_output = file_manager::read_index().unwrap();
         println!("{}", res_output);
     }
+    Ok(())
 }
 
-pub fn list_repos(flags: Vec<String>) {
-    
+pub fn list_repos() {
+    println!("{:?}", file_manager::get_repos());
 }
 
 pub fn go_to_repo(flags: Vec<String>) -> Result<(), GitrError>{
     if flags.len() != 1 {
-        return Err(GitrError::InvalidArgumentError)     
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "go-to-repo <repo>".to_string()));   
     }
 
     let new_repo = flags[0].clone();
@@ -314,4 +332,10 @@ pub fn go_to_repo(flags: Vec<String>) -> Result<(), GitrError>{
     Ok(())
 }
 
+pub fn print_current_repo() -> Result<(), GitrError> {
+    let repo = file_manager::get_current_repo()?;
+    println!("working on repo: {}", repo);
+
+    Ok(())
+}
 

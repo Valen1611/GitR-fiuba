@@ -33,6 +33,16 @@ impl Tree{
                 }
             }
         }
+
+        // quedarse con la parte despues del primer \0
+        // y a eso sacarle el tamanio as_bytes().len()
+        if let Some(tree_data) = format_data.split_once('\0') {
+            let entries_raw_data = tree_data.1;
+            let entries_raw_data_len = entries_raw_data.as_bytes().len();
+
+            println!("este deberia ser el len: {:?}", entries_raw_data_len);
+        }
+
         format_data = format_data.trim_end().to_string();
         let compressed_file = flate2compress(format_data.clone())?;
         let hashed_file = sha1hashing(format_data.clone());

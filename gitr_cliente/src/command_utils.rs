@@ -35,7 +35,7 @@ pub fn print_blob_data(raw_data: &str) {
 pub fn print_tree_data(raw_data: &str) {
     let files = raw_data.split('\n').collect::<Vec<&str>>();
     for object in files {
-
+        println!("obj: {:?}", object);
         let file_atributes = object.split(' ').collect::<Vec<&str>>();
         let file_mode = file_atributes[0];
         let file_path_hash = file_atributes[1];
@@ -122,7 +122,7 @@ commit->tree
                 |-mods.rs
                 |-commit.rs
 */
-pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) -> Result<Tree, Box<dyn Error>> {
+pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) -> Result<Tree, GitrError> {
     let mut tree_entry: Vec<(String,TreeEntry)> = Vec::new();
     if let Some(objs) = tree_map.get(&current_dir) {
         for obj in objs {
@@ -130,7 +130,8 @@ pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) 
                     let new_tree = create_trees(tree_map.clone(), obj.to_string())?;
                     tree_entry.push((obj.clone(), TreeEntry::Tree(new_tree)));
             } else {
-                let raw_data = fs::read_to_string(obj)?;
+                //let raw_data = fs::read_to_string(obj)?;
+                let raw_data = file_manager::read_file(obj.clone())?;
                 let blob = Blob::new(raw_data)?;
                 tree_entry.push((obj.clone(), TreeEntry::Blob(blob)));
             }
@@ -145,12 +146,14 @@ pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) 
 /*
 
 src -> commands -> commands.rs
+                -> handler.rs
+                
     -> objects -> blob.rs
     -> hello.rs
 */
 
 
-pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
+pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); // orden en el que insertamos carpetas
     let index_files = read_index()?;

@@ -6,7 +6,7 @@ use std::path::Path;
 
 use crate::command_utils::{flate2compress, print_commit_data};
 use crate::gitr_errors::GitrError;
-use crate::logger;
+use crate::{logger, file_manager};
 
 use flate2::read::ZlibDecoder;
 
@@ -327,13 +327,15 @@ pub fn get_commit(branch:String)->Result<String, GitrError>{
     Ok(commit)
 }
 
-pub fn create_tree(path: String, hash: String) -> Result<(), Box<dyn Error>> {
+pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
     let repo = get_current_repo()?;
     
     let folder_path = repo.clone() + "/" + &path;
     
     println!("carpeta que deberia crear: {}", folder_path);
-    fs::create_dir(folder_path.clone())?;
+    file_manager::create_directory(&folder_path)?;
+
+    
     let tree_raw_data = read_object(&hash)?;
     
     //let tree_entries = tree_raw_data.split("\0").collect::<Vec<&str>>()[1];
@@ -364,7 +366,7 @@ pub fn create_tree(path: String, hash: String) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn create_blob(entry: String) -> Result<(), Box<dyn Error>> {
+pub fn create_blob(entry: String) -> Result<(), GitrError> {
     let _blob_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
     let blob_path = _blob_path_hash.split('\0').collect::<Vec<&str>>()[0];
     let blob_hash = _blob_path_hash.split('\0').collect::<Vec<&str>>()[1];
@@ -383,7 +385,7 @@ pub fn create_blob(entry: String) -> Result<(), Box<dyn Error>> {
 // ...
 // <file-n-mode> <file-n-path>\0<file-n-blob-hash>
 */ 
-pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
+pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
     let _ = delete_all_files();
     let main_tree = get_main_tree(commit)?;
     let tree = read_object(&main_tree)?;
@@ -400,7 +402,7 @@ pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
     };
     let raw_data = &tree[(raw_data_index + 1)..];
     println!("raw data: {}", raw_data);
-
+    
     for entry in raw_data.split('\n'){
         let object: &str = entry.split(' ').collect::<Vec<&str>>()[0];
         if object == "40000"{
@@ -415,7 +417,7 @@ pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
-pub fn get_main_tree(commit:String)->Result<String, Box<dyn Error>>{
+pub fn get_main_tree(commit:String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     let tree_base = commit[0].split('\0').collect::<Vec<&str>>()[1];
@@ -462,7 +464,7 @@ pub fn print_commit_log(quantity: String)-> Result<(), GitrError>{
     let mut current_commit = get_current_commit()?;
     let limit = match quantity.parse::<i32>(){
         Ok(quantity) => quantity,
-        Err(_) => return Err(GitrError::InvalidArgumentError),
+        Err(_) => return Err(GitrError::InvalidArgumentError(quantity, "log <quantity>".to_string())),
     };
     let mut counter = 0;
     loop{
@@ -487,11 +489,11 @@ pub fn get_repos() -> Vec<String> {
         for entry in entries.flatten() {
             if entry.file_name() == "gitr" || 
                 entry.file_name() == "src" ||
-                entry.file_name() == "tests" {
+                entry.file_name() == "tests" ||
+                entry.file_name() == "target" {
                 continue;
             }
             if entry.file_type().unwrap().is_dir() {
-                println!("{}", entry.path().display());
                 repos.push(entry.path().display().to_string()[2..].to_string());
             }
         }

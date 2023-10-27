@@ -1,3 +1,5 @@
+use std::mem;
+
 use crate::file_manager;
 use crate::gitr_errors::GitrError;
 use crate::objects::tree::Tree;
@@ -16,8 +18,8 @@ impl Blob{
     /// 
     /// Post: Devuelve un Blob con el codigo comprimido y el hash
     pub fn new(raw_data: String) -> Result<Self, GitrError>{
-        let format_data = format!("blob {}\0{}", raw_data.len(), raw_data);
-        
+        let format_data = format!("blob {}\0{}", raw_data.as_bytes().len(), raw_data);
+        println!("format_data: {:?}", format_data);
         let compressed_data = flate2compress(format_data.clone())?;
         let hashed_file = sha1hashing(format_data);
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();

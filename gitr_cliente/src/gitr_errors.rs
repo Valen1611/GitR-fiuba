@@ -17,7 +17,7 @@ pub enum GitrError{
     NoHead,
     AlreadyInitialized,
     //NoRepository,
-    InvalidArgumentError,
+    InvalidArgumentError(String, String),
     LogError,
     CompressionError,
 }
@@ -36,7 +36,7 @@ impl fmt::Display for GitrError{
            // Self::NoRepository => write!(f, "ERROR: No se encontro el repositorio"),
             Self::LogError => write!(f, "ERROR: No se pudo escribir en el log"),
             Self::CompressionError => write!(f, "No se pudo comprimir el archivo"),
-            Self::InvalidArgumentError => write!(f, "ERROR: Argumento invalido"),
+            Self::InvalidArgumentError(got, usage) => write!(f, "Argumentos invalidos.\n    Recibi: {}\n    Uso: {}\n", got, usage),
     }
 }
 }
