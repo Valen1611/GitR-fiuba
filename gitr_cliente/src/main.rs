@@ -1,10 +1,10 @@
 use std::error::Error;
-use std::{env, io};
+use std::io;
 mod commands;
 mod objects;
 mod file_manager;
 mod gitr_errors;
-use std::io::{stdin,stdout,Write};
+use std::io::Write;
 mod command_utils;
 mod logger;
 
@@ -40,7 +40,10 @@ fn main() {
         match commands::handler::command_handler(argv) {
             Ok(_) => println!("Handler Success"),
             Err(e) => {
-                logger::log_error(e.to_string());
+                match logger::log_error(e.to_string()) {
+                    Ok(_) => (),
+                    Err(e) => println!("Logger Error: {}", e),
+                };
                 println!("Handler Error: {}", e);}
         };
         input = String::new();

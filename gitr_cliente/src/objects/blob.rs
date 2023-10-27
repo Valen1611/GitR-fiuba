@@ -1,6 +1,5 @@
 use crate::file_manager;
 use crate::gitr_errors::GitrError;
-use std::error::Error;
 use crate::objects::tree::Tree;
 use crate::command_utils::{flate2compress, sha1hashing};
 pub enum TreeEntry {
@@ -23,7 +22,7 @@ impl Blob{
         let hashed_file = sha1hashing(format_data);
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
         Ok(Blob { 
-            compressed_data:compressed_data, 
+            compressed_data,
             hash:hashed_file_str
         })
     }

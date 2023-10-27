@@ -4,7 +4,7 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 
-use crate::{file_manager::{read_index, self, get_current_commit}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
+use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
 
@@ -19,11 +19,11 @@ pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
     let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
     match encoder.write_all(input.as_bytes()) {
         Ok(_) => {},
-        Err(e) => return Err(GitrError::CompressionError),
+        Err(_) => return Err(GitrError::CompressionError),
     };
     let compressed_bytes = match encoder.finish() {
         Ok(bytes) => bytes,
-        Err(e) => return Err(GitrError::CompressionError),
+        Err(_) => return Err(GitrError::CompressionError),
     };
     Ok(compressed_bytes)
 }
@@ -32,34 +32,25 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
-
-
-pub fn print_tree_data(raw_data: &str){
-    let files = raw_data.split("\n").collect::<Vec<&str>>();
-    println!("files: {:?} ", files);
+pub fn print_tree_data(raw_data: &str) {
+    let files = raw_data.split('\n').collect::<Vec<&str>>();
     for object in files {
 
-        let file_atributes = object.split(" ").collect::<Vec<&str>>();
+        let file_atributes = object.split(' ').collect::<Vec<&str>>();
         let file_mode = file_atributes[0];
         let file_path_hash = file_atributes[1];
         
-        let file_path = file_path_hash.split("\0").collect::<Vec<&str>>()[0];
-        let file_hash = file_path_hash.split("\0").collect::<Vec<&str>>()[1];
+        let file_path = file_path_hash.split('\0').collect::<Vec<&str>>()[0];
+        let file_hash = file_path_hash.split('\0').collect::<Vec<&str>>()[1];
 
-        let mut file_type = "";  
-        if file_mode == "100644"{
-            file_type = "blob";
+        let file_type = if file_mode == "100644"{
+            "blob"
         } else{
-            file_type = "tree";
-        }
-        //let file_path = file_atributes[1];
-
-        //let file_hash = file_atributes[2];
+            "tree"
+        };
 
         println!("{} {} {} {}", file_mode, file_type, file_hash, file_path);
-        
     }
-   
 }
 
 // commit <size-of-commit-data-in-bytes>'\0'
@@ -79,8 +70,8 @@ pub fn print_commit_data(raw_data: &str){
 pub fn visit_dirs(dir: &Path) -> Vec<String> {
     let mut files = Vec::new();
     if let Ok(entries) = fs::read_dir(dir) {
-        for entry in entries {
-            if let Ok(entry) = entry {
+        for entry in entries.flatten() {
+          
                 let path = entry.path();
                 if path.is_dir() {
                     if path.ends_with("gitr") {
@@ -91,7 +82,7 @@ pub fn visit_dirs(dir: &Path) -> Vec<String> {
                 } else if let Some(path_str) = path.to_str() {
                     files.push(path_str.to_string());
                 }
-            }
+            
         }
     }
     files
@@ -131,7 +122,7 @@ commit->tree
                 |-mods.rs
                 |-commit.rs
 */
-pub fn create_trees (tree_map:HashMap<String, Vec<String>>, current_dir: String) -> Result<Tree, Box<dyn Error>> {
+pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) -> Result<Tree, Box<dyn Error>> {
     let mut tree_entry: Vec<(String,TreeEntry)> = Vec::new();
     if let Some(objs) = tree_map.get(&current_dir) {
         for obj in objs {
@@ -163,9 +154,9 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); // orden en el que insertamos carpetas
     let index_files = read_index()?;
-    for file_info in index_files.split("\n") {
-        let file_path = file_info.split(" ").collect::<Vec<&str>>()[3];
-        let splitted_file_path = file_path.split("/").collect::<Vec<&str>>();
+    for file_info in index_files.split('\n') {
+        let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
+        let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
             if let Some(last_element) = splitted_file_path.last() {
                 if dir == last_element {
@@ -212,13 +203,13 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
         let dir = repo + "/gitr/refs/heads/master";
         let commit = Commit::new(final_tree.get_hash(), "None".to_string(), get_current_username(), get_current_username(), message)?;
         commit.save()?;
-        let _ = file_manager::write_file(dir, commit.get_hash())?;
+        file_manager::write_file(dir, commit.get_hash())?;
     }else{
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit()?;
         let commit = Commit::new(final_tree.get_hash(), current_commit, get_current_username(), get_current_username(), message)?;
         commit.save()?;
-        let _ = file_manager::write_file(dir, commit.get_hash())?;
+        file_manager::write_file(dir, commit.get_hash())?;
     }   
     Ok(())
 }
@@ -237,7 +228,7 @@ pub fn get_current_username() -> String{
 
 pub fn print_branches()-> Result<(), Box<dyn Error>>{
     let head = file_manager::get_head()?;
-    let head_vec = head.split("/").collect::<Vec<&str>>();
+    let head_vec = head.split('/').collect::<Vec<&str>>();
     let head = head_vec[head_vec.len()-1];
     let branches = file_manager::get_branches()?;
         for branch in branches{

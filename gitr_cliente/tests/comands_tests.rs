@@ -62,7 +62,8 @@ fn test_hash_object_file(repo_path: String) {
     fs::write(&file_path, &data).unwrap();
 
     // lo hasheamos
-    let hash = command_utils::sha1hashing(data);
+    let formatted_data = format!("blob {}\0{}", data.len(), data);
+    let hash = command_utils::sha1hashing(formatted_data);
     let expected_hash = hash.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
     // corremos el comando
@@ -72,12 +73,10 @@ fn test_hash_object_file(repo_path: String) {
 
     let expected_folder = repo_path.clone() + "/gitr/objects/" + &expected_hash[..2];
     let expected_file = expected_folder.clone() + "/" + &expected_hash[2..];
+    
+    println!("expected folder {}", expected_folder);
+    println!("expected file {}", expected_file);
 
     assert!(Path::new(&expected_folder).is_dir());
     assert!(Path::new(&expected_file).is_file());
-    
-    let hashed_file_data = fs::read_to_string(expected_file).unwrap();
-
-    assert_eq!(hashed_file_data, expected_hash);
-
 } 

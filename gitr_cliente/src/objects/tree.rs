@@ -1,6 +1,5 @@
-use std::error::Error;
 use crate::gitr_errors::GitrError;
-use crate::{file_manager};
+use crate::file_manager;
 use crate::command_utils::{flate2compress, sha1hashing};
 use super::blob::TreeEntry;
 
@@ -38,7 +37,7 @@ impl Tree{
         let compressed_file = flate2compress(format_data.clone())?;
         let hashed_file = sha1hashing(format_data.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        Ok(Tree { entries:entries, data: compressed_file, hash: hashed_file_str })
+        Ok(Tree {entries, data: compressed_file, hash: hashed_file_str })
     }
 
     pub fn save(&self) -> Result<(), GitrError>{

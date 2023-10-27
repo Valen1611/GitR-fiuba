@@ -1,4 +1,4 @@
-use std::{fs::{self}, error::Error};
+use std::error::Error;
 
 use crate::{objects::blob::Blob, file_manager::{self, print_commit_log}, gitr_errors::GitrError};
 use crate::command_utils::*;
@@ -13,7 +13,7 @@ use crate::command_utils::*;
 
 /// Computes the object ID value for an object with the contents of the named file 
 /// When <type> is not specified, it defaults to "blob".
-pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
+pub fn hash_object(flags: Vec<String>) -> Result<(), GitrError>{
     // hash-object -w <file>
     // hash-object <file>
 
@@ -24,12 +24,11 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
         file_path = flags[0].clone();
     }
 
-    if flags.len() == 2 {
-        if flags[0] == "-w" {
-            file_path = flags[1].clone();
-            write = true;
-        }
+    if flags.len() == 2 && flags[0] == "-w" {
+        file_path = flags[1].clone();
+        write = true;
     }
+    
     let raw_data = file_manager::read_file(file_path)?;
     
     let blob = Blob::new(raw_data)?;
@@ -37,7 +36,6 @@ pub fn hash_object(flags: Vec<String>) -> Result<(), Box<dyn Error>>{
     // crear tree o commit tambien
     
     println!("{}", blob.get_hash());
-   
     println!();
 
     if write {
@@ -53,9 +51,9 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
         return Err(GitrError::ObjectNotFound("CAMBIAR ESTE".into()))
     }
     let res_output = file_manager::read_object(&flags[1])?;
-    let object_type = res_output.split(" ").collect::<Vec<&str>>()[0];
-    let _size = res_output.split(" ").collect::<Vec<&str>>()[1];
-    let size = _size.split("\0").collect::<Vec<&str>>()[0];
+    let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
+    let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
+    let size = _size.split('\0').collect::<Vec<&str>>()[0];
 
     
     if flags[0] == "-t"{
@@ -65,7 +63,7 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
         println!("{}", size);
     }
     if flags[0] == "-p"{
-        let raw_data_index = match res_output.find("\0") {
+        let raw_data_index = match res_output.find('\0') {
             Some(index) => index,
             None => {
                 println!("Error: invalid object type");
@@ -77,23 +75,12 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
         match object_type {
             "blob" => print_blob_data(raw_data),
             "tree" => print_tree_data(raw_data),
-            "commit" => println!("{}", res_output.split("\0").collect::<Vec<&str>>()[1]),
+            "commit" => println!("{}", res_output.split('\0').collect::<Vec<&str>>()[1]),
             _ => println!("Error: invalid object type"),
         }
     }
     
-
-
-    let info_data = res_output.split("\0").collect::<Vec<&str>>();
-
-    let type_size = info_data[0].split(" ").collect::<Vec<&str>>();    
-    let object_type = type_size[0];
-    let size = type_size[1];
-    let raw_data = info_data[1];
-
-    
     Ok(())
-
 }
 
 pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
@@ -107,12 +94,22 @@ pub fn status(flags: Vec<String>) {
     println!("status");
 }
 
-pub fn create_blob_from_file(file_path: &String) -> Result<(), Box<dyn Error>> {
-    let raw_data = file_manager::read_file(file_path.to_string())?;
+// pub fn create_blob_from_file(file_path: &String) -> Result<(), Box<dyn Error>> {
+//     let raw_data = file_manager::read_file(file_path.to_string())?;
+//     let blob = Blob::new(raw_data)?;
+//     blob.save()?;
+//     let hash = blob.get_hash();
+//     file_manager::add_to_index(file_path, &hash)?;
+//     Ok(())
+// }
+
+
+fn save_and_add_blob_to_index(file_path: String) -> Result<(), GitrError> {
+    let raw_data = file_manager::read_file(file_path.clone())?;
     let blob = Blob::new(raw_data)?;
     blob.save()?;
     let hash = blob.get_hash();
-    file_manager::add_to_index(file_path, &hash)?;
+    file_manager::add_to_index(&file_path, &hash)?;
     Ok(())
 }
 
@@ -123,29 +120,20 @@ pub fn add(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
     }
     // check if flags[0] is an existing file
     let file_path = &flags[0];
+
+    let repo = file_manager::get_current_repo()?;
+
     if file_path == "."{
-        let repo = file_manager::get_current_repo()?;
-        let files = visit_dirs(&std::path::Path::new(&repo));
+        let files = visit_dirs(std::path::Path::new(&repo));
         for file in files{
-            //if the file containts gitr continue
-            println!("{}", file);
             if file.contains("gitr"){
                 continue
             }
-            let raw_data = fs::read_to_string(file.clone())?;
-            let blob = Blob::new(raw_data)?;
-            blob.save()?;
-            let hash = blob.get_hash();
-            file_manager::add_to_index(&file, &hash)?;
+            save_and_add_blob_to_index(file.clone())?;
         }
     }else{
-        let repo = file_manager::get_current_repo()?;
-        let full_file_path = &(repo + "/" + file_path);
-        let raw_data = fs::read_to_string(full_file_path)?;
-        let blob = Blob::new(raw_data)?;
-        blob.save()?;
-        let hash = blob.get_hash();
-        file_manager::add_to_index(full_file_path, &hash)?;
+        let full_file_path = repo + "/" + file_path;
+        save_and_add_blob_to_index(full_file_path)?;
     }
     Ok(())
     
@@ -158,11 +146,11 @@ pub fn rm(flags: Vec<String>)-> Result<(), Box<dyn Error>> {
         return Ok(())
     }
     let mut index = file_manager::read_index()?;
-    index = index + "\n";
+    index += "\n";
     let current_repo = file_manager::get_current_repo()?;
     let file_to_rm_path = format!("{}/{}", current_repo, flags[0]);
     for line in index.lines(){
-        let attributes = line.split(" ").collect::<Vec<&str>>();
+        let attributes = line.split(' ').collect::<Vec<&str>>();
         if attributes[3] == file_to_rm_path{
             let complete_line = format!("{}\n", line);
             index = index.replace(&complete_line, "");
@@ -189,13 +177,13 @@ pub fn commit(flags: Vec<String>)-> Result<(), Box<dyn Error>>{
         return Ok(())
     }
     let message = &flags[1];
-    if flags[1].starts_with("\""){
+    if flags[1].starts_with('\"'){
         let message = &flags[1..];
         let message = message.join(" ");
-        let _ = get_tree_entries(message.to_string())?;
+        get_tree_entries(message.to_string())?;
         return Ok(())
     }
-    let _ = get_tree_entries(message.to_string())?;
+    get_tree_entries(message.to_string())?;
     
     Ok(())
 }
@@ -207,15 +195,15 @@ pub fn checkout(flags: Vec<String>)->Result<(), Box<dyn Error>> {
             return Ok(())
         }
         let current_commit = file_manager::get_commit(flags[0].clone())?;
-        let _ = file_manager::update_working_directory(current_commit)?;
+        file_manager::update_working_directory(current_commit)?;
         let path_head = format!("refs/heads/{}", flags[0]);
-        let _ = file_manager::update_head(&path_head)?;
+        file_manager::update_head(&path_head)?;
     }
     Ok(())
 }
 
 pub fn log(flags: Vec<String>)->Result<(), GitrError> {
-    if flags.len() == 0{
+    if flags.is_empty() {
        print_commit_log("-1".to_string())?;
     }
     if flags.len() == 2 && flags[0] == "-n" && flags[1].parse::<usize>().is_ok(){
@@ -249,7 +237,7 @@ pub fn push(flags: Vec<String>) {
 }
 
 pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
-    if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
+    if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
         print_branches()?;
     }
     if flags.len() == 2 && flags[0] == "-d"{
@@ -282,7 +270,7 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
         let old_path = format!("{}/gitr/refs/heads/{}", repo, flags[1]);
         let new_path = format!("{}/gitr/refs/heads/{}", repo, flags[2]);
         file_manager::move_branch(old_path.clone(), new_path.clone())?;
-        let _ = file_manager::update_head(&new_path);
+        file_manager::update_head(&new_path)?;
         return Ok(())
 
     }
@@ -293,7 +281,7 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
         }
         let current_commit = file_manager::get_current_commit()?;
         let repo = file_manager::get_current_repo()?;
-        let _ = file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo, flags[0]), current_commit)?;
+        file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo, flags[0]), current_commit)?;
     }
     Ok(())
 }
