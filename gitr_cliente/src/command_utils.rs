@@ -304,8 +304,10 @@ mod tests{
         [("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "HEAD".to_string()), 
         ("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "refs/heads/main".to_string())]);
     }
-
     fn test04_clone_sends_wants_correctly(){
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        clone_send_git_upload_pack(&mut socket).unwrap();
+        let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
         
     }
 }

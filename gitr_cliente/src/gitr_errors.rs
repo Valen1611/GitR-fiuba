@@ -20,8 +20,8 @@ impl fmt::Display for GitrError{
             Self::ObjectNotFound => write!(f, "ERROR: No se encontro el objeto"),
             Self::FileReadError(path) => write!(f, "ERROR: No se pudo leer el archivo {}", path),
             Self::NoHead => write!(f, "ERROR: No se encontro HEAD"),
+        }
     }
-}
 }
 
 
