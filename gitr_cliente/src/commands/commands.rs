@@ -248,11 +248,11 @@ pub fn clone(flags: Vec<String>)->Result<(),Box<dyn Error>>{
     socket.write(want_message.as_bytes())?;
 
     let mut buffer = [0;1024];
-    socket.read(&mut buffer);
+    socket.read(&mut buffer)?;
     print!("clone(): recepeción de packfile:");
     read_and_print_socket_read(&mut socket);
 
-    read_pack_file(&mut buffer);
+    let objects = read_pack_file(&mut buffer)?;
 
     Ok(())
 }
