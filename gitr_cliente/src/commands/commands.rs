@@ -1,4 +1,4 @@
-use std::{io::prelude::*, fs::{File, self}, error::Error};
+use std::{io::prelude::*, fs::{File, self}, error::Error, net::TcpStream};
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use crate::{objects::blob::Blob, file_manager};
@@ -204,7 +204,8 @@ pub fn log(flags: Vec<String>) {
 }
 
 pub fn clone(flags: Vec<String>) {
-    println!("clone");
+    let mut socket = TcpStream::connect(flags[0].clone()).unwrap();
+    socket.write("003cgit-upload-pack /mi-repo\0host=localhost:9418\0\0version=1\0".as_bytes());
 }
 
 pub fn fetch(flags: Vec<String>) {

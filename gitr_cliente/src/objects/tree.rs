@@ -4,7 +4,7 @@ use crate::{file_manager};
 use crate::command_utils::{flate2compress, sha1hashing};
 use super::blob::TreeEntry;
 
-
+#[derive(Debug)]
 pub struct Tree{
     entries: Vec<(String,TreeEntry)>,
     data: Vec<u8>,

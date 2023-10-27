@@ -2,6 +2,7 @@ use std::{mem, error::Error};
 
 use crate::command_utils::{flate2compress, sha1hashing};
 
+#[derive(Debug)]
 pub struct Commit{
     data: Vec<u8>,
     hash: String,
