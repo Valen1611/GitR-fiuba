@@ -20,7 +20,7 @@ fn get_input() -> Result<String, Box<dyn Error>> {
 }
 
 fn main() {
-
+    
     let mut input = String::new();
 
     while input != "q" {
@@ -35,7 +35,7 @@ fn main() {
         };
 
         let argv: Vec<String> = commands::handler::parse_input(input);
-
+        
         // argv = ["command", "flag1", "flag2", ...]
         match commands::handler::command_handler(argv) {
             Ok(_) => println!("Handler Success"),

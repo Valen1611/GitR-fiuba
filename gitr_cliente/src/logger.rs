@@ -54,6 +54,7 @@ pub fn log_error(message: String) -> Result<(), GitrError> {
 
 pub fn log_action(message: String) -> Result<(), GitrError> {
     let logger = Logger::new(EntryType::Action, message);
+
     logger.save()?;
     Ok(())
 }

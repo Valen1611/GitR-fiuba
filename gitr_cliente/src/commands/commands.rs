@@ -293,4 +293,25 @@ pub fn ls_files(flags: Vec<String>) {
     }
 }
 
+pub fn list_repos(flags: Vec<String>) {
+    
+}
+
+pub fn go_to_repo(flags: Vec<String>) -> Result<(), GitrError>{
+    if flags.len() != 1 {
+        return Err(GitrError::InvalidArgumentError)     
+    }
+
+    let new_repo = flags[0].clone();
+    let existing_repos = file_manager::get_repos();
+
+    if existing_repos.contains(&new_repo) {
+        file_manager::update_current_repo(&new_repo)?;
+    }
+    else {
+        println!("Error: repository '{}' does not exist", new_repo);
+    }
+    Ok(())
+}
+
 

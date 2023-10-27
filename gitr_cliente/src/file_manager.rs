@@ -12,6 +12,84 @@ use flate2::read::ZlibDecoder;
 
 
 
+/***************************
+ *************************** 
+ *      FS FUNCTIONS
+ **************************
+ **************************/
+
+/// Reads a file and returns the content as String
+/// On Error returns a FileReadError
+pub fn read_file(path: String) -> Result<String, GitrError> {
+    let log_msg = format!("reading data from: {}", path);
+    logger::log_file_operation(log_msg)?; 
+    match fs::read_to_string(path.clone()) {
+        Ok(data) => Ok(data),
+        Err(_) => {
+            logger::log_error(format!("No se pudo leer: {}", path))?;
+            Err(GitrError::FileReadError(path))},
+    }
+}
+
+
+// Writes a file with the given text
+pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
+    let log_msg = format!("writing data to: {}", path);
+    logger::log_file_operation(log_msg)?;
+
+    let mut archivo = match File::create(&path) {
+        Ok(archivo) => archivo,
+        Err(_) => return Err(GitrError::FileCreationError(path)),
+    };
+
+    match archivo.write_all(text.as_bytes()) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(GitrError::FileWriteError(path)),
+    }
+}
+
+
+pub fn append_to_file(path: String, text: String) -> Result<(), GitrError> {
+    // let log_msg = format!("appending data to: {}", path);
+    // logger::log_file_operation(log_msg)?;
+    let mut file = match OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(&path) {
+            Ok(file) => file,
+            Err(_) => return Err(GitrError::FileWriteError(path)),
+
+        };
+    
+    match writeln!(file, "{}", text) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(GitrError::FileWriteError(path)),
+    }
+}
+
+
+/// Creates a directory in the current path
+/// On Error returns a AlreadyInitialized
+fn create_directory(path: &String)->Result<(), GitrError>{
+    let log_msg = format!("creating dir: {}", path);
+    logger::log_file_operation(log_msg)?; 
+    match fs::create_dir(path){
+        Ok(_) => Ok(()),
+        Err(_) => {
+            Err(GitrError::AlreadyInitialized)}
+    }
+}
+
+
+
+
+/***************************
+ *************************** 
+ *      GIT OBJECTS
+ **************************
+ **************************/
+
+
 /// A diferencia de write_file, esta funcion recibe un vector de bytes
 /// como data, y lo escribe en el archivo de path.
 pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
@@ -53,16 +131,7 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
     
     Ok(())
 }
-/// Reads a file and returns the content as String
-/// On Error returns a FileReadError
-pub fn read_file(path: String) -> Result<String, GitrError> {
-    match fs::read_to_string(path.clone()) {
-        Ok(data) => Ok(data),
-        Err(_) => {
-            logger::log_error(format!("No se pudo leer: {}", path))?;
-            Err(GitrError::FileReadError(path))},
-    }
-}
+
 
 ///read .head_repo and returns the content
 pub fn get_current_repo() -> Result<String, GitrError>{
@@ -70,18 +139,12 @@ pub fn get_current_repo() -> Result<String, GitrError>{
     Ok(current_repo)
 }
 
-/// Creates a directory in the current path
-/// On Error returns a AlreadyInitialized
-fn create_directory(path: &String)->Result<(), GitrError>{
-    match fs::create_dir(path){
-        Ok(_) => Ok(()),
-        Err(_) => {
-            Err(GitrError::AlreadyInitialized)}
-    }
 
-}
 ///receive compressed raw data from a file with his hash and write it in the objects folder
 pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
+    let log_msg = format!("writing object {}", hashed_name);
+    logger::log_file_operation(log_msg)?;
+
     let folder_name = hashed_name[0..2].to_string();
     let file_name = hashed_name[2..].to_string();
     let repo = get_current_repo()?;
@@ -92,40 +155,13 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
         create_directory(&folder_dir)?;
     }
     
-
     write_compressed_data(&(folder_dir.clone() + "/" + &file_name),  &data)?;
     Ok(())
 }
 
-pub fn append_to_file(path: String, text: String) -> Result<(), GitrError> {
-    let mut file = match OpenOptions::new()
-        .write(true)
-        .append(true)
-        .open(&path) {
-            Ok(file) => file,
-            Err(_) => return Err(GitrError::FileWriteError(path)),
 
-        };
-    
-    match writeln!(file, "{}", text) {
-        Ok(_) => Ok(()),
-        Err(_) => Err(GitrError::FileWriteError(path)),
-    }
-}
 
-pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
-    let log_msg = format!("writing data to: {}", path);
-    logger::log_file_operation(log_msg)?; 
-    let mut archivo = match File::create(&path) {
-        Ok(archivo) => archivo,
-        Err(_) => return Err(GitrError::FileCreationError(path)),
-    };
 
-    match archivo.write_all(text.as_bytes()) {
-        Ok(_) => Ok(()),
-        Err(_) => Err(GitrError::FileWriteError(path)),
-    }
-}
 
 pub fn read_object(object: &String) -> Result<String, GitrError>{
     if object.len() < 3{
@@ -213,7 +249,7 @@ pub fn get_head() ->  Result<String, GitrError>{
     let repo = get_current_repo()?;
     let path = repo + "/gitr/HEAD";
     if fs::metadata(path.clone()).is_err(){
-        let _ = write_file(path.clone(), String::from("ref: refs/heads/master"));
+        write_file(path.clone(), String::from("ref: refs/heads/master"))?;
         return Ok("None".to_string())
         // return Err(GitrError::NoHead);
     }
@@ -328,7 +364,7 @@ pub fn create_tree(path: String, hash: String) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn create_blob (entry: String) -> Result<(), Box<dyn Error>> {
+pub fn create_blob(entry: String) -> Result<(), Box<dyn Error>> {
     let _blob_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
     let blob_path = _blob_path_hash.split('\0').collect::<Vec<&str>>()[0];
     let blob_hash = _blob_path_hash.split('\0').collect::<Vec<&str>>()[1];
@@ -353,6 +389,8 @@ pub fn update_working_directory(commit: String)-> Result<(), Box<dyn Error>>{
     let tree = read_object(&main_tree)?;
     //let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
     
+    // REEMPLAZAR ESTO POR SPLIT_ONCE
+    //tree.split_once('\0')
     let raw_data_index = match tree.find('\0') {
         Some(index) => index,
         None => {
@@ -441,4 +479,22 @@ pub fn print_commit_log(quantity: String)-> Result<(), GitrError>{
     }
 
     Ok(())
+}
+
+pub fn get_repos() -> Vec<String> {
+    let mut repos: Vec<String> = Vec::new();
+    if let Ok(entries) = fs::read_dir("./") {
+        for entry in entries.flatten() {
+            if entry.file_name() == "gitr" || 
+                entry.file_name() == "src" ||
+                entry.file_name() == "tests" {
+                continue;
+            }
+            if entry.file_type().unwrap().is_dir() {
+                println!("{}", entry.path().display());
+                repos.push(entry.path().display().to_string()[2..].to_string());
+            }
+        }
+    }
+    repos
 }
