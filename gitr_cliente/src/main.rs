@@ -6,13 +6,7 @@ use flate2::write::ZlibEncoder;
 use flate2::read::ZlibDecoder;
 use std::error::Error;
 use std::{env, io};
-mod commands;
-mod objects;
-mod file_manager;
-mod gitr_errors;
 use std::io::{stdin,stdout};
-mod command_utils;
-mod logger;
 
 
 

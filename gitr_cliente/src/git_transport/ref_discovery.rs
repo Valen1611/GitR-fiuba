@@ -19,11 +19,13 @@ pub fn extract_version(version_slice:&[u8])->Result<u32,String>{
 }
 
 fn extract_head_hash(head_slice: &str)->String{
+    println!("extract_head_hash(): {}", head_slice);
     let head_hash = head_slice.split(' ').collect::<Vec<&str>>()[0];
     head_hash.to_string().split_off(4)
 }
 
 fn extract_hash_and_ref(ref_slice: &str)->(String,String){
+    println!("extract_hash_and_ref(): {:?}", ref_slice);
     let split = ref_slice.split(' ').collect::<Vec<&str>>();
     let hash = split[0];
     let reference = split[1];
@@ -45,4 +47,14 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     }
     //println!("Pares hash - ref{:?}", references);
     Ok(references)
+}
+
+pub fn assemble_want_message(references: &Vec<(String,String)>)->Result<String,String>{
+    let mut want_message = String::new();
+    for refer in references{
+        let length_hexa = format!("{:04X}",8 + refer.0.len() + 2);
+        want_message = length_hexa + "want " + &refer.0 + "\n";
+    }
+    want_message = want_message + "00000009done\n";
+    Ok(want_message)
 }

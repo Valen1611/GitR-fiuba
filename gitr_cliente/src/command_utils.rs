@@ -7,7 +7,6 @@ use sha1::{Sha1, Digest};
 use crate::file_manager::{read_index, self};
 use crate::objects::tree::Tree;
 use crate::objects::{blob::{TreeEntry, Blob}, commit::Commit};
-use crate::git_transport::*;
 
 pub fn sha1hashing(input: String) -> Vec<u8> {
     let mut hasher = Sha1::new();
@@ -124,7 +123,7 @@ commit->tree
                 |-mods.rs
                 |-commit.rs
 */
-pub fn create_trees (tree_map:HashMap<String, Vec<String>>, current_dir: String) -> Result<Tree, Box<dyn Error>> {
+pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) -> Result<Tree, Box<dyn Error>> {
     let mut tree_entry: Vec<(String,TreeEntry)> = Vec::new();
     if let Some(objs) = tree_map.get(&current_dir) {
         for obj in objs {
@@ -283,16 +282,22 @@ pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, Bo
     Ok(response)
 }
 
+pub fn read_and_print_socket_read(socket: &mut TcpStream){
+    let mut buffer = [0;1024];
+    let bytes_read = socket.read(&mut buffer).unwrap();
+    let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
+    println!("String recibido de tamaño {}: {:?}", bytes_read, received_data)
+}
+
 #[cfg(test)]
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
 mod tests{
     use std::{net::TcpStream, io::{Write, Read}};
 
-    
-    use crate::git_transport::*;
+    use crate::git_transport::ref_discovery::{self, assemble_want_message};
 
     use super::*;
-
+    
     #[test]
     fn test00_clone_connects_to_daemon_correctly(){
         assert!(clone_connect_to_server("localhost:9418".to_string()).is_ok());
@@ -320,10 +325,14 @@ mod tests{
         [("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "HEAD".to_string()), 
         ("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "refs/heads/main".to_string())]);
     }
+    
+    #[test]
     fn test04_clone_sends_wants_correctly(){
         let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
         clone_send_git_upload_pack(&mut socket).unwrap();
         let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
-        
+        let references = ref_discovery::discover_references(ref_disc).unwrap();
+        socket.write(assemble_want_message(&references).unwrap().as_bytes()).unwrap();
+        read_and_print_socket_read(&mut socket);
     }
 }

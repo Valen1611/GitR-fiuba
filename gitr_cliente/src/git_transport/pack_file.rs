@@ -159,20 +159,6 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<(), String> {
     Ok(())
 }
 
-
-
-fn assemble_want_message(references: &Vec<(String,String)>)->Result<String,String>{
-    let mut want_message = String::new();
-    for refer in references{
-        let length_hexa = format!("{:04X}",8 + refer.0.len() + 2);
-        println!("Para el hash {} el largo del mensaje es {}", refer.0,length_hexa);
-        want_message = length_hexa + "want " + &refer.0 + "\n";
-    }
-    want_message = want_message + "00000009done\n";
-    println!("{:?}", want_message);
-    Ok(want_message)
-}
-
 impl PackFile{
     pub fn new_from_server_packfile(buffer: &mut[u8])->Result<PackFile, String>{
         verify_header(&buffer[..=3])?;
