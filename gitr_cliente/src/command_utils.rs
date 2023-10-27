@@ -4,9 +4,10 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 
-use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}};
-
-
+use crate::file_manager::{read_index, self};
+use crate::objects::tree::Tree;
+use crate::objects::{blob::{TreeEntry, Blob}, commit::Commit};
+use crate::git_transport::*;
 
 pub fn sha1hashing(input: String) -> Vec<u8> {
     let mut hasher = Sha1::new();
@@ -28,7 +29,7 @@ pub fn print_blob_data(raw_data: &str) {
 
 pub fn print_tree_data(raw_data: &str){
     let files = raw_data.split("\n").collect::<Vec<&str>>();
-    
+    println!("files: {:?} ", files);
     for object in files {
 
         let file_atributes = object.split(" ").collect::<Vec<&str>>();
@@ -75,11 +76,13 @@ pub fn visit_dirs(dir: &Path) -> Vec<String> {
             if let Ok(entry) = entry {
                 let path = entry.path();
                 if path.is_dir() {
+                    if path.ends_with("gitr") {
+                        continue;
+                    }
                     let mut subfiles = visit_dirs(&path);
                     files.append(&mut subfiles);
                 } else if let Some(path_str) = path.to_str() {
                     files.push(path_str.to_string());
-                    println!("{}", path.display());
                 }
             }
         }
@@ -141,6 +144,14 @@ pub fn create_trees (tree_map:HashMap<String, Vec<String>>, current_dir: String)
     Ok(tree)
 }
 
+/*
+
+src -> commands -> commands.rs
+    -> objects -> blob.rs
+    -> hello.rs
+*/
+
+
 pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); // orden en el que insertamos carpetas
@@ -188,15 +199,19 @@ pub fn get_tree_entries(message:String) -> Result<(), Box<dyn Error>>{
     let tree_all = create_trees(tree_map, tree_order[0].clone())?;
     let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
     final_tree.save()?;
-    let head = file_manager::get_head();
+    let head = file_manager::get_head()?;
     let commit = Commit::new(final_tree.get_hash(), head.clone(), get_current_username(), get_current_username(), message)?;
     commit.save()?;
     if head == "None"{
-        let _ = file_manager::write_file(String::from("gitr/refs/heads/master"), commit.get_hash());
+        let repo = file_manager::get_current_repo()?;
+        let dir = repo + "/gitr/refs/heads/master";
+        let _ = file_manager::write_file(dir, commit.get_hash())?;
     }else{
-        let path = format!("gitr/{}", head);
-        let _ = file_manager::write_file(path.clone(), commit.get_hash());
-    }
+        let repo = file_manager::get_current_repo()?;
+        let dir = repo + "/gitr/" + &head;
+        let _ = file_manager::write_file(dir, commit.get_hash())?;
+        
+    }   
     Ok(())
 }
 
@@ -213,7 +228,7 @@ pub fn get_current_username() -> String{
 }
 
 pub fn print_branches()-> Result<(), Box<dyn Error>>{
-    let head = file_manager::get_head();
+    let head = file_manager::get_head()?;
     let head_vec = head.split("/").collect::<Vec<&str>>();
     let head = head_vec[head_vec.len()-1];
     let branches = file_manager::get_branches()?;
@@ -273,7 +288,8 @@ pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, Bo
 mod tests{
     use std::{net::TcpStream, io::{Write, Read}};
 
-    use crate::git_transport::ref_discovery::discover_references;
+    
+    use crate::git_transport::*;
 
     use super::*;
 
@@ -300,7 +316,7 @@ mod tests{
         let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
         clone_send_git_upload_pack(&mut socket).unwrap();
         let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
-        assert_eq!(discover_references(ref_disc).unwrap(), 
+        assert_eq!(ref_discovery::discover_references(ref_disc).unwrap(), 
         [("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "HEAD".to_string()), 
         ("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "refs/heads/main".to_string())]);
     }

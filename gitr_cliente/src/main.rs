@@ -4,6 +4,15 @@ use gitr_cliente::git_transport::pack_file::*;
 use std::{thread, net::{TcpStream, TcpListener}, io::{Write, Read}};
 use flate2::write::ZlibEncoder;
 use flate2::read::ZlibDecoder;
+use std::error::Error;
+use std::{env, io};
+mod commands;
+mod objects;
+mod file_manager;
+mod gitr_errors;
+use std::io::{stdin,stdout};
+mod command_utils;
+mod logger;
 
 
 
@@ -16,7 +25,6 @@ fn main(){
     let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         
     println!("Leo {} bytes por el socket",bytes_read);
-
 
     while bytes_read != 0{
         let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
@@ -47,3 +55,21 @@ fn main(){
     println!("String recibido: --{:?}--", buffer);
     PackFile::new_from_server_packfile(&mut buffer[..]).unwrap();
 }
+/*
+
+
+
+status (git man page) ✶✶✶
+
+checkout (git man page) ✶✶✶✶✶
+
+log (git man page)  ✶✶
+
+clone (git man page)
+fetch (git man page)
+merge (git man page)
+remote (git man page)
+pull (git man page)
+push (git man page)
+
+*/
