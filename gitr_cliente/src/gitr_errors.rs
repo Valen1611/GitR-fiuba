@@ -1,4 +1,4 @@
-use std::error::Error;
+
 use std::fmt;
 
 
@@ -16,7 +16,7 @@ pub enum GitrError{
 
     NoHead,
     AlreadyInitialized,
-    //NoRepository,
+    NoRepository,
     InvalidArgumentError(String, String),
     LogError,
     CompressionError,

@@ -1,9 +1,13 @@
+
 extern crate flate2;
 use gitr_cliente::git_transport::pack_file::*;
 
 use std::{thread, net::{TcpStream, TcpListener}, io::{Write, Read}};
 use flate2::write::ZlibEncoder;
 use flate2::read::ZlibDecoder;
+
+pub mod server;
+
 use std::error::Error;
 
 use std::{env, io};
