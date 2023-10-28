@@ -2232,3 +2232,13 @@
 {"type": "FileOperation","timestamp": "27-10-2023 23:30:24","message": "writing data to: .head_repo"}
 {"type": "FileOperation","timestamp": "27-10-2023 23:30:24","message": "creating dir: test_init_exists"}
 {"type": "FileOperation","timestamp": "27-10-2023 23:30:24","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "28-10-2023 16:53:36","message": "calling h with flags: ["hola"]"}
+{"type": "FileOperation","timestamp": "28-10-2023 16:53:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "28-10-2023 16:53:36","message": "reading data from: test_cat_file_blob/hola"}
+{"type": "Error","timestamp": "28-10-2023 16:53:36","message": "No se pudo leer: test_cat_file_blob/hola"}
+{"type": "Error","timestamp": "28-10-2023 16:53:36","message": "No se pudo leer el archivo test_cat_file_blob/hola"}
+{"type": "Action","timestamp": "28-10-2023 16:53:46","message": "calling gtr with flags: ["funca"]"}
+{"type": "FileOperation","timestamp": "28-10-2023 16:53:46","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "28-10-2023 16:53:51","message": "calling h with flags: ["holis"]"}
+{"type": "FileOperation","timestamp": "28-10-2023 16:53:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "28-10-2023 16:53:51","message": "reading data from: funca/holis"}

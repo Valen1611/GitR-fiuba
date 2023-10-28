@@ -1,3 +1,4 @@
+pub mod server;
 use std::error::Error;
 use std::io;
 mod commands;
