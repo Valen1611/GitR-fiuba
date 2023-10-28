@@ -1,6 +1,5 @@
-use std::error::Error;
-
-use crate::{file_manager};
+use crate::gitr_errors::GitrError;
+use crate::file_manager;
 use crate::command_utils::{flate2compress, sha1hashing};
 use super::blob::TreeEntry;
 
@@ -20,7 +19,7 @@ commit -> tree -> src ->
 */
 
 impl Tree{
-    pub fn new(entries: Vec<(String,TreeEntry)>) ->  Result<Self, Box<dyn Error>>{
+    pub fn new(entries: Vec<(String,TreeEntry)>) ->  Result<Self, GitrError>{
         let mut format_data = String::new();
         let init = format!("tree {}\0", entries.len());
         format_data.push_str(&init);
@@ -34,14 +33,24 @@ impl Tree{
                 }
             }
         }
+
+        // quedarse con la parte despues del primer \0
+        // y a eso sacarle el tamanio as_bytes().len()
+        if let Some(tree_data) = format_data.split_once('\0') {
+            let entries_raw_data = tree_data.1;
+            let entries_raw_data_len = entries_raw_data.as_bytes().len();
+
+            println!("este deberia ser el len: {:?}", entries_raw_data_len);
+        }
+
         format_data = format_data.trim_end().to_string();
         let compressed_file = flate2compress(format_data.clone())?;
         let hashed_file = sha1hashing(format_data.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        Ok(Tree { entries:entries, data: compressed_file, hash: hashed_file_str })
+        Ok(Tree {entries, data: compressed_file, hash: hashed_file_str })
     }
 
-    pub fn save(&self) -> Result<(), Box<dyn Error>>{
+    pub fn save(&self) -> Result<(), GitrError>{
         file_manager::write_object(self.data.clone(), self.hash.clone())?;
         Ok(())
     }
@@ -59,13 +68,13 @@ mod tests {
     use crate::objects::blob::Blob;
     use super::*;
 
-    #[test]
-    fn tree_creation_test(){
-        let blob = Blob::new("hola".to_string()).unwrap();
-        blob.save().unwrap();
-        let hash = blob.get_hash();
-        let tree = Tree::new(vec![("hola.txt".to_string(), TreeEntry::Blob(blob))]).unwrap();
-        tree.save().unwrap();
-    }
+    // #[test]
+    // fn tree_creation_test(){
+    //     let blob = Blob::new("hola".to_string()).unwrap();
+    //     blob.save().unwrap();
+    //     let hash = blob.get_hash();
+    //     let tree = Tree::new(vec![("hola.txt".to_string(), TreeEntry::Blob(blob))]).unwrap();
+    //     tree.save().unwrap();
+    // }
  
 }

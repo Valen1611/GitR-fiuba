@@ -2,14 +2,14 @@ use std::fs;
 
 use::chrono;
 
-use crate::file_manager;
+use crate::{file_manager, gitr_errors::GitrError};
 
 #[derive(Debug)]
 enum EntryType {
     Error,
     Action,
     FileOperation,
-    ServerConection,
+    //ServerConection,
 }
 
 
@@ -32,31 +32,34 @@ impl Logger {
     }
 
 
-    pub fn save(&self) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn save(&self) -> Result<(), GitrError> {
         let entry = format!(
             "{{\"type\": \"{:?}\",\"timestamp\": \"{}\",\"message\": \"{}\"}}",
             self.entry_type, self.timestamp, self.message
         );
-        file_manager::append_to_file("src/log.json".to_string(), entry)?;
-        Ok(())
+        match file_manager::append_to_file("src/log.json".to_string(), entry) {
+            Ok(_) => Ok(()),
+            Err(_) => Err(GitrError::LogError),
+        }
     }
 
 }
 
 
-pub fn log_error(message: String) -> Result<(), Box<dyn std::error::Error>> {
+pub fn log_error(message: String) -> Result<(), GitrError> {
     let logger = Logger::new(EntryType::Error, message);
     logger.save()?;
     Ok(())
 }
 
-pub fn log_action(message: String) -> Result<(), Box<dyn std::error::Error>> {
+pub fn log_action(message: String) -> Result<(), GitrError> {
     let logger = Logger::new(EntryType::Action, message);
+
     logger.save()?;
     Ok(())
 }
 
-pub fn log_file_operation(message: String) -> Result<(), Box<dyn std::error::Error>> {
+pub fn log_file_operation(message: String) -> Result<(), GitrError> {
     let logger = Logger::new(EntryType::FileOperation, message);
     logger.save()?;
     Ok(())
@@ -66,7 +69,7 @@ pub fn log (flags: Vec<String>) -> Result<(), Box<dyn std::error::Error>>{
     let n = flags[0].parse::<usize>()?;
 
     //let log = file_manager::read_file("src/log.json".to_string())?;
-    let log = fs::read_to_string("src/log.json".to_string())?;
+    let log = fs::read_to_string("src/log.json")?;
     //esto se emprolija cuando al abrir se abre un json object y se filtra por tipo
     for line in log.lines().rev().take(n){
         let msg = line.split("message\": ").collect::<Vec<&str>>()[1];
