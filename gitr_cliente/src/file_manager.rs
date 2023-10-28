@@ -8,6 +8,7 @@ use crate::command_utils::{flate2compress, print_commit_data};
 use crate::gitr_errors::GitrError;
 use crate::{logger, file_manager};
 
+use chrono::{Utc, TimeZone, DateTime, Local};
 use flate2::read::ZlibDecoder;
 
 
@@ -452,6 +453,44 @@ pub fn delete_all_files()-> Result<(), Box<dyn Error>>{
     Ok(())
 }
 
+pub fn get_parent_commit(commit: String)->Result<String, GitrError>{
+    let commit = read_object(&commit)?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+    let parent = commit[1].split(' ').collect::<Vec<&str>>()[1];
+    Ok(parent.to_string())
+
+}
+
+pub fn get_commit_author(commit: String)->Result<String, GitrError>{
+    let commit = read_object(&commit)?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+    let author = commit[3].split(' ').collect::<Vec<&str>>()[1];
+    Ok(author.to_string())
+}
+
+pub fn get_commit_date(commit: String)->Result<String, GitrError>{
+    let commit = read_object(&commit)?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+    let timestamp = commit[2].split(' ').collect::<Vec<&str>>()[2];
+    let timestamp_parsed = match timestamp.parse::<i64>(){
+        Ok(timestamp) => timestamp,
+        Err(_) => return Err(GitrError::TimeError),
+    };
+    let dt = Utc.timestamp_opt(timestamp_parsed, 0);
+    let dt = match dt.single(){
+        Some(dt) => dt,
+        None => return Err(GitrError::TimeError),
+    };
+    let date = dt.format("%a %b %d %H:%M:%S %Y %z").to_string();
+    Ok(date)
+}
+
+pub fn get_commit_message(commit: String)->Result<String, GitrError>{
+    let commit = read_object(&commit)?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+    let message = commit[5..].join("\n");
+    Ok(message)
+}
 
 pub fn update_current_repo(dir_name: &String) -> Result<(), GitrError> {
     write_file(".head_repo".to_string(), dir_name.to_string())?;
@@ -469,15 +508,19 @@ pub fn print_commit_log(quantity: String)-> Result<(), GitrError>{
     let mut counter = 0;
     loop{
         counter += 1;
-        let commit = read_object(&current_commit)?;
-        print_commit_data(&commit);
-        println!("\n");
-        let commit = commit.split('\n').collect::<Vec<&str>>();
-        let parent = commit[1].split(' ').collect::<Vec<&str>>()[1];
+        let format_commit = format!("commit: {}", current_commit);
+        println!("\x1b[34m{}\x1b[0m", format_commit);
+        let parent = get_parent_commit(current_commit.clone())?;
+        let date = get_commit_date(current_commit.clone())?;
+        let author = get_commit_author(current_commit.clone())?;
+        let message = get_commit_message(current_commit.clone())?;
+        println!("Author: {}", author);
+        println!("Date: {}\n", date);
+        println!("\t{}\n", message);
         if parent == "None" || counter == limit{
             break;
         }
-        current_commit = parent.to_string();
+        current_commit = parent;
     }
 
     Ok(())

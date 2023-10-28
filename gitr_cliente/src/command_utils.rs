@@ -3,6 +3,7 @@ use std::{io::Write, fs, path::Path, error::Error, collections::HashMap};
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 

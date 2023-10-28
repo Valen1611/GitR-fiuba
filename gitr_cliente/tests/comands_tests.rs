@@ -1,7 +1,8 @@
 use std::{path::Path, fs};
-use gitr_cliente::command_utils;
+use gitr_cliente::{command_utils, file_manager};
+use gitr_cliente::objects::blob::Blob;
 use gitr_cliente::{commands::commands, gitr_errors::GitrError};
-use gitr_cliente::file_manager::{get_current_repo, update_current_repo};
+use gitr_cliente::file_manager::{get_current_repo, update_current_repo, write_file};
 use serial_test::serial;
 
 
@@ -55,6 +56,8 @@ fn test_hash_object() {
     // remove the repo
     fs::remove_dir_all("testing_hash_object_repo").unwrap();
 }
+
+
 fn test_hash_object_file(repo_path: String) {
     // creamos un archivo para pasarle al comando
     let file_path = String::from("test_hash_object_print.txt");
@@ -80,3 +83,97 @@ fn test_hash_object_file(repo_path: String) {
     assert!(Path::new(&expected_folder).is_dir());
     assert!(Path::new(&expected_file).is_file());
 } 
+
+
+/*********************
+  CAT-FILE TESTS
+*********************/
+#[test]
+#[serial]
+fn test_cat_file_blob(){
+    let last_repo = get_current_repo().unwrap();
+    commands::init(vec!["test_cat_file_blob".to_string()]).unwrap();
+    let _ = write_file("test_cat_file_blob/blob1".to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file("test_cat_file_blob/blob2".to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["test_cat_file_blob/blob1".to_string()]).unwrap();
+    commands::add(vec!["test_cat_file_blob/blob2".to_string()]).unwrap();
+    let hash1 = Blob::new("Hello, im blob 1".to_string()).unwrap().get_hash();
+    let hash2 = Blob::new("Hello, im blob 2".to_string()).unwrap().get_hash();
+    let res1 = commands::cat_file(vec!["-p".to_string(), hash1]).unwrap();
+    let res2 = commands::cat_file(vec!["-p".to_string(), hash2]).unwrap();
+
+    
+    
+    
+
+    update_current_repo(&last_repo).unwrap();
+    fs::remove_dir_all("test_cat_file_blob").unwrap();
+
+}
+
+/*********************
+  ADD TESTS
+*********************/
+#[test]
+#[serial]
+fn test_add(){
+    let last_repo = get_current_repo().unwrap();
+    commands::init(vec!["test_add_blob".to_string()]).unwrap();
+    let _ = write_file("test_add_blob/blob1".to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file("test_add_blob/blob2".to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()]).unwrap();
+    commands::add(vec!["blob2".to_string()]).unwrap();
+    let hash1 = Blob::new("Hello, im blob 1".to_string()).unwrap().get_hash();
+    let hash2 = Blob::new("Hello, im blob 2".to_string()).unwrap().get_hash();
+    assert!(Path::new("test_add_blob/gitr/index").is_file());
+    let index = file_manager::read_index().unwrap();
+    assert!(index.contains(&hash1));
+    assert!(index.contains(&hash2));
+    let hash1_dir = "test_add_blob/gitr/objects/".to_string() + &hash1[..2];
+    let hash2_dir = "test_add_blob/gitr/objects/".to_string() + &hash2[..2];
+    assert!(Path::new(&hash1_dir).is_dir());
+    assert!(Path::new(&hash2_dir).is_dir());
+    let hash1_file = hash1_dir.clone() + "/" + &hash1[2..];
+    let hash2_file = hash2_dir.clone() + "/" + &hash2[2..];
+    assert!(Path::new(&hash1_file).is_file());
+    assert!(Path::new(&hash2_file).is_file());
+    update_current_repo(&last_repo).unwrap();
+    fs::remove_dir_all("test_add_blob").unwrap();
+
+}
+
+/*********************
+  RM TESTS
+*********************/
+#[test]
+#[serial]
+fn test_rm(){
+    let last_repo = get_current_repo().unwrap();
+    commands::init(vec!["test_rm_blob".to_string()]).unwrap();
+    let _ = write_file("test_rm_blob/blob1".to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file("test_rm_blob/blob2".to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()]).unwrap();
+    commands::add(vec!["blob2".to_string()]).unwrap();
+    let hash1 = Blob::new("Hello, im blob 1".to_string()).unwrap().get_hash();
+    let hash2 = Blob::new("Hello, im blob 2".to_string()).unwrap().get_hash();
+    assert!(Path::new("test_rm_blob/gitr/index").is_file());
+    let index = file_manager::read_index().unwrap();
+    assert!(index.contains(&hash1));
+    assert!(index.contains(&hash2));
+    let hash1_dir = "test_rm_blob/gitr/objects/".to_string() + &hash1[..2];
+    let hash2_dir = "test_rm_blob/gitr/objects/".to_string() + &hash2[..2];
+    assert!(Path::new(&hash1_dir).is_dir());
+    assert!(Path::new(&hash2_dir).is_dir());
+    let hash1_file = hash1_dir.clone() + "/" + &hash1[2..];
+    let hash2_file = hash2_dir.clone() + "/" + &hash2[2..];
+    assert!(Path::new(&hash1_file).is_file());
+    assert!(Path::new(&hash2_file).is_file());
+    commands::rm(vec!["blob1".to_string()]).unwrap();
+    commands::rm(vec!["blob2".to_string()]).unwrap();
+    let index = file_manager::read_index().unwrap();
+    assert!(!index.contains(&hash1));
+    assert!(!index.contains(&hash2));
+    update_current_repo(&last_repo).unwrap();
+    fs::remove_dir_all("test_rm_blob").unwrap();
+
+}

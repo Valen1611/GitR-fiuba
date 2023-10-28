@@ -1,4 +1,6 @@
 use std::mem;
+use chrono::{Utc, Local};
+
 use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing};
 
@@ -19,10 +21,10 @@ impl Commit{
         // agregar la palabra tree que falta
         // y fijarse como agarrar el tamanio
         format_data.push_str(&init);
-        format_data.push_str(&tree);
-        format_data.push_str("\n");
+        let tree_format = format!("tree {}\n", tree);
+        format_data.push_str(&tree_format);
         format_data.push_str(&format!("parent {}\n", parent));
-        format_data.push_str(&format!("author {}\n", author));
+        format_data.push_str(&format!("author {} {} {} \n", author, Utc::now().timestamp(), Local::now().offset()));
         format_data.push_str(&format!("committer {}\n", committer));
         format_data.push_str("\n");
         format_data.push_str(&message);

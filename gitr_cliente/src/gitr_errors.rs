@@ -20,6 +20,7 @@ pub enum GitrError{
     InvalidArgumentError(String, String),
     LogError,
     CompressionError,
+    TimeError,
 }
 
 impl fmt::Display for GitrError{
@@ -37,6 +38,8 @@ impl fmt::Display for GitrError{
             Self::LogError => write!(f, "ERROR: No se pudo escribir en el log"),
             Self::CompressionError => write!(f, "No se pudo comprimir el archivo"),
             Self::InvalidArgumentError(got, usage) => write!(f, "Argumentos invalidos.\n    Recibi: {}\n    Uso: {}\n", got, usage),
+            Self::TimeError => write!(f, "No se pudo obtener el tiempo actual"),
+            
     }
 }
 }

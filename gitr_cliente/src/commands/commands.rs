@@ -57,7 +57,6 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
     let res_output = file_manager::read_object(&flags[1])?;
-    println!("data cruda: {:?}", res_output);
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
@@ -305,7 +304,7 @@ pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
     }
 
     if flags[0] == "--stage"{
-        let res_output = file_manager::read_index().unwrap();
+        let res_output = file_manager::read_index()?;
         println!("{}", res_output);
     }
     Ok(())
