@@ -1,2 +1,6 @@
+
 target
 gitr_cliente/target/.rustc_info.json
+/gitr_cliente/target
+/gitr_cliente/gitr/objects
+
