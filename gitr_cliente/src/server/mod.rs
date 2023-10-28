@@ -72,8 +72,8 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
 
         // ########## ELECCION DE COMANDO ##########
         match elems[0] {
-            "gitr-upload-pack" => {gitr_upload_pack(&mut stream, guardados_id, r_path)?;},
-            "gitr-receive-pack" => {gitr_receive_pack(&mut stream, r_path)?;},
+            "gitr-upload-pack" => {gitr_upload_pack(&mut stream, guardados_id, r_path)?;}, // Mandar al cliente
+            "gitr-receive-pack" => {gitr_receive_pack(&mut stream, r_path)?;}, // Recibir del Cliente
             _ => {stream.write(&"Error: comando git no reconocido".as_bytes())?;}
         }
     }
@@ -86,7 +86,9 @@ fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_pat
     let (wants_id, haves_id) = packfile_negotiation(stream, guardados_id, r_path.clone())?;
     
     // ########## PACKFILE DATA ##########
-    snd_packfile(stream, wants_id,haves_id, r_path)?;
+    if !wants_id.is_empty() {
+        snd_packfile(stream, wants_id,haves_id, r_path)?;
+    }
 
     Ok(())
 }
@@ -149,9 +151,9 @@ fn _is_commit(obj: String) -> bool {
 fn get_object(id: String, r_path: String) -> std::io::Result<String> {
     let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
     let mut archivo = File::open(&format!("{}/{}",dir_path,id.split_at(2).1))?; // si no existe tira error
-    let mut contenido = String::new();
-    archivo.read_to_string(&mut contenido)?;
-    let descomprimido = String::from_utf8_lossy(&decode(&contenido.as_bytes())?).to_string();
+    let mut contenido: Vec<u8>= Vec::new();
+    archivo.read_to_end(&mut contenido)?;
+    let descomprimido = String::from_utf8_lossy(&decode(&contenido)?).to_string();
     Ok(descomprimido)
 }
 
@@ -196,10 +198,10 @@ fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>, r
         } else if pkt_line == "0009done\n" { // el cliente cierra el packet-file
             break;
         }
-        (wants_id, haves_id) = wants_n_haves("cadena que envio el cliente".to_string())?;
+        (wants_id, haves_id) = wants_n_haves(String::from_utf8_lossy(&buffer).to_string(),wants_id,haves_id)?;
         for want in wants_id.clone() {
             if !guardados_id.contains(&want) {
-                reply = format!("Error: not our ref: {}\n",want);
+                return  Err(Error::new(std::io::ErrorKind::InvalidInput, format!("Error: not our ref: {}\n",want)));
 
             }
         }
@@ -281,9 +283,8 @@ fn pack_data_bruno(ids: Vec<String>, contents: Vec<String>) -> std::io::Result<S
     Ok(format!("ToDo"))
 }
 
-fn wants_n_haves(requests: String) -> std::io::Result<(Vec<String>,Vec<String>)> {
-    let mut wants:Vec<String> = Vec::new();
-    let mut haves: Vec<String> = Vec::new();
+fn wants_n_haves(requests: String, mut wants: Vec<String>, mut haves: Vec<String>) -> std::io::Result<(Vec<String>,Vec<String>)> {
+    
     let mut nuls_cont = 0;
 
     for line in requests.lines() {
@@ -312,12 +313,29 @@ fn wants_n_haves(requests: String) -> std::io::Result<(Vec<String>,Vec<String>)>
 fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
     let mut contenido_total = String::new();
     let mut guardados: HashSet<String> = HashSet::new();
-    ref_discovery_rec(r_path, &mut contenido_total,&mut guardados)?;
+    let ruta = format!("{}/HEAD",r_path);
+    let mut contenido = String::new();
+    let archivo = fs::File::open(&ruta)?;
+
+    BufReader::new(archivo).read_line(&mut contenido)?;
+    guardados.insert(contenido.clone());
+    let longitud = contenido.len() + 10;
+    let longitud_hex = format!("{:04x}", longitud);
+    contenido_total.push_str(&longitud_hex);
+    contenido_total.push_str(&contenido);
+    contenido_total.push_str(&(" ".to_string() + "HEAD"));
+    contenido_total.push('\n');
+    
+    let refs_path = format!("{}/refs",r_path);
+    ref_discovery_dir(&refs_path,r_path, &mut contenido_total,&mut guardados)?;
+    
     contenido_total.push_str("0000\n");
+    
     Ok((contenido_total,guardados))
 }
+    
 
-fn ref_discovery_rec(dir_path: &str,contenido_total: &mut String, guardados: &mut HashSet<String>) -> std::io::Result<()> {
+fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut String, guardados: &mut HashSet<String>) -> std::io::Result<()> {
     for elem in fs::read_dir(dir_path)? {
         let elem = elem?;
         let ruta = elem.path();
@@ -327,20 +345,15 @@ fn ref_discovery_rec(dir_path: &str,contenido_total: &mut String, guardados: &mu
             
             BufReader::new(archivo).read_line(&mut contenido)?;
             guardados.insert(contenido.clone());
-            let path_str = ruta.to_str().unwrap_or("ERROR").strip_prefix(&format!("{}\\",dir_path)).unwrap_or("ERROR");
+            let path_str = ruta.to_str().unwrap_or("ERROR").strip_prefix(&format!("{}\\",original_path)).unwrap_or("ERROR");
             let longitud = contenido.len() + path_str.len() + 6;
             let longitud_hex = format!("{:04x}", longitud);
             contenido_total.push_str(&longitud_hex);
             contenido_total.push_str(&contenido);
             contenido_total.push_str(&(" ".to_string() + path_str));
-            // if let Some("HEAD") = elem.file_name().to_str() {
-            //     contenido_total.push_str(&capacidades())
-            // }
             contenido_total.push('\n');
 
-        } else if ruta.is_dir() {
-            ref_discovery_rec(ruta.to_str().unwrap_or(""), contenido_total, guardados)?;
-        }
+        } 
     }
     Ok(())
 }
@@ -484,7 +497,7 @@ mod tests{
 0032want 74730d410fcb6603ace96f1dc55ea6196122532d
 0000
 0009done"};
-        let (wants,haves) = wants_n_haves(input.to_string()).unwrap();
+        let (wants,haves) = wants_n_haves(input.to_string(),Vec::new(), Vec::new()).unwrap();
         assert_eq!(wants[0], "74730d410fcb6603ace96f1dc55ea6196122532d");
         assert_eq!(wants[1], "7d1665144a3a975c05f1f43902ddaf084e784dbe");
         assert_eq!(wants[2], "5a3f6be755bbb7deae50065988cbfa1ffa9ab68a");
@@ -497,7 +510,9 @@ mod tests{
     fn test05_ref_discovery() {
         let (refs_string,_guardados) = ref_discovery("remote_repo").unwrap();
         print!("{}\n",refs_string);
-        assert_eq!(refs_string, "00327217a7c7e582c46cec22a130adf4b9d7d950fba0 HEAD\n0000\n")
+        let ref_lines: Vec<&str> = refs_string.lines().collect();
+        assert_eq!(ref_lines.first(), Some(&"00327217a7c7e582c46cec22a130adf4b9d7d950fba0 HEAD"));
+        assert_eq!(ref_lines.last(),Some(&"0000"))
     }
 
     #[test]
@@ -551,4 +566,17 @@ mod tests{
         assert!(fs::metadata(format!("{}/refs/heads/debug",r_path)).is_err());
         assert!(fs::metadata(format!("{}/refs/heads/master",r_path)).is_err());
     }
+
+    #[test]
+    fn test08_update_contents_n_get_object() {
+        let r_path = "remote_repo";
+        let _ = create_dirs(r_path);
+        let ids = vec!["74730d410fcb6603ace96f1dc55ea6196122532d".to_string(),"5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string()];
+        let content = vec!["Hola mundo".to_string(),"Chau mundo".to_string()];
+        update_contents(ids, content, r_path.to_string()).unwrap();
+        assert_eq!(get_object("74730d410fcb6603ace96f1dc55ea6196122532d".to_string(), r_path.to_string()).unwrap(), "Hola mundo");
+        assert_eq!(get_object("5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string(), r_path.to_string()).unwrap(), "Chau mundo");         
+
+    }
+
 }
