@@ -1,10 +1,11 @@
-use std::{io::Write, fs, path::Path, error::Error, collections::HashMap};
+use std::{io::{Write, Read}, fs, path::Path, error::Error, collections::HashMap, net::TcpStream};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use crate::file_manager::{read_index, self};
 use crate::{file_manager::{read_index, self}, objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -33,8 +34,10 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
+
 pub fn print_tree_data(raw_data: &str) {
     let files = raw_data.split('\n').collect::<Vec<&str>>();
+
     for object in files {
         println!("obj: {:?}", object);
         let file_atributes = object.split(' ').collect::<Vec<&str>>();
@@ -123,6 +126,7 @@ commit->tree
                 |-mods.rs
                 |-commit.rs
 */
+
 pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) -> Result<Tree, GitrError> {
     let mut tree_entry: Vec<(String,TreeEntry)> = Vec::new();
     if let Some(objs) = tree_map.get(&current_dir) {
@@ -258,4 +262,85 @@ pub fn branch_exists(branch: String) -> bool{
         }
     }
     false
+}
+
+pub fn clone_connect_to_server(address: String)->Result<TcpStream,Box<dyn Error>>{
+    let socket = TcpStream::connect(address)?;
+    Ok(socket)
+}
+
+pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, Box<dyn Error>>{
+    match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
+        Ok(bytes) => Ok(bytes),
+        Err(e) => Err(Box::new(e)),
+    }
+}
+
+pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, Box<dyn Error>>{
+    let mut buffer = [0; 1024];
+    let mut response = String::new();
+    loop{
+        let bytes_read = socket.read(&mut buffer)?;
+        let received_message = String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
+        if bytes_read == 0 || received_message == "0000"{ 
+            break;
+        }
+        response=String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
+    }
+    Ok(response)
+}
+
+pub fn read_and_print_socket_read(socket: &mut TcpStream){
+    let mut buffer = [0;1024];
+    let bytes_read = socket.read(&mut buffer).unwrap();
+    let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
+    println!("String recibido de tamaño {}: {:?}", bytes_read, received_data)
+}
+
+#[cfg(test)]
+// Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
+mod tests{
+    use std::{net::TcpStream, io::{Write, Read}};
+
+    use crate::git_transport::ref_discovery::{self, assemble_want_message};
+
+    use super::*;
+    
+    #[test]
+    fn test00_clone_connects_to_daemon_correctly(){
+        assert!(clone_connect_to_server("localhost:9418".to_string()).is_ok());
+    }
+
+    #[test]
+    fn test01_clone_send_git_upload_pack_to_daemon_correctly(){
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        assert_eq!(clone_send_git_upload_pack(&mut socket).unwrap(),49); //0x31 = 49
+    }
+    
+    #[test]
+    fn test02_clone_receive_daemon_reference_discovery_correctly(){
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        clone_send_git_upload_pack(&mut socket).unwrap();
+        assert_eq!(clone_read_reference_discovery(&mut socket).unwrap(),"0103cf6335a864bda2ee027ea7083a72d10e32921b15 HEAD\0multi_ack thin-pack side-band side-band-64k ofs-delta shallow deepen-since deepen-not deepen-relative no-progress include-tag multi_ack_detailed symref=HEAD:refs/heads/main object-format=sha1 agent=git/2.34.1\n003dcf6335a864bda2ee027ea7083a72d10e32921b15 refs/heads/main\n");
+    }
+
+    #[test]	
+    fn test03_clone_gets_reference_vector_correctly(){
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        clone_send_git_upload_pack(&mut socket).unwrap();
+        let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
+        assert_eq!(ref_discovery::discover_references(ref_disc).unwrap(), 
+        [("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "HEAD".to_string()), 
+        ("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "refs/heads/main".to_string())]);
+    }
+    
+    #[test]
+    fn test04_clone_sends_wants_correctly(){
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        clone_send_git_upload_pack(&mut socket).unwrap();
+        let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
+        let references = ref_discovery::discover_references(ref_disc).unwrap();
+        socket.write(assemble_want_message(&references).unwrap().as_bytes()).unwrap();
+        read_and_print_socket_read(&mut socket);
+    }
 }

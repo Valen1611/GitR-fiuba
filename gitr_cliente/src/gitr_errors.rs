@@ -1,4 +1,4 @@
-use std::error::Error;
+
 use std::fmt;
 
 
@@ -16,7 +16,7 @@ pub enum GitrError{
 
     NoHead,
     AlreadyInitialized,
-    //NoRepository,
+    NoRepository,
     InvalidArgumentError(String, String),
     LogError,
     CompressionError,
@@ -34,6 +34,8 @@ impl fmt::Display for GitrError{
             Self::FileReadError(path) => write!(f, "No se pudo leer el archivo {}", path),
             Self::NoHead => write!(f, "ERROR: No se encontro HEAD"),
             Self::AlreadyInitialized => write!(f, "ERROR: El repositorio ya esta inicializado"),
+            Self::NoRepository => write!(f, "ERROR: No se encontro el repositorio"),
+        
            // Self::NoRepository => write!(f, "ERROR: No se encontro el repositorio"),
             Self::LogError => write!(f, "ERROR: No se pudo escribir en el log"),
             Self::CompressionError => write!(f, "No se pudo comprimir el archivo"),
@@ -42,8 +44,7 @@ impl fmt::Display for GitrError{
             
     }
 }
+
 }
 
-
-
-impl Error for GitrError {}
+//impl Error for GitrError {}

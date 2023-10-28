@@ -1,8 +1,10 @@
-use std::error::Error;
+use std::{io::prelude::*, error::Error};
 
-use crate::{objects::blob::Blob, file_manager::{self, print_commit_log}, gitr_errors::GitrError};
+use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::read_pack_file};
+use crate::file_manager::print_commit_log;
 use crate::command_utils::*;
 
+use crate::git_transport::ref_discovery;
 
 /*
     NOTA: Puede que no todos los comandos requieran de flags,
@@ -224,8 +226,29 @@ pub fn log(flags: Vec<String>)->Result<(), GitrError> {
     Ok(())
 }
 
-pub fn clone(flags: Vec<String>) {
-    println!("clone");
+
+pub fn clone(flags: Vec<String>)->Result<(),Box<dyn Error>>{
+    let address = flags[0].clone();
+    let mut socket = clone_connect_to_server(address)?;
+    println!("clone():Servidor conectado.");
+    clone_send_git_upload_pack(&mut socket)?;
+    println!("clone():Envié upload-pack");
+    let ref_disc = clone_read_reference_discovery(&mut socket)?;
+    let references = ref_discovery::discover_references(ref_disc)?;
+    println!("clone():Referencias ={:?}=", references);
+    let want_message = ref_discovery::assemble_want_message(&references)?;
+    println!("clone():want {:?}", want_message);
+
+    socket.write(want_message.as_bytes())?;
+
+    let mut buffer = [0;1024];
+    socket.read(&mut buffer)?;
+    print!("clone(): recepeción de packfile:");
+    read_and_print_socket_read(&mut socket);
+
+    let objects = read_pack_file(&mut buffer)?;
+
+    Ok(())
 }
 
 pub fn fetch(flags: Vec<String>) {
@@ -248,9 +271,12 @@ pub fn push(flags: Vec<String>) {
     println!("push");
 }
 
-pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
+pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
     if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
-        print_branches()?;
+        match print_branches() {
+            Ok(()) => (),
+            Err(e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
+        };
     }
     if flags.len() == 2 && flags[0] == "-d"{
         // falta chequear si el branch está al día, xq sino se usa -D
@@ -281,7 +307,10 @@ pub fn branch(flags: Vec<String>)->Result<(), Box<dyn Error>>{
         let repo = file_manager::get_current_repo()?;
         let old_path = format!("{}/gitr/refs/heads/{}", repo, flags[1]);
         let new_path = format!("{}/gitr/refs/heads/{}", repo, flags[2]);
-        file_manager::move_branch(old_path.clone(), new_path.clone())?;
+        match file_manager::move_branch(old_path.clone(), new_path.clone()) {
+            Ok(()) => (),
+            Err(e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
+        };
         file_manager::update_head(&new_path)?;
         return Ok(())
 
@@ -338,3 +367,14 @@ pub fn print_current_repo() -> Result<(), GitrError> {
     Ok(())
 }
 
+#[cfg(test)]
+mod tests{
+
+    use super::*;
+    #[test]
+    fn test00_clone_from_daemon(){
+        let mut flags = vec![];
+        flags.push("localhost:9418".to_string());
+        assert!(clone(flags).is_ok());
+    }
+}

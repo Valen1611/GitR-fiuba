@@ -4,10 +4,15 @@ use crate::file_manager;
 use crate::gitr_errors::GitrError;
 use crate::objects::tree::Tree;
 use crate::command_utils::{flate2compress, sha1hashing};
+
+#[derive(Debug)]
+
 pub enum TreeEntry {
     Blob(Blob),
     Tree(Tree),
 }
+
+#[derive(Debug)]
 pub struct Blob{
     compressed_data: Vec<u8>,
     hash: String,

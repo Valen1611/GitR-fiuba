@@ -4,6 +4,7 @@ use chrono::{Utc, Local};
 use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing};
 
+#[derive(Debug)]
 pub struct Commit{
     data: Vec<u8>,
     hash: String,
