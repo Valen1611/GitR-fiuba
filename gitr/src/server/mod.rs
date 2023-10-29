@@ -102,7 +102,6 @@ fn gitr_receive_pack (stream: &mut TcpStream, r_path: String) -> std::io::Result
     let pkt_needed = update_refs(old, new, names, r_path.clone())?;
 
     // ########## *PACKFILE DATA ##########
-    let ids: Vec<String> = vec![];
     if pkt_needed {
         let (ids, content) = rcv_packfile_bruno(stream)?;
         update_contents(ids, content, r_path.clone())?;
@@ -334,7 +333,6 @@ fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
     Ok((contenido_total,guardados))
 }
     
-
 fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut String, guardados: &mut HashSet<String>) -> std::io::Result<()> {
     for elem in fs::read_dir(dir_path)? {
         let elem = elem?;

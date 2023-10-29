@@ -1,6 +1,6 @@
 {
     "rust-analyzer.linkedProjects": [
-        "./gitr_cliente/Cargo.toml"
+        "./gitr/Cargo.toml"
     ],
     "rust-analyzer.showUnlinkedFileNotification": false
 }

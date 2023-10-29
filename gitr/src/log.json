@@ -2250,3 +2250,21 @@
 {"type": "Action","timestamp": "28-10-2023 18:01:59","message": "calling c with flags: ["-p", "37446a89504739eb01f612ace745b45cf2eebb19"]"}
 {"type": "FileOperation","timestamp": "28-10-2023 18:01:59","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "28-10-2023 18:01:59","message": "reading data from: funca/gitr/objects/37/446a89504739eb01f612ace745b45cf2eebb19"}
+{"type": "Action","timestamp": "28-10-2023 18:43:18","message": "calling gitr with flags: ["init", "pruebas_pull_cliente"]"}
+{"type": "Error","timestamp": "28-10-2023 18:43:18","message": "Argumentos invalidos.
+    Recibi: invalid command: gitr
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "28-10-2023 18:43:55","message": "calling init with flags: ["pruebas_cliente_pull"]"}
+{"type": "FileOperation","timestamp": "28-10-2023 18:43:55","message": "creating dir: pruebas_cliente_pull"}
+{"type": "FileOperation","timestamp": "28-10-2023 18:43:55","message": "creating dir: pruebas_cliente_pull/gitr"}
+{"type": "FileOperation","timestamp": "28-10-2023 18:43:55","message": "creating dir: pruebas_cliente_pull/gitr/objects"}
+{"type": "FileOperation","timestamp": "28-10-2023 18:43:55","message": "creating dir: pruebas_cliente_pull/gitr/refs"}
+{"type": "FileOperation","timestamp": "28-10-2023 18:43:55","message": "creating dir: pruebas_cliente_pull/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "28-10-2023 18:43:55","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "28-10-2023 18:44:03","message": "calling git with flags: ["pull"]"}
+{"type": "Error","timestamp": "28-10-2023 18:44:03","message": "Argumentos invalidos.
+    Recibi: invalid command: git
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "28-10-2023 18:44:09","message": "calling pull with flags: []"}

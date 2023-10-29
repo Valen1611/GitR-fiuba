@@ -1,3 +1,4 @@
+// use std::fmt::Result;
 use std::{io::prelude::*, error::Error};
 
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::read_pack_file};
@@ -262,8 +263,13 @@ pub fn remote(flags: Vec<String>) {
     println!("remote");
 }
 
-pub fn pull(flags: Vec<String>) {
+pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
+    if !flags.is_empty(){
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "pull <no-args>".to_string()));
+    }
+    
     println!("pull");
+    Ok(())
 }
 
 pub fn push(flags: Vec<String>) {
