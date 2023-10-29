@@ -1,13 +1,14 @@
 use gtk::ffi::GtkNotebook;
 use gtk::{prelude::*, glib::BoolError, ApplicationWindow, Application};
 
-use gtk::{Builder,Window, Button};
+use gtk::{Builder,Window, Button, FileChooserButton};
 use gtk::builders::NotebookBuilder;
+
+use crate::objects;
 
 
 fn build_ui(application: &gtk::Application){
     let glade_src = include_str!("gui_test.glade");
-    //println!("{}",glade_src);
     let builder = Builder::from_string(glade_src);
 
     let objetos = builder.objects();
@@ -16,6 +17,9 @@ fn build_ui(application: &gtk::Application){
     
 
     let window:Window = builder.object("main_window").unwrap();
+    let repo_selector:FileChooserButton = builder.object("repo_selector").unwrap();
+
+
 
     window.set_application(Some(application));
     window.set_title("test");

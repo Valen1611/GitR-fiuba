@@ -1,6 +1,6 @@
 
 
-use gitr_cliente::{commands, logger, gitr_errors::GitrError};
+use gitr_cliente::{commands, logger, gitr_errors::GitrError, gui::pruebas_gtk::initialize_gui};
 
 use std::io::{Write, self};
 extern crate flate2;
@@ -65,6 +65,7 @@ extern crate flate2;
         Ok(input)
     }
     fn main() {
+        initialize_gui();
     
         let mut input = String::new();
     
