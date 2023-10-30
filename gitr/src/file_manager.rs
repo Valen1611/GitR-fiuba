@@ -11,7 +11,13 @@ use crate::{logger, file_manager};
 use chrono::{Utc, TimeZone, DateTime, Local};
 use flate2::read::ZlibDecoder;
 
+pub fn escribite(mut file: File, binary: &[u8]) {
 
+    match file.write_all(binary) {
+        Ok(_) => println!("written to file"),
+        Err(_) => println!("error writing to file"),
+    }
+}
 
 /***************************
  *************************** 
@@ -71,7 +77,7 @@ pub fn append_to_file(path: String, text: String) -> Result<(), GitrError> {
 
 /// Creates a directory in the current path
 /// On Error returns a AlreadyInitialized
-fn create_directory(path: &String)->Result<(), GitrError>{
+pub fn create_directory(path: &String)->Result<(), GitrError>{
     let log_msg = format!("creating dir: {}", path);
     logger::log_file_operation(log_msg)?; 
     match fs::create_dir(path){
@@ -107,7 +113,20 @@ pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
     }
 
 }
-
+fn read_compressed_file2(path: &str) -> Result<String, GitrError> {
+    let log_msg = format!("reading data from: {}", path);
+    logger::log_file_operation(log_msg)?;
+    let file = match File::open(path) {
+        Ok(file) => file,
+        Err(_) => return Err(GitrError::FileReadError(path.to_string())),
+    };
+    let mut decoder = ZlibDecoder::new(file);
+    let mut buffer = String::new();
+    match decoder.read_to_string(&mut buffer){
+        Ok(_) => Ok(buffer.clone()),
+        Err(_) => Err(GitrError::FileReadError(path.to_string())),
+    }
+}
 fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
     let log_msg = format!("reading data from: {}", path);
     logger::log_file_operation(log_msg)?;
@@ -129,7 +148,8 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/objects"))?;
         create_directory(&(name.clone() + "/gitr/refs"))?;
         create_directory(&(name.clone() + "/gitr/refs/heads"))?;
-    
+        println!("ESCRIBE ACA O NO");
+        write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
     Ok(())
 }
 
@@ -182,16 +202,22 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
     if fs::metadata(&path).is_err(){
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
-    let data = read_compressed_file(&path);
-    let data = match data{
+    // let data = read_compressed_file(&path);
+    // let data = match data{
+    //     Ok(data) => data,
+    //     Err(_) => return Err(GitrError::FileReadError(path)),
+    // };
+    // let data = String::from_utf8(data);
+    // let data = match data{
+    //     Ok(data) => data,
+    //     Err(_) => return Err(GitrError::FileReadError(path)),
+    // };
+
+    let data = match read_compressed_file2(&path) {
         Ok(data) => data,
         Err(_) => return Err(GitrError::FileReadError(path)),
     };
-    let data = String::from_utf8(data);
-    let data = match data{
-        Ok(data) => data,
-        Err(_) => return Err(GitrError::FileReadError(path)),
-    };
+
     Ok(data)
 }
 
@@ -249,7 +275,7 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
 pub fn get_head() ->  Result<String, GitrError>{
     let repo = get_current_repo()?;
     let path = repo + "/gitr/HEAD";
-    if fs::metadata(path.clone()).is_err(){
+    if !fs::metadata(path.clone()).is_ok(){
         write_file(path.clone(), String::from("ref: refs/heads/master"))?;
         return Ok("None".to_string())
         // return Err(GitrError::NoHead);
@@ -301,6 +327,9 @@ pub fn get_current_commit()->Result<String, GitrError>{
     }
     let repo = get_current_repo()?;
     let path = repo + "/gitr/" + &head_path;
+
+
+
     let head = read_file(path)?;
     Ok(head)
 }
@@ -397,7 +426,6 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
     let main_tree = get_main_tree(commit)?;
     let tree = read_object(&main_tree)?;
     //let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
-    
     // REEMPLAZAR ESTO POR SPLIT_ONCE
     //tree.split_once('\0')
     let raw_data_index = match tree.find('\0') {
@@ -428,6 +456,7 @@ pub fn get_main_tree(commit:String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     let tree_base = commit[0].split('\0').collect::<Vec<&str>>()[1];
+    println!("tree_base: {}", tree_base);
     let tree = read_object(&(tree_base.to_string()))?;
     let raw_data_index = match tree.find('\0') {
         Some(index) => index,
@@ -549,3 +578,4 @@ pub fn get_repos() -> Vec<String> {
     }
     repos
 }
+

@@ -102,8 +102,12 @@ pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn status(flags: Vec<String>) {
+pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
+    let head = file_manager::get_head()?;
+    let current_branch = head.split('/').collect::<Vec<&str>>()[2];
+    println!("On branch {}", current_branch);
     println!("status");
+    Ok(())
 }
 
 // pub fn create_blob_from_file(file_path: &String) -> Result<(), Box<dyn Error>> {

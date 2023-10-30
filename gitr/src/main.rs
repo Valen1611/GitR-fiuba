@@ -1,6 +1,6 @@
 
 
-use gitr_cliente::{commands, logger, gitr_errors::GitrError};
+use gitr::{commands, logger, gitr_errors::GitrError};
 
 use std::io::{Write, self};
 extern crate flate2;

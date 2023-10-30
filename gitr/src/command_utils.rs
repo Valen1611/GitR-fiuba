@@ -1,4 +1,4 @@
-use std::{io::{Write, Read}, fs, path::Path, error::Error, collections::HashMap, net::TcpStream};
+use std::{io::{Write, Read}, fs::{self, create_dir}, path::Path, error::Error, collections::HashMap, net::TcpStream};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
@@ -8,7 +8,26 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crate::file_manager::{read_index, self};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
-
+pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
+    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+    
+    match encoder.write_all(&input) {
+        Ok(_) => {},
+        Err(_) => return Err(GitrError::CompressionError),
+    };
+    
+    let compressed_bytes = match encoder.finish() {
+        Ok(bytes) => bytes,
+        Err(_) => return Err(GitrError::CompressionError),
+    };
+    Ok(compressed_bytes)
+}
+pub fn sha1hashing2(input: Vec<u8>) -> Vec<u8> {
+    let mut hasher = Sha1::new();
+    hasher.update(&input);
+    let result = hasher.finalize();
+    result.to_vec()
+}
 
 pub fn sha1hashing(input: String) -> Vec<u8> {
     let mut hasher = Sha1::new();
@@ -209,12 +228,19 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
     let repo = file_manager::get_current_repo()?;
     if head == "None"{
         let dir = repo + "/gitr/refs/heads/master";
+
+        if !Path::new(&dir).exists(){
+            let current_commit = file_manager::get_current_commit()?;
+            file_manager::write_file(dir.clone(), current_commit)?;
+        }
+
         let commit = Commit::new(final_tree.get_hash(), "None".to_string(), get_current_username(), get_current_username(), message)?;
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit()?;
+        
         let commit = Commit::new(final_tree.get_hash(), current_commit, get_current_username(), get_current_username(), message)?;
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;

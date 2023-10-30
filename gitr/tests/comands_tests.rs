@@ -1,8 +1,8 @@
 use std::{path::Path, fs};
-use gitr_cliente::{command_utils, file_manager};
-use gitr_cliente::objects::blob::Blob;
-use gitr_cliente::{commands::commands, gitr_errors::GitrError};
-use gitr_cliente::file_manager::{get_current_repo, update_current_repo, write_file};
+use gitr::{command_utils, file_manager};
+use gitr::objects::blob::Blob;
+use gitr::{commands::commands, gitr_errors::GitrError};
+use gitr::file_manager::{get_current_repo, update_current_repo, write_file};
 use serial_test::serial;
 
 

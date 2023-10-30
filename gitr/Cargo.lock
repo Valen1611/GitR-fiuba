@@ -234,13 +234,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "gitr_cliente"
+name = "gitr"
 version = "0.1.0"
 dependencies = [
  "chrono",
  "flate2",
  "serial_test",
  "sha1",
+ "to-binary",
 ]
 
 [[package]]
@@ -248,6 +249,12 @@ name = "hashbrown"
 version = "0.14.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f93e7192158dbcda357bdec5fb5788eebf8bbac027f3f33e719d29135ae84156"
+
+[[package]]
+name = "hex"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "iana-time-zone"
@@ -467,6 +474,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "to-binary"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4424552bc848fd1afbcd81f0e8a54b7401b90fd81bb418655ad6dc6d0823bbe3"
+dependencies = [
+ "hex",
 ]
 
 [[package]]
