@@ -35,7 +35,7 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
             Ok(byte) => byte,
             Err(_) => return Err(GitrError::FileReadError(path.clone())),
         };
-        println!("byte: {:08b}", byte);
+
         let compressed_byte = match command_utils::flate2compress2(vec![byte]) {
             Ok(byte) => byte,
             Err(_) => return Err(GitrError::CompressionError),
@@ -46,19 +46,27 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
 }
 
 impl Tree{
-    pub fn new(entries: Vec<(String,TreeEntry)>) ->  Result<Self, GitrError>{
+    pub fn new(mut entries: Vec<(String,TreeEntry)>) ->  Result<Self, GitrError>{
         
+
+        println!("treeEntry: {:?}", entries);
+
+        entries.sort_by(|a, b| a.0.cmp(&b.0));
+
+
         let mut objs_entries = Vec::new();
         let mut entries_size: u8 = 0;
         for (path, entry) in &entries {
             match entry {
                 TreeEntry::Blob(blob) => {
+                    // repo/archivo
+                    // repo/carpeta/archivo
                     let hash = blob.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
 
                     let path_no_repo = path.split_once('/').unwrap().1;
 
-                    let obj_entry = vec! [
+                    let mut obj_entry = vec! [
                         b"100644 ",
                         path_no_repo.as_bytes(),
                         b"\0",
@@ -76,8 +84,17 @@ impl Tree{
             }
         }
         
-    
-        //        write!(&mut binary, "{:08b}", byte).unwrap();
+
+        
+
+
+        println!("size: {:?}", entries_size);
+
+
+        
+
+
+
 
         let mut data = vec![
             b"tree ",
@@ -106,6 +123,8 @@ impl Tree{
 
         //let hashed_file = sha1hashing(data.clone());
         Ok(Tree {entries, data: compressed_file2, hash: hashed_file_str })
+
+        
     }
 
     pub fn save(&self) -> Result<(), GitrError>{

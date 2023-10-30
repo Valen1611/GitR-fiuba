@@ -216,8 +216,8 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
                                 println!("No se encontro el folder");
                             }
                         }
-                    }        
-                } 
+                    }
+                }
             }
         }
     }

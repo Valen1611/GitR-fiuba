@@ -16,7 +16,6 @@ pub enum TreeEntry {
 pub struct Blob{
     compressed_data: Vec<u8>,
     hash: String,
-    binhash: String,
 }
 
 impl Blob{
@@ -28,12 +27,10 @@ impl Blob{
         println!("format_data: {:?}", format_data);
         let compressed_data = flate2compress(format_data.clone())?;
         let hashed_file = sha1hashing(format_data);
-        let binhash = hashed_file.iter().map(|b| format!("{:02b}", b)).collect::<String>();
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
         Ok(Blob { 
             compressed_data,
             hash:hashed_file_str,
-            binhash
         })
     }
     pub fn save(&self) -> Result<(),GitrError>{
@@ -44,10 +41,4 @@ impl Blob{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
-
-    pub fn get_binhash(&self) -> String{
-        self.binhash.clone()
-    }
-
 }
-
