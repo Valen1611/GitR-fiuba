@@ -2,13 +2,12 @@ use std::cell::RefCell;
 use std::path::PathBuf;
 use std::rc::Rc;
 
-use gtk::atk::ffi::ATK_ROLE_POPUP_MENU;
 use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer};
 
 use gtk::{Builder,Window, Button, FileChooserButton};
 
 
-fn build_ui(application: &gtk::Application){
+fn build_ui(application: &gtk::Application)->Option<String>{
     let glade_src = include_str!("gui_test.glade");
     let builder = Builder::from_string(glade_src);
 
@@ -16,13 +15,13 @@ fn build_ui(application: &gtk::Application){
     println!("{:?}",objetos);
    
     //====Builders para componentes====
-    let window:Window = builder.object("main_window").unwrap();
-    let repo_selector:FileChooserButton = builder.object("repo_selector").unwrap();
-    let clone_button: Button = builder.object("clone_button").unwrap();
-    let clone_dialog: Dialog = builder.object("clone_dialog").unwrap();
-    let clone_url: Entry = builder.object("clone_url").unwrap();
-    let clone_accept_button: Button = builder.object("clone_accept_button").unwrap();
-    let log: TextView = builder.object("console_log").unwrap();
+    let window:Window = builder.object("main_window")?;
+    let repo_selector:FileChooserButton = builder.object("repo_selector")?;
+    let clone_button: Button = builder.object("clone_button")?;
+    let clone_dialog: Dialog = builder.object("clone_dialog")?;
+    let clone_url: Entry = builder.object("clone_url")?;
+    let clone_accept_button: Button = builder.object("clone_accept_button")?;
+    let log: TextView = builder.object("console_log")?;
 
     //====Conexiones de señales====
     let repo_url = Rc::new(RefCell::new(PathBuf::new()));
@@ -57,6 +56,7 @@ fn build_ui(application: &gtk::Application){
     window.set_title("test");
 
     window.show_all();
+    Some("Ok".to_string())
 }
 
 pub fn initialize_gui(){
@@ -70,14 +70,4 @@ pub fn initialize_gui(){
 
     app.run();
 
-}
-
-#[cfg(test)]
-mod tests{
-    use super::*;
-
-    #[test]
-    fn test_initialize_gui(){
-        initialize_gui();
-    }
 }

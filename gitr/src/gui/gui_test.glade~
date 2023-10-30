@@ -276,6 +276,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="halign">center</property>
                         <property name="label" translatable="yes">Console Log</property>
                       </object>
                       <packing>
