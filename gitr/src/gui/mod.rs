@@ -1,1 +1,1 @@
-pub mod pruebas_gtk;
+pub mod gui_from_glade;
