@@ -11,5 +11,5 @@ chrono = "0.4.31"
 flate2 = "1.0.27"
 sha1 = "0.10.6"
 serial_test = "*"
-
+gtk = "0.18.0"
 
