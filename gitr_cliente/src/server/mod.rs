@@ -16,9 +16,6 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use flate2::read::ZlibDecoder;
 
-use crate::objects::commit::Commit;
-use crate::objects::tree::Tree;
-
 
 pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
     let _ = create_dirs(&r_path);
@@ -105,6 +102,7 @@ fn gitr_receive_pack (stream: &mut TcpStream, r_path: String) -> std::io::Result
     let pkt_needed = update_refs(old, new, names, r_path.clone())?;
 
     // ########## *PACKFILE DATA ##########
+    let ids: Vec<String> = vec![];
     if pkt_needed {
         let (ids, content) = rcv_packfile_bruno(stream)?;
         update_contents(ids, content, r_path.clone())?;
@@ -177,7 +175,6 @@ fn update_contents(ids: Vec<String>, content: Vec<String>, r_path: String) -> st
 
 fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<String>, r_path: String) -> std::io::Result<()> {
     let mut contents: Vec<String> = vec![];
-    let wants_id = get_objects_from_commits(wants_id.clone(), haves_id, r_path.clone())?;
     for id in wants_id.clone() {
         contents.push(get_object(id, r_path.clone())?);
     }
@@ -186,46 +183,6 @@ fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<Stri
         stream.write(&pack_string.as_bytes())?;
     } else {
         return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal\n"))
-    }
-    Ok(())
-}
-
-fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> std::io::Result<Vec<String>> {
-    // Voy metiendo en el objects todo lo que no haya que mandarle denuevo al cliente
-    let mut object_ids: HashSet<String> = HashSet::new();
-    for obj_id in client_objects.clone() {
-        object_ids.insert(obj_id);
-    }
-    let mut commits: Vec<Commit> = Vec::new();
-    for id in commits_id {
-        match Commit::new_commit_from_string(get_object(id, r_path.clone())?) {
-            Ok(commit) => {commits.push(commit)},
-            _ => {return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo crear el commit"))}
-        }
-    } // Ahora tengo los Commits como objeto en el vector commits
-    for commit in commits {
-        object_ids.insert(commit.get_tree());
-        get_tree_objects(commit.get_tree(), r_path.clone(), &mut object_ids)?;
-    }
-    // Sacamos los que ya tiene el cliente
-    for obj in client_objects{
-        object_ids.remove(&obj);
-    } 
-    Ok(Vec::from_iter(object_ids.into_iter()))
-
-    
-}
-
-fn get_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> std::io::Result<()> {
-    // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
-
-    let tree_objects = match Tree::get_objects_id_from_string(get_object(tree_id, r_path.clone())?){
-        Ok(ids) => {ids},
-        _ => {return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo crear el arbol"))}
-    };
-    for obj_id in tree_objects {
-        object_ids.insert(obj_id.clone());
-        let _ = get_tree_objects(obj_id.clone(), r_path.clone(),object_ids); 
     }
     Ok(())
 }
@@ -377,6 +334,7 @@ fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
     Ok((contenido_total,guardados))
 }
     
+
 fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut String, guardados: &mut HashSet<String>) -> std::io::Result<()> {
     for elem in fs::read_dir(dir_path)? {
         let elem = elem?;
@@ -473,6 +431,7 @@ mod tests{
 
     #[test]
     #[ignore = "Hay que frenarlo manualmente"]
+
     fn inicializo_el_server_correctamente(){
         let address =  "127.0.0.1:5454";
         let builder_s = thread::Builder::new().name("server".to_string());
