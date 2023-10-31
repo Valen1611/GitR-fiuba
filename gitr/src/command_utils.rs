@@ -54,12 +54,10 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
-
 pub fn print_tree_data(raw_data: &str) {
     let files = raw_data.split('\n').collect::<Vec<&str>>();
 
     for object in files {
-        println!("obj: {:?}", object);
         let file_atributes = object.split(' ').collect::<Vec<&str>>();
         let file_mode = file_atributes[0];
         let file_path_hash = file_atributes[1];

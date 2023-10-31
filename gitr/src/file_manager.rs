@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::fs::{File, OpenOptions};
-use std::io::prelude::*;
+use std::io::{prelude::*, Bytes};
 use std::fs;
 use std::path::Path;
 
@@ -94,39 +94,24 @@ pub fn create_directory(path: &String)->Result<(), GitrError>{
  *************************** 
  *      GIT OBJECTS
  **************************
- **************************/
+ *************************
+ * flate
+ * reading
+ * writing
+ */
 
-
-/// A diferencia de write_file, esta funcion recibe un vector de bytes
-/// como data, y lo escribe en el archivo de path.
-pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
-    let log_msg = format!("writing data to: {}", path);
-    logger::log_file_operation(log_msg)?;
-    match File::create(path) {
-        Ok(file) => file,
-        Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
-    };
-
-    match fs::write(path, data) {
-        Ok(_) => Ok(()),
-        Err(_) => Err(GitrError::FileCreationError(path.to_string()))
-    }
-
-}
-fn read_compressed_file2(path: &str) -> Result<String, GitrError> {
-    let log_msg = format!("reading data from: {}", path);
-    logger::log_file_operation(log_msg)?;
-    let file = match File::open(path) {
+fn deflate_file(path: String) -> Result<Bytes<ZlibDecoder<File>>, GitrError> {
+    let file = match File::open(&path) {
         Ok(file) => file,
         Err(_) => return Err(GitrError::FileReadError(path.to_string())),
     };
-    let mut decoder = ZlibDecoder::new(file);
-    let mut buffer = String::new();
-    match decoder.read_to_string(&mut buffer){
-        Ok(_) => Ok(buffer.clone()),
-        Err(_) => Err(GitrError::FileReadError(path.to_string())),
-    }
+    let decoder = ZlibDecoder::new(file);
+   // let mut buffer = String::new();
+
+    let bytes = decoder.bytes();
+    Ok(bytes)
 }
+
 fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
     let log_msg = format!("reading data from: {}", path);
     logger::log_file_operation(log_msg)?;
@@ -142,24 +127,127 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
     }
 }
 
-pub fn init_repository(name: &String) ->  Result<(),GitrError>{
-        create_directory(name)?;
-        create_directory(&(name.clone() + "/gitr"))?;
-        create_directory(&(name.clone() + "/gitr/objects"))?;
-        create_directory(&(name.clone() + "/gitr/refs"))?;
-        create_directory(&(name.clone() + "/gitr/refs/heads"))?;
-        println!("ESCRIBE ACA O NO");
-        write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
-    Ok(())
+fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
+    let mut header_buffer = String::new();
+    let mut data_starting_index = 0;
+    for byte in data.clone() {
+        if byte == 0 {
+            data_starting_index += 1;
+            break;
+        }
+        header_buffer.push(byte as char);
+        data_starting_index += 1;
+    }
+
+    let mut entries_buffer = String::new();
+    let mut entry = String::new();
+    let mut convert_to_hexa = false;
+    let mut hexa_iters = 0;
+    for byte in data[data_starting_index..].iter() {
+
+        if hexa_iters == 20 {
+            convert_to_hexa = false;
+            hexa_iters = 0;
+            entries_buffer.push('\n');
+        }
+
+        if *byte == 0 && !convert_to_hexa{
+            entries_buffer.push('\0');
+            convert_to_hexa = true;
+            continue;
+        }
+
+        if convert_to_hexa {
+            hexa_iters+=1;
+            entries_buffer.push_str(&format!("{:02x}", byte));
+        }
+        else {
+            entries_buffer.push(*byte as char);
+        }
+
+
+       // buffer.push(*byte as char);
+    }
+
+
+    // 08deed466789dfea8937d0bdda2f6e81a615f25a
+    return Ok(header_buffer + "\0" + &entries_buffer);
+}   
+
+
+pub fn read_object(object: &String) -> Result<String, GitrError>{
+    let path = parse_object_hash(object)?;
+    let bytes = deflate_file(path.clone())?;
+
+    let mut object_data: Vec<u8> = Vec::new();
+
+    for byte in bytes {
+        let byte = match byte {
+            Ok(byte) => byte,
+            Err(_) => return Err(GitrError::FileReadError(path)),
+        };
+        object_data.push(byte);
+    }
+
+    let first_byte = object_data[0];
+
+    if first_byte as char == 't' {
+        let tree_data = match read_tree_file(object_data) {
+            Ok(data) => data,
+            Err(_) => return Err(GitrError::FileReadError(path)),
+        };
+        return Ok(tree_data);
+    }
+
+    if first_byte as char == 'b' || first_byte as char == 'c' {
+        let mut buffer = String::new();
+        for byte in object_data {
+            buffer.push(byte as char);
+        }
+        return Ok(buffer);
+    }
+
+   
+    return Err(GitrError::FileReadError("No se pudo leer el objecto, bytes invalidos".to_string()));
+
+}
+/// A diferencia de write_file, esta funcion recibe un vector de bytes
+/// como data, y lo escribe en el archivo de path.
+pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
+    let log_msg = format!("writing data to: {}", path);
+    logger::log_file_operation(log_msg)?;
+    match File::create(path) {
+        Ok(file) => file,
+        Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
+    };
+    
+    match fs::write(path, data) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(GitrError::FileCreationError(path.to_string()))
+    }
+    
 }
 
+fn parse_object_hash(object: &String) -> Result<String, GitrError>{
+    if object.len() < 3{
+        return Err(GitrError::ObjectNotFound(object.clone()));
+    }
+    let folder_name = object[0..2].to_string();
+    let file_name = object[2..].to_string();
 
-///read .head_repo and returns the content
-pub fn get_current_repo() -> Result<String, GitrError>{
-    let current_repo = read_file(".head_repo".to_string())?;
-    Ok(current_repo)
+    let repo = get_current_repo()?;
+    let dir = repo + "/gitr/objects/";
+    
+    let folder_dir = dir.clone() + &folder_name;
+    let path = dir + &folder_name +  "/" + &file_name;
+    if fs::metadata(folder_dir).is_err(){
+        return Err(GitrError::ObjectNotFound(object.clone()));
+    }
+    if fs::metadata(&path).is_err(){
+        return Err(GitrError::ObjectNotFound(object.clone()));
+    }
+    Ok(path)
 }
-
 
 ///receive compressed raw data from a file with his hash and write it in the objects folder
 pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
@@ -184,42 +272,35 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
 
 
 
-pub fn read_object(object: &String) -> Result<String, GitrError>{
-    if object.len() < 3{
-        return Err(GitrError::ObjectNotFound(object.clone()));
-    }
-    let folder_name = object[0..2].to_string();
-    let file_name = object[2..].to_string();
 
-    let repo = get_current_repo()?;
-    let dir = repo + "/gitr/objects/";
-    
-    let folder_dir = dir.clone() + &folder_name;
-    let path = dir + &folder_name +  "/" + &file_name;
-    if fs::metadata(folder_dir).is_err(){
-        return Err(GitrError::ObjectNotFound(object.clone()));
-    }
-    if fs::metadata(&path).is_err(){
-        return Err(GitrError::ObjectNotFound(object.clone()));
-    }
-    // let data = read_compressed_file(&path);
-    // let data = match data{
-    //     Ok(data) => data,
-    //     Err(_) => return Err(GitrError::FileReadError(path)),
-    // };
-    // let data = String::from_utf8(data);
-    // let data = match data{
-    //     Ok(data) => data,
-    //     Err(_) => return Err(GitrError::FileReadError(path)),
-    // };
+/***************************
+ *************************** 
+ *      GIT FILES
+ **************************
+ **************************/
 
-    let data = match read_compressed_file2(&path) {
-        Ok(data) => data,
-        Err(_) => return Err(GitrError::FileReadError(path)),
-    };
 
-    Ok(data)
+
+
+
+pub fn init_repository(name: &String) ->  Result<(),GitrError>{
+        create_directory(name)?;
+        create_directory(&(name.clone() + "/gitr"))?;
+        create_directory(&(name.clone() + "/gitr/objects"))?;
+        create_directory(&(name.clone() + "/gitr/refs"))?;
+        create_directory(&(name.clone() + "/gitr/refs/heads"))?;
+        println!("ESCRIBE ACA O NO");
+        write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
+    Ok(())
 }
+
+///read .head_repo and returns the content
+pub fn get_current_repo() -> Result<String, GitrError>{
+    let current_repo = read_file(".head_repo".to_string())?;
+    Ok(current_repo)
+}
+
+
 
 pub fn read_index() -> Result<String, GitrError>{
     let repo = get_current_repo()?;
