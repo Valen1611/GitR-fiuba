@@ -48,11 +48,7 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
 impl Tree{
     pub fn new(mut entries: Vec<(String,TreeEntry)>) ->  Result<Self, GitrError>{
         
-
-        println!("treeEntry: {:?}", entries);
-
         entries.sort_by(|a, b| a.0.cmp(&b.0));
-
 
         let mut objs_entries = Vec::new();
         let mut entries_size: u8 = 0;
@@ -96,17 +92,6 @@ impl Tree{
             }
         }
         
-
-        
-
-
-        println!("size: {:?}", entries_size);
-
-
-        
-
-
-
 
         let mut data = [
             b"tree ",

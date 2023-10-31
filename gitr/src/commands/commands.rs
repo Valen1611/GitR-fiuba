@@ -65,12 +65,10 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
     let data_requested = &flags[0];
     let object_hash = &flags[1];
 
-
     let res_output = file_manager::read_object(object_hash)?;
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
-
 
     if data_requested == "-t"{
         println!("{}", object_type);

@@ -22,7 +22,7 @@ impl Commit{
         // agregar la palabra tree que falta
         // y fijarse como agarrar el tamanio
         format_data.push_str(&init);
-        let tree_format = format!("{}\n", tree);
+        let tree_format = format!("tree {}\n", tree);
         format_data.push_str(&tree_format);
         format_data.push_str(&format!("parent {}\n", parent));
         format_data.push_str(&format!("author {} {} {} \n", author, Utc::now().timestamp(), Local::now().offset()));
@@ -45,3 +45,13 @@ impl Commit{
         self.hash.clone()
     }
 }
+
+
+/*
+tree b6cabe3602e5995d9468f34b1cc3423588a5f1a8
+parent d493f3a4c45c60b807e421ea72edfabdc8245f29
+author bstarnone <bstarnone@fi.uba.ar> 1698688574 -0300
+committer bstarnone <bstarnone@fi.uba.ar> 1698688574 -0300
+
+Avances
+*/

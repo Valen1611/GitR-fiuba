@@ -44,6 +44,7 @@ pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
     let log_msg = format!("writing data to: {}", path);
     logger::log_file_operation(log_msg)?;
 
+
     let mut archivo = match File::create(&path) {
         Ok(archivo) => archivo,
         Err(_) => return Err(GitrError::FileCreationError(path)),
@@ -191,11 +192,23 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
 
     let first_byte = object_data[0];
 
+
+    let mut object_data_str = String::new();
+    for byte in object_data.clone() {
+        if byte == 0 {
+            break;
+        }
+        object_data_str.push(byte as char);
+    }
+
+
+
     if first_byte as char == 't' {
         let tree_data = match read_tree_file(object_data) {
             Ok(data) => data,
             Err(_) => return Err(GitrError::FileReadError(path)),
         };
+        println!("TREE DATA: {:?}", tree_data);
         return Ok(tree_data);
     }
 
@@ -208,7 +221,7 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
     }
 
    
-    return Err(GitrError::FileReadError("No se pudo leer el objecto, bytes invalidos".to_string()));
+    return Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()));
 
 }
 /// A diferencia de write_file, esta funcion recibe un vector de bytes
@@ -454,17 +467,17 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
 
     
     let tree_raw_data = read_object(&hash)?;
-    
-    //let tree_entries = tree_raw_data.split("\0").collect::<Vec<&str>>()[1];
-    let raw_data_index = match tree_raw_data.find('\0') {
-        Some(index) => index,
+
+    println!("tree raw data: {}", tree_raw_data);
+
+    let raw_data = match tree_raw_data.split_once('\0') {
+        Some((_, raw_data)) => raw_data,
         None => {
             println!("Error: invalid object type");
             return Ok(())
         }
     };
-
-    let raw_data = &tree_raw_data[(raw_data_index + 1)..];
+    
 
 
     for entry in raw_data.split('\n') {
@@ -509,6 +522,7 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
     //let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
     // REEMPLAZAR ESTO POR SPLIT_ONCE
     //tree.split_once('\0')
+    println!("tree {:?}", tree);
     let raw_data_index = match tree.find('\0') {
         Some(index) => index,
         None => {
@@ -517,7 +531,6 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
         }
     };
     let raw_data = &tree[(raw_data_index + 1)..];
-    println!("raw data: {}", raw_data);
     
     for entry in raw_data.split('\n'){
         let object: &str = entry.split(' ').collect::<Vec<&str>>()[0];
@@ -537,8 +550,9 @@ pub fn get_main_tree(commit:String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     let tree_base = commit[0].split('\0').collect::<Vec<&str>>()[1];
-    println!("tree_base: {}", tree_base);
-    let tree = read_object(&(tree_base.to_string()))?;
+    let tree_hash_str = tree_base.split(' ').collect::<Vec<&str>>()[1];
+    println!("tree_base: {}", tree_hash_str);
+    let tree = read_object(&(tree_hash_str.to_string()))?;
     let raw_data_index = match tree.find('\0') {
         Some(index) => index,
         None => {
