@@ -1,6 +1,7 @@
 
 
-use gitr_cliente::{commands, logger, gitr_errors::GitrError, gui::gui_from_glade::initialize_gui};
+use gitr::{commands, logger, gitr_errors::GitrError,gui::gui_from_glade::initialize_gui};
+use gitr_cliente::{commands, logger, gitr_errors::GitrError};
 
 use std::io::{Write, self};
 extern crate flate2;

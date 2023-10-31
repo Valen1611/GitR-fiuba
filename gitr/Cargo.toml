@@ -1,5 +1,5 @@
 [package]
-name = "gitr_cliente"
+name = "gitr"
 version = "0.1.0"
 edition = "2021"
 
@@ -11,5 +11,5 @@ chrono = "0.4.31"
 flate2 = "1.0.27"
 sha1 = "0.10.6"
 serial_test = "*"
+to-binary = "0.4.0"
 gtk = "0.18.0"
-

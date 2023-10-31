@@ -1,4 +1,5 @@
-use std::{io::{Write, Read}, fs, path::Path, error::Error, collections::HashMap, net::TcpStream};
+use core::panic;
+use std::{io::{Write, Read}, fs::{self, create_dir, File}, path::Path, error::Error, collections::HashMap, net::TcpStream};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
@@ -8,7 +9,26 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crate::file_manager::{read_index, self};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
-
+pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
+    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+    
+    match encoder.write_all(&input) {
+        Ok(_) => {},
+        Err(_) => return Err(GitrError::CompressionError),
+    };
+    
+    let compressed_bytes = match encoder.finish() {
+        Ok(bytes) => bytes,
+        Err(_) => return Err(GitrError::CompressionError),
+    };
+    Ok(compressed_bytes)
+}
+pub fn sha1hashing2(input: Vec<u8>) -> Vec<u8> {
+    let mut hasher = Sha1::new();
+    hasher.update(&input);
+    let result = hasher.finalize();
+    result.to_vec()
+}
 
 pub fn sha1hashing(input: String) -> Vec<u8> {
     let mut hasher = Sha1::new();
@@ -145,6 +165,7 @@ pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) 
 
     let tree = Tree::new(tree_entry)?;
     tree.save()?;
+    println!("llegue aca");
     Ok(tree)
 }
 
@@ -166,7 +187,7 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
         let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
-            if let Some(last_element) = splitted_file_path.last() {
+            if let Some(last_element) = splitted_file_path.last() { //es el ultimo?
                 if dir == last_element {
                     if tree_map.contains_key(splitted_file_path[i-1]) {
                         match tree_map.get_mut(splitted_file_path[i-1]) {
@@ -197,24 +218,45 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
                                 println!("No se encontro el folder");
                             }
                         }
-                    }        
-                } 
+                    }
+                }
             }
         }
     }
-    let tree_all = create_trees(tree_map, tree_order[0].clone())?;
-    let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
+
+    println!("tree_map: {:?}", tree_map);
+
+    let final_tree = create_trees(tree_map, tree_order[0].clone())?;
+
+   // println!("tree_all: {:?}", tree_all);
+    
+    //let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
+    
+    //println!("final_tree: {:?}", final_tree);
+
     final_tree.save()?;
     let head = file_manager::get_head()?;
     let repo = file_manager::get_current_repo()?;
-    if head == "None"{
+ 
+
+    let path_completo = repo.clone()+"/gitr/"+head.as_str();
+
+    if File::open(path_completo.clone()).is_err(){
+        
         let dir = repo + "/gitr/refs/heads/master";
+        file_manager::write_file(path_completo, final_tree.get_hash())?;
+        if !Path::new(&dir).exists(){
+            let current_commit = file_manager::get_current_commit()?;
+            file_manager::write_file(dir.clone(), current_commit)?;
+        }
+        
         let commit = Commit::new(final_tree.get_hash(), "None".to_string(), get_current_username(), get_current_username(), message)?;
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit()?;
+        
         let commit = Commit::new(final_tree.get_hash(), current_commit, get_current_username(), get_current_username(), message)?;
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;
@@ -241,7 +283,7 @@ pub fn print_branches()-> Result<(), GitrError>{
     let branches = file_manager::get_branches()?;
         for branch in branches{
             if head == branch{
-                let index_branch = format!("* {}", branch);
+                let index_branch = format!("* \x1b[92m{}\x1b[0m", branch);
                 println!("{}",index_branch);
                 continue;
             }

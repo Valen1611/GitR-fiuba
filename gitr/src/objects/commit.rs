@@ -22,7 +22,7 @@ impl Commit{
         // agregar la palabra tree que falta
         // y fijarse como agarrar el tamanio
         format_data.push_str(&init);
-        let tree_format = format!("tree {}\n", tree);
+        let tree_format = format!("{}\n", tree);
         format_data.push_str(&tree_format);
         format_data.push_str(&format!("parent {}\n", parent));
         format_data.push_str(&format!("author {} {} {} \n", author, Utc::now().timestamp(), Local::now().offset()));

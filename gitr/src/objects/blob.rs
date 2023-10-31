@@ -30,7 +30,7 @@ impl Blob{
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
         Ok(Blob { 
             compressed_data,
-            hash:hashed_file_str
+            hash:hashed_file_str,
         })
     }
     pub fn save(&self) -> Result<(),GitrError>{
@@ -42,4 +42,3 @@ impl Blob{
         self.hash.clone()
     }
 }
-
