@@ -22,6 +22,7 @@ pub enum GitrError{
     CompressionError,
     TimeError,
     InvalidTreeError,
+    ConnectionError,
 }
 
 impl fmt::Display for GitrError{
@@ -43,6 +44,7 @@ impl fmt::Display for GitrError{
             Self::InvalidArgumentError(got, usage) => write!(f, "Argumentos invalidos.\n    Recibi: {}\n    Uso: {}\n", got, usage),
             Self::TimeError => write!(f, "No se pudo obtener el tiempo actual"),
             Self::InvalidTreeError => write!(f, "El arbol no es valido"),
+            Self::ConnectionError => write!(f, "No se pudo conectar al servidor"),
     }
 }
 

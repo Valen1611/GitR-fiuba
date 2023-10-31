@@ -140,6 +140,12 @@ pub fn get_current_repo() -> Result<String, GitrError>{
     Ok(current_repo)
 }
 
+pub fn get_remote() -> Result<String, GitrError> {
+    let repo = get_current_repo()?;
+    let path = repo + "/gitr/" + "remote";
+    let remote = read_file(path)?;
+    Ok(remote)
+}
 
 ///receive compressed raw data from a file with his hash and write it in the objects folder
 pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{

@@ -1,7 +1,5 @@
 extern crate flate2;
 use std::collections::HashSet;
-use std::f32::consts::E;
-use std::fmt::format;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Error;
@@ -332,18 +330,23 @@ fn wants_n_haves(requests: String, mut wants: Vec<String>, mut haves: Vec<String
 
     for line in requests.lines() {
         is_valid_pkt_line(&(line.to_string()+"\n"))?;
+        
         let elems: Vec<&str> = line.split_at(4).1.split(" ").collect(); // [want/have, obj-id]
         if nuls_cont == 0 {
             match elems[0] {
                 "want" => {wants.push(elems[1].to_string())},
                 "" => {nuls_cont += 1;},// 0000
+                "0009done" => {break},
+                "0032have" => {
+                    haves.push(elems[1].to_string());
+                    nuls_cont += 1}
                 _ => return Err(Error::new(std::io::ErrorKind::Other, "Error: Negociacion Fallida"))
             }
         } else if nuls_cont == 1 {
             match elems[0] {
                 "have" => {haves.push(elems[1].to_string())},
-                "" => {nuls_cont += 1;}, // 0000
-                "done" => {break},
+                "" => {nuls_cont += 1}, // 0000
+                "done" | "0009done" => {break},
                 _ => return Err(Error::new(std::io::ErrorKind::Other, "Error: Negociacion Fallida"))
             }
         } else if nuls_cont == 2 {
@@ -406,7 +409,7 @@ fn capacidades() -> String {
 
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
     println!("ok {:?}\n",pkt_line);
-    if pkt_line != "" && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" || pkt_line == "0000" ) {
+    if pkt_line != "" && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" || pkt_line == "0000" || pkt_line == "0009done\n" || pkt_line == "00000009done" ) {
         return Ok(())
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))

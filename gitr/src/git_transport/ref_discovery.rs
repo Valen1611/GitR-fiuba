@@ -1,5 +1,7 @@
 // La idea de este módulo es manejar el primer contacto con el servidor y la búsqueda de referencias para armar el directorio.
 
+use crate::gitr_errors::GitrError;
+
 pub fn verify_header(header_slice: &[u8])->Result<(),String>{
     let str_received = String::from_utf8_lossy(header_slice);
     if str_received != "PACK"{
@@ -32,7 +34,7 @@ fn extract_hash_and_ref(ref_slice: &str)->(String,String){
     (hash.to_string().split_off(4), reference.to_string())
 }
 
-pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>,String>{
+pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>,GitrError>{
     let mut references: Vec<(String,String)> = vec![];
     let iter_refs: Vec<&str> = received_data.split('\n').collect();
     //Extraigo el primer hash al que apunta HEAD
@@ -49,12 +51,12 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     Ok(references)
 }
 
-pub fn assemble_want_message(references: &Vec<(String,String)>)->Result<String,String>{
+pub fn assemble_want_message(references: &Vec<(String,String)>)->Result<String,GitrError>{
     let mut want_message = String::new();
     for refer in references{
-        let length_hexa = format!("{:04X}",8 + refer.0.len() + 2);
-        want_message = length_hexa + "want " + &refer.0 + "\n";
+        let want_line = format!("want {}\n",refer.0);
+        want_message.push_str(&format!("{:04X}{}",want_line.len()+4,want_line));
     }
-    want_message = want_message + "00000009done\n";
+    want_message.push_str("00000009done\n");
     Ok(want_message)
 }

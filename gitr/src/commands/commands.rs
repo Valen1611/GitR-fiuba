@@ -1,5 +1,8 @@
+use std::net::TcpStream;
 // use std::fmt::Result;
 use std::{io::prelude::*, error::Error};
+
+use chrono::format;
 
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::read_pack_file};
 use crate::file_manager::print_commit_log;
@@ -178,7 +181,6 @@ pub fn rm(flags: Vec<String>)-> Result<(), GitrError> {
         println!("Error: file not found");
     }
     Ok(())
-  
 } 
 
 // estamos haciendo un tree de mas
@@ -229,25 +231,36 @@ pub fn log(flags: Vec<String>)->Result<(), GitrError> {
 
 
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
-    // let address = flags[0].clone();
-    // let mut socket = clone_connect_to_server(address)?;
-    // println!("clone():Servidor conectado.");
-    // clone_send_git_upload_pack(&mut socket)?;
-    // println!("clone():Envié upload-pack");
-    // let ref_disc = clone_read_reference_discovery(&mut socket)?;
-    // let references = ref_discovery::discover_references(ref_disc)?;
-    // println!("clone():Referencias ={:?}=", references);
-    // let want_message = ref_discovery::assemble_want_message(&references)?;
-    // println!("clone():want {:?}", want_message);
+    let address = flags[0].clone();
+    let mut socket = clone_connect_to_server(address)?;
+    println!("clone():Servidor conectado.");
+    clone_send_git_upload_pack(&mut socket)?;
+    println!("clone():Envié upload-pack");
+    let ref_disc = clone_read_reference_discovery(&mut socket)?;
+    let references = ref_discovery::discover_references(ref_disc)?;
+    println!("clone():Referencias ={:?}=", references);
+    let want_message = ref_discovery::assemble_want_message(&references)?;
+    println!("clone():want {:?}", want_message);
 
-    // socket.write(want_message.as_bytes())?;
+    match socket.write(want_message.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+    }
 
-    // let mut buffer = [0;1024];
-    // socket.read(&mut buffer)?;
-    // print!("clone(): recepeción de packfile:");
-    // read_and_print_socket_read(&mut socket);
+    let mut buffer = [0;1024];
+    match socket.read(&mut buffer) {
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+        _ => ()
+    }
+    print!("clone(): recepeción de packfile:");
 
-    // let objects = read_pack_file(&mut buffer)?;
+    let objects = read_pack_file(&mut buffer);
     Ok(())
 }
 
@@ -267,7 +280,48 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     if !flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "pull <no-args>".to_string()));
     }
+    // "003agit-upload-pack /schacon/gitbook.git\0host=example.com\0"
+
+    // ########## HANDSHAKE ##########
+    let repo = file_manager::get_current_repo()?;
+    let remote = file_manager::get_remote()?;
+    let msj = format!("git-upload-pack /{}\0host={}\0",repo, remote);
+    let msj = format!("{:04x}{}", msj.len() + 4, msj);
+    let mut stream = match TcpStream::connect(remote) {
+        Ok(socket) => socket,
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+    };
+    match stream.write(msj.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+    };
     
+    //  ########## REFERENCE DISCOVERY ##########
+    let mut buffer = [0;1024];
+    let mut ref_disc = String::new();
+    loop {
+        match stream.read(&mut buffer) {
+            Ok(n) => {
+                let mut bytes = &buffer[..n];
+                let mut s = String::from_utf8_lossy(bytes);
+                ref_disc.push_str(&s);
+                if n < 1024 {
+                    break;
+                }
+            },
+            Err(e) => {
+                println!("Error: {}", e);
+                return Ok(())
+            }
+        }
+    }
+
     println!("pull");
     Ok(())
 }

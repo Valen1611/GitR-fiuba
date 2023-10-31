@@ -272,23 +272,25 @@ pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
     Ok(socket)
 }
 
-pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, Box<dyn Error>>{
+pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, GitrError>{
+    let msj = format!("git-upload-pack /{}\0host={}\0",file_manager::get_current_repo()?, file_manager::get_remote()?);
+    let msj = format!("{:04x}{}", msj.len() + 4, msj);    
     match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
         Ok(bytes) => Ok(bytes),
-        Err(e) => Err(Box::new(e)),
+        Err(e) => Err(GitrError::ConnectionError),
     }
 }
 
-pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, Box<dyn Error>>{
+pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, GitrError>{
     let mut buffer = [0; 1024];
     let mut response = String::new();
     loop{
-        let bytes_read = socket.read(&mut buffer)?;
-        let received_message = String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
-        if bytes_read == 0 || received_message == "0000"{ 
+        let bytes_read = socket.read(&mut buffer);
+        let received_message = String::from_utf8_lossy(&buffer).to_string();
+        if received_message == "0000"{ 
             break;
         }
-        response=String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
+        response.push_str(&received_message);
     }
     Ok(response)
 }
