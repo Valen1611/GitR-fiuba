@@ -102,10 +102,10 @@ pub fn create_directory(path: &String)->Result<(), GitrError>{
 pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
     let log_msg = format!("writing data to: {}", path);
     logger::log_file_operation(log_msg)?;
-    // let file: File = match File::create(path) {
-    //     Ok(file) => file,
-    //     Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
-    // };
+    match File::create(path) {
+        Ok(file) => file,
+        Err(_) => return Err(GitrError::FileCreationError(path.to_string())),
+    };
 
     match fs::write(path, data) {
         Ok(_) => Ok(()),
@@ -175,7 +175,7 @@ pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     if fs::metadata(&folder_dir).is_err() {
         create_directory(&folder_dir)?;
     }
-    
+    println!("llegué aca");
     write_compressed_data(&(folder_dir.clone() + "/" + &file_name),  &data)?;
     Ok(())
 }
@@ -329,7 +329,7 @@ pub fn get_current_commit()->Result<String, GitrError>{
     let path = repo + "/gitr/" + &head_path;
 
 
-
+    println!("path: {}", path);
     let head = read_file(path)?;
     Ok(head)
 }

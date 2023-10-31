@@ -59,14 +59,12 @@ impl Tree{
         for (path, entry) in &entries {
             match entry {
                 TreeEntry::Blob(blob) => {
-                    // repo/archivo
-                    // repo/carpeta/archivo
                     let hash = blob.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
 
                     let path_no_repo = path.split_once('/').unwrap().1;
 
-                    let mut obj_entry = vec! [
+                    let mut obj_entry = [
                         b"100644 ",
                         path_no_repo.as_bytes(),
                         b"\0",
@@ -96,7 +94,7 @@ impl Tree{
 
 
 
-        let mut data = vec![
+        let mut data = [
             b"tree ",
             entries_size.to_string().as_bytes(),
             b"\0",
@@ -110,7 +108,7 @@ impl Tree{
         let hashed_file2 = command_utils::sha1hashing2(data.clone());
 
         let hashed_file_str = hashed_file2.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        println!("HASHED FILE: {:?}", hashed_file_str);
+        //println!("HASHED FILE: {:?}", hashed_file_str);
 
         let mut format_data = String::new();
         let init = format!("tree {}\0", entries.len());
@@ -140,18 +138,18 @@ impl Tree{
 }
 
 
-#[cfg(test)]
-mod tests {
-    use crate::objects::blob::Blob;
-    use super::*;
-
-    // #[test]
-    // fn tree_creation_test(){
-    //     let blob = Blob::new("hola".to_string()).unwrap();
-    //     blob.save().unwrap();
-    //     let hash = blob.get_hash();
-    //     let tree = Tree::new(vec![("hola.txt".to_string(), TreeEntry::Blob(blob))]).unwrap();
-    //     tree.save().unwrap();
-    // }
- 
-}
+//#[cfg(test)]
+//mod tests {
+//    use crate::objects::blob::Blob;
+//    use super::*;
+//
+//    #[test]
+//    fn tree_creation_test(){
+//        let blob = Blob::new("hola".to_string()).unwrap();
+//        blob.save().unwrap();
+//        let hash = blob.get_hash();
+//        let tree = Tree::new(vec![("hola.txt".to_string(), TreeEntry::Blob(blob))]).unwrap();
+//        tree.save().unwrap();
+//    }
+// 
+//}

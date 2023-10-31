@@ -1,4 +1,5 @@
-use std::{io::{Write, Read}, fs::{self, create_dir}, path::Path, error::Error, collections::HashMap, net::TcpStream};
+use core::panic;
+use std::{io::{Write, Read}, fs::{self, create_dir, File}, path::Path, error::Error, collections::HashMap, net::TcpStream};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
@@ -164,6 +165,7 @@ pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) 
 
     let tree = Tree::new(tree_entry)?;
     tree.save()?;
+    println!("llegue aca");
     Ok(tree)
 }
 
@@ -185,7 +187,7 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
         let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
-            if let Some(last_element) = splitted_file_path.last() {
+            if let Some(last_element) = splitted_file_path.last() { //es el ultimo?
                 if dir == last_element {
                     if tree_map.contains_key(splitted_file_path[i-1]) {
                         match tree_map.get_mut(splitted_file_path[i-1]) {
@@ -221,19 +223,35 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
             }
         }
     }
+
+    println!("tree_map: {:?}", tree_map);
+
     let tree_all = create_trees(tree_map, tree_order[0].clone())?;
+
+    println!("tree_all: {:?}", tree_all);
+    
     let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
+    
+    println!("final_tree: {:?}", final_tree);
+
     final_tree.save()?;
     let head = file_manager::get_head()?;
     let repo = file_manager::get_current_repo()?;
-    if head == "None"{
+
+    let head_split = head.split(' ').collect::<Vec<&str>>()[1];
+    println!("head_split: {:?}", head_split);
+
+    let path_completo = repo.clone()+"/gitr/"+head_split;
+
+    if File::open(path_completo.clone()).is_err(){
+        //panic!();
         let dir = repo + "/gitr/refs/heads/master";
 
         if !Path::new(&dir).exists(){
             let current_commit = file_manager::get_current_commit()?;
             file_manager::write_file(dir.clone(), current_commit)?;
         }
-
+        
         let commit = Commit::new(final_tree.get_hash(), "None".to_string(), get_current_username(), get_current_username(), message)?;
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;
