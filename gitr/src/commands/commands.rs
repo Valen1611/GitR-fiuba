@@ -61,38 +61,43 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
         let flags_str = flags.join(" ");
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
-    let res_output = file_manager::read_object(&flags[1])?;
+
+    let data_requested = &flags[0];
+    let object_hash = &flags[1];
+
+
+    let res_output = file_manager::read_object(object_hash)?;
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
 
 
-    if flags[0] == "-t"{
+    if data_requested == "-t"{
         println!("{}", object_type);
     }
-    if flags[0] == "-s"{
+    if data_requested == "-s"{
         println!("{}", size);
     }
-    if flags[0] == "-p"{
-        let raw_data_index = match res_output.find('\0') {
-            Some(index) => index,
+    if data_requested == "-p"{
+        let raw_data = match res_output.split_once('\0') {
+            Some((_object_type, raw_data)) => raw_data,
             None => {
                 println!("Error: invalid object type");
-                return Ok(())
+                return Err(GitrError::FileReadError(object_hash.to_string()))
             }
         };
 
-        let raw_data = &res_output[(raw_data_index + 1)..];
         match object_type {
             "blob" => print_blob_data(raw_data),
             "tree" => print_tree_data(raw_data),
-            "commit" => println!("{}", res_output.split('\0').collect::<Vec<&str>>()[1]),
+            "commit" => print_commit_data(raw_data),
             _ => println!("Error: invalid object type"),
         }
     }
     
     Ok(())
 }
+
 
 pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
     if flags.is_empty() || flags.len() > 1  {
