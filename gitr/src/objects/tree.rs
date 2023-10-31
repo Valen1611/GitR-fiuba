@@ -63,10 +63,10 @@ impl Tree{
                     let formated_hash = get_formated_hash(hash, path)?;
 
                     let path_no_repo = path.split_once('/').unwrap().1;
-
+                    let file_name = path.split('/').last().unwrap();
                     let mut obj_entry = [
                         b"100644 ",
-                        path_no_repo.as_bytes(),
+                        file_name.as_bytes(),
                         b"\0",
                         &formated_hash,
                     ]
@@ -77,7 +77,21 @@ impl Tree{
                 
                 }
                 TreeEntry::Tree(tree) => {
-                    //objs_entries.push_str(&format!("40000 {}\0{}\n", path, tree.hash));
+                    let hash = tree.get_hash();
+                    let formated_hash = get_formated_hash(hash, path)?;
+                    println!("path: {:?}", path);
+                    //let path_no_repo = path.split_once('/').unwrap().1;
+
+                    let mut obj_entry = [
+                        b"40000 ",
+                        path.as_bytes(),
+                        b"\0",
+                        &formated_hash,
+                    ]
+                    .concat();
+
+                    entries_size += obj_entry.len() as u8;
+                    objs_entries.push(obj_entry);    
                 }
             }
         }

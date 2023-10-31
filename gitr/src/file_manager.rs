@@ -466,6 +466,7 @@ pub fn get_main_tree(commit:String)->Result<String, GitrError>{
         }
     };
     let raw_data = &tree[(raw_data_index + 1)..];
+    println!("raw data: {}", raw_data);
     let tree_hash = raw_data.split('\0').collect::<Vec<&str>>()[1];
     println!("{}", tree_hash);
     Ok(tree_hash.to_string())

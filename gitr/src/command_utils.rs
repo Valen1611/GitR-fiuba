@@ -226,27 +226,25 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
 
     println!("tree_map: {:?}", tree_map);
 
-    let tree_all = create_trees(tree_map, tree_order[0].clone())?;
+    let final_tree = create_trees(tree_map, tree_order[0].clone())?;
 
-    println!("tree_all: {:?}", tree_all);
+   // println!("tree_all: {:?}", tree_all);
     
-    let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
+    //let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
     
-    println!("final_tree: {:?}", final_tree);
+    //println!("final_tree: {:?}", final_tree);
 
     final_tree.save()?;
     let head = file_manager::get_head()?;
     let repo = file_manager::get_current_repo()?;
+ 
 
-    let head_split = head.split(' ').collect::<Vec<&str>>()[1];
-    println!("head_split: {:?}", head_split);
-
-    let path_completo = repo.clone()+"/gitr/"+head_split;
+    let path_completo = repo.clone()+"/gitr/"+head.as_str();
 
     if File::open(path_completo.clone()).is_err(){
-        //panic!();
+        
         let dir = repo + "/gitr/refs/heads/master";
-
+        file_manager::write_file(path_completo, final_tree.get_hash())?;
         if !Path::new(&dir).exists(){
             let current_commit = file_manager::get_current_commit()?;
             file_manager::write_file(dir.clone(), current_commit)?;
@@ -285,7 +283,7 @@ pub fn print_branches()-> Result<(), GitrError>{
     let branches = file_manager::get_branches()?;
         for branch in branches{
             if head == branch{
-                let index_branch = format!("* {}", branch);
+                let index_branch = format!("* \x1b[92m{}\x1b[0m", branch);
                 println!("{}",index_branch);
                 continue;
             }

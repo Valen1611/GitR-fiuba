@@ -1,3 +1,6 @@
+use std::fs;
+use std::ops::IndexMut;
+use std::path::Path;
 use std::{io::prelude::*, error::Error};
 
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::read_pack_file};
@@ -137,6 +140,55 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
     let file_path = &flags[0];
 
     let repo = file_manager::get_current_repo()?;
+
+    let index_path = &(repo.clone() + "/gitr/index");
+    println!("index_path: {}", index_path);
+    if Path::new(index_path).is_file() {
+        
+        
+        
+        
+        let index_data = file_manager::read_index()?;
+        let mut index_vector = index_data.split('\n').collect::<Vec<&str>>();
+        
+        
+        // for (mut i,entry) in index_vector.clone().iter().enumerate(){
+        //     let path_to_check = entry.split(' ').collect::<Vec<&str>>()[3];
+        //     if Path::new(path_to_check).exists(){
+        //         index_vector.remove(i);
+        //         i -= 1;
+        //     }
+        // }
+        
+        
+        let mut i: i32 = 0;
+        while i != index_vector.len() as i32{
+            println!("entro al while");
+            let entry = index_vector[i as usize];
+            let path_to_check = entry.split(' ').collect::<Vec<&str>>()[3];
+            if !Path::new(path_to_check).exists(){
+                println!("eliminado: {:?}" , index_vector.remove(i as usize));
+                i -= 1;
+            }
+            i += 1;
+        };
+    
+        
+        fs::remove_file(format!("{}/gitr/index", repo));
+        
+        for entry in index_vector {
+            let path = entry.split(' ').collect::<Vec<&str>>()[3];
+            println!("path: {}", path);
+            save_and_add_blob_to_index(path.to_string())?;
+        }
+        
+
+       
+
+    }
+
+     
+
 
     if file_path == "."{
         let files = visit_dirs(std::path::Path::new(&repo));
