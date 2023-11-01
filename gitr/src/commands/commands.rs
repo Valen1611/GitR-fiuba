@@ -8,6 +8,8 @@ use crate::objects::commit::{self, Commit};
 use crate::objects::tree::Tree;
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
 use crate::file_manager::print_commit_log;
+use crate::{git_transport::pack_file::read_pack_file};
+use crate::file_manager::{get_head, get_current_commit};
 use crate::command_utils::*;
 
 use crate::git_transport::ref_discovery;
@@ -99,7 +101,6 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
     Ok(())
 }
 
-
 pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
     if flags.is_empty() || flags.len() > 1  {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "init <new_repo_name>".to_string()));
@@ -148,7 +149,6 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
     let repo = file_manager::get_current_repo()?;
 
     let index_path = &(repo.clone() + "/gitr/index");
-    println!("index_path: {}", index_path);
     if Path::new(index_path).is_file() {
         
         let index_data = file_manager::read_index()?;
@@ -161,21 +161,21 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
 
         let mut i: i32 = 0;
         while i != index_vector.len() as i32{
-            println!("entro al while");
+            
             let entry = index_vector[i as usize];
             let path_to_check = entry.split(' ').collect::<Vec<&str>>()[3];
             if !Path::new(path_to_check).exists(){
-                println!("eliminado: {:?}" , index_vector.remove(i as usize));
+                index_vector.remove(i as usize);
                 i -= 1;
             }
             i += 1;
         };
-    
+        
         fs::remove_file(format!("{}/gitr/index", repo));
         
         for entry in index_vector {
             let path = entry.split(' ').collect::<Vec<&str>>()[3];
-            println!("path: {}", path);
+            
             save_and_add_blob_to_index(path.to_string())?;
         }
         
@@ -228,23 +228,19 @@ pub fn rm(flags: Vec<String>)-> Result<(), GitrError> {
   
 } 
 
-// estamos haciendo un tree de mas
 pub fn commit(flags: Vec<String>)-> Result<(), GitrError>{
     if flags[0] != "-m" || flags.len() < 2 {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m <commit_message>".to_string()))
     }
-    
-    let message = &flags[1];
-    println!("message: {:?}", message);
     if flags[1].starts_with('\"'){
         let message = &flags[1..];
         let message = message.join(" ");
         get_tree_entries(message.to_string())?;
+        print_commit_confirmation(message)?;
         return Ok(())
+    } else {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
     }
-    get_tree_entries(message.to_string())?;
-    
-    Ok(())
 }
 
 pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
@@ -256,7 +252,10 @@ pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
         println!("error: pathspec '{}' did not match any file(s) known to git.", flags[0]);
         return Ok(())
     }
+
     let current_commit = file_manager::get_commit(flags[0].clone())?;
+    println!("curent commit = {}", current_commit);
+
     file_manager::update_working_directory(current_commit)?;
     let path_head = format!("refs/heads/{}", flags[0]);
     file_manager::update_head(&path_head)?;

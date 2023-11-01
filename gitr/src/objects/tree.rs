@@ -100,9 +100,6 @@ impl Tree{
             &objs_entries.concat(),
         ].concat();
 
-
-        println!("data: {:?}", data);
-
         let compressed_file2 = command_utils::flate2compress2(data.clone())?;
         let hashed_file2 = command_utils::sha1hashing2(data.clone());
 

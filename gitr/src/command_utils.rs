@@ -1,12 +1,12 @@
-use core::panic;
-use std::{io::{Write, Read}, fs::{self, create_dir, File}, path::Path, error::Error, collections::HashMap, net::TcpStream};
+
+use std::{io::{Write, Read}, fs::{self}, path::Path, error::Error, collections::HashMap, net::TcpStream};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::file_manager::{read_index, self};
+
+use crate::file_manager::{read_index, self, get_head, get_current_commit};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
@@ -163,7 +163,7 @@ pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) 
 
     let tree = Tree::new(tree_entry)?;
     tree.save()?;
-    println!("llegue aca");
+    
     Ok(tree)
 }
 
@@ -252,7 +252,7 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
-        println!("o entra en el else?");
+
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit()?;
         
@@ -303,6 +303,17 @@ pub fn branch_exists(branch: String) -> bool{
         }
     }
     false
+}
+
+pub fn print_commit_confirmation(message:String)->Result<(), GitrError>{
+    let branch = get_head()?
+            .split('/')
+            .collect::<Vec<&str>>()[2]
+            .to_string();
+        let hash_recortado = &get_current_commit()?[0..7];
+
+        println!("[{} {}] {}", branch, hash_recortado, message);
+        Ok(())
 }
 
 pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
