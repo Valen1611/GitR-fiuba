@@ -253,8 +253,6 @@ pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
     let current_commit = file_manager::get_commit(flags[0].clone())?;
     println!("curent commit = {}", current_commit);
 
-    
-
     file_manager::update_working_directory(current_commit)?;
     let path_head = format!("refs/heads/{}", flags[0]);
     file_manager::update_head(&path_head)?;

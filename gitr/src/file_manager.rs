@@ -189,7 +189,7 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
 
 }
 
-fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
+pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
     let mut header_buffer = String::new();
     let mut data_starting_index = 0;
     for byte in data.clone() {
@@ -202,9 +202,9 @@ fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
     }
 
     let mut entries_buffer = String::new();
-    let mut entry = String::new();
     let mut convert_to_hexa = false;
     let mut hexa_iters = 0;
+
     for byte in data[data_starting_index..].iter() {
 
         if hexa_iters == 20 {
@@ -502,8 +502,12 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
     for entry in raw_data.split('\n') {
         let object = entry.split(' ').collect::<Vec<&str>>()[0];
         if object == "100644"{ //blob
-            println!("blob: {}", entry);
-            create_blob(entry.to_string())?;
+           
+
+            let path_completo = path.clone() + "/" + &parse_blob_path(entry.to_string().clone());
+            let hash = parse_blob_hash(entry.to_string().clone());
+
+            create_blob(path_completo, hash)?;
 
         } else { //tree
             let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
@@ -517,18 +521,26 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn create_blob(entry: String) -> Result<(), GitrError> {
-    let _blob_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
+
+fn parse_blob_hash(blob_entry: String) -> String {
+    let _new_path_hash = blob_entry.split(' ').collect::<Vec<&str>>()[1];
+    let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
+    hash.to_string()
+}
+
+fn parse_blob_path(blob_entry: String) -> String {
+    let _new_path_hash = blob_entry.split(' ').collect::<Vec<&str>>()[1];
+    let new_path = _new_path_hash.split('\0').collect::<Vec<&str>>()[0];
+    new_path.to_string()
+}
+
+pub fn create_blob(path: String, hash: String) -> Result<(), GitrError> {
     let repo = get_current_repo()?;
-    let blob_path = repo + "/" +_blob_path_hash.split('\0').collect::<Vec<&str>>()[0];
-    let blob_hash = _blob_path_hash.split('\0').collect::<Vec<&str>>()[1];
-    //println!("blob hash: {}", blob_hash);
-    let new_blob = read_object(&(blob_hash.to_string()))?;
+    let blob_path = repo + "/" + path.as_str();
+ 
+    let new_blob = read_object(&(hash.to_string()))?;
     
     let new_blob_only_data = new_blob.split('\0').collect::<Vec<&str>>()[1];
-
-
-    println!("quiero escribir {} en {}", blob_path.to_string(), new_blob_only_data.to_string());
 
     write_file(blob_path.to_string(), new_blob_only_data.to_string())?;
     Ok(())
@@ -538,8 +550,6 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
     delete_all_files()?;
     let main_tree = get_main_tree(commit)?;
     let tree = read_object(&main_tree)?;
-    
-    println!("tree: {}", tree);
 
     let raw_data = match tree.split_once('\0') {
         Some((_, raw_data)) => raw_data,
@@ -549,8 +559,6 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
         }
     };
 
-    println!("raw data: {}", raw_data);
-
     for entry in raw_data.split('\n'){
         let object: &str = entry.split(' ').collect::<Vec<&str>>()[0];
         if object == "40000"{
@@ -559,8 +567,13 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
             let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
             create_tree(new_path.to_string(), hash.to_string())?;
         } else{
-            
-            create_blob(entry.to_string().clone())?;
+            println!("parsed hash: {}", parse_blob_hash(entry.to_string().clone()));
+            println!("parsed path: {}", parse_blob_path(entry.to_string().clone()));
+
+            let path_completo = parse_blob_path(entry.to_string().clone());
+            let hash = parse_blob_hash(entry.to_string().clone());
+
+            create_blob(path_completo, hash)?;
         }
     }
     Ok(())

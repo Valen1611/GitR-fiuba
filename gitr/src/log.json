@@ -10687,3 +10687,636 @@
 {"type": "Action","timestamp": "01-11-2023 02:08:40","message": "calling ls-files with flags: ["--stage"]"}
 {"type": "FileOperation","timestamp": "01-11-2023 02:08:40","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "01-11-2023 02:08:40","message": "reading data from: nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 02:20:40","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing object a90451bf67c1ae64b220847d80a8101a8255e564"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing data to: nuevo_repo/gitr/objects/a9/0451bf67c1ae64b220847d80a8101a8255e564"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing data to: nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing data to: nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: nuevo_repo/hola2"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing object d1f140540fa820bcf62b6fc390714d7a1cb1010f"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing data to: nuevo_repo/gitr/objects/d1/f140540fa820bcf62b6fc390714d7a1cb1010f"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing data to: nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing object a90451bf67c1ae64b220847d80a8101a8255e564"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing data to: nuevo_repo/gitr/objects/a9/0451bf67c1ae64b220847d80a8101a8255e564"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "reading data from: nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 02:20:40","message": "adding nuevo_repo/hola to index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:40","message": "writing data to: nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 02:20:44","message": "calling commit with flags: ["-m", "\"me\""]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/hola2"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "writing object 0009ccd6004afed43405153006633911bd0dc599"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "creating dir: nuevo_repo/gitr/objects/00"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "writing data to: nuevo_repo/gitr/objects/00/09ccd6004afed43405153006633911bd0dc599"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "writing object 0009ccd6004afed43405153006633911bd0dc599"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "writing data to: nuevo_repo/gitr/objects/00/09ccd6004afed43405153006633911bd0dc599"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/gitr/refs/heads/segundo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "writing object d37a91620b26958d7905c9ac461a6c0619da25c8"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "creating dir: nuevo_repo/gitr/objects/d3"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "writing data to: nuevo_repo/gitr/objects/d3/7a91620b26958d7905c9ac461a6c0619da25c8"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "writing data to: nuevo_repo/gitr/refs/heads/segundo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:20:44","message": "reading data from: nuevo_repo/gitr/refs/heads/segundo"}
+{"type": "Action","timestamp": "01-11-2023 02:40:11","message": "calling init with flags: ["repo"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:40:11","message": "creating dir: repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:40:11","message": "creating dir: repo/gitr"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:40:11","message": "creating dir: repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:40:11","message": "creating dir: repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:40:11","message": "creating dir: repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:40:11","message": "writing data to: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:40:11","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 02:41:43","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "writing object 5c1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "creating dir: repo/gitr/objects/5c"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "writing data to: repo/gitr/objects/5c/1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:43","message": "writing data to: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 02:41:48","message": "calling commit with flags: ["-m", "\"Asd"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "writing object 08deed466789dfea8937d0bdda2f6e81a615f25a"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "creating dir: repo/gitr/objects/08"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "writing data to: repo/gitr/objects/08/deed466789dfea8937d0bdda2f6e81a615f25a"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "writing object 08deed466789dfea8937d0bdda2f6e81a615f25a"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "writing data to: repo/gitr/objects/08/deed466789dfea8937d0bdda2f6e81a615f25a"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "writing data to: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "writing object f16a03a355fb1fc3c2470f72e93b54abac1811ea"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "creating dir: repo/gitr/objects/f1"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "writing data to: repo/gitr/objects/f1/6a03a355fb1fc3c2470f72e93b54abac1811ea"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "writing data to: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:41:48","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "01-11-2023 02:44:31","message": "calling branch with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:44:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:44:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:44:31","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:44:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:44:31","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:44:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:44:31","message": "writing data to: repo/gitr/refs/heads/otro"}
+{"type": "Action","timestamp": "01-11-2023 02:47:42","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:47:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:47:42","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:47:42","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 02:48:24","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:24","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:24","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 02:48:46","message": "calling checkout with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:48:46","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 02:49:23","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:23","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:23","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 02:49:39","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "writing object 4c26043dee6acad65ac5b505856e43569a328466"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "creating dir: repo/gitr/objects/4c"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "writing data to: repo/gitr/objects/4c/26043dee6acad65ac5b505856e43569a328466"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "writing object 4c26043dee6acad65ac5b505856e43569a328466"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "writing data to: repo/gitr/objects/4c/26043dee6acad65ac5b505856e43569a328466"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "reading data from: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 02:49:39","message": "adding repo/hola to index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:39","message": "writing data to: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 02:49:43","message": "calling commit with flags: ["-m", "\"en", "otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "writing object ae8af044f49f2baa3e574dc92a95ec1be8805a5d"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "creating dir: repo/gitr/objects/ae"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "writing data to: repo/gitr/objects/ae/8af044f49f2baa3e574dc92a95ec1be8805a5d"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "writing object ae8af044f49f2baa3e574dc92a95ec1be8805a5d"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "writing data to: repo/gitr/objects/ae/8af044f49f2baa3e574dc92a95ec1be8805a5d"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "writing object 51ddc231fdd7b639ebe80303f70374d3b6b67058"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "creating dir: repo/gitr/objects/51"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "writing data to: repo/gitr/objects/51/ddc231fdd7b639ebe80303f70374d3b6b67058"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "writing data to: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:49:43","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "Action","timestamp": "01-11-2023 02:50:03","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:03","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:03","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 02:50:07","message": "calling checkout with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:07","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 02:50:31","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:50:31","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 02:51:47","message": "calling init with flags: ["repo"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:51:47","message": "creating dir: repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:51:47","message": "creating dir: repo/gitr"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:51:47","message": "creating dir: repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:51:47","message": "creating dir: repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:51:47","message": "creating dir: repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:51:47","message": "writing data to: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:51:47","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 02:52:12","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: repo/archivo/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "writing object 8b6442c0b1fd1f80c7c15f5af0b823bbf0c91e5f"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "creating dir: repo/gitr/objects/8b"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "writing data to: repo/gitr/objects/8b/6442c0b1fd1f80c7c15f5af0b823bbf0c91e5f"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "writing object 5c1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "creating dir: repo/gitr/objects/5c"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "writing data to: repo/gitr/objects/5c/1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:12","message": "writing data to: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 02:52:14","message": "calling commit with flags: ["-m", "\"asd"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: repo/archivo/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing object f51ff40037f178d997bb6ed3ea133babaed2cf2f"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "creating dir: repo/gitr/objects/f5"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing data to: repo/gitr/objects/f5/1ff40037f178d997bb6ed3ea133babaed2cf2f"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing object 93225b9dd769dc9dc1f658dd6c75ab2d5b78ce01"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "creating dir: repo/gitr/objects/93"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing data to: repo/gitr/objects/93/225b9dd769dc9dc1f658dd6c75ab2d5b78ce01"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing object 93225b9dd769dc9dc1f658dd6c75ab2d5b78ce01"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing data to: repo/gitr/objects/93/225b9dd769dc9dc1f658dd6c75ab2d5b78ce01"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing data to: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing object dbfa04cd14f357df033b4f79ff206a55736aefbc"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "creating dir: repo/gitr/objects/db"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing data to: repo/gitr/objects/db/fa04cd14f357df033b4f79ff206a55736aefbc"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "writing data to: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:14","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "01-11-2023 02:52:19","message": "calling branch with flags: ["otra"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:19","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:19","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:19","message": "writing data to: repo/gitr/refs/heads/otra"}
+{"type": "Action","timestamp": "01-11-2023 02:52:22","message": "calling checkout with flags: ["otra"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: repo/gitr/refs/heads/otra"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "creating dir: repo/archivo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "writing data to: repo/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:52:22","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 02:54:16","message": "calling checkout with flags: ["otra"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: repo/gitr/refs/heads/otra"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "creating dir: repo/archivo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "writing data to: repo/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:54:16","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 02:58:25","message": "calling init with flags: ["repo"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:58:25","message": "creating dir: repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:58:25","message": "creating dir: repo/gitr"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:58:25","message": "creating dir: repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:58:25","message": "creating dir: repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:58:25","message": "creating dir: repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:58:25","message": "writing data to: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:58:25","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 02:59:01","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: repo/carpeta/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "writing object 14b4ef2732c8b9534699d18ef01439e54d8672fc"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "creating dir: repo/gitr/objects/14"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "writing data to: repo/gitr/objects/14/b4ef2732c8b9534699d18ef01439e54d8672fc"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "writing object 5c1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "creating dir: repo/gitr/objects/5c"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "writing data to: repo/gitr/objects/5c/1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:01","message": "writing data to: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 02:59:05","message": "calling commit with flags: ["-m", "\"ASdas"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: repo/carpeta/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing object 2f17133473e1cd0fccdb28784dc5990964ea39dd"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "creating dir: repo/gitr/objects/2f"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing data to: repo/gitr/objects/2f/17133473e1cd0fccdb28784dc5990964ea39dd"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing object 46162acdc49c80a9076c403b83c466f94df7ac34"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "creating dir: repo/gitr/objects/46"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing data to: repo/gitr/objects/46/162acdc49c80a9076c403b83c466f94df7ac34"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing object 46162acdc49c80a9076c403b83c466f94df7ac34"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing data to: repo/gitr/objects/46/162acdc49c80a9076c403b83c466f94df7ac34"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing data to: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing object d91219547c26ac1b9dcb1f1adf1b4d78400e6ceb"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "creating dir: repo/gitr/objects/d9"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing data to: repo/gitr/objects/d9/1219547c26ac1b9dcb1f1adf1b4d78400e6ceb"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "writing data to: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:05","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "01-11-2023 02:59:33","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:33","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:33","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:33","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 02:59:39","message": "calling branch with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:39","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:39","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:39","message": "writing data to: repo/gitr/refs/heads/otro"}
+{"type": "Action","timestamp": "01-11-2023 02:59:45","message": "calling checkout with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "creating dir: repo/carpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "writing data to: repo/carpeta/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 02:59:45","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 03:00:13","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "writing object 9330147878dfca0f918c00c2d6eb8b1d4337de80"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "creating dir: repo/gitr/objects/93"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "writing data to: repo/gitr/objects/93/30147878dfca0f918c00c2d6eb8b1d4337de80"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "writing object 9330147878dfca0f918c00c2d6eb8b1d4337de80"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "writing data to: repo/gitr/objects/93/30147878dfca0f918c00c2d6eb8b1d4337de80"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "reading data from: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 03:00:13","message": "adding repo/hola to index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:13","message": "writing data to: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 03:00:17","message": "calling commit with flags: ["-m", "\"en", "branch"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "writing object 7a00be9b94deb9eb5b669cb16dbd69a33575ab9e"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "creating dir: repo/gitr/objects/7a"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "writing data to: repo/gitr/objects/7a/00be9b94deb9eb5b669cb16dbd69a33575ab9e"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "writing object 7a00be9b94deb9eb5b669cb16dbd69a33575ab9e"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "writing data to: repo/gitr/objects/7a/00be9b94deb9eb5b669cb16dbd69a33575ab9e"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "writing object 0141488ee1bf984fa48553a9688e1b03a1b32e03"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "creating dir: repo/gitr/objects/01"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "writing data to: repo/gitr/objects/01/41488ee1bf984fa48553a9688e1b03a1b32e03"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "writing data to: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:17","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "Action","timestamp": "01-11-2023 03:00:21","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "creating dir: repo/carpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "writing data to: repo/carpeta/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:21","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 03:00:30","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:30","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:30","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 03:00:41","message": "calling checkout with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:41","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 03:00:59","message": "calling checkout with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:00:59","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 03:01:08","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "creating dir: repo/carpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "writing data to: repo/carpeta/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:01:08","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 03:09:29","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing object 5c1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/objects/5c/1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: repo/carpeta/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing object 14b4ef2732c8b9534699d18ef01439e54d8672fc"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/objects/14/b4ef2732c8b9534699d18ef01439e54d8672fc"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: repo/carpeta/otramas/conotroarchivo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing object 83bc0d1f5c376dc4ed4f5013b3b4bcada7a50692"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "creating dir: repo/gitr/objects/83"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/objects/83/bc0d1f5c376dc4ed4f5013b3b4bcada7a50692"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing object 5c1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/objects/5c/1b14949828006ed75a3e8858957f86a2f7e2eb"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "reading data from: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 03:09:29","message": "adding repo/hola to index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:29","message": "writing data to: repo/gitr/index"}
+{"type": "Action","timestamp": "01-11-2023 03:09:34","message": "calling commit with flags: ["-m", "\"asd"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: repo/gitr/index"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: repo/carpeta/archivoencarpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: repo/carpeta/otramas/conotroarchivo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing object 87d330a0bdcbb31c881ef1ad5342f5c3e94922a7"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "creating dir: repo/gitr/objects/87"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing data to: repo/gitr/objects/87/d330a0bdcbb31c881ef1ad5342f5c3e94922a7"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing object 42e70360796e9c78642bdf79a28d1b80ee6f8a98"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "creating dir: repo/gitr/objects/42"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing data to: repo/gitr/objects/42/e70360796e9c78642bdf79a28d1b80ee6f8a98"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing object 3eb500f05fc147acb9e6cc25eded43062344f383"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "creating dir: repo/gitr/objects/3e"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing data to: repo/gitr/objects/3e/b500f05fc147acb9e6cc25eded43062344f383"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing object 3eb500f05fc147acb9e6cc25eded43062344f383"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing data to: repo/gitr/objects/3e/b500f05fc147acb9e6cc25eded43062344f383"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing object 153f708386c4c83debeeb704edb0f624d4acf7a9"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "creating dir: repo/gitr/objects/15"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing data to: repo/gitr/objects/15/3f708386c4c83debeeb704edb0f624d4acf7a9"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "writing data to: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:35","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:35","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:35","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:35","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:35","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "01-11-2023 03:09:49","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:49","message": "reading data from: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:49","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "01-11-2023 03:09:57","message": "calling checkout with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:09:57","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 03:10:03","message": "calling checkout with flags: ["otro"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: repo/gitr/refs/heads/otro"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "writing data to: repo/hola"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:03","message": "writing data to: repo/gitr/HEAD"}
+{"type": "Action","timestamp": "01-11-2023 03:10:11","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "creating dir: repo/carpeta"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 03:10:11","message": "creating dir: repo/repo/carpeta/otramas"}
+{"type": "Error","timestamp": "01-11-2023 03:10:11","message": "ERROR: El repositorio ya esta inicializado"}
