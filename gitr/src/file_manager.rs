@@ -518,6 +518,7 @@ pub fn create_blob(entry: String) -> Result<(), GitrError> {
 pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
     let _ = delete_all_files();
     let main_tree = get_main_tree(commit)?;
+    println!("main tree: {}", main_tree);
     let tree = read_object(&main_tree)?;
     //let tree_entries = tree.split("\0").collect::<Vec<&str>>()[1];
     // REEMPLAZAR ESTO POR SPLIT_ONCE
@@ -548,24 +549,26 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
 
 pub fn get_main_tree(commit:String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
+    println!("commit del main tree: {}", commit);
     let commit = commit.split('\n').collect::<Vec<&str>>();
     let tree_base = commit[0].split('\0').collect::<Vec<&str>>()[1];
     let tree_hash_str = tree_base.split(' ').collect::<Vec<&str>>()[1];
-    println!("tree_base: {}", tree_hash_str);
-    let tree = read_object(&(tree_hash_str.to_string()))?;
-    let raw_data_index = match tree.find('\0') {
-        Some(index) => index,
-        None => {
-            println!("Error: invalid object type");
-            return Ok(".".to_string());
-        }
-    };
-    let raw_data = &tree[(raw_data_index + 1)..];
-    println!("raw data: {}", raw_data);
-    let tree_hash = raw_data.split('\0').collect::<Vec<&str>>()[1];
-    println!("{}", tree_hash);
-    Ok(tree_hash.to_string())
+    Ok(tree_hash_str.to_string())
 }
+//     let tree = read_object(&(tree_hash_str.to_string()))?;
+//     let raw_data_index = match tree.find('\0') {
+//         Some(index) => index,
+//         None => {
+//             println!("Error: invalid object type");
+//             return Ok(".".to_string());
+//         }
+//     };
+//     let raw_data = &tree[(raw_data_index + 1)..];
+//     println!("raw data: {}", raw_data);
+//     let tree_hash = raw_data.split('\0').collect::<Vec<&str>>()[1];
+//     println!("{}", tree_hash);
+//     Ok(tree_hash.to_string())
+// }
 
 pub fn delete_all_files()-> Result<(), GitrError>{  
     let repo = get_current_repo()?;
