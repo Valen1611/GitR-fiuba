@@ -4,19 +4,20 @@ use std::collections::HashSet;
 
 use crate::{gitr_errors::GitrError, file_manager};
 
-pub fn verify_header(header_slice: &[u8])->Result<(),String>{
+pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
     let str_received = String::from_utf8_lossy(header_slice);
+    println!("verify_header(): str_received: {:?}", str_received);
     if str_received != "PACK"{
-        return Err("Signature incorrect: is not PACK".to_string());
+        return Err(GitrError::PackFileError("verify_header".to_string(), "La signature no es PACK".to_string()));
     }
     Ok(())
 }
 
-pub fn extract_version(version_slice:&[u8])->Result<u32,String>{
-    let version: [u8 ;4] = version_slice.try_into().unwrap_or([0;4]);
-    if version == [0;4] {
-        return Err("La versión no pudo extraerse".to_string())
-    }
+pub fn extract_version(version_slice:&[u8])->Result<u32,GitrError>{
+    let version = match version_slice.try_into(){
+        Ok(vec) => vec,
+        Err(e) => return Err(gitr_errors::GitrError::PackFileError("extract_version".to_string(),"no se pudo obtener la version".to_string()))
+    };
     let version = u32::from_be_bytes(version);
     println!("Versión del archivo de pack: {:?}", version);
     Ok(version)
@@ -29,7 +30,7 @@ fn extract_head_hash(head_slice: &str)->String{
 }
 
 fn extract_hash_and_ref(ref_slice: &str)->(String,String){
-    println!("extract_hash_and_ref(): {:?}", ref_slice);
+    println!("extract_hash_and_ref(): [param:ref_slice]{:?}", ref_slice);
     let split = ref_slice.split(' ').collect::<Vec<&str>>();
     let hash = split[0];
     let reference = split[1];

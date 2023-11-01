@@ -4,8 +4,16 @@ use std::{io::prelude::*, error::Error};
 
 use chrono::format;
 
-use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::read_pack_file};
-use crate::file_manager::print_commit_log;
+use std::fs;
+use std::ops::IndexMut;
+use std::path::Path;
+use std::{io::prelude::*, error::Error};
+
+use crate::objects::git_object::GitObject::*;
+use crate::objects::commit::{self, Commit};
+use crate::objects::tree::Tree;
+use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
+use crate::git_transport::pack_file::read_pack_file;
 use crate::command_utils::*;
 
 use crate::git_transport::ref_discovery;
@@ -62,32 +70,34 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
         let flags_str = flags.join(" ");
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
-    let res_output = file_manager::read_object(&flags[1])?;
+
+    let data_requested = &flags[0];
+    let object_hash = &flags[1];
+
+    let res_output = file_manager::read_object(object_hash)?;
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
 
-
-    if flags[0] == "-t"{
+    if data_requested == "-t"{
         println!("{}", object_type);
     }
-    if flags[0] == "-s"{
+    if data_requested == "-s"{
         println!("{}", size);
     }
-    if flags[0] == "-p"{
-        let raw_data_index = match res_output.find('\0') {
-            Some(index) => index,
+    if data_requested == "-p"{
+        let raw_data = match res_output.split_once('\0') {
+            Some((_object_type, raw_data)) => raw_data,
             None => {
                 println!("Error: invalid object type");
-                return Ok(())
+                return Err(GitrError::FileReadError(object_hash.to_string()))
             }
         };
 
-        let raw_data = &res_output[(raw_data_index + 1)..];
         match object_type {
             "blob" => print_blob_data(raw_data),
             "tree" => print_tree_data(raw_data),
-            "commit" => println!("{}", res_output.split('\0').collect::<Vec<&str>>()[1]),
+            "commit" => print_commit_data(raw_data),
             _ => println!("Error: invalid object type"),
         }
     }
@@ -106,8 +116,12 @@ pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn status(flags: Vec<String>) {
+pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
+    let head = file_manager::get_head()?;
+    let current_branch = head.split('/').collect::<Vec<&str>>()[2];
+    println!("On branch {}", current_branch);
     println!("status");
+    Ok(())
 }
 
 // pub fn create_blob_from_file(file_path: &String) -> Result<(), Box<dyn Error>> {
@@ -138,6 +152,40 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
 
     let repo = file_manager::get_current_repo()?;
 
+    let index_path = &(repo.clone() + "/gitr/index");
+    if Path::new(index_path).is_file() {
+        
+        let index_data = file_manager::read_index()?;
+
+        let mut index_vector: Vec<&str> = Vec::new();
+
+        if !index_data.is_empty() {
+            index_vector = index_data.split('\n').collect::<Vec<&str>>();
+        }
+
+        let mut i: i32 = 0;
+        while i != index_vector.len() as i32{
+            
+            let entry = index_vector[i as usize];
+            let path_to_check = entry.split(' ').collect::<Vec<&str>>()[3];
+            if !Path::new(path_to_check).exists(){
+                index_vector.remove(i as usize);
+                i -= 1;
+            }
+            i += 1;
+        };
+        
+        fs::remove_file(format!("{}/gitr/index", repo));
+        
+        for entry in index_vector {
+            let path = entry.split(' ').collect::<Vec<&str>>()[3];
+            
+            save_and_add_blob_to_index(path.to_string())?;
+        }
+        
+    }
+
+     
     if file_path == "."{
         let files = visit_dirs(std::path::Path::new(&repo));
         for file in files{
@@ -183,23 +231,19 @@ pub fn rm(flags: Vec<String>)-> Result<(), GitrError> {
     Ok(())
 } 
 
-// estamos haciendo un tree de mas
 pub fn commit(flags: Vec<String>)-> Result<(), GitrError>{
     if flags[0] != "-m" || flags.len() < 2 {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m <commit_message>".to_string()))
     }
-    
-    let message = &flags[1];
-    println!("message: {:?}", message);
     if flags[1].starts_with('\"'){
         let message = &flags[1..];
         let message = message.join(" ");
         get_tree_entries(message.to_string())?;
+        print_commit_confirmation(message)?;
         return Ok(())
+    } else {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
     }
-    get_tree_entries(message.to_string())?;
-    
-    Ok(())
 }
 
 pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
@@ -211,7 +255,10 @@ pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
         println!("error: pathspec '{}' did not match any file(s) known to git.", flags[0]);
         return Ok(())
     }
+
     let current_commit = file_manager::get_commit(flags[0].clone())?;
+    println!("curent commit = {}", current_commit);
+
     file_manager::update_working_directory(current_commit)?;
     let path_head = format!("refs/heads/{}", flags[0]);
     file_manager::update_head(&path_head)?;
@@ -233,34 +280,51 @@ pub fn log(flags: Vec<String>)->Result<(), GitrError> {
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     let address = flags[0].clone();
     let mut socket = clone_connect_to_server(address)?;
-    // println!("clone():Servidor conectado.");
+    println!("clone():Servidor conectado.");
     clone_send_git_upload_pack(&mut socket)?;
-    // println!("clone():Envié upload-pack");
+    println!("clone():Envié upload-pack");
     let ref_disc = clone_read_reference_discovery(&mut socket)?;
     let references = ref_discovery::discover_references(ref_disc)?;
-    // println!("clone():Referencias ={:?}=", references);
-    let want_message = ref_discovery::assemble_want_message(&references,Vec::new())?;
-    // println!("clone():want {:?}", want_message);
 
-    match socket.write(want_message.as_bytes()) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
+    let repo = file_manager::get_current_repo()?;
+    
+    for reference in &references[1..]{
+        let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); //ref path
+        if references[0].0 == reference.0{
+            file_manager::update_head(&reference.1.clone())?; //actualizo el head
         }
+        let into_hash = reference.0.clone(); //hash a escribir en el archivo
+        file_manager::write_file(path_str, into_hash)?; //escribo el hash en el archivo
     }
+
+    println!("clone():Referencias ={:?}=", references);
+    let want_message = ref_discovery::assemble_want_message(&references,Vev::new())?;
+    println!("clone():want {:?}", want_message);
+
+    socket.write(want_message.as_bytes());
 
     let mut buffer = [0;1024];
-    match socket.read(&mut buffer) {
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-        _ => ()
-    }
+    match socket.read(&mut buffer){
+        Ok(a)=>a,
+        Err(e)=>return Err(GitrError::SocketError("clone".into(), e.to_string()))
+    };
+    
     print!("clone(): recepeción de packfile:");
+    socket.read(&mut buffer);
 
-    let objects = read_pack_file(&mut buffer);
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
+
+
+
+    println!("clone(): objects: {:?}", pack_file_struct);
+
+    for object in pack_file_struct.objects.iter(){
+        match object{
+            Blob(blob) => blob.save()?,
+            Commit(commit) => commit.save()?,
+            Tree(tree) => tree.save()?,
+        }
+    }
     Ok(())
 }
 

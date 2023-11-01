@@ -1,14 +1,34 @@
-use std::{io::{Write, Read}, fs, path::Path, error::Error, collections::HashMap, net::TcpStream};
+
+use std::{io::{Write, Read}, fs::{self}, path::Path, error::Error, collections::HashMap, net::TcpStream};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::file_manager::{read_index, self};
+
+use crate::file_manager::{read_index, self, get_head, get_current_commit};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
-
+pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
+    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+    
+    match encoder.write_all(&input) {
+        Ok(_) => {},
+        Err(_) => return Err(GitrError::CompressionError),
+    };
+    
+    let compressed_bytes = match encoder.finish() {
+        Ok(bytes) => bytes,
+        Err(_) => return Err(GitrError::CompressionError),
+    };
+    Ok(compressed_bytes)
+}
+pub fn sha1hashing2(input: Vec<u8>) -> Vec<u8> {
+    let mut hasher = Sha1::new();
+    hasher.update(&input);
+    let result = hasher.finalize();
+    result.to_vec()
+}
 
 pub fn sha1hashing(input: String) -> Vec<u8> {
     let mut hasher = Sha1::new();
@@ -34,12 +54,10 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
-
 pub fn print_tree_data(raw_data: &str) {
     let files = raw_data.split('\n').collect::<Vec<&str>>();
 
     for object in files {
-        println!("obj: {:?}", object);
         let file_atributes = object.split(' ').collect::<Vec<&str>>();
         let file_mode = file_atributes[0];
         let file_path_hash = file_atributes[1];
@@ -145,6 +163,7 @@ pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) 
 
     let tree = Tree::new(tree_entry)?;
     tree.save()?;
+    
     Ok(tree)
 }
 
@@ -166,7 +185,7 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
         let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
-            if let Some(last_element) = splitted_file_path.last() {
+            if let Some(last_element) = splitted_file_path.last() { //es el ultimo?
                 if dir == last_element {
                     if tree_map.contains_key(splitted_file_path[i-1]) {
                         match tree_map.get_mut(splitted_file_path[i-1]) {
@@ -197,24 +216,46 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
                                 println!("No se encontro el folder");
                             }
                         }
-                    }        
-                } 
+                    }
+                }
             }
         }
     }
-    let tree_all = create_trees(tree_map, tree_order[0].clone())?;
-    let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
+
+    
+
+    let final_tree = create_trees(tree_map, tree_order[0].clone())?;
+
+   // println!("tree_all: {:?}", tree_all);
+    
+    //let final_tree = Tree::new(vec![(".".to_string(), TreeEntry::Tree(tree_all))])?;
+    
+    //println!("final_tree: {:?}", final_tree);
+
     final_tree.save()?;
     let head = file_manager::get_head()?;
     let repo = file_manager::get_current_repo()?;
-    if head == "None"{
+ 
+
+    let path_completo = repo.clone()+"/gitr/"+head.as_str();
+    
+    if fs::metadata(path_completo.clone()).is_err(){
+
         let dir = repo + "/gitr/refs/heads/master";
+        file_manager::write_file(path_completo, final_tree.get_hash())?;
+        if !Path::new(&dir).exists(){
+            let current_commit = file_manager::get_current_commit()?;
+            file_manager::write_file(dir.clone(), current_commit)?;
+        }
+        
         let commit = Commit::new(final_tree.get_hash(), "None".to_string(), get_current_username(), get_current_username(), message)?;
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
+
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit()?;
+        
         let commit = Commit::new(final_tree.get_hash(), current_commit, get_current_username(), get_current_username(), message)?;
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;
@@ -241,7 +282,7 @@ pub fn print_branches()-> Result<(), GitrError>{
     let branches = file_manager::get_branches()?;
         for branch in branches{
             if head == branch{
-                let index_branch = format!("* {}", branch);
+                let index_branch = format!("* \x1b[92m{}\x1b[0m", branch);
                 println!("{}",index_branch);
                 continue;
             }
@@ -264,6 +305,17 @@ pub fn branch_exists(branch: String) -> bool{
     false
 }
 
+pub fn print_commit_confirmation(message:String)->Result<(), GitrError>{
+    let branch = get_head()?
+            .split('/')
+            .collect::<Vec<&str>>()[2]
+            .to_string();
+        let hash_recortado = &get_current_commit()?[0..7];
+
+        println!("[{} {}] {}", branch, hash_recortado, message);
+        Ok(())
+}
+
 pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
     let socket = match TcpStream::connect(address) {
         Ok(socket) => socket,
@@ -273,11 +325,14 @@ pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
 }
 
 pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, GitrError>{
-    let msj = format!("git-upload-pack /{}\0host={}\0",file_manager::get_current_repo()?, file_manager::get_remote()?);
-    let msj = format!("{:04x}{}", msj.len() + 4, msj);    
+    // let msj = format!("git-upload-pack /{}\0host={}\0",file_manager::get_current_repo()?, file_manager::get_remote()?);
+    // let msj = format!("{:04x}{}", msj.len() + 4, msj);    
+    // match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
+    //     Ok(bytes) => Ok(bytes),
+    //     Err(e) => Err(GitrError::ConnectionError),
     match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
         Ok(bytes) => Ok(bytes),
-        Err(e) => Err(GitrError::ConnectionError),
+        Err(e) => Err(GitrError::SocketError("clone_send_git_upload_pack".to_string(), "write".to_string())),
     }
 }
 
@@ -285,9 +340,12 @@ pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, Gi
     let mut buffer = [0; 1024];
     let mut response = String::new();
     loop{
-        let bytes_read = socket.read(&mut buffer);
-        let received_message = String::from_utf8_lossy(&buffer).to_string();
-        if received_message == "0000"{ 
+        let bytes_read = match socket.read(&mut buffer){
+            Ok(bytes) => bytes,
+            Err(e) => return Err(GitrError::SocketError("clone_read_reference_discovery".to_string(), "read".to_string())),
+        };
+        let received_message = String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
+        if bytes_read == 0 || received_message == "0000"{ 
             break;
         }
         response.push_str(&received_message);
@@ -345,7 +403,7 @@ mod tests{
         clone_send_git_upload_pack(&mut socket).unwrap();
         let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
         let references = ref_discovery::discover_references(ref_disc).unwrap();
-        socket.write(assemble_want_message(&references).unwrap().as_bytes()).unwrap();
+        socket.write(assemble_want_message(&references,Vec::new()).unwrap().as_bytes()).unwrap();
         read_and_print_socket_read(&mut socket);
     }
 }

@@ -1,5 +1,5 @@
 use std::mem;
-use chrono::{Utc, Local};
+use chrono::{Utc, Local, format};
 
 use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing};
@@ -16,21 +16,57 @@ pub struct Commit{
 }
 
 impl Commit{
-    pub fn new(tree: String, parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
+    pub fn new(tree: String, mut parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
-        let init = format!("commit {}\0",mem::size_of::<Self>());
-        // agregar la palabra tree que falta
-        // y fijarse como agarrar el tamanio
-        format_data.push_str(&init);
+        let header = "commit ";
+        
         let tree_format = format!("tree {}\n", tree);
         format_data.push_str(&tree_format);
-        format_data.push_str(&format!("parent {}\n", parent));
-        format_data.push_str(&format!("author {} {} {} \n", author, Utc::now().timestamp(), Local::now().offset()));
-        format_data.push_str(&format!("committer {}\n", committer));
+        if parent != "None" {
+            format_data.push_str(&format!("parent {}\n", parent));
+        }
+        parent = "".to_string();
+        format_data.push_str(&format!("author {} <vschneider@fi.uba.ar> {} -0300\n", author, Utc::now().timestamp()));
+        format_data.push_str(&format!("committer {} <vschneider@fi.uba.ar> {} -0300\n", committer, Utc::now().timestamp()));
         format_data.push_str("\n");
-        format_data.push_str(&message);
-        let compressed_file = flate2compress(format_data.clone())?;
-        let hashed_file = sha1hashing(format_data.clone());
+        format_data.push_str(&format!("{}\n", message));
+
+        let size = format_data.as_bytes().len();
+
+        let format_data_entera = format!("{}{}\0{}", header, size, format_data);
+
+
+        let compressed_file = flate2compress(format_data_entera.clone())?;
+        let hashed_file = sha1hashing(format_data_entera.clone());
+        let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
+
+        Ok(Commit {data:compressed_file,hash: hashed_file_str, tree, parent, author, committer, message })
+    }
+
+    pub fn new_from_packfile(tree: String, mut parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
+        let mut format_data = String::new();
+        let header = "commit ";
+        
+        let tree_format = format!("tree {}\n", tree);
+        format_data.push_str(&tree_format);
+        if parent != "None" {
+            format_data.push_str(&format!("parent {}\n", parent));
+        }
+        parent = "".to_string();
+        format_data.push_str(&format!("author {}\n", author)); //Utc::now().timestamp()
+        format_data.push_str(&format!("committer {}", committer));
+        format_data.push_str("\n");
+        format_data.push_str(&format!("{}\n", message));
+
+        let mut size = format_data.as_bytes().len();
+
+        println!("size: {}", size);
+        
+        let format_data_entera = format!("{}{}\0{}", header, size, format_data);
+        println!("format_data_entera: {:?}", format_data_entera);
+
+        let compressed_file = flate2compress(format_data_entera.clone())?;
+        let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
         Ok(Commit {data:compressed_file,hash: hashed_file_str, tree, parent, author, committer, message })
@@ -44,6 +80,7 @@ impl Commit{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
+<<<<<<< HEAD
     pub fn get_tree(&self) -> String{
         self.tree.clone()
     }
@@ -104,3 +141,16 @@ mod tests {
         assert_eq!(commit_from_string.message, commit.message);
     }
 }
+=======
+}
+
+
+/*
+tree 4a2fe10e5e62c3d2b3a738d78df708f5b08af7af
+parent 6e7c471ac3d96bf69e5a81b57a477401a6a4a6ea
+author valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
+committer valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
+
+pre commit ahora si
+*/
+>>>>>>> 6e73b9ebc42e7ee2ce2882393c64a5d7d033b1f8

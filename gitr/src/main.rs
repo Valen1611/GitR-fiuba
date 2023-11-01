@@ -1,6 +1,6 @@
 
 
-use gitr_cliente::{commands, logger, gitr_errors::GitrError};
+use gitr::{commands, logger, gitr_errors::GitrError,gui::gui_from_glade::initialize_gui};
 
 use std::io::{Write, self};
 extern crate flate2;
@@ -50,7 +50,7 @@ extern crate flate2;
     // println!("String recibido: --{:?}--", buffer);
     // PackFile::new_from_server_packfile(&mut buffer[..]).unwrap();
     fn get_input() -> Result<String, GitrError> {
-        print!("gitr: $ ");
+        print!("\x1b[34mgitr: $ \x1b[0m");
         match io::stdout().flush() {
             Ok(_) => (),
             Err(e) => return Err(GitrError::InvalidArgumentError(e.to_string(), "Usage: TODO".to_string())),
@@ -65,6 +65,7 @@ extern crate flate2;
         Ok(input)
     }
     fn main() {
+        //initialize_gui();
     
         let mut input = String::new();
     
@@ -83,13 +84,14 @@ extern crate flate2;
             
             // argv = ["command", "flag1", "flag2", ...]
             match commands::handler::command_handler(argv) {
-                Ok(_) => println!("Handler Success"),
+                Ok(_) => (),
                 Err(e) => {
+                    println!("{}", e);
                     match logger::log_error(e.to_string()) {
                         Ok(_) => (),
                         Err(e) => println!("Logger Error: {}", e),
                     };
-                    println!("Handler Error: {}", e);}
+                }
             };
             input = String::new();
     

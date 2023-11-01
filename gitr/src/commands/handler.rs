@@ -26,7 +26,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
         "hash-object" | "h" => commands::hash_object(flags)?, //"h" para testear mas rapido mientras la implementamos
         "cat-file" | "c" => commands::cat_file(flags)?,
         "init" => commands::init(flags)?,
-        "status" => commands::status(flags),
+        "status" => commands::status(flags)?,
         "add" => commands::add(flags)?,
         "rm" => commands::rm(flags)?,
         "commit" => commands::commit(flags)?,

@@ -1,6 +1,7 @@
 pub mod commands;
 pub mod git_transport;
 pub mod objects;
+pub mod gui;
 
 pub mod command_utils;
 pub mod file_manager;

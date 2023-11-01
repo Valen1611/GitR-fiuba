@@ -23,6 +23,8 @@ pub enum GitrError{
     TimeError,
     InvalidTreeError,
     ConnectionError,
+    SocketError(String,String),
+    PackFileError(String,String),
 }
 
 impl fmt::Display for GitrError{
@@ -45,6 +47,8 @@ impl fmt::Display for GitrError{
             Self::TimeError => write!(f, "No se pudo obtener el tiempo actual"),
             Self::InvalidTreeError => write!(f, "El arbol no es valido"),
             Self::ConnectionError => write!(f, "No se pudo conectar al servidor"),
+            Self::SocketError(origin_function, info) => write!(f, "SocketError en la funcion {}. Info: {}", origin_function, info),
+            Self::PackFileError(origin_function, info) => write!(f, "PackFileError en la funcion {}. Info: {}", origin_function, info),
     }
 }
 
