@@ -1,6 +1,8 @@
 // La idea de este módulo es manejar el primer contacto con el servidor y la búsqueda de referencias para armar el directorio.
 
-use crate::gitr_errors::{GitrError, self};
+use std::collections::HashSet;
+
+use crate::{gitr_errors::{GitrError, self}, file_manager};
 
 pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
     let str_received = String::from_utf8_lossy(header_slice);
@@ -35,9 +37,10 @@ fn extract_hash_and_ref(ref_slice: &str)->(String,String){
     (hash.to_string().split_off(4), reference.to_string())
 }
 
+/// Devuelve Vector de tuplas (hash, referencia)
 pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>,GitrError>{
     let mut references: Vec<(String,String)> = vec![];
-    let iter_refs: Vec<&str> = received_data.split('\n').collect();
+    let iter_refs: Vec<&str> = received_data.lines().collect();
     //Extraigo el primer hash al que apunta HEAD
     let head_hash = extract_head_hash(iter_refs[0]);
     references.push((head_hash,"HEAD".to_string()));
@@ -52,12 +55,25 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     Ok(references)
 }
 
-pub fn assemble_want_message(references: &Vec<(String,String)>)->Result<String,GitrError>{
+pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:Vec<String>)->Result<String,GitrError>{
+    let set = client_commits.clone().into_iter().collect::<HashSet<String>>();
     let mut want_message = String::new();
     for refer in references{
-        let length_hexa = format!("{:04X}",8 + refer.0.len() + 2);
-        want_message = length_hexa + "want " + &refer.0 + "\n";
+        if set.contains(&refer.0){
+            continue;
+        }
+        let want_line = format!("want {}\n",refer.0);
+        want_message.push_str(&format!("{:04X}{}\n",want_line.len()+4,want_line));
     }
-    want_message = want_message + "00000009done\n";
+    want_message.push_str("0000");
+    if !client_commits.len() == 0{
+        for have in file_manager::get_all_objects()? {
+            let have_line = format!("have {}\n",have);
+            want_message.push_str(&format!("{:04X}{}\n",have_line.len()+4,have_line));
+        }
+        
+        want_message.push_str("0000");
+    }
+    want_message.push_str("0009done\n");
     Ok(want_message)
 }

@@ -1,5 +1,5 @@
 
-use std::{io::{Write, Read}, fs::{self}, path::Path, error::Error, collections::HashMap, net::TcpStream};
+use std::{io::{Write, Read}, fs::{self}, path::Path, collections::HashMap, net::TcpStream};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
@@ -325,6 +325,11 @@ pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
 }
 
 pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, GitrError>{
+    // let msj = format!("git-upload-pack /{}\0host={}\0",file_manager::get_current_repo()?, file_manager::get_remote()?);
+    // let msj = format!("{:04x}{}", msj.len() + 4, msj);    
+    // match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
+    //     Ok(bytes) => Ok(bytes),
+    //     Err(e) => Err(GitrError::ConnectionError),
     match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
         Ok(bytes) => Ok(bytes),
         Err(e) => Err(GitrError::SocketError("clone_send_git_upload_pack()".to_string(), e.to_string())),
@@ -343,7 +348,7 @@ pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, Gi
         if bytes_read == 0 || received_message == "0000"{ 
             break;
         }
-        response=String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
+        response.push_str(&received_message);
     }
     Ok(response)
 }
@@ -406,7 +411,6 @@ mod tests{
         clone_send_git_upload_pack(&mut socket).unwrap();
         let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
         let references = ref_discovery::discover_references(ref_disc).unwrap();
-        socket.write(assemble_want_message(&references).unwrap().as_bytes()).unwrap();
-        
+        socket.write(assemble_want_message(&references,vec![]).unwrap().as_bytes()).unwrap();
     }
 }

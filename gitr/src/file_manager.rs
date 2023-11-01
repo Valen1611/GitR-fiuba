@@ -1,4 +1,5 @@
 use std::error::Error;
+use std::f32::consts::E;
 use std::fs::{File, OpenOptions};
 use std::io::{prelude::*, Bytes};
 use std::fs;
@@ -256,6 +257,20 @@ pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
     
 }
 
+
+///read .head_repo and returns the content
+pub fn get_current_repo() -> Result<String, GitrError>{
+    let current_repo = read_file(".head_repo".to_string())?;
+    Ok(current_repo)
+}
+
+pub fn get_remote() -> Result<String, GitrError> {
+    let repo = get_current_repo()?;
+    let path = repo + "/gitr/" + "remote";
+    let remote = read_file(path)?;
+    Ok(remote)
+}
+
 ///receive compressed raw data from a file with his hash and write it in the objects folder
 pub fn write_object(data:Vec<u8>, hashed_name:String) -> Result<(), GitrError>{
     let log_msg = format!("writing object {}", hashed_name);
@@ -329,13 +344,6 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
     Ok(())
 }
-
-///read .head_repo and returns the content
-pub fn get_current_repo() -> Result<String, GitrError>{
-    let current_repo = read_file(".head_repo".to_string())?;
-    Ok(current_repo)
-}
-
 
 pub fn read_index() -> Result<String, GitrError>{
     let repo = get_current_repo()?;
@@ -644,6 +652,30 @@ pub fn update_current_repo(dir_name: &String) -> Result<(), GitrError> {
     Ok(())
 }
 
+pub fn get_heads_ids() -> Result<Vec<String>, GitrError> {
+    let mut branches: Vec<String> = Vec::new();
+    let repo = get_current_repo()?;
+    let dir = repo + "/gitr/refs/heads";
+    let paths = match fs::read_dir(dir.clone()) {
+        Ok(paths) => paths,
+        Err(_) => return Err(GitrError::FileReadError(dir)),
+    };
+    for path in paths {
+        let path = match path {
+            Ok(path) => path,
+            Err(_) => return Err(GitrError::FileReadError(dir)),
+        };
+        let path = path.path();
+        let path = path.to_str();
+        let path = match path{
+            Some(path) => path,
+            None => return Err(GitrError::FileReadError(dir)),
+        };
+        let content = read_file(path.to_string())?;
+        branches.push(content);
+    }
+    Ok(branches)
+}
 
 pub fn print_commit_log(quantity: String)-> Result<(), GitrError>{
     let mut current_commit = get_current_commit()?;
@@ -690,3 +722,42 @@ pub fn get_repos() -> Vec<String> {
     repos
 }
 
+pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
+    let mut objects: Vec<String> = Vec::new();
+    let repo = get_current_repo()?;
+    let dir = repo + "/gitr/objects";
+    let dir_reader = match fs::read_dir(dir.clone()) {
+        Ok(l) => l,
+        Err(_) => return Err(GitrError::FileReadError(dir)),
+    };
+    for carpeta_rs in dir_reader {
+        let carpeta = match carpeta_rs {
+            Ok(path) => path,
+            Err(_) => return Err(GitrError::FileReadError(dir)),
+        };
+        let f = carpeta.file_name();
+        let dir_name = f.to_str().unwrap_or("Error");
+        if dir_name == "Error" {
+            return Err(GitrError::FileReadError(dir));
+        }
+        let file_reader = match fs::read_dir(dir.clone() + "/" + dir_name.clone()) {
+            Ok(l) => l,
+            Err(_) => return Err(GitrError::FileReadError(dir)),
+        };
+        for file in file_reader {
+            let file = match file {
+                Ok(path) => path,
+                Err(_) => return Err(GitrError::FileReadError(dir)),
+            };
+            let f = file.file_name();
+            let file_name = f.to_str().unwrap_or("Error");
+            if file_name == "Error" {
+                return Err(GitrError::FileReadError(dir));
+            }
+            let object = dir_name.to_string() + file_name;
+            objects.push(object);
+        }
+
+    }
+    Ok(objects)
+}

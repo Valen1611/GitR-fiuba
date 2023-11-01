@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {"type": "Action","timestamp": "22-10-2023 18:01:15","message": "calling h with flags: ["hello.rs"]"}
 {"type": "Action","timestamp": "22-10-2023 18:02:03","message": "calling c with flags: ["-t", "b8d7489a6a5db220428da6c6d04be50bbbc9a77f"]"}
 {"type": "FileOperation","timestamp": "22-10-2023 18:02:03","message": "reading data from: gitr/objects/b8/d7489a6a5db220428da6c6d04be50bbbc9a77f"}
@@ -12568,3 +12569,5 @@
 {"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
 {"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
+=======
+>>>>>>> 7c5a0bfca7ffc2ac26be64585977699e9468af5f
