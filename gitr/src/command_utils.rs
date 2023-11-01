@@ -222,7 +222,7 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
         }
     }
 
-    println!("tree_map: {:?}", tree_map);
+    
 
     let final_tree = create_trees(tree_map, tree_order[0].clone())?;
 
@@ -238,9 +238,9 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
  
 
     let path_completo = repo.clone()+"/gitr/"+head.as_str();
+    
+    if fs::metadata(path_completo.clone()).is_err(){
 
-    if File::open(path_completo.clone()).is_err(){
-        
         let dir = repo + "/gitr/refs/heads/master";
         file_manager::write_file(path_completo, final_tree.get_hash())?;
         if !Path::new(&dir).exists(){
@@ -252,6 +252,7 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
         commit.save()?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
+        println!("o entra en el else?");
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit()?;
         
