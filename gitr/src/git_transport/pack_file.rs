@@ -227,7 +227,7 @@ mod tests{
         let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
         println!("References: {:?}", references);
 
-        let mut want = assemble_want_message(&references).unwrap();
+        let mut want = assemble_want_message(&references, Vec::new()).unwrap();
         println!("Mando el want: {:?}", want);
         socket.write(want.as_bytes());
 
@@ -256,7 +256,7 @@ mod tests{
         let mut _bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
-        let mut want = assemble_want_message(&references).unwrap();
+        let mut want = assemble_want_message(&references,Vec::new()).unwrap();
         socket.write(want.as_bytes());
         loop{
             bytes_read = socket.read(&mut buffer).expect("Error al leer socket");

@@ -233,14 +233,14 @@ pub fn log(flags: Vec<String>)->Result<(), GitrError> {
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     let address = flags[0].clone();
     let mut socket = clone_connect_to_server(address)?;
-    println!("clone():Servidor conectado.");
+    // println!("clone():Servidor conectado.");
     clone_send_git_upload_pack(&mut socket)?;
-    println!("clone():Envié upload-pack");
+    // println!("clone():Envié upload-pack");
     let ref_disc = clone_read_reference_discovery(&mut socket)?;
     let references = ref_discovery::discover_references(ref_disc)?;
-    println!("clone():Referencias ={:?}=", references);
-    let want_message = ref_discovery::assemble_want_message(&references)?;
-    println!("clone():want {:?}", want_message);
+    // println!("clone():Referencias ={:?}=", references);
+    let want_message = ref_discovery::assemble_want_message(&references,Vec::new())?;
+    // println!("clone():want {:?}", want_message);
 
     match socket.write(want_message.as_bytes()) {
         Ok(_) => (),
@@ -308,8 +308,8 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     loop {
         match stream.read(&mut buffer) {
             Ok(n) => {
-                let mut bytes = &buffer[..n];
-                let mut s = String::from_utf8_lossy(bytes);
+                let bytes = &buffer[..n];
+                let s = String::from_utf8_lossy(bytes);
                 ref_disc.push_str(&s);
                 if n < 1024 {
                     break;
@@ -321,8 +321,39 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
             }
         }
     }
-
-    println!("pull");
+    let hash_n_references = ref_discovery::discover_references(ref_disc)?;
+    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids()?)?;
+    match stream.write(want_message.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+    };
+    match stream.read(&mut buffer) { // Leo si huvo error
+        Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
+            println!("Error: {}", String::from_utf8_lossy(&buffer));
+            return Ok(())
+        }},
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+        
+    }
+    
+    match stream.read(&mut buffer) { // Leo el packfile
+        Ok(_n) => {
+            let objects = read_pack_file(&mut buffer);
+            println!("objects: {:?}", objects);
+        },
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+        
+    }
+    println!("pull successfull");
     Ok(())
 }
 
