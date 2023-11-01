@@ -8,6 +8,7 @@ pub enum GitrError{
     //DirectoryCreationError,
     FileCreationError(String),
     FileWriteError(String),
+    FileDeletionError(String),
     ObjectNotFound(String),
     FileReadError(String),
 
@@ -30,7 +31,7 @@ pub enum GitrError{
 impl fmt::Display for GitrError{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-
+            Self::FileDeletionError(fun) => write!(f, "En la funcion {} falló una eliminación", fun),
             //Self::DirectoryCreationError => write!(f, "ERROR: No se pudo crear el directorio."),
             Self::FileCreationError(path) => write!(f, "ERROR: No se pudo crear el archivo {}", path),
             Self::FileWriteError(path)=>write!(f, "ERROR: No se pudo escribir el archivo {}", path),

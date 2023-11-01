@@ -1,4 +1,3 @@
-use std::mem;
 use chrono::{Utc, Local, format};
 
 use crate::gitr_errors::GitrError;
@@ -58,7 +57,7 @@ impl Commit{
         format_data.push_str("\n");
         format_data.push_str(&format!("{}\n", message));
 
-        let mut size = format_data.as_bytes().len();
+        let size = format_data.as_bytes().len();
 
         println!("size: {}", size);
         
@@ -80,7 +79,6 @@ impl Commit{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
-<<<<<<< HEAD
     pub fn get_tree(&self) -> String{
         self.tree.clone()
     }
@@ -141,16 +139,3 @@ mod tests {
         assert_eq!(commit_from_string.message, commit.message);
     }
 }
-=======
-}
-
-
-/*
-tree 4a2fe10e5e62c3d2b3a738d78df708f5b08af7af
-parent 6e7c471ac3d96bf69e5a81b57a477401a6a4a6ea
-author valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
-committer valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
-
-pre commit ahora si
-*/
->>>>>>> 6e73b9ebc42e7ee2ce2882393c64a5d7d033b1f8
