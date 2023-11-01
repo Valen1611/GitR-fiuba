@@ -150,7 +150,6 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
         
         let index_data = file_manager::read_index()?;
 
-
         let mut index_vector: Vec<&str> = Vec::new();
 
         if !index_data.is_empty() {
