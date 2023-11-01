@@ -128,7 +128,7 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
     }
 }
 
-fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
+pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
     let mut header_buffer = String::new();
     let mut data_starting_index = 0;
     for byte in data.clone() {

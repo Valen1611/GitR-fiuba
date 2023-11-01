@@ -44,14 +44,6 @@ impl Commit{
     }
 
     pub fn new_from_packfile(tree: String, mut parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
-        //imprimir los parametros recibidos
-        println!("parametros para new_from_packfile():");
-        println!("tree: {}", tree);
-        println!("parent: {}", parent);
-        println!("author: {}", author);
-        println!("committer: {}", committer);
-        println!("message: {}", message);
-
         let mut format_data = String::new();
         let header = "commit ";
         
@@ -71,8 +63,6 @@ impl Commit{
         println!("size: {}", size);
         
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
-
-        println!("format_data_entera: {:?}", format_data_entera);
 
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());

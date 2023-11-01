@@ -58,8 +58,8 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), GitrError> 
             return Err(GitrError::PackFileError("parse_git_object".to_string(),"La longitud es demasiado grande".to_string()));
         }
     }
-    print!("longitud del objeto descomprimido-{:#010b} - {}\n",length,length);
-    print!("cursor: {}\n",cursor);
+    //print!("longitud del objeto descomprimido-{:#010b} - {}\n",length,length);
+    //print!("cursor: {}\n",cursor);
 
     // Verifica si hay suficientes bytes para el contenido del objeto
     if data.len() < cursor + length {
@@ -77,7 +77,6 @@ fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     let (mut parent, mut tree, mut author, mut committer, mut message) = ("None","None","None","None","None");
 
     for line in data_for_commit{
-        println!("linea: {:?}",line);
         if line.starts_with("tree"){
             tree = line.split(' ').collect::<Vec<&str>>()[1];
         }
@@ -105,13 +104,14 @@ fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     let message_bien = "\n".to_owned()+message;
 
     let commit = GitObject::Commit(Commit::new_from_packfile(tree.to_string(), parent.to_string(), author.to_string(), committer.to_string(), message_bien.to_string()).unwrap());
-    println!("Commit creado: {:?}", commit);
+    //println!("Commit creado: {:?}", commit);
     Ok(commit)
 }
 
-fn create_tree_object(decoded_data: &[u8])->Result<GitObject,String>{
-    let tree = todo!();
+fn create_tree_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
+    let data_str = String::from_utf8_lossy(decoded_data);
 
+    let mut tree = GitObject::Tree(Tree::new_from_packfile(data_str.to_string())?);
     Ok(tree)
 }
 
@@ -124,7 +124,7 @@ fn create_blob_object(decoded_data: &[u8])->Result<GitObject,String>{
 fn git_valid_object_from_packfile(object_type: u8, decoded_data: &[u8])->Result<GitObject,GitrError>{
     let object = match  object_type{
         1 => create_commit_object(decoded_data)?,
-        //2 => create_tree_object(decoded_data)?,
+        2 => create_tree_object(decoded_data)?,
         //3 => create_blob_object(decoded_data)?,
         _ => return Err(GitrError::PackFileError("git_valid_object_from_packfile".to_string(),"Tipo de objeto no válido".to_string()))
     };

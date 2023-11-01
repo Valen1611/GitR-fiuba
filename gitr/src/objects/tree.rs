@@ -124,6 +124,15 @@ impl Tree{
         
     }
 
+    pub fn new_from_packfile(raw_data: String)->  Result<Self, GitrError>{
+        let mut data = "tree 50\0".to_owned()+&raw_data;
+        println!("{:?}", file_manager::read_tree_file(data.as_bytes().to_vec()));
+
+        let tree = Tree::new(vec![])?;
+        Ok(tree)
+        
+    }
+
     pub fn save(&self) -> Result<(), GitrError>{
         file_manager::write_object(self.data.clone(), self.hash.clone())?;
         Ok(())
