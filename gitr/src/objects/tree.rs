@@ -149,6 +149,25 @@ impl Tree{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
+<<<<<<< HEAD
+
+    pub fn get_objects_id_from_string(data: String) -> Result<Vec<String>, GitrError> {
+        // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
+        if data.split_at(4).0 != "tree"{
+            return Err(GitrError::InvalidTreeError);
+        }
+        let mut elems =  data.split('\0').collect::<Vec<&str>>(); 
+        elems = elems[2..].to_vec();
+        let mut objects_id = Vec::new();
+        for elem in elems {
+            let elem_hash = elem.split_at(20);
+            objects_id.push(elem_hash.0.to_string());
+        }
+        Ok(objects_id)
+
+    }
+=======
+>>>>>>> 6e73b9ebc42e7ee2ce2882393c64a5d7d033b1f8
 }
 
 
