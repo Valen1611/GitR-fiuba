@@ -12533,3 +12533,38 @@
 {"type": "FileOperation","timestamp": "01-11-2023 15:48:27","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "01-11-2023 15:48:27","message": "writing data to: repo/gitr/HEAD"}
 >>>>>>> de6b209e1e48f1f9ef54c20c1ce09ab8dce7ea9f
+{"type": "Action","timestamp": "01-11-2023 17:50:05","message": "calling clone with flags: ["localhost:9418"]"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/refs/heads/main"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object bb26be2db7fb02fe9320b315a9565af115769709"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/bb/26be2db7fb02fe9320b315a9565af115769709"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object cf6335a864bda2ee027ea7083a72d10e32921b15"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/cf/6335a864bda2ee027ea7083a72d10e32921b15"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object c72ea7a8973c8405e4939005b0b5fdf8631479f8"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/c7/2ea7a8973c8405e4939005b0b5fdf8631479f8"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object 6f7ccbf46649ae65fd09afba550bbf9ee33cb345"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/6f/7ccbf46649ae65fd09afba550bbf9ee33cb345"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object 24db42bb7b999597a72801da70efd5876059bc0b"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/24/db42bb7b999597a72801da70efd5876059bc0b"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object d09105324c847ebf01a559d917192e33a5636ef8"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/d0/9105324c847ebf01a559d917192e33a5636ef8"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object 2df4805566116a5e6ae4ead968d2450ef6492fa8"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/2d/f4805566116a5e6ae4ead968d2450ef6492fa8"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object b032500da34f1bf20fa9e98c473074645bdf7f5e"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/b0/32500da34f1bf20fa9e98c473074645bdf7f5e"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object 95fffedadf3ba8e63ccecdb045b1b249a9760a87"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/95/fffedadf3ba8e63ccecdb045b1b249a9760a87"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing object e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391"}

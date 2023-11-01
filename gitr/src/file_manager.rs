@@ -141,7 +141,7 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 }
 
 
-pub fn read_object(object: &String) -> Result<String, GitrError>{
+pub fn read_object(object: &String)->Result<String, GitrError>{
     let path = parse_object_hash(object)?;
     let bytes = deflate_file(path.clone())?;
 
@@ -186,8 +186,7 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
     }
 
 
-    return Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()));
-
+    Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
 }
 
 pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
@@ -234,7 +233,7 @@ pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
 
 
     // 08deed466789dfea8937d0bdda2f6e81a615f25a
-    return Ok(header_buffer + "\0" + &entries_buffer);
+    Ok(header_buffer + "\0" + &entries_buffer)
 }
 
 
@@ -392,7 +391,7 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
 pub fn get_head() ->  Result<String, GitrError>{
     let repo = get_current_repo()?;
     let path = repo + "/gitr/HEAD";
-    if !fs::metadata(path.clone()).is_ok(){
+    if fs::metadata(path.clone()).is_err(){
         write_file(path.clone(), String::from("ref: refs/heads/master"))?;
         return Ok("None".to_string())
         // return Err(GitrError::NoHead);

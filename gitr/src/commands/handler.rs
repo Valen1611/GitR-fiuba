@@ -1,6 +1,3 @@
-use std::error::Error;
-
-
 use crate::{logger, gitr_errors::GitrError};
 
 use super::commands; 

@@ -1,6 +1,5 @@
 use crate::gitr_errors::GitrError;
 use crate::{file_manager, command_utils};
-use crate::command_utils::{flate2compress, sha1hashing};
 use super::blob::TreeEntry;
 
 #[derive(Debug)]
@@ -9,20 +8,6 @@ pub struct Tree{
     data: Vec<u8>,
     hash: String,
 }
-
-
-
-use to_binary::{BinaryString,BinaryError};
-
-/*
-commit -> tree -> src ->
-
-*/
-use std::fmt::{self, Write};
-use std::fs::File;
-use std::io::prelude::*;
-use std::fs::*;
-
 
 pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrError>{
     let mut formated_hash:  Vec<u8> = Vec::new();
@@ -36,7 +21,7 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
             Err(_) => return Err(GitrError::FileReadError(path.clone())),
         };
 
-        let compressed_byte = match command_utils::flate2compress2(vec![byte]) {
+        let _compressed_byte = match command_utils::flate2compress2(vec![byte]) {
             Ok(byte) => byte,
             Err(_) => return Err(GitrError::CompressionError),
         };
@@ -58,9 +43,9 @@ impl Tree{
                     let hash = blob.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
 
-                    let path_no_repo = path.split_once('/').unwrap().1;
+                    let _path_no_repo = path.split_once('/').unwrap().1;
                     let file_name = path.split('/').last().unwrap();
-                    let mut obj_entry = [
+                    let obj_entry = [
                         b"100644 ",
                         file_name.as_bytes(),
                         b"\0",
@@ -78,7 +63,7 @@ impl Tree{
                     println!("path: {:?}", path);
                     //let path_no_repo = path.split_once('/').unwrap().1;
 
-                    let mut obj_entry = [
+                    let obj_entry = [
                         b"40000 ",
                         path.as_bytes(),
                         b"\0",
@@ -93,7 +78,7 @@ impl Tree{
         }
         
 
-        let mut data = [
+        let data = [
             b"tree ",
             entries_size.to_string().as_bytes(),
             b"\0",
@@ -111,7 +96,7 @@ impl Tree{
         format_data.push_str(&init);
 
 
-        format_data = format_data.trim_end().to_string();
+        //format_data = format_data.trim_end().to_string();
         //let compressed_file = flate2compress(data.clone())?;
 
 

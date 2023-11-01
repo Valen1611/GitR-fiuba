@@ -1,7 +1,5 @@
 extern crate flate2;
 use std::collections::HashSet;
-use std::f32::consts::E;
-use std::fmt::format;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Error;
