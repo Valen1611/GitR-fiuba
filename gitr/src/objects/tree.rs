@@ -121,6 +121,26 @@ impl Tree{
         
     }
 
+    pub fn new_from_packfile(raw_data: &[u8])->  Result<Self, GitrError>{
+        println!("new_from_packfile(): raw_data: {:?}", raw_data);
+        let header_len = raw_data.len();
+        println!("new_from_packfile(): header_len: {:?}", header_len);
+        let tree_raw_file = vec![
+            b"tree ",
+            header_len.to_string().as_bytes(),
+            b"\0",
+            raw_data,
+        ].concat();
+        println!("new_from_packfile(): read_tree_file output {:?}", file_manager::read_tree_file(tree_raw_file.clone())?);
+
+        let compressed_data = command_utils::flate2compress2(tree_raw_file.clone())?;
+        let hash = command_utils::sha1hashing2(tree_raw_file.clone());
+        let tree_hash = hash.iter().map(|b| format!("{:02x}", b)).collect::<String>();
+
+        let tree = Tree{entries: vec![], data: compressed_data, hash: tree_hash};
+        Ok(tree)
+    }
+
     pub fn save(&self) -> Result<(), GitrError>{
         file_manager::write_object(self.data.clone(), self.hash.clone())?;
         Ok(())
@@ -129,8 +149,6 @@ impl Tree{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
-
-    
 }
 
 

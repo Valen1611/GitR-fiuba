@@ -139,7 +139,8 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
         Err(_) => Err(GitrError::FileReadError(path.to_string())),
     }
 }
-   
+
+
 pub fn read_object(object: &String) -> Result<String, GitrError>{
     let path = parse_object_hash(object)?;
     let bytes = deflate_file(path.clone())?;
