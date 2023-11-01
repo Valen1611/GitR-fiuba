@@ -84,13 +84,14 @@ extern crate flate2;
             
             // argv = ["command", "flag1", "flag2", ...]
             match commands::handler::command_handler(argv) {
-                Ok(_) => println!("Handler Success"),
+                Ok(_) => (),
                 Err(e) => {
+                    println!("{}", e);
                     match logger::log_error(e.to_string()) {
                         Ok(_) => (),
                         Err(e) => println!("Logger Error: {}", e),
                     };
-                    println!("Handler Error: {}", e);}
+                }
             };
             input = String::new();
     
