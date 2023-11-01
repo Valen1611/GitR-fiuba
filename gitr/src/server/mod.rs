@@ -93,7 +93,7 @@ fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_pat
     Ok(())
 }
 
-fn gitr_receive_pack (stream: &mut TcpStream, r_path: String) -> std::io::Result<()> {
+fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<()> {
 
     // ##########  REFERENCE UPDATE ##########
     let mut buffer = [0; 1024];

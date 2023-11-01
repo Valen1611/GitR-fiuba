@@ -18,17 +18,21 @@ use crate::git_transport::ref_discovery::*;
 //Tambien se me ocurre que podemos usar esta misma estructura para inicializar un pack file para enviarlo por el socket.
 //A priori: se reciben 4 bytes de la signature: Tiene que ser PACK sino tira error.
 //Luego cae el numero de versión: Son 4 bytes
+#[derive(Debug)]
 pub struct PackFile{
-
+    version: u32,
+    objects: Vec<GitObject>,
 }
 
-fn decode(input: &[u8]) -> Result<([u8;256],u64), std::io::Error> {
+fn decode(input: &[u8]) -> Result<(Vec<u8>,u64), std::io::Error> {
     let mut decoder = Decompress::new(true);
-    let mut output:[u8; 256] = [0;256];
+    let mut output:[u8; 1024] = [0;1024];
     decoder.decompress(input, &mut output, flate2::FlushDecompress::Finish)?;
     let cant_leidos = decoder.total_in();
     //println!("Input de tamaño: {} genera output de tamaño {}", cant_leidos, decoder.total_out());
-    Ok((output, cant_leidos))
+    let output_return = output[..decoder.total_out() as usize].to_vec();
+    
+    Ok((output_return, cant_leidos))
 }
 
 fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), GitrError> {
@@ -109,14 +113,14 @@ fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
 }
 
 fn create_tree_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
-    let data_str = String::from_utf8_lossy(decoded_data);
 
-    let mut tree = GitObject::Tree(Tree::new_from_packfile(data_str.to_string())?);
+    let mut tree = GitObject::Tree(Tree::new_from_packfile(decoded_data)?);
     Ok(tree)
 }
 
-fn create_blob_object(decoded_data: &[u8])->Result<GitObject,String>{
-    let blob = todo!();
+fn create_blob_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
+    let data_str = String::from_utf8_lossy(decoded_data);
+    let blob = GitObject::Blob(Blob::new(data_str.to_string())?);
 
     Ok(blob)
 }
@@ -125,13 +129,13 @@ fn git_valid_object_from_packfile(object_type: u8, decoded_data: &[u8])->Result<
     let object = match  object_type{
         1 => create_commit_object(decoded_data)?,
         2 => create_tree_object(decoded_data)?,
-        //3 => create_blob_object(decoded_data)?,
+        3 => create_blob_object(decoded_data)?,
         _ => return Err(GitrError::PackFileError("git_valid_object_from_packfile".to_string(),"Tipo de objeto no válido".to_string()))
     };
     Ok(object)
 }
 
-pub fn read_pack_file(buffer: &mut[u8]) -> Result<(), GitrError> {
+pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     // Leemos el número de objetos contenidos en el archivo de pack
     let num_objects = match buffer[8..12].try_into(){
         Ok(vec) => vec,
@@ -161,16 +165,18 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<(), GitrError> {
         }
     }
     println!("Sali del for, lei todos los objetos");
-    Ok(())
+    Ok(objects)
 }
 
 impl PackFile{
     pub fn new_from_server_packfile(buffer: &mut[u8])->Result<PackFile, GitrError>{
         verify_header(&buffer[..=3])?;
-        let _version = extract_version(&buffer[4..=7])?;
-        let _objects = read_pack_file(buffer)?;
+        let version = extract_version(&buffer[4..=7])?;
+        let objects = read_pack_file(buffer)?;
 
-        Ok(PackFile {  })
+        Ok(PackFile {
+            version: version,
+            objects: objects,})
     }
 }
 
@@ -251,6 +257,7 @@ mod tests{
         let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         println!("Aca tendria que estar el packfile: {}",String::from_utf8_lossy(&buffer));
         let _packfile = PackFile::new_from_server_packfile(&mut buffer[..bytes_read]).unwrap();
+        println!("Packfile: {:?}", _packfile);
     }
 
     #[test]
