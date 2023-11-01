@@ -20,8 +20,6 @@ impl Commit{
         let mut format_data = String::new();
         let header = "commit ";
         
-
-
         let tree_format = format!("tree {}\n", tree);
         format_data.push_str(&tree_format);
         if parent != "None" {
@@ -37,6 +35,44 @@ impl Commit{
 
         println!("size: {}", size);
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
+
+        let compressed_file = flate2compress(format_data_entera.clone())?;
+        let hashed_file = sha1hashing(format_data_entera.clone());
+        let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
+
+        Ok(Commit {data:compressed_file,hash: hashed_file_str, tree, parent, author, committer, message })
+    }
+
+    pub fn new_from_packfile(tree: String, mut parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
+        //imprimir los parametros recibidos
+        println!("parametros para new_from_packfile():");
+        println!("tree: {}", tree);
+        println!("parent: {}", parent);
+        println!("author: {}", author);
+        println!("committer: {}", committer);
+        println!("message: {}", message);
+
+        let mut format_data = String::new();
+        let header = "commit ";
+        
+        let tree_format = format!("tree {}\n", tree);
+        format_data.push_str(&tree_format);
+        if parent != "None" {
+            format_data.push_str(&format!("parent {}\n", parent));
+        }
+        parent = "".to_string();
+        format_data.push_str(&format!("author {}\n", author)); //Utc::now().timestamp()
+        format_data.push_str(&format!("committer {}", committer));
+        format_data.push_str("\n");
+        format_data.push_str(&format!("{}\n", message));
+
+        let mut size = format_data.as_bytes().len();
+
+        println!("size: {}", size);
+        
+        let format_data_entera = format!("{}{}\0{}", header, size, format_data);
+
+        println!("format_data_entera: {:?}", format_data_entera);
 
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());
