@@ -21,7 +21,7 @@ use crate::git_transport::ref_discovery::*;
 #[derive(Debug)]
 pub struct PackFile{
     version: u32,
-    objects: Vec<GitObject>,
+    pub objects: Vec<GitObject>,
 }
 
 fn decode(input: &[u8]) -> Result<(Vec<u8>,u64), std::io::Error> {

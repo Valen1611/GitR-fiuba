@@ -3,7 +3,10 @@ use std::ops::IndexMut;
 use std::path::Path;
 use std::{io::prelude::*, error::Error};
 
-use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::read_pack_file};
+use crate::objects::git_object::GitObject::*;
+use crate::objects::commit::{self, Commit};
+use crate::objects::tree::Tree;
+use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
 use crate::file_manager::print_commit_log;
 use crate::command_utils::*;
 
@@ -280,6 +283,18 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     println!("clone():Envié upload-pack");
     let ref_disc = clone_read_reference_discovery(&mut socket)?;
     let references = ref_discovery::discover_references(ref_disc)?;
+
+    let repo = file_manager::get_current_repo()?;
+    
+    for reference in &references[1..]{
+        let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); //ref path
+        if references[0].0 == reference.0{
+            file_manager::update_head(&reference.1.clone())?; //actualizo el head
+        }
+        let into_hash = reference.0.clone(); //hash a escribir en el archivo
+        file_manager::write_file(path_str, into_hash)?; //escribo el hash en el archivo
+    }
+
     println!("clone():Referencias ={:?}=", references);
     let want_message = ref_discovery::assemble_want_message(&references)?;
     println!("clone():want {:?}", want_message);
@@ -293,9 +308,21 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     };
     
     print!("clone(): recepeción de packfile:");
-    read_and_print_socket_read(&mut socket);
+    socket.read(&mut buffer);
 
-    let objects = read_pack_file(&mut buffer)?;
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
+
+
+
+    println!("clone(): objects: {:?}", pack_file_struct);
+
+    for object in pack_file_struct.objects.iter(){
+        match object{
+            Blob(blob) => blob.save()?,
+            Commit(commit) => commit.save()?,
+            Tree(tree) => tree.save()?,
+        }
+    }
     Ok(())
 }
 

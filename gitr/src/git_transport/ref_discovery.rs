@@ -4,6 +4,7 @@ use crate::gitr_errors::{GitrError, self};
 
 pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
     let str_received = String::from_utf8_lossy(header_slice);
+    println!("verify_header(): str_received: {:?}", str_received);
     if str_received != "PACK"{
         return Err(GitrError::PackFileError("verify_header".to_string(), "La signature no es PACK".to_string()));
     }
