@@ -20,23 +20,21 @@ impl Commit{
         let mut format_data = String::new();
         let header = "commit ";
         
-
-
         let tree_format = format!("tree {}\n", tree);
         format_data.push_str(&tree_format);
         if parent != "None" {
             format_data.push_str(&format!("parent {}\n", parent));
         }
         parent = "".to_string();
-        format_data.push_str(&format!("author {} <vschneider@fi.uba.ar> {} -0300\n", author, "1698803518")); //Utc::now().timestamp()
-        format_data.push_str(&format!("committer {} <vschneider@fi.uba.ar> {} -0300\n", committer, "1698803518"));
+        format_data.push_str(&format!("author {} <vschneider@fi.uba.ar> {} -0300\n", author, Utc::now().timestamp()));
+        format_data.push_str(&format!("committer {} <vschneider@fi.uba.ar> {} -0300\n", committer, Utc::now().timestamp()));
         format_data.push_str("\n");
         format_data.push_str(&format!("{}\n", message));
 
         let size = format_data.as_bytes().len();
 
-        println!("size: {}", size);
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
+
 
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());
