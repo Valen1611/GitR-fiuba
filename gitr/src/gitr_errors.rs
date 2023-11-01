@@ -10,7 +10,7 @@ pub enum GitrError{
     FileWriteError(String),
     ObjectNotFound(String),
     FileReadError(String),
-
+    FileDeleteError(String),
     //InvalidNumberOfArguments(usize, usize),
     //InvalidArguments(Vec<String>),
 
@@ -30,6 +30,7 @@ impl fmt::Display for GitrError{
             //Self::DirectoryCreationError => write!(f, "ERROR: No se pudo crear el directorio."),
             Self::FileCreationError(path) => write!(f, "ERROR: No se pudo crear el archivo {}", path),
             Self::FileWriteError(path)=>write!(f, "ERROR: No se pudo escribir el archivo {}", path),
+            Self::FileDeleteError(path) => write!(f, "ERROR: No se pudo borrar el archivo {}", path),
             Self::ObjectNotFound(obj) => write!(f, "ERROR: No se encontro el objeto {}", obj),
             Self::FileReadError(path) => write!(f, "No se pudo leer el archivo {}", path),
             Self::NoHead => write!(f, "ERROR: No se encontro HEAD"),

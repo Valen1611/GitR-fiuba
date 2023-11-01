@@ -1,6 +1,5 @@
 use crate::gitr_errors::GitrError;
 use crate::{file_manager, command_utils};
-use crate::command_utils::{flate2compress, sha1hashing};
 use super::blob::TreeEntry;
 
 #[derive(Debug)]
@@ -9,19 +8,6 @@ pub struct Tree{
     data: Vec<u8>,
     hash: String,
 }
-
-
-
-use to_binary::{BinaryString,BinaryError};
-
-/*
-commit -> tree -> src ->
-
-*/
-use std::fmt::{self, Write};
-use std::fs::File;
-use std::io::prelude::*;
-use std::fs::*;
 
 
 pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrError>{
@@ -36,10 +22,10 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
             Err(_) => return Err(GitrError::FileReadError(path.clone())),
         };
 
-        let compressed_byte = match command_utils::flate2compress2(vec![byte]) {
-            Ok(byte) => byte,
-            Err(_) => return Err(GitrError::CompressionError),
-        };
+        // let compressed_byte = match command_utils::flate2compress2(vec![byte]) {
+        //     Ok(byte) => byte,
+        //     Err(_) => return Err(GitrError::CompressionError),
+        // };
         formated_hash.push(byte);
     }
     Ok(formated_hash)

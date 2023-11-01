@@ -482,14 +482,10 @@ pub fn get_commit(branch:String)->Result<String, GitrError>{
 
 pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
 
-    
     file_manager::create_directory(&path)?;
 
     let tree_raw_data = read_object(&hash)?;
 
-
-    println!("tree path: {}", path);
-    println!("tree hash: {}", hash);
 
     let raw_data = match tree_raw_data.split_once('\0') {
         Some((_, raw_data)) => raw_data,
@@ -539,10 +535,6 @@ fn parse_blob_path(blob_entry: String) -> String {
 
 pub fn create_blob(path: String, hash: String) -> Result<(), GitrError> {
 
- 
-    println!("blob path: {}", path);
-    println!("blob hash: {}", hash);
-
     let new_blob = read_object(&(hash.to_string()))?;
     
     let new_blob_only_data = new_blob.split('\0').collect::<Vec<&str>>()[1];
@@ -574,13 +566,9 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
             let new_path = repo.clone() + _new_path_hash.split('\0').collect::<Vec<&str>>()[0];
             let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
 
-            println!("parsed hash: {}", hash);
-            println!("parsed path: {}", new_path);
 
             create_tree(new_path.to_string(), hash.to_string())?;
         } else{
-            println!("parsed hash: {}", parse_blob_hash(entry.to_string().clone()));
-            println!("parsed path: {}", parse_blob_path(entry.to_string().clone()));
 
             let path_completo = repo.clone() + parse_blob_path(entry.to_string().clone()).as_str();
             let hash = parse_blob_hash(entry.to_string().clone());
@@ -688,5 +676,12 @@ pub fn get_repos() -> Vec<String> {
         }
     }
     repos
+}
+
+pub fn remove_file(path: String)-> Result<(), GitrError> {
+    match fs::remove_file(path.clone()) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(GitrError::FileDeleteError(path)),
+    }
 }
 

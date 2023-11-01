@@ -1,8 +1,4 @@
-use std::error::Error;
-
-
 use crate::{logger, gitr_errors::GitrError};
-
 use super::commands; 
 
 pub fn parse_input(input: String) -> Vec<String> {

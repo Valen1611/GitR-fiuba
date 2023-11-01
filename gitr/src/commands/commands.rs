@@ -1,11 +1,10 @@
-use std::fs;
-use std::ops::IndexMut;
+use std::collections::HashMap;
+use std::hash::Hash;
 use std::path::Path;
-use std::{io::prelude::*, error::Error};
 
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::read_pack_file};
-use crate::file_manager::{print_commit_log, get_head, get_current_commit};
-use crate::command_utils::*;
+use crate::file_manager::print_commit_log;
+use crate::command_utils::{*, self};
 
 use crate::git_transport::ref_discovery;
 
@@ -107,11 +106,137 @@ pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
+
+fn status_print_current_branch() -> Result<(), GitrError>{
     let head = file_manager::get_head()?;
     let current_branch = head.split('/').collect::<Vec<&str>>()[2];
     println!("On branch {}", current_branch);
-    println!("status");
+    Ok(())
+}
+
+pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
+    status_print_current_branch()?;
+    let repo = file_manager::get_current_repo()?;
+    let path = Path::new(repo.as_str());
+    let files= command_utils::visit_dirs(path);
+
+
+    let mut working_dir_hashmap = HashMap::new();
+
+    let mut hayindex = true;
+    let index_data = match file_manager::read_index() {
+        Ok(data) => data,
+        Err(_) => {
+            let message = format!("\nNo commits yet\n\nnothing to commit (create/copy files and use \"git add\" to track)");
+            println!("{}", message);
+            hayindex = false;
+            String::new()
+        }
+    };
+
+
+
+    let mut index_hashmap = HashMap::new();
+    
+    if hayindex {
+        for index_entry in index_data.split('\n') {
+            let attributes = index_entry.split(' ').collect::<Vec<&str>>();
+            let path = attributes[3];
+            let hash = attributes[1];
+            index_hashmap.insert(path, hash);
+        }
+    }
+    
+
+    
+
+    for file_path in files {
+        let file_data = file_manager::read_file(file_path.clone())?;
+        
+        let blob = Blob::new(file_data.clone())?;
+        let hash = blob.get_hash();
+        working_dir_hashmap.insert(file_path, hash);
+    }
+
+    
+    println!("index_hashmap {:?}", index_hashmap);
+    println!("working_dir_hashmap {:?}", working_dir_hashmap);
+    let mut untracked_files = Vec::new();
+    let mut not_staged = Vec::new();
+    let mut to_be_commited = Vec::new();
+
+    for (path, hash) in working_dir_hashmap.into_iter() {
+        if index_hashmap.contains_key(path.as_str()) {
+            let index_hash = match index_hashmap.get(path.as_str()) {
+                Some(hash) => hash,
+                None => {
+                    println!("Error: file not found in index (status)");
+                    return Err(GitrError::FileReadError(path.to_string()))
+                }
+            };
+
+
+            if index_hash != &hash {
+                not_staged.push(path);
+            } else {
+                //to_be_commited.push(path)
+            }
+
+
+        } else {
+            untracked_files.push(path);
+        }    
+    }
+
+    if !to_be_commited.is_empty() {
+        println!("Changes to be committed:");
+        println!("  (use \"rm <file>...\" to unstage)");
+
+        for file in to_be_commited {
+            let file_name = match file.split_once ('/'){
+                Some((_path, file)) => file.to_string(),
+                None => file,
+            };
+            println!("\t\x1b[92mmodified   {}\x1b[0m", file_name);
+        }
+    }
+ 
+    if !not_staged.is_empty() {
+        println!("Changes not staged for commit:");
+        println!("  (use \"add <file>...\" to update what will be committed)");
+        println!("  (use \"rm <file>...\" to discard changes in working directory)");
+
+        for file in not_staged {
+            let file_name = match file.split_once ('/'){
+                Some((_path, file)) => file.to_string(),
+                None => file,
+            };
+            println!("\t\x1b[31mmodified:   {}\x1b[0m", file_name);
+        }
+    }
+
+
+    if !untracked_files.is_empty() {
+        println!("Untracked files:");
+        println!("  (use \"add <file>...\" to include in what will be committed)");
+
+        for file in untracked_files {
+
+            let file_name = match file.split_once ('/'){
+                Some((_path, file)) => file.to_string(),
+                None => file,
+            };
+            
+
+            println!("\t\x1b[31m{}\x1b[0m", file_name);
+        }
+
+        if !hayindex {
+            println!("nothing added to commit but untracked files present (use \"add\" to track)");
+        }
+    }
+
+
     Ok(())
 }
 
@@ -166,8 +291,10 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
             i += 1;
         };
         
-        fs::remove_file(format!("{}/gitr/index", repo));
         
+        file_manager::remove_file(format!("{}/gitr/index", repo))?;
+
+
         for entry in index_vector {
             let path = entry.split(' ').collect::<Vec<&str>>()[3];
             
@@ -316,7 +443,7 @@ pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
     if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
         match print_branches() {
             Ok(()) => (),
-            Err(e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
+            Err(_) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
         };
     }
     if flags.len() == 2 && flags[0] == "-d"{
@@ -350,7 +477,7 @@ pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
         let new_path = format!("{}/gitr/refs/heads/{}", repo, flags[2]);
         match file_manager::move_branch(old_path.clone(), new_path.clone()) {
             Ok(()) => (),
-            Err(e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
+            Err(_) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
         };
         file_manager::update_head(&new_path)?;
         return Ok(())

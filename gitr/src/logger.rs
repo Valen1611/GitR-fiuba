@@ -1,5 +1,3 @@
-use std::fs;
-
 use::chrono;
 
 use crate::{file_manager, gitr_errors::GitrError};

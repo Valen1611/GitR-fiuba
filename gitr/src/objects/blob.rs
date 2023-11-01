@@ -1,5 +1,3 @@
-use std::mem;
-
 use crate::file_manager;
 use crate::gitr_errors::GitrError;
 use crate::objects::tree::Tree;
