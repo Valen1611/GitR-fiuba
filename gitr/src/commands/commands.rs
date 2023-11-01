@@ -96,7 +96,6 @@ pub fn cat_file(flags: Vec<String>) -> Result<(),GitrError> {
     Ok(())
 }
 
-
 pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
     if flags.is_empty() || flags.len() > 1  {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "init <new_repo_name>".to_string()));
@@ -224,7 +223,6 @@ pub fn rm(flags: Vec<String>)-> Result<(), GitrError> {
   
 } 
 
-// estamos haciendo un tree de mas
 pub fn commit(flags: Vec<String>)-> Result<(), GitrError>{
     if flags[0] != "-m" || flags.len() < 2 {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m <commit_message>".to_string()))

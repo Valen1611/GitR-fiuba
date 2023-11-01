@@ -184,7 +184,7 @@ pub fn read_object(object: &String) -> Result<String, GitrError>{
         return Ok(buffer);
     }
 
-   
+
     return Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()));
 
 }
@@ -481,15 +481,15 @@ pub fn get_commit(branch:String)->Result<String, GitrError>{
 }
 
 pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
-    let repo = get_current_repo()?;
-    
-    let folder_path = repo.clone() + "/" + &path;
-    
-    file_manager::create_directory(&folder_path)?;
 
     
+    file_manager::create_directory(&path)?;
+
     let tree_raw_data = read_object(&hash)?;
 
+
+    println!("tree path: {}", path);
+    println!("tree hash: {}", hash);
 
     let raw_data = match tree_raw_data.split_once('\0') {
         Some((_, raw_data)) => raw_data,
@@ -503,7 +503,6 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
         let object = entry.split(' ').collect::<Vec<&str>>()[0];
         if object == "100644"{ //blob
            
-
             let path_completo = path.clone() + "/" + &parse_blob_path(entry.to_string().clone());
             let hash = parse_blob_hash(entry.to_string().clone());
 
@@ -513,8 +512,8 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
             let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
             let new_path = _new_path_hash.split('\0').collect::<Vec<&str>>()[0]; 
             let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
-            println!("{}/{}", folder_path.clone(), new_path);
-            create_tree(folder_path.clone() + "/" + new_path, hash.to_string())?;
+            //println!("{}/{}", folder_path.clone(), new_path);
+            create_tree(path.clone() + "/" + new_path, hash.to_string())?;
         }
     }
 
@@ -534,15 +533,21 @@ fn parse_blob_path(blob_entry: String) -> String {
     new_path.to_string()
 }
 
+
+// archivo
+// repo/carpeta/archivo
+
 pub fn create_blob(path: String, hash: String) -> Result<(), GitrError> {
-    let repo = get_current_repo()?;
-    let blob_path = repo + "/" + path.as_str();
+
  
+    println!("blob path: {}", path);
+    println!("blob hash: {}", hash);
+
     let new_blob = read_object(&(hash.to_string()))?;
     
     let new_blob_only_data = new_blob.split('\0').collect::<Vec<&str>>()[1];
 
-    write_file(blob_path.to_string(), new_blob_only_data.to_string())?;
+    write_file(path.to_string(), new_blob_only_data.to_string())?;
     Ok(())
 }
 
@@ -559,18 +564,25 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
         }
     };
 
+    let repo = get_current_repo()? + "/";
+
+
     for entry in raw_data.split('\n'){
         let object: &str = entry.split(' ').collect::<Vec<&str>>()[0];
         if object == "40000"{
             let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
-            let new_path = _new_path_hash.split('\0').collect::<Vec<&str>>()[0];
+            let new_path = repo.clone() + _new_path_hash.split('\0').collect::<Vec<&str>>()[0];
             let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
+
+            println!("parsed hash: {}", hash);
+            println!("parsed path: {}", new_path);
+
             create_tree(new_path.to_string(), hash.to_string())?;
         } else{
             println!("parsed hash: {}", parse_blob_hash(entry.to_string().clone()));
             println!("parsed path: {}", parse_blob_path(entry.to_string().clone()));
 
-            let path_completo = parse_blob_path(entry.to_string().clone());
+            let path_completo = repo.clone() + parse_blob_path(entry.to_string().clone()).as_str();
             let hash = parse_blob_hash(entry.to_string().clone());
 
             create_blob(path_completo, hash)?;
