@@ -360,7 +360,7 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
         }
     }
     let compressed_index = flate2compress(index)?;
-    let _ = write_compressed_data(dir.as_str(), compressed_index.as_slice());
+    write_compressed_data(dir.as_str(), compressed_index.as_slice())?;
     Ok(())
 
 }

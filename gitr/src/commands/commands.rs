@@ -148,22 +148,15 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
     println!("index_path: {}", index_path);
     if Path::new(index_path).is_file() {
         
-        
-        
-        
         let index_data = file_manager::read_index()?;
-        let mut index_vector = index_data.split('\n').collect::<Vec<&str>>();
-        
-        
-        // for (mut i,entry) in index_vector.clone().iter().enumerate(){
-        //     let path_to_check = entry.split(' ').collect::<Vec<&str>>()[3];
-        //     if Path::new(path_to_check).exists(){
-        //         index_vector.remove(i);
-        //         i -= 1;
-        //     }
-        // }
-        
-        
+
+
+        let mut index_vector: Vec<&str> = Vec::new();
+
+        if !index_data.is_empty() {
+            index_vector = index_data.split('\n').collect::<Vec<&str>>();
+        }
+
         let mut i: i32 = 0;
         while i != index_vector.len() as i32{
             println!("entro al while");
@@ -176,7 +169,6 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
             i += 1;
         };
     
-        
         fs::remove_file(format!("{}/gitr/index", repo));
         
         for entry in index_vector {
@@ -185,14 +177,9 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
             save_and_add_blob_to_index(path.to_string())?;
         }
         
-
-       
-
     }
 
      
-
-
     if file_path == "."{
         let files = visit_dirs(std::path::Path::new(&repo));
         for file in files{
