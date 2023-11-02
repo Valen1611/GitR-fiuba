@@ -3,7 +3,7 @@ use std::hash::Hash;
 use std::path::Path;
 
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::read_pack_file};
-use crate::file_manager::print_commit_log;
+use crate::file_manager::{print_commit_log, get_head, get_main_tree};
 use crate::command_utils::{*, self};
 
 use crate::git_transport::ref_discovery;
@@ -114,42 +114,80 @@ fn status_print_current_branch() -> Result<(), GitrError>{
     Ok(())
 }
 
-pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
-    status_print_current_branch()?;
-    let repo = file_manager::get_current_repo()?;
-    let path = Path::new(repo.as_str());
-    let files= command_utils::visit_dirs(path);
-
-
-    let mut working_dir_hashmap = HashMap::new();
-
+fn get_index_hashmap() -> Result<(HashMap<String, String>, bool), GitrError> {
+    // index
+    let mut index_hashmap = HashMap::new();
+    //busco el index
     let mut hayindex = true;
     let index_data = match file_manager::read_index() {
         Ok(data) => data,
         Err(_) => {
-            let message = format!("\nNo commits yet\n\nnothing to commit (create/copy files and use \"git add\" to track)");
-            println!("{}", message);
+            //let message = format!("\nNo commits yet\n\nnothing to commit (create/copy files and use \"git add\" to track)");
+            //println!("{}", message);
             hayindex = false;
             String::new()
         }
     };
-
-
-
-    let mut index_hashmap = HashMap::new();
-    
+    // cargo el diccionario
     if hayindex {
         for index_entry in index_data.split('\n') {
             let attributes = index_entry.split(' ').collect::<Vec<&str>>();
-            let path = attributes[3];
-            let hash = attributes[1];
+            let path = attributes[3].to_string();
+            let hash = attributes[1].to_string();
             index_hashmap.insert(path, hash);
         }
     }
-    
+    Ok((index_hashmap, hayindex))
+}
 
-    
+fn get_current_commit_hashmap() -> Result<HashMap<String, String>, GitrError> {
+      // current commit
+      let mut tree_hashmap = HashMap::new();
+      //busco el current commit
+      let mut haycommitshechos = true;
+      let current_commit = match file_manager::get_current_commit() {
+          Ok(commit) => commit,
+          Err(_) => {
+              //let message = format!("\nNo commits yet\n\nnothing to commit (create/copy files and use \"git add\" to track)");
+              //println!("{}", message);
+              haycommitshechos = false;
+              String::new()
+          }
+      };
+      
+      if haycommitshechos {
+        
+        let repo = file_manager::get_current_repo()?;
+        let tree = file_manager::get_main_tree(current_commit)?;
+        let tree_data = file_manager::read_object(&tree)?;
+        let tree_entries = match tree_data.split_once('\0') {
+            Some((_tree_type, tree_entries)) => tree_entries,
+            None => "",
+        };
+          // cargo el diccionario
+          
+        for entry in tree_entries.split('\n') {
+            let attributes = entry.split(' ').collect::<Vec<&str>>()[1];
+            let _file_path= attributes.split('\0').collect::<Vec<&str>>()[0].to_string();
+            let file_path = format!("{}/{}", repo, _file_path);
+            let file_hash = attributes.split('\0').collect::<Vec<&str>>()[1].to_string();
 
+            tree_hashmap.insert(file_path, file_hash);
+        }
+
+      }
+
+      Ok(tree_hashmap)
+}
+
+pub fn get_working_dir_hashmap() -> Result<HashMap<String, String>, GitrError>{
+    // working dir
+    let mut working_dir_hashmap = HashMap::new();
+    //busco el working dir
+    let repo = file_manager::get_current_repo()?;
+    let path = Path::new(repo.as_str());
+    let files= command_utils::visit_dirs(path);
+    //cargo el diccionario
     for file_path in files {
         let file_data = file_manager::read_file(file_path.clone())?;
         
@@ -157,56 +195,31 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
         let hash = blob.get_hash();
         working_dir_hashmap.insert(file_path, hash);
     }
+    Ok(working_dir_hashmap)
+}
 
-    
-    println!("index_hashmap {:?}", index_hashmap);
-    println!("working_dir_hashmap {:?}", working_dir_hashmap);
-    let mut untracked_files = Vec::new();
-    let mut not_staged = Vec::new();
-    let mut to_be_commited = Vec::new();
-
-    for (path, hash) in working_dir_hashmap.into_iter() {
-        if index_hashmap.contains_key(path.as_str()) {
-            let index_hash = match index_hashmap.get(path.as_str()) {
-                Some(hash) => hash,
-                None => {
-                    println!("Error: file not found in index (status)");
-                    return Err(GitrError::FileReadError(path.to_string()))
-                }
-            };
-
-
-            if index_hash != &hash {
-                not_staged.push(path);
-            } else {
-                //to_be_commited.push(path)
-            }
-
-
-        } else {
-            untracked_files.push(path);
-        }    
-    }
-
+pub fn status_print_to_be_comited(to_be_commited: &Vec<String>){
     if !to_be_commited.is_empty() {
         println!("Changes to be committed:");
         println!("  (use \"rm <file>...\" to unstage)");
 
-        for file in to_be_commited {
+        for file in to_be_commited.clone() {
             let file_name = match file.split_once ('/'){
                 Some((_path, file)) => file.to_string(),
-                None => file,
+                None => file.to_string(),
             };
             println!("\t\x1b[92mmodified   {}\x1b[0m", file_name);
         }
     }
- 
+}
+
+pub fn status_print_not_staged(not_staged: &Vec<String>) {
     if !not_staged.is_empty() {
         println!("Changes not staged for commit:");
         println!("  (use \"add <file>...\" to update what will be committed)");
         println!("  (use \"rm <file>...\" to discard changes in working directory)");
 
-        for file in not_staged {
+        for file in not_staged.clone() {
             let file_name = match file.split_once ('/'){
                 Some((_path, file)) => file.to_string(),
                 None => file,
@@ -214,14 +227,14 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
             println!("\t\x1b[31mmodified:   {}\x1b[0m", file_name);
         }
     }
+}
 
-
+pub fn status_print_untracked(untracked_files: &Vec<String>, hayindex: bool) {
     if !untracked_files.is_empty() {
         println!("Untracked files:");
         println!("  (use \"add <file>...\" to include in what will be committed)");
 
-        for file in untracked_files {
-
+        for file in untracked_files.clone() {
             let file_name = match file.split_once ('/'){
                 Some((_path, file)) => file.to_string(),
                 None => file,
@@ -235,8 +248,64 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
             println!("nothing added to commit but untracked files present (use \"add\" to track)");
         }
     }
+}
 
+pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
+    status_print_current_branch()?;
 
+    let working_dir_hashmap = get_working_dir_hashmap()?;
+    let (index_hashmap, hayindex) = get_index_hashmap()?;
+    let current_commit_hashmap = get_current_commit_hashmap()?;
+
+    let mut to_be_commited = Vec::new();
+    let mut not_staged = Vec::new();
+    let mut untracked_files = Vec::new();
+
+    // compare to working dir
+    for (path, hash) in working_dir_hashmap.clone().into_iter() {
+        if !index_hashmap.contains_key(path.as_str()) && !current_commit_hashmap.contains_key(path.as_str()) {
+            untracked_files.push(path.clone());
+        }
+        if current_commit_hashmap.contains_key(path.clone().as_str()){
+            if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
+                if &hash != commit_hash {
+                    if !index_hashmap.contains_key(&path) {
+                        not_staged.push(path.clone( ));
+                    } 
+                }
+            };
+        }
+        if index_hashmap.contains_key(path.as_str()){
+            if let Some(index_hash) = index_hashmap.get(path.as_str()) {
+                if &hash != index_hash {
+                    not_staged.push(path);
+                }
+            };
+        }
+    }
+    // compare to index
+    for (path, hash) in index_hashmap.clone().into_iter() {
+        if !current_commit_hashmap.contains_key(path.as_str()) {
+            to_be_commited.push(path);
+        }
+        else {
+            if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
+                if hash != *commit_hash  &&
+                !not_staged.contains(&path)
+                {
+                    to_be_commited.push(path);
+                }
+            }
+        }
+    }
+
+    status_print_to_be_comited(&to_be_commited);
+    status_print_not_staged(&not_staged);
+    status_print_untracked(&untracked_files, hayindex);
+
+    if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
+        println!("nothing to commit, working tree clean");
+    }
     Ok(())
 }
 
@@ -428,6 +497,12 @@ pub fn merge(flags: Vec<String>) {
 }
 
 pub fn remote(flags: Vec<String>) {
+    match file_manager::get_all_commits() {
+        Ok(commits) => {
+            
+        },
+        Err(_) => println!("Error: no commits found"),
+    };
     println!("remote");
 }
 

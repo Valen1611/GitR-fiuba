@@ -590,8 +590,12 @@ pub fn get_main_tree(commit:String)->Result<String, GitrError>{
 pub fn get_parent_commit(commit: String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    let parent = commit[1].split(' ').collect::<Vec<&str>>()[1];
-    Ok(parent.to_string())
+
+    if commit[1].contains("parent"){
+        let parent = commit[1].split(' ').collect::<Vec<&str>>()[1];
+        return Ok(parent.to_string())
+    }
+    Ok("None".to_string())
 
 }
 
@@ -605,8 +609,10 @@ pub fn get_commit_author(commit: String)->Result<String, GitrError>{
 pub fn get_commit_date(commit: String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    let timestamp = commit[2].split(' ').collect::<Vec<&str>>()[2];
-    let timestamp_parsed = match timestamp.parse::<i64>(){
+    let timestamp = commit[2].split(' ').collect::<Vec<&str>>()[3];
+    let timestamp_gmt = timestamp.to_string();
+    println!("{}", timestamp_gmt);
+    let timestamp_parsed = match timestamp_gmt.parse::<i64>(){
         Ok(timestamp) => timestamp,
         Err(_) => return Err(GitrError::TimeError),
     };
@@ -685,3 +691,20 @@ pub fn remove_file(path: String)-> Result<(), GitrError> {
     }
 }
 
+
+
+pub fn get_all_commits() -> Result<String, GitrError>{
+    let mut current_commit = get_current_commit()?;
+    
+    let mut commits = String::new();
+    loop{
+        commits = commits + &current_commit + "\n";
+        let parent = get_parent_commit(current_commit.clone())?;
+            if parent == "None"{
+            break;
+        }
+        current_commit = parent;
+    }
+    println!("{}", commits);
+    Ok(commits)
+}
