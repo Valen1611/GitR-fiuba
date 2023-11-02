@@ -1,5 +1,5 @@
 
-use std::{io::{Write, Read}, fs::{self}, path::Path, error::Error, collections::HashMap, net::TcpStream};
+use std::{io::{Write, Read}, fs::{self}, path::Path, collections::HashMap, net::TcpStream};
 
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
@@ -23,6 +23,7 @@ pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
     };
     Ok(compressed_bytes)
 }
+
 pub fn sha1hashing2(input: Vec<u8>) -> Vec<u8> {
     let mut hasher = Sha1::new();
     hasher.update(&input);
@@ -324,39 +325,55 @@ pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
     Ok(socket)
 }
 
-pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, Box<dyn Error>>{
+pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, GitrError>{
+    // let msj = format!("git-upload-pack /{}\0host={}\0",file_manager::get_current_repo()?, file_manager::get_remote()?);
+    // let msj = format!("{:04x}{}", msj.len() + 4, msj);    
+    // match socket.write(msj.as_bytes()){ //51 to hexa = 
+    //     Ok(bytes) => Ok(bytes),
+    //     Err(e) => Err(GitrError::ConnectionError),
     match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
         Ok(bytes) => Ok(bytes),
-        Err(e) => Err(Box::new(e)),
+        Err(e) => Err(GitrError::SocketError("clone_send_git_upload_pack()".to_string(), e.to_string())),
     }
 }
 
-pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, Box<dyn Error>>{
+pub fn clone_read_reference_discovery(socket: &mut TcpStream)->Result<String, GitrError>{
     let mut buffer = [0; 1024];
     let mut response = String::new();
     loop{
-        let bytes_read = socket.read(&mut buffer)?;
+        let bytes_read = match socket.read(&mut buffer){
+            Ok(bytes) => bytes,
+            Err(e) => return Err(GitrError::SocketError("clone_read_reference_discovery()".to_string(), e.to_string())),
+        };
         let received_message = String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
         if bytes_read == 0 || received_message == "0000"{ 
             break;
         }
-        response=String::from_utf8_lossy(&buffer[..bytes_read]).to_string();
+        response.push_str(&received_message);
     }
     Ok(response)
 }
 
-pub fn read_and_print_socket_read(socket: &mut TcpStream){
-    let mut buffer = [0;1024];
-    let bytes_read = socket.read(&mut buffer).unwrap();
+pub fn write_socket(socket: &mut TcpStream, message: &[u8])->Result<(),GitrError>{
+    match socket.write(message){
+        Ok(_) => Ok(()),
+        Err(e) => Err(GitrError::SocketError("write_socket()".to_string(), e.to_string())),
+    }
+}
+
+pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrError>{
+    let bytes_read = match socket.read(buffer){
+        Ok(bytes) => bytes,
+        Err(e) => return Err(GitrError::SocketError("read_socket()".to_string(), e.to_string())),
+    };
     let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
-    println!("String recibido de tamaño {}: {:?}", bytes_read, received_data)
+    println!("String recibido de tamaño {}: {:?}", bytes_read, received_data);
+    Ok(())
 }
 
 #[cfg(test)]
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
 mod tests{
-    use std::{net::TcpStream, io::{Write, Read}};
-
     use crate::git_transport::ref_discovery::{self, assemble_want_message};
 
     use super::*;
@@ -395,7 +412,6 @@ mod tests{
         clone_send_git_upload_pack(&mut socket).unwrap();
         let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
         let references = ref_discovery::discover_references(ref_disc).unwrap();
-        socket.write(assemble_want_message(&references).unwrap().as_bytes()).unwrap();
-        read_and_print_socket_read(&mut socket);
+        socket.write(assemble_want_message(&references,vec![]).unwrap().as_bytes()).unwrap();
     }
 }

@@ -26,6 +26,7 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
         //     Ok(byte) => byte,
         //     Err(_) => return Err(GitrError::CompressionError),
         // };
+
         formated_hash.push(byte);
     }
     Ok(formated_hash)
@@ -44,9 +45,9 @@ impl Tree{
                     let hash = blob.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
 
-                    let path_no_repo = path.split_once('/').unwrap().1;
+                    let _path_no_repo = path.split_once('/').unwrap().1;
                     let file_name = path.split('/').last().unwrap();
-                    let mut obj_entry = [
+                    let obj_entry = [
                         b"100644 ",
                         file_name.as_bytes(),
                         b"\0",
@@ -64,7 +65,7 @@ impl Tree{
                     println!("path: {:?}", path);
                     //let path_no_repo = path.split_once('/').unwrap().1;
 
-                    let mut obj_entry = [
+                    let obj_entry = [
                         b"40000 ",
                         path.as_bytes(),
                         b"\0",
@@ -79,7 +80,7 @@ impl Tree{
         }
         
 
-        let mut data = [
+        let data = [
             b"tree ",
             entries_size.to_string().as_bytes(),
             b"\0",
@@ -97,7 +98,7 @@ impl Tree{
         format_data.push_str(&init);
 
 
-        format_data = format_data.trim_end().to_string();
+        //format_data = format_data.trim_end().to_string();
         //let compressed_file = flate2compress(data.clone())?;
 
 
@@ -105,6 +106,26 @@ impl Tree{
         Ok(Tree {entries, data: compressed_file2, hash: hashed_file_str })
 
         
+    }
+
+    pub fn new_from_packfile(raw_data: &[u8])->  Result<Self, GitrError>{
+        println!("new_from_packfile(): raw_data: {:?}", raw_data);
+        let header_len = raw_data.len();
+        println!("new_from_packfile(): header_len: {:?}", header_len);
+        let tree_raw_file = vec![
+            b"tree ",
+            header_len.to_string().as_bytes(),
+            b"\0",
+            raw_data,
+        ].concat();
+        println!("new_from_packfile(): read_tree_file output {:?}", file_manager::read_tree_file(tree_raw_file.clone())?);
+
+        let compressed_data = command_utils::flate2compress2(tree_raw_file.clone())?;
+        let hash = command_utils::sha1hashing2(tree_raw_file.clone());
+        let tree_hash = hash.iter().map(|b| format!("{:02x}", b)).collect::<String>();
+
+        let tree = Tree{entries: vec![], data: compressed_data, hash: tree_hash};
+        Ok(tree)
     }
 
     pub fn save(&self) -> Result<(), GitrError>{
@@ -116,7 +137,21 @@ impl Tree{
         self.hash.clone()
     }
 
-    
+    pub fn get_objects_id_from_string(data: String) -> Result<Vec<String>, GitrError> {
+        // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
+        if data.split_at(4).0 != "tree"{
+            return Err(GitrError::InvalidTreeError);
+        }
+        let mut elems =  data.split('\0').collect::<Vec<&str>>(); 
+        elems = elems[2..].to_vec();
+        let mut objects_id = Vec::new();
+        for elem in elems {
+            let elem_hash = elem.split_at(20);
+            objects_id.push(elem_hash.0.to_string());
+        }
+        Ok(objects_id)
+
+    }
 }
 
 

@@ -11,7 +11,7 @@ pub enum TreeEntry {
 }
 
 #[derive(Debug)]
-pub struct Blob{
+pub struct Blob{ // creo que esto es innecessario, se puede usar GitrObject
     compressed_data: Vec<u8>,
     hash: String,
 }
