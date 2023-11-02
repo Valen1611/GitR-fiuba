@@ -1,11 +1,11 @@
 extern crate flate2;
 use flate2::Decompress;
-use gtk::gdk::keys::constants::function;
-use sha1::digest::block_buffer::Error;
-use sha1::digest::typenum::Length;
+// use gtk::gdk::keys::constants::function;
+// use sha1::digest::block_buffer::Error;
+// use sha1::digest::typenum::Length;
 use crate::gitr_errors::{GitrError, self};
 use crate::objects::git_object::GitObject;
-use crate::objects::commit::{Commit, self};
+use crate::objects::commit::Commit;
 use crate::objects::tree::Tree;
 use crate::objects::blob::Blob;
 use crate::git_transport::ref_discovery::*;

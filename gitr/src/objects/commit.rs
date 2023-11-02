@@ -80,7 +80,6 @@ impl Commit{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
-<<<<<<< HEAD
     pub fn get_tree(&self) -> String{
         self.tree.clone()
     }
@@ -141,8 +140,7 @@ mod tests {
         assert_eq!(commit_from_string.message, commit.message);
     }
 }
-=======
-}
+
 
 
 /*
@@ -153,4 +151,3 @@ committer valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
 
 pre commit ahora si
 */
->>>>>>> 6e73b9ebc42e7ee2ce2882393c64a5d7d033b1f8
