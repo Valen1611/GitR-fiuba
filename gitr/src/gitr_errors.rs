@@ -26,11 +26,13 @@ pub enum GitrError{
     ConnectionError,
     SocketError(String,String),
     PackFileError(String,String),
+    BranchNonExistsError(String),
 }
 
 impl fmt::Display for GitrError{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            Self::BranchNonExistsError(branch) => write!(f, "ERROR: No existe el branch {}", branch),
             Self::FileDeletionError(fun) => write!(f, "En la funcion {} falló una eliminación", fun),
             //Self::DirectoryCreationError => write!(f, "ERROR: No se pudo crear el directorio."),
             Self::FileCreationError(path) => write!(f, "ERROR: No se pudo crear el archivo {}", path),

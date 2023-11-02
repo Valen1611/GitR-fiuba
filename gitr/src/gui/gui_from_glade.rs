@@ -6,6 +6,7 @@ use crate::commands::commands;
 use crate::file_manager;
 
 fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
+    branch_selector.remove_all();
     for branch in branches{
         branch_selector.append_text(&branch);
     }
@@ -14,9 +15,6 @@ fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
  fn build_ui(application: &gtk::Application)->Option<String>{
      let glade_src = include_str!("gui_test.glade");
      let builder = Builder::from_string(glade_src);
-
-    let objetos = builder.objects();
-    println!("{:?}",objetos);
    
     //====Builders para componentes====
     let window:Window = builder.object("main_window")?;
@@ -28,15 +26,45 @@ fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
     let commit_text: TextView = builder.object("commit_text")?;
     let branch_selector: ComboBoxText = builder.object("branch_selector")?;
     let buffer: TextBuffer = commit_text.buffer()?;
-
-
+    let commit: Button = builder.object("commit_button")?;
+    let commit_dialog: Dialog = builder.object("commit_dialog")?;
+    let commit_confirm: Button = builder.object("confirm_commit_button")?;
+    let commit_message: Entry = builder.object("commit_message")?;
     //====Conexiones de señales====
     
+    let commit_clone = commit.clone();
+    let commit_dialog_clone = commit_dialog.clone();
+    commit_clone.connect_clicked(move|_|{
+        commit_dialog_clone.show();  
+    }); 
+
+    let commit_confirm_clone=commit_confirm.clone();
+    let commit_dialog_clone = commit_dialog.clone();
+    commit_confirm_clone.connect_clicked(move|_|{
+        commit_dialog_clone.close();
+        commands::add(vec![".".to_string()]).unwrap();
+        let message = format!("\"{}\"",commit_message.text());
+        let cm_msg = vec!["-m".to_string(),message];
+        commands::commit(cm_msg).unwrap();
+    });
+
     let branch_selector_clon = branch_selector.clone();
     branch_selector_clon.clone().connect_changed(move|_|{
-        buffer.set_text("mames que anda asi nomas");
-        let flags = vec![String::from(branch_selector_clon.clone().active_text().unwrap())];
-        commands::checkout(flags).unwrap();
+        //buffer.set_text("mames que anda asi nomas");
+        let branch = match branch_selector_clon.clone().active_text(){
+            Some(branch) => branch,
+            None => return,
+        };
+        let flags = vec![String::from(branch)];
+        match commands::checkout(flags){
+            Ok(_) => (),
+            Err(e) => {
+                println!("Error al cambiar de branch: {:?}",e);
+                return;
+            },
+        }
+        let commits = file_manager::commit_log("-1".to_string()).unwrap();
+        buffer.set_text(&commits);
     });
 
     let branch_selector_clon = branch_selector.clone();
@@ -57,9 +85,10 @@ fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
 
      let clone_dialog_ = clone_dialog.clone();
      clone_accept_button.connect_clicked(move|_| {
-         let url = clone_url.text();
-         println!("Clonando repo: {:?}", url);
+        let url = clone_url.text();
+        println!("Clonando repo: {:?}", url);
         clone_dialog_.hide();
+        commands::clone(vec![url.to_string(),"repo_clonado".to_string()]).unwrap();
      });
 
     

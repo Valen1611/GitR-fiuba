@@ -118,7 +118,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="commit_message">
+              <object class="GtkEntry">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="placeholder-text" translatable="yes">commit message</property>
