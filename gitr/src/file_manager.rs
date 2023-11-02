@@ -699,8 +699,8 @@ pub fn commit_log(quantity: String)-> Result<String, GitrError>{
     let mut counter = 0;
     loop{
         counter += 1;
-        let format_commit = format!("commit: {}", current_commit);
-        res.push_str(&format!("\x1b[34m{}\x1b[0m\n", format_commit));
+        let format_commit = format!("commit: {}\n", current_commit);
+        res.push_str(&format_commit);
         let parent = get_parent_commit(current_commit.clone())?;
         let date = get_commit_date(current_commit.clone())?;
         let author = get_commit_author(current_commit.clone())?;

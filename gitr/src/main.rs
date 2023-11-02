@@ -76,7 +76,11 @@ use gitr::gui::gui_from_glade::initialize_gui;
     }
 
     fn main() {
-        initialize_gui();
+        //Start new thread for GUI
+        let child = std::thread::spawn(move || {
+            initialize_gui();
+        });
+        //initialize_gui();
     
         let mut input = String::new();
     
@@ -106,6 +110,10 @@ use gitr::gui::gui_from_glade::initialize_gui;
             };
             input = String::new();
     
+        }
+        match child.join(){
+            Ok(_) => (),
+            Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
         }
     
 }
