@@ -3,7 +3,7 @@ use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBox
 use gtk::{Builder,Window, Button, FileChooserButton};
 
 use crate::commands::commands;
-use crate::{file_manager, command_utils};
+use crate::file_manager;
 
 fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
     for branch in branches{
@@ -11,9 +11,9 @@ fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
     }
 }
 
-fn build_ui(application: &gtk::Application)->Option<String>{
-    let glade_src = include_str!("gui_test.glade");
-    let builder = Builder::from_string(glade_src);
+ fn build_ui(application: &gtk::Application)->Option<String>{
+     let glade_src = include_str!("gui_test.glade");
+     let builder = Builder::from_string(glade_src);
 
     let objetos = builder.objects();
     println!("{:?}",objetos);
@@ -50,26 +50,26 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         update_branches(&branch_selector_clon.clone(),repo_branches);
     });
 
-    let clone_dialog_ = clone_dialog.clone();
-    clone_button.connect_clicked(move|_| {
-        clone_dialog_.show();
-    });
+     let clone_dialog_ = clone_dialog.clone();
+     clone_button.connect_clicked(move|_| {
+         clone_dialog_.show();
+     });
 
-    let clone_dialog_ = clone_dialog.clone();
-    clone_accept_button.connect_clicked(move|_| {
-        let url = clone_url.text();
-        println!("Clonando repo: {:?}", url);
+     let clone_dialog_ = clone_dialog.clone();
+     clone_accept_button.connect_clicked(move|_| {
+         let url = clone_url.text();
+         println!("Clonando repo: {:?}", url);
         clone_dialog_.hide();
-    });
+     });
 
     
 
-    window.set_application(Some(application));
-    window.set_title("test");
+     window.set_application(Some(application));
+     window.set_title("test");
 
-    window.show_all();
-    Some("Ok".to_string())
-}
+     window.show_all();
+     Some("Ok".to_string())
+ }
 
 pub fn initialize_gui(){
     let app = Application::builder()
@@ -79,7 +79,6 @@ pub fn initialize_gui(){
     app.connect_activate(|app| {
         build_ui(app);
     });
-
     app.run();
 
 }

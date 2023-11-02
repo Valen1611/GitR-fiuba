@@ -32,6 +32,8 @@ pub fn read_file(path: String) -> Result<String, GitrError> {
     }
 }
 
+
+
 // Writes a file with the given text
 pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
     let log_msg = format!("writing data to: {}", path);
@@ -60,7 +62,6 @@ pub fn append_to_file(path: String, text: String) -> Result<(), GitrError> {
             Err(_) => return Err(GitrError::FileWriteError(path)),
 
         };
-    
     match writeln!(file, "{}", text) {
         Ok(_) => Ok(()),
         Err(_) => Err(GitrError::FileWriteError(path)),
@@ -257,13 +258,6 @@ pub fn write_compressed_data(path: &str, data: &[u8]) -> Result<(), GitrError>{
     
 }
 
-
-///read .head_repo and returns the content
-pub fn get_current_repo() -> Result<String, GitrError>{
-    let current_repo = read_file(".head_repo".to_string())?;
-    Ok(current_repo)
-}
-
 pub fn get_remote() -> Result<String, GitrError> {
     let repo = get_current_repo()?;
     let path = repo + "/gitr/" + "remote";
@@ -341,8 +335,14 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/objects"))?;
         create_directory(&(name.clone() + "/gitr/refs"))?;
         create_directory(&(name.clone() + "/gitr/refs/heads"))?;
+        create_directory(&(name.clone() + "/gitr/refs/remotes"))?;
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
     Ok(())
+}
+
+pub fn get_current_repo() -> Result<String, GitrError>{
+    let current_repo = read_file(".head_repo".to_string())?;
+    Ok(current_repo)
 }
 
 pub fn read_index() -> Result<String, GitrError>{

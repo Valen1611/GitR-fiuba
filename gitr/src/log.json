@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 {"type": "Action","timestamp": "22-10-2023 18:01:15","message": "calling h with flags: ["hello.rs"]"}
 {"type": "Action","timestamp": "22-10-2023 18:02:03","message": "calling c with flags: ["-t", "b8d7489a6a5db220428da6c6d04be50bbbc9a77f"]"}
 {"type": "FileOperation","timestamp": "22-10-2023 18:02:03","message": "reading data from: gitr/objects/b8/d7489a6a5db220428da6c6d04be50bbbc9a77f"}
@@ -12603,3 +12604,5 @@
 {"type": "FileOperation","timestamp": "01-11-2023 23:38:07","message": "writing data to: repo/hola"}
 {"type": "FileOperation","timestamp": "01-11-2023 23:38:07","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "01-11-2023 23:38:07","message": "writing data to: repo/gitr/HEAD"}
+=======
+>>>>>>> 11e30b358db7ff7fd26bfe60648222238c7bb653

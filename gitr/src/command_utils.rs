@@ -328,7 +328,7 @@ pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
 pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, GitrError>{
     // let msj = format!("git-upload-pack /{}\0host={}\0",file_manager::get_current_repo()?, file_manager::get_remote()?);
     // let msj = format!("{:04x}{}", msj.len() + 4, msj);    
-    // match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
+    // match socket.write(msj.as_bytes()){ //51 to hexa = 
     //     Ok(bytes) => Ok(bytes),
     //     Err(e) => Err(GitrError::ConnectionError),
     match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
