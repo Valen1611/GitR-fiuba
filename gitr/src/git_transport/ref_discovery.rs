@@ -16,7 +16,7 @@ pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
 pub fn extract_version(version_slice:&[u8])->Result<u32,GitrError>{
     let version = match version_slice.try_into(){
         Ok(vec) => vec,
-        Err(e) => return Err(gitr_errors::GitrError::PackFileError("extract_version".to_string(),"no se pudo obtener la version".to_string()))
+        Err(_e) => return Err(gitr_errors::GitrError::PackFileError("extract_version".to_string(),"no se pudo obtener la version".to_string()))
     };
     let version = u32::from_be_bytes(version);
     println!("Versión del archivo de pack: {:?}", version);

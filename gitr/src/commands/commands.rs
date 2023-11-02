@@ -1,8 +1,6 @@
 use std::net::TcpStream;
 // use std::fmt::Result;
-use std::{io::prelude::*, error::Error};
-
-use chrono::format;
+use std::io::prelude::*;
 
 use std::{fs, hash};
 use std::ops::IndexMut;
@@ -10,9 +8,8 @@ use std::path::Path;
 
 use crate::file_manager::{print_commit_log, update_working_directory, get_current_commit};
 use crate::objects::git_object::GitObject::*;
-use crate::objects::commit::{self, Commit};
-use crate::objects::tree::Tree;
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
+use crate::file_manager::print_commit_log;
 use crate::git_transport::pack_file::read_pack_file;
 use crate::command_utils::*;
 
@@ -116,7 +113,7 @@ pub fn init(flags: Vec<String>) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
+pub fn status(_flags: Vec<String>) -> Result<(), GitrError>{
     let head = file_manager::get_head()?;
     let current_branch = head.split('/').collect::<Vec<&str>>()[2];
     println!("On branch {}", current_branch);
@@ -175,7 +172,10 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
             i += 1;
         };
         
-        fs::remove_file(format!("{}/gitr/index", repo));
+        match fs::remove_file(format!("{}/gitr/index", repo)){
+            Ok(_) => (),
+            Err(_) => return Err(GitrError::FileDeletionError("add()".to_string()))
+        };
         
         for entry in index_vector {
             let path = entry.split(' ').collect::<Vec<&str>>()[3];
@@ -301,7 +301,7 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     let want_message = ref_discovery::assemble_want_message(&references,Vec::new())?;
     // println!("clone():want {:?}", want_message);
 
-    socket.write(want_message.as_bytes());
+    write_socket(&mut socket, want_message.as_bytes())?;
 
     let mut buffer = [0;1024];
     match socket.read(&mut buffer){
@@ -309,8 +309,8 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
         Err(e)=>return Err(GitrError::SocketError("clone".into(), e.to_string()))
     };
     
-    // print!("clone(): recepeción de packfile:");
-    socket.read(&mut buffer);
+    print!("clone(): recepeción de packfile:");
+    read_socket(&mut socket, &mut buffer)?;
 
     let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
 
@@ -325,15 +325,15 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     Ok(())
 }
 
-pub fn fetch(flags: Vec<String>) {
+pub fn fetch(_flags: Vec<String>) {
     println!("fetch");
 }
 
-pub fn merge(flags: Vec<String>) {
+pub fn merge(_flags: Vec<String>) {
     println!("merge");
 }
 
-pub fn remote(flags: Vec<String>) {
+pub fn remote(_flags: Vec<String>) {
     println!("remote");
 }
 
@@ -429,7 +429,7 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn push(flags: Vec<String>) {
+pub fn push(_flags: Vec<String>) {
     println!("push");
 }
 
@@ -437,7 +437,7 @@ pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
     if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
         match print_branches() {
             Ok(()) => (),
-            Err(e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
+            Err(_e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
         };
     }
     if flags.len() == 2 && flags[0] == "-d"{
@@ -471,7 +471,7 @@ pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
         let new_path = format!("{}/gitr/refs/heads/{}", repo, flags[2]);
         match file_manager::move_branch(old_path.clone(), new_path.clone()) {
             Ok(()) => (),
-            Err(e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
+            Err(_e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
         };
         file_manager::update_head(&new_path)?;
         return Ok(())

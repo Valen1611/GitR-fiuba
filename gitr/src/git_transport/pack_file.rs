@@ -1,8 +1,5 @@
 extern crate flate2;
 use flate2::Decompress;
-// use gtk::gdk::keys::constants::function;
-// use sha1::digest::block_buffer::Error;
-// use sha1::digest::typenum::Length;
 use crate::gitr_errors::{GitrError, self};
 use crate::objects::git_object::GitObject;
 use crate::objects::commit::Commit;
@@ -113,8 +110,7 @@ fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
 }
 
 fn create_tree_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
-
-    let mut tree = GitObject::Tree(Tree::new_from_packfile(decoded_data)?);
+    let tree = GitObject::Tree(Tree::new_from_packfile(decoded_data)?);
     Ok(tree)
 }
 
@@ -139,7 +135,7 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     // Leemos el número de objetos contenidos en el archivo de pack
     let num_objects = match buffer[8..12].try_into(){
         Ok(vec) => vec,
-        Err(e) => return Err(gitr_errors::GitrError::PackFileError("read_pack_file".to_string(),"no se pudo obtener la # objetos".to_string()))
+        Err(_e) => return Err(gitr_errors::GitrError::PackFileError("read_pack_file".to_string(),"no se pudo obtener la # objetos".to_string()))
     };
     let num_objects = u32::from_be_bytes(num_objects);
 
@@ -149,7 +145,7 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     for i in 0..num_objects {
         print!("=========index: {}, vuelta {}\n",index + 12, i);
         match parse_git_object(&buffer[12+index..]) {
-            Ok((object_type, length, object_content,cursor)) => {
+            Ok((object_type, _length, object_content,cursor)) => {
                 println!("Tipo del objeto: {}", object_type);
                 //println!("Longitud del objeto: {}", length);
                 let (decodeado, leidos) = decode(object_content).unwrap();
@@ -186,13 +182,6 @@ mod tests{
 
     use super::*;
 
-    fn show_lines_received(buffer: &[u8]){
-        let received_data = String::from_utf8_lossy(&buffer);
-        for line in received_data.split('\n'){
-            println!("{}",line);
-        }
-    }
-
     #[test]
     fn test00_receiveing_wrong_signature_throws_error(){
         let mut buffer= [(13),(14),(23),(44)];
@@ -213,7 +202,7 @@ mod tests{
 
         let mut buffer = [0;1024];
         let mut _bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
-        let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        let bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         
         let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
         println!("References: {:?}", references);
@@ -238,9 +227,9 @@ mod tests{
         let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
         println!("References: {:?}", references);
 
-        let mut want = assemble_want_message(&references, Vec::new()).unwrap();
+        let want = assemble_want_message(&references,vec![]).unwrap();
         println!("Mando el want: {:?}", want);
-        socket.write(want.as_bytes());
+        socket.write(want.as_bytes()).unwrap();
 
 
         while bytes_read != 0{
@@ -254,7 +243,7 @@ mod tests{
             println!("Cantidad leida: {}",bytes_read);
         }
         
-        let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        let bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         println!("Aca tendria que estar el packfile: {}",String::from_utf8_lossy(&buffer));
         let _packfile = PackFile::new_from_server_packfile(&mut buffer[..bytes_read]).unwrap();
         println!("Packfile: {:?}", _packfile);
@@ -268,8 +257,8 @@ mod tests{
         let mut _bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         let references = discover_references(String::from_utf8_lossy(&buffer[..bytes_read]).to_string()).unwrap();
-        let mut want = assemble_want_message(&references,Vec::new()).unwrap();
-        socket.write(want.as_bytes());
+        let want = assemble_want_message(&references,vec![]).unwrap();
+        socket.write(want.as_bytes()).unwrap();
         loop{
             bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
             let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
@@ -278,7 +267,7 @@ mod tests{
                 break;
             }
         }
-        let mut bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
+        let bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         println!("Aca tendria que estar el packfile: {}",String::from_utf8_lossy(&buffer));
         let _packfile = PackFile::new_from_server_packfile(&mut buffer[..bytes_read]).unwrap();
     }

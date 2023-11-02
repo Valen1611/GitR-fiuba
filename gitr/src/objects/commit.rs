@@ -1,4 +1,3 @@
-use std::mem;
 use chrono::{Utc, Local, format};
 
 use crate::gitr_errors::GitrError;
@@ -58,7 +57,7 @@ impl Commit{
         format_data.push_str("\n");
         format_data.push_str(&format!("{}\n", message));
 
-        let mut size = format_data.as_bytes().len();
+        let size = format_data.as_bytes().len();
 
         println!("size: {}", size);
         
