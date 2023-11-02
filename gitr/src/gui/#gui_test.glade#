@@ -53,11 +53,7 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Entero remote repo URL</property>
-              </object>
+              <placeholder/>
             </child>
           </object>
           <packing>
