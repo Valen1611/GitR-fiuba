@@ -5,13 +5,13 @@ use crate::command_utils::{flate2compress, sha1hashing};
 
 #[derive(Debug)]
 
-pub enum TreeEntry {
+pub enum TreeEntry {// creo que esto es innecessario, se puede usar GitrObject
     Blob(Blob),
     Tree(Tree),
 }
 
 #[derive(Debug)]
-pub struct Blob{ // creo que esto es innecessario, se puede usar GitrObject
+pub struct Blob{ 
     compressed_data: Vec<u8>,
     hash: String,
 }
@@ -37,5 +37,9 @@ impl Blob{
 
     pub fn get_hash(&self) -> String{
         self.hash.clone()
+    }
+
+    pub fn get_data(&self) -> Vec<u8>{
+        self.compressed_data.clone()
     }
 }

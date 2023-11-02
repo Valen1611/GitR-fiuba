@@ -80,6 +80,11 @@ impl Commit{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
+
+    pub fn get_data(&self) -> Vec<u8>{
+        self.data.clone()
+    }
+    
     pub fn get_tree(&self) -> String{
         self.tree.clone()
     }

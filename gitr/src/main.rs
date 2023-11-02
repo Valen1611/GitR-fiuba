@@ -2,7 +2,7 @@ use gitr::{commands, logger, gitr_errors::GitrError};
 
 use std::io::{Write, self};
 extern crate flate2;
-use gitr::gui::gui_from_glade::initialize_gui;
+// use gitr::gui::gui_from_glade::initialize_gui;
 
 
 
@@ -78,7 +78,7 @@ use gitr::gui::gui_from_glade::initialize_gui;
     fn main() {
         //Start new thread for GUI
         let child = std::thread::spawn(move || {
-            initialize_gui();
+            // initialize_gui();
         });
         //initialize_gui();
     

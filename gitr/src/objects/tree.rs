@@ -136,6 +136,10 @@ impl Tree{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
+    
+    pub fn get_data(&self) -> Vec<u8>{
+        self.data.clone()
+    }
 
     pub fn get_objects_id_from_string(data: String) -> Result<Vec<String>, GitrError> {
         // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...

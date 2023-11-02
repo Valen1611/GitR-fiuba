@@ -14,7 +14,9 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use flate2::read::ZlibDecoder;
 
+use crate::git_transport::pack_file::PackFile;
 use crate::objects::commit::Commit;
+use crate::objects::git_object::GitObject;
 use crate::objects::tree::Tree;
 
 
@@ -84,7 +86,7 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
 fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_path: String) -> std::io::Result<()>{
 
     // ##########  PACKFILE NEGOTIATION ##########
-    let (wants_id, haves_id) = packfile_negotiation(stream, guardados_id, r_path.clone())?;
+    let (wants_id, haves_id) = packfile_negotiation(stream, guardados_id)?;
     
     // ########## PACKFILE DATA ##########
     if !wants_id.is_empty() {
@@ -157,7 +159,7 @@ fn get_object(id: String, r_path: String) -> std::io::Result<String> {
     Ok(descomprimido)
 }
 
-fn update_contents(ids: Vec<String>, content: Vec<String>, r_path: String) -> std::io::Result<()> {
+fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> std::io::Result<()> {
     if ids.len() != content.len() {
         return Err(Error::new(std::io::ErrorKind::Other, "Error: no coinciden los ids con los contenidos"))
     }
@@ -167,7 +169,7 @@ fn update_contents(ids: Vec<String>, content: Vec<String>, r_path: String) -> st
         let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
         let _ = fs::create_dir(dir_path.clone()); // si ya existe tira error pero no pasa nada
         let mut archivo = File::create(&format!("{}/{}",dir_path,id.split_at(2).1))?;
-        archivo.write_all(&code(content[i].as_bytes())?)?;
+        archivo.write_all(&code(&content[i])?)?;
         i += 1;
     }
     Ok(())
@@ -228,7 +230,7 @@ fn get_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<St
     Ok(())
 }
 
-fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>, r_path: String) -> std::io::Result<(Vec<String>, Vec<String>)> {
+fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>) -> std::io::Result<(Vec<String>, Vec<String>)> {
     let (mut buffer, mut reply) = ([0; 1024], "0008NAK\n".to_string());
     let (mut wants_id, mut haves_id): (Vec<String>, Vec<String>) = (Vec::new(), Vec::new());    
     loop {
@@ -260,10 +262,31 @@ fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>, r
     Ok((wants_id, haves_id))
 }
 
-fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, Vec<String>)> {
+fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, Vec<Vec<u8>>)> {
     let mut buffer: [u8;1024] = [0; 1024];
     stream.read(&mut buffer)?;
-    Ok((vec![],vec![]))
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer);
+    let pk_file = match pack_file_struct {
+        Ok(pack_file) => {pack_file},
+        _ => {return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo crear el packfile"))}
+    };
+    let mut hashes: Vec<String> = Vec::new();
+    let mut contents: Vec<Vec<u8>> = Vec::new();
+    for object in pk_file.objects.iter(){
+        match object{
+            GitObject::Blob(blob) => {
+                hashes.push(blob.get_hash());
+                contents.push(blob.get_data());},
+            GitObject::Commit(commit) => {
+                hashes.push(commit.get_hash());
+                contents.push(commit.get_data());},
+            GitObject::Tree(tree) => {
+                hashes.push(tree.get_hash());
+                contents.push(tree.get_data());
+            },
+        }
+    }
+    Ok((hashes,contents))
 }
 
 fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: String) -> std::io::Result<bool> {
@@ -319,7 +342,7 @@ fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<S
     Ok((old, new, names))
 }
 
-fn pack_data_bruno(ids: Vec<String>, contents: Vec<String>) -> std::io::Result<String> {
+fn pack_data_bruno(_ids: Vec<String>, _contents: Vec<String>) -> std::io::Result<String> {
     
     Ok(format!("ToDo"))
 }
@@ -403,7 +426,7 @@ fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut St
     Ok(())
 }
 
-fn capacidades() -> String {
+fn _capacidades() -> String {
     "capacidades-del-server ok_ok ...".to_string()
 }
 
@@ -466,12 +489,13 @@ fn decode(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
     Ok(decoded_data)
 }
 
-fn main(){
+fn _main(){
       
 }
 
 #[cfg(test)]
 mod tests{
+
     use super::*;
 
     #[test]
@@ -616,7 +640,7 @@ mod tests{
         let r_path = "remote_repo";
         let _ = create_dirs(r_path);
         let ids = vec!["74730d410fcb6603ace96f1dc55ea6196122532d".to_string(),"5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string()];
-        let content = vec!["Hola mundo".to_string(),"Chau mundo".to_string()];
+        let content: Vec<Vec<u8>> = vec!["Hola mundo".to_string().as_bytes().to_vec(),"Chau mundo".to_string().as_bytes().to_vec()];
         update_contents(ids, content, r_path.to_string()).unwrap();
         assert_eq!(get_object("74730d410fcb6603ace96f1dc55ea6196122532d".to_string(), r_path.to_string()).unwrap(), "Hola mundo");
         assert_eq!(get_object("5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string(), r_path.to_string()).unwrap(), "Chau mundo");         

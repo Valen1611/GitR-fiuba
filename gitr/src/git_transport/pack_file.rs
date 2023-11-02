@@ -1,5 +1,9 @@
 extern crate flate2;
-use flate2::Decompress;
+use std::fs::File;
+use std::io::{Write, Read};
+
+use flate2::{Decompress, Compression};
+use flate2::write::ZlibEncoder;
 use crate::gitr_errors::{GitrError, self};
 use crate::objects::git_object::GitObject;
 use crate::objects::commit::Commit;
@@ -17,7 +21,7 @@ use crate::git_transport::ref_discovery::*;
 //Luego cae el numero de versión: Son 4 bytes
 #[derive(Debug)]
 pub struct PackFile{
-    version: u32,
+    _version: u32,
     pub objects: Vec<GitObject>,
 }
 
@@ -30,6 +34,12 @@ fn decode(input: &[u8]) -> Result<(Vec<u8>,u64), std::io::Error> {
     let output_return = output[..decoder.total_out() as usize].to_vec();
     
     Ok((output_return, cant_leidos))
+}
+
+fn code(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
+    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
+    encoder.write_all(input)?;
+    encoder.finish()
 }
 
 fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), GitrError> {
@@ -62,10 +72,11 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), GitrError> 
     //print!("longitud del objeto descomprimido-{:#010b} - {}\n",length,length);
     //print!("cursor: {}\n",cursor);
 
-    // Verifica si hay suficientes bytes para el contenido del objeto
-    if data.len() < cursor + length {
-        return Err(GitrError::PackFileError("parse_git_object".to_string(),"No hay suficientes bytes para el contenido del objeto".to_string()));
-    }
+    // // Verifica si hay suficientes bytes para el contenido del objeto
+    // if data.len() < cursor + length {
+    //     println!("data.len(): {}, cursor: {}, length: {}",data.len(),cursor,length);
+    //     return Err(GitrError::PackFileError("parse_git_object".to_string(),"No hay suficientes bytes para el contenido del objeto".to_string()));
+    // }
 
     // Extrae el contenido del objeto
     let object_content = &data[cursor..];
@@ -164,6 +175,69 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     Ok(objects)
 }
 
+pub fn create_packfile(contents: Vec<String>) -> Result<Vec<u8>,GitrError> {
+    // ########## HEADER ##########
+    let mut final_data: Vec<u8> = Vec::new();
+    let mut header = "PACK0002".to_string();
+    let cant_str = contents.len().to_string();
+    for _ in 0..(4-cant_str.len()){
+        header.push('0');
+    }
+    header.push_str(&cant_str);
+    final_data.extend(header.as_bytes());
+
+    // ########## OBJECTS ##########
+    for obj in contents {
+        let mut obj_data: Vec<u8> = Vec::new();
+        let obj_type: u8 = match obj.split(' ').collect::<Vec<&str>>()[0] { // obtengo el tipo de objeto
+            "commit" => 1,
+            "tree" => 2,
+            "blob" => 3,
+            _ => return Err(GitrError::PackFileError("create_packfile".to_string(),"Tipo de objeto no válido".to_string()))
+        };
+        
+        let obj_len = match obj.split(' ').collect::<Vec<&str>>()[1].split("\0").collect::<Vec<&str>>()[0].parse::<usize>() { // obtengo la longitud del objeto
+            Ok(len) => len,
+            Err(_e) => return Err(GitrError::PackFileError("create_packfile".to_string(),"Longitud de objeto no válida".to_string()))
+        };
+        
+        if obj_len < 16 {
+            obj_data.push((obj_type << 4) | obj_len as u8);
+        } else {
+            // ###### SIZE ENCODING ######
+            let mut size = obj_len;
+            let mut size_bytes: Vec<u8> = Vec::new();
+            size_bytes.push((obj_type << 4) | (size & 0x0F) as u8 | 0x80); // meto el tipo de objeto y los primeros 4 bits de la longitud
+            size >>= 4;
+            while size >= 128 {
+                size_bytes.push((size & 0x7F) as u8 | 0x80); // meto los siguientes 7 bits de la longitud con un 1 adelante
+                size >>= 7;
+            }
+            size_bytes.push(size as u8); // meto los últimos ultimos 7 bits de la longitud con un 0 adelante
+            obj_data.extend(size_bytes);
+        }
+        let compressed = match code(obj.as_bytes()) {
+            Ok(compressed) => compressed,
+            Err(_e) => return Err(GitrError::PackFileError("create_packfile".to_string(),"Error al comprimir el objeto".to_string()))
+        };
+        obj_data.extend(compressed);
+        final_data.extend(obj_data);
+    }
+    
+
+    Ok(final_data)
+}
+
+fn get_object(id: String, r_path: String) -> std::io::Result<String> {
+    let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
+    let mut archivo = File::open(&format!("{}/{}",dir_path,id.split_at(2).1))?; // si no existe tira error
+    let mut contenido: Vec<u8>= Vec::new();
+    archivo.read_to_end(&mut contenido)?;
+
+    let descomprimido = String::from_utf8_lossy(&decode(&contenido)?.0).to_string();
+    Ok(descomprimido)
+}
+
 impl PackFile{
     pub fn new_from_server_packfile(buffer: &mut[u8])->Result<PackFile, GitrError>{
         verify_header(&buffer[..=3])?;
@@ -171,9 +245,11 @@ impl PackFile{
         let objects = read_pack_file(buffer)?;
 
         Ok(PackFile {
-            version: version,
+            _version: version,
             objects: objects,})
     }
+
+    
 }
 
 #[cfg(test)]
@@ -270,5 +346,31 @@ mod tests{
         let bytes_read = socket.read(&mut buffer).expect("Error al leer socket");
         println!("Aca tendria que estar el packfile: {}",String::from_utf8_lossy(&buffer));
         let _packfile = PackFile::new_from_server_packfile(&mut buffer[..bytes_read]).unwrap();
+    }
+
+    #[test]
+    fn test05armo_y_desarmo_packfiles_correctamente(){
+        let mut contents = Vec::new();
+        let id1 = "0f4af869fb2e71a0b2f6c8cf5af15388384fc140";
+        let id2 = "5c1b14949828006ed75a3e8858957f86a2f7e2eb";
+        let id3 = "7d6d6182dd7e2415325d78c9371e71a359387a8d";
+        let id4 = "7d002497f8b08b369ebf42d5f0e3f49c22bd3930";
+        let id5 = "2677ee483d86070859ef100f2b28f019ee0d4e28";
+        contents.push(get_object(id1.to_string(), "repo/gitr".to_string()).unwrap());
+        contents.push(get_object(id2.to_string(), "repo/gitr".to_string()).unwrap());
+        contents.push(get_object(id3.to_string(), "repo/gitr".to_string()).unwrap());
+        contents.push(get_object(id4.to_string(), "repo/gitr".to_string()).unwrap());
+        contents.push(get_object(id5.to_string(), "repo/gitr".to_string()).unwrap());
+        let mut packfile_coded = create_packfile(contents).unwrap();
+        let mut packfile_decoded = PackFile::new_from_server_packfile(&mut packfile_coded[..]).unwrap();
+        for obj in packfile_decoded.objects{
+            let (h,d) = match obj{
+                GitObject::Commit(obj) => (obj.get_hash(),obj.get_data()),
+                GitObject::Tree(obj) => (obj.get_hash(),obj.get_data()),
+                GitObject::Blob(obj) => (obj.get_hash(),obj.get_data()),
+            };
+            
+            println!("Hash: {}",h);
+        }
     }
 }
