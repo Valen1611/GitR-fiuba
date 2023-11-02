@@ -2,12 +2,13 @@ use std::net::TcpStream;
 // use std::fmt::Result;
 use std::io::prelude::*;
 
-use std::fs;
+use std::{fs, hash};
+use std::ops::IndexMut;
 use std::path::Path;
 
+use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
 use crate::objects::git_object::GitObject::*;
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
-use crate::file_manager::commit_log;
 use crate::git_transport::pack_file::read_pack_file;
 use crate::command_utils::*;
 
@@ -280,9 +281,9 @@ pub fn log(flags: Vec<String>)->Result<(), GitrError> {
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     let address = flags[0].clone();
     let mut socket = clone_connect_to_server(address)?;
-    println!("clone():Servidor conectado.");
+    // println!("clone():Servidor conectado.");
     clone_send_git_upload_pack(&mut socket)?;
-    println!("clone():Envié upload-pack");
+    // println!("clone():Envié upload-pack");
     let ref_disc = clone_read_reference_discovery(&mut socket)?;
     let references = ref_discovery::discover_references(ref_disc)?;
 
@@ -297,9 +298,9 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
         file_manager::write_file(path_str, into_hash)?; //escribo el hash en el archivo
     }
 
-    println!("clone():Referencias ={:?}=", references);
-    let want_message = ref_discovery::assemble_want_message(&references,vec![])?;
-    println!("clone():want {:?}", want_message);
+    // println!("clone():Referencias ={:?}=", references);
+    let want_message = ref_discovery::assemble_want_message(&references,Vec::new())?;
+    // println!("clone():want {:?}", want_message);
 
     write_socket(&mut socket, want_message.as_bytes())?;
 
@@ -314,10 +315,6 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
 
     let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
 
-
-
-    println!("clone(): objects: {:?}", pack_file_struct);
-
     for object in pack_file_struct.objects.iter(){
         match object{
             Blob(blob) => blob.save()?,
@@ -325,6 +322,7 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
             Tree(tree) => tree.save()?,
         }
     }
+    update_working_directory(get_current_commit()?)?;
     Ok(())
 }
 
@@ -349,7 +347,7 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     // ########## HANDSHAKE ##########
     let repo = file_manager::get_current_repo()?;
     let remote = file_manager::get_remote()?;
-    let msj = format!("git-upload-pack /{}\0host={}\0",repo, remote);
+    let msj = format!("git-upload-pack /{}\0host={}\0","mi-repo", remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
     let mut stream = match TcpStream::connect(remote) {
         Ok(socket) => socket,
@@ -386,7 +384,10 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         }
     }
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
+    println!("\n\nreferencias: {:?}\n\n",hash_n_references);
+
     let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids()?)?;
+    
     match stream.write(want_message.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -394,6 +395,8 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
             return Ok(())
         }
     };
+    println!("\n\nwant message{}\n\n",want_message);
+
     match stream.read(&mut buffer) { // Leo si huvo error
         Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
             println!("Error: {}", String::from_utf8_lossy(&buffer));
@@ -407,16 +410,22 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     }
     
     match stream.read(&mut buffer) { // Leo el packfile
-        Ok(_n) => {
-            let objects = read_pack_file(&mut buffer);
-            println!("objects: {:?}", objects);
-        },
+        
         Err(e) => {
             println!("Error: {}", e);
             return Ok(())
-        }
-        
+        },
+        _ => ()
     }
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
+    for object in pack_file_struct.objects.iter(){
+        match object{
+            Blob(blob) => blob.save()?,
+            Commit(commit) => commit.save()?,
+            Tree(tree) => tree.save()?,
+        }
+    }
+    update_working_directory(get_current_commit()?)?;
     println!("pull successfull");
     Ok(())
 }

@@ -23,6 +23,7 @@ pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
     };
     Ok(compressed_bytes)
 }
+
 pub fn sha1hashing2(input: Vec<u8>) -> Vec<u8> {
     let mut hasher = Sha1::new();
     hasher.update(&input);
@@ -327,7 +328,7 @@ pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
 pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, GitrError>{
     // let msj = format!("git-upload-pack /{}\0host={}\0",file_manager::get_current_repo()?, file_manager::get_remote()?);
     // let msj = format!("{:04x}{}", msj.len() + 4, msj);    
-    // match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
+    // match socket.write(msj.as_bytes()){ //51 to hexa = 
     //     Ok(bytes) => Ok(bytes),
     //     Err(e) => Err(GitrError::ConnectionError),
     match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
@@ -360,7 +361,7 @@ pub fn write_socket(socket: &mut TcpStream, message: &[u8])->Result<(),GitrError
     }
 }
 
-pub fn read_socket(socket: &mut TcpStream, mut buffer: &mut [u8])->Result<(),GitrError>{
+pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrError>{
     let bytes_read = match socket.read(buffer){
         Ok(bytes) => bytes,
         Err(e) => return Err(GitrError::SocketError("read_socket()".to_string(), e.to_string())),
