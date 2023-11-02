@@ -28,8 +28,9 @@ impl Commit{
         format_data.push_str(&format!("author {} <vschneider@fi.uba.ar> {} -0300\n", author, Utc::now().timestamp()));
         format_data.push_str(&format!("committer {} <vschneider@fi.uba.ar> {} -0300\n", committer, Utc::now().timestamp()));
         format_data.push_str("\n");
+        let message = message.replace("\"", "");
         format_data.push_str(&format!("{}\n", message));
-
+        
         let size = format_data.as_bytes().len();
 
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);

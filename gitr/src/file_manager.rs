@@ -494,14 +494,10 @@ pub fn get_commit(branch:String)->Result<String, GitrError>{
 
 pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
 
-    
     file_manager::create_directory(&path)?;
 
     let tree_raw_data = read_object(&hash)?;
 
-
-    println!("tree path: {}", path);
-    println!("tree hash: {}", hash);
 
     let raw_data = match tree_raw_data.split_once('\0') {
         Some((_, raw_data)) => raw_data,
@@ -550,10 +546,6 @@ fn parse_blob_path(blob_entry: String) -> String {
 // repo/carpeta/archivo
 
 pub fn create_blob(path: String, hash: String) -> Result<(), GitrError> {
-
- 
-    println!("blob path: {}", path);
-    println!("blob hash: {}", hash);
 
     let new_blob = read_object(&(hash.to_string()))?;
     
@@ -743,6 +735,12 @@ pub fn get_repos() -> Vec<String> {
     repos
 }
 
+pub fn remove_file(path: String)-> Result<(), GitrError> {
+    match fs::remove_file(path.clone()) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(GitrError::FileDeleteError(path)),
+    }
+}
 pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
     let mut objects: Vec<String> = Vec::new();
     let repo = get_current_repo()?;

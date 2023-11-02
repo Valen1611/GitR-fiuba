@@ -9,6 +9,7 @@ pub struct Tree{
     hash: String,
 }
 
+
 pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrError>{
     let mut formated_hash:  Vec<u8> = Vec::new();
     for i in (0..40).step_by(2) {
@@ -21,10 +22,11 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
             Err(_) => return Err(GitrError::FileReadError(path.clone())),
         };
 
-        let _compressed_byte = match command_utils::flate2compress2(vec![byte]) {
-            Ok(byte) => byte,
-            Err(_) => return Err(GitrError::CompressionError),
-        };
+        // let compressed_byte = match command_utils::flate2compress2(vec![byte]) {
+        //     Ok(byte) => byte,
+        //     Err(_) => return Err(GitrError::CompressionError),
+        // };
+
         formated_hash.push(byte);
     }
     Ok(formated_hash)
