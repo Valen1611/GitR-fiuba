@@ -271,7 +271,7 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
                 if &hash != commit_hash {
                     if !index_hashmap.contains_key(&path) {
                         not_staged.push(path.clone( ));
-                    } 
+                    }
                 }
             };
         }
@@ -497,12 +497,6 @@ pub fn merge(flags: Vec<String>) {
 }
 
 pub fn remote(flags: Vec<String>) {
-    match file_manager::get_all_commits() {
-        Ok(commits) => {
-            
-        },
-        Err(_) => println!("Error: no commits found"),
-    };
     println!("remote");
 }
 

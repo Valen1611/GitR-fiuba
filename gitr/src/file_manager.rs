@@ -690,21 +690,3 @@ pub fn remove_file(path: String)-> Result<(), GitrError> {
         Err(_) => Err(GitrError::FileDeleteError(path)),
     }
 }
-
-
-
-pub fn get_all_commits() -> Result<String, GitrError>{
-    let mut current_commit = get_current_commit()?;
-    
-    let mut commits = String::new();
-    loop{
-        commits = commits + &current_commit + "\n";
-        let parent = get_parent_commit(current_commit.clone())?;
-            if parent == "None"{
-            break;
-        }
-        current_commit = parent;
-    }
-    println!("{}", commits);
-    Ok(commits)
-}
