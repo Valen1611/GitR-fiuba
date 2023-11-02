@@ -464,7 +464,6 @@ pub fn log(flags: Vec<String>)->Result<(), GitrError> {
     Ok(())
 }
 
-
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     // let address = flags[0].clone();
     // let mut socket = clone_connect_to_server(address)?;

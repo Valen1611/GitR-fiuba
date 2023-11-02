@@ -64,9 +64,22 @@ extern crate flate2;
     
         Ok(input)
     }
+
+    fn setup_config_file(){
+        let email = match std::env::var("CARGO_WORKSPACE_DIR") {
+            Ok(email) => email,
+            Err(_) => {
+                println!("No se encontró la variable de entorno CARGO_EMAIL");
+                println!("Se usará el email por defecto:");
+                String::new()
+         }
+        };
+        println!("{}",email);
+    }
+
     fn main() {
         //initialize_gui();
-    
+        setup_config_file();
         let mut input = String::new();
     
         while input != "q" {
