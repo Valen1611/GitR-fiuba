@@ -51,7 +51,7 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
         }
         references.push(extract_hash_and_ref(refs));
     }
-    //println!("Pares hash - ref{:?}", references);
+    // println!("Pares hash - ref{:?}", references);
     Ok(references)
 }
 
@@ -63,7 +63,7 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
             continue;
         }
         let want_line = format!("want {}\n",refer.0);
-        want_message.push_str(&format!("{:04X}{}\n",want_line.len()+4,want_line));
+        want_message.push_str(&format!("{:04X}{}",want_line.len()+4,want_line));
     }
     want_message.push_str("0000");
     if !client_commits.len() == 0{
@@ -75,5 +75,6 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
         want_message.push_str("0000");
     }
     want_message.push_str("0009done\n");
+    // println!("assemble_want_message(): {:?}", want_message);
     Ok(want_message)
 }

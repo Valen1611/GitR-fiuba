@@ -139,3 +139,14 @@ mod tests {
         assert_eq!(commit_from_string.message, commit.message);
     }
 }
+
+
+
+/*
+tree 4a2fe10e5e62c3d2b3a738d78df708f5b08af7af
+parent 6e7c471ac3d96bf69e5a81b57a477401a6a4a6ea
+author valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
+committer valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
+
+pre commit ahora si
+*/
