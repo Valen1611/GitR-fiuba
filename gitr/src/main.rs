@@ -65,7 +65,7 @@ extern crate flate2;
         Ok(input)
     }
     fn main() {
-        //initialize_gui();
+        initialize_gui();
     
         let mut input = String::new();
     

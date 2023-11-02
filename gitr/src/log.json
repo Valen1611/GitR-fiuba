@@ -12571,3 +12571,12 @@
 {"type": "FileOperation","timestamp": "01-11-2023 17:50:05","message": "writing data to: reponuevo/gitr/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
 =======
 >>>>>>> 7c5a0bfca7ffc2ac26be64585977699e9468af5f
+{"type": "FileOperation","timestamp": "01-11-2023 21:04:03","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 21:15:09","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 21:15:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 21:17:38","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 21:17:38","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 21:18:22","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 21:18:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 21:28:16","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "01-11-2023 21:28:16","message": "reading data from: .head_repo"}

@@ -2,10 +2,17 @@ use std::cell::RefCell;
 use std::path::PathBuf;
 use std::rc::Rc;
 
-use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer};
+use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBoxText};
 
 use gtk::{Builder,Window, Button, FileChooserButton};
 
+use crate::{file_manager, command_utils};
+
+fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
+    for branch in branches{
+        branch_selector.append_text(&branch);
+    }
+}
 
 fn build_ui(application: &gtk::Application)->Option<String>{
     let glade_src = include_str!("gui_test.glade");
@@ -21,21 +28,38 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let clone_dialog: Dialog = builder.object("clone_dialog")?;
     let clone_url: Entry = builder.object("clone_url")?;
     let clone_accept_button: Button = builder.object("clone_accept_button")?;
-    let log: TextView = builder.object("console_log")?;
+    let commit_text: TextView = builder.object("commit_text")?;
+    let branch_selector: ComboBoxText = builder.object("branch_selector")?;
+    let buffer: TextBuffer = commit_text.buffer()?;
+
 
     //====Conexiones de señales====
     let repo_url = Rc::new(RefCell::new(PathBuf::new()));
     let repo_url_clon = repo_url.clone();
+    
+    branch_selector.connect_changed(move|_|{
+        buffer.set_text("mames que anda asi nomas");
+    });
+    //let valor = Rc::new(RefCell::new(0));
 
     repo_selector.connect_file_set(move |data|{
         *repo_url_clon.borrow_mut() = match data.filename(){
             Some(path) => path,
             None => return,
-        };
-        println!("Repo url: {:?}", *repo_url.borrow());
+        }; //creo que esto es innecesario
+        let data_a = data.filename().unwrap();
+        let repo_name = data_a.file_name().unwrap().to_str().unwrap(); 
+        println!("Repo name: {:?}", repo_name);
+        file_manager::update_current_repo(&repo_name.to_string()).unwrap();
+        let repo_branches = file_manager::get_branches().unwrap();
+        println!("{:?}",repo_branches);
+        update_branches(&branch_selector.clone(),repo_branches);
+
+        //update current repo (existe) y le paso el nombre del repo.
+        //print commits
+        //
     });
     
-    //let valor = Rc::new(RefCell::new(0));
     //let valor_clone = valor.clone();
 
     let clone_dialog_ = clone_dialog.clone();
