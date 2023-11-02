@@ -9,7 +9,7 @@ use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
 use crate::{logger, file_manager};
 
-use chrono::{Utc, TimeZone};
+use chrono::{Utc, TimeZone, FixedOffset};
 use flate2::read::ZlibDecoder;
 
 
@@ -610,22 +610,32 @@ pub fn get_main_tree(commit:String)->Result<String, GitrError>{
 pub fn get_parent_commit(commit: String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
+    if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
+        return Ok("None".to_string());
+    }
     let parent = commit[1].split(' ').collect::<Vec<&str>>()[1];
     Ok(parent.to_string())
-
 }
 
 pub fn get_commit_author(commit: String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    let author = commit[3].split(' ').collect::<Vec<&str>>()[1];
+    let mut idx = 2;
+    if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
+        idx -= 1;
+    }
+    let author = commit[idx].split(' ').collect::<Vec<&str>>()[1];
     Ok(author.to_string())
 }
 
 pub fn get_commit_date(commit: String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    let timestamp = commit[2].split(' ').collect::<Vec<&str>>()[2];
+    let mut idx = 2;
+    if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
+        idx -= 1;
+    }
+    let timestamp = commit[idx].split(' ').collect::<Vec<&str>>()[3];
     let timestamp_parsed = match timestamp.parse::<i64>(){
         Ok(timestamp) => timestamp,
         Err(_) => return Err(GitrError::TimeError),
@@ -635,6 +645,14 @@ pub fn get_commit_date(commit: String)->Result<String, GitrError>{
         Some(dt) => dt,
         None => return Err(GitrError::TimeError),
     };
+
+    let offset = FixedOffset::east_opt(-3 * 3600);
+    let offset = match offset{
+        Some(offset) => offset,
+        None => return Err(GitrError::TimeError),
+    };
+    let dt = dt.with_timezone(&offset);
+
     let date = dt.format("%a %b %d %H:%M:%S %Y %z").to_string();
     Ok(date)
 }
@@ -642,7 +660,11 @@ pub fn get_commit_date(commit: String)->Result<String, GitrError>{
 pub fn get_commit_message(commit: String)->Result<String, GitrError>{
     let commit = read_object(&commit)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    let message = commit[5..].join("\n");
+    let mut idx = 5;
+    if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
+        idx -= 1;
+    }
+    let message = commit[idx..].join("\n");
     Ok(message)
 }
 
@@ -677,7 +699,8 @@ pub fn get_heads_ids() -> Result<Vec<String>, GitrError> {
     Ok(branches)
 }
 
-pub fn print_commit_log(quantity: String)-> Result<(), GitrError>{
+pub fn commit_log(quantity: String)-> Result<String, GitrError>{
+    let mut res:String = "".to_owned();
     let mut current_commit = get_current_commit()?;
     let limit = match quantity.parse::<i32>(){
         Ok(quantity) => quantity,
@@ -687,21 +710,21 @@ pub fn print_commit_log(quantity: String)-> Result<(), GitrError>{
     loop{
         counter += 1;
         let format_commit = format!("commit: {}", current_commit);
-        println!("\x1b[34m{}\x1b[0m", format_commit);
+        res.push_str(&format!("\x1b[34m{}\x1b[0m\n", format_commit));
         let parent = get_parent_commit(current_commit.clone())?;
         let date = get_commit_date(current_commit.clone())?;
         let author = get_commit_author(current_commit.clone())?;
         let message = get_commit_message(current_commit.clone())?;
-        println!("Author: {}", author);
-        println!("Date: {}\n", date);
-        println!("\t{}\n", message);
+        res.push_str(&format!("Author: {}\n", author));
+        res.push_str(&format!("Date: {}\n", date));
+        res.push_str(&format!("\t{}\n\n", message));
         if parent == "None" || counter == limit{
             break;
         }
         current_commit = parent;
     }
 
-    Ok(())
+    Ok(res.to_string())
 }
 
 pub fn get_repos() -> Vec<String> {

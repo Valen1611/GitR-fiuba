@@ -7,7 +7,7 @@ use std::path::Path;
 
 use crate::objects::git_object::GitObject::*;
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
-use crate::file_manager::print_commit_log;
+use crate::file_manager::commit_log;
 use crate::git_transport::pack_file::read_pack_file;
 use crate::command_utils::*;
 
@@ -266,10 +266,12 @@ pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
 
 pub fn log(flags: Vec<String>)->Result<(), GitrError> {
     if flags.is_empty() {
-       print_commit_log("-1".to_string())?;
+       let log_res = commit_log("-1".to_string())?;
+       print!("{}", log_res);
     }
     if flags.len() == 2 && flags[0] == "-n" && flags[1].parse::<usize>().is_ok(){
-        print_commit_log(flags[1].to_string())?;
+        let log_res = commit_log(flags[1].to_string())?;
+        print!("{}", log_res);
     }
     Ok(())
 }
