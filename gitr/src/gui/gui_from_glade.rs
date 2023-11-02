@@ -1,11 +1,8 @@
-use std::cell::RefCell;
-use std::path::PathBuf;
-use std::rc::Rc;
-
 use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBoxText};
 
 use gtk::{Builder,Window, Button, FileChooserButton};
 
+use crate::commands::commands;
 use crate::{file_manager, command_utils};
 
 fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
@@ -34,33 +31,24 @@ fn build_ui(application: &gtk::Application)->Option<String>{
 
 
     //====Conexiones de señales====
-    let repo_url = Rc::new(RefCell::new(PathBuf::new()));
-    let repo_url_clon = repo_url.clone();
     
-    branch_selector.connect_changed(move|_|{
+    let branch_selector_clon = branch_selector.clone();
+    branch_selector_clon.clone().connect_changed(move|_|{
         buffer.set_text("mames que anda asi nomas");
+        let flags = vec![String::from(branch_selector_clon.clone().active_text().unwrap())];
+        commands::checkout(flags).unwrap();
     });
-    //let valor = Rc::new(RefCell::new(0));
 
+    let branch_selector_clon = branch_selector.clone();
     repo_selector.connect_file_set(move |data|{
-        *repo_url_clon.borrow_mut() = match data.filename(){
-            Some(path) => path,
-            None => return,
-        }; //creo que esto es innecesario
         let data_a = data.filename().unwrap();
         let repo_name = data_a.file_name().unwrap().to_str().unwrap(); 
         println!("Repo name: {:?}", repo_name);
         file_manager::update_current_repo(&repo_name.to_string()).unwrap();
         let repo_branches = file_manager::get_branches().unwrap();
         println!("{:?}",repo_branches);
-        update_branches(&branch_selector.clone(),repo_branches);
-
-        //update current repo (existe) y le paso el nombre del repo.
-        //print commits
-        //
+        update_branches(&branch_selector_clon.clone(),repo_branches);
     });
-    
-    //let valor_clone = valor.clone();
 
     let clone_dialog_ = clone_dialog.clone();
     clone_button.connect_clicked(move|_| {
