@@ -23,6 +23,7 @@ pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
     };
     Ok(compressed_bytes)
 }
+
 pub fn sha1hashing2(input: Vec<u8>) -> Vec<u8> {
     let mut hasher = Sha1::new();
     hasher.update(&input);
@@ -360,7 +361,7 @@ pub fn write_socket(socket: &mut TcpStream, message: &[u8])->Result<(),GitrError
     }
 }
 
-pub fn read_socket(socket: &mut TcpStream, mut buffer: &mut [u8])->Result<(),GitrError>{
+pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrError>{
     let bytes_read = match socket.read(buffer){
         Ok(bytes) => bytes,
         Err(e) => return Err(GitrError::SocketError("read_socket()".to_string(), e.to_string())),

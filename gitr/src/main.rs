@@ -1,10 +1,8 @@
-
-
 use gitr::{commands, logger, gitr_errors::GitrError};
 
 use std::io::{Write, self};
 extern crate flate2;
-
+use gitr::gui::gui_from_glade::initialize_gui;
 
 
 
@@ -65,7 +63,7 @@ extern crate flate2;
         Ok(input)
     }
     fn main() {
-        //initialize_gui();
+        initialize_gui();
     
         let mut input = String::new();
     
