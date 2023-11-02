@@ -1,4 +1,4 @@
-<!-- <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
@@ -53,11 +53,7 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Entero remote repo URL</property>
-              </object>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -535,4 +531,4 @@
       </object>
     </child>
   </object>
-</interface> -->
+</interface>
