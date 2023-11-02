@@ -84,6 +84,10 @@ pub fn create_directory(path: &String)->Result<(), GitrError>{
 
 pub fn delete_all_files()-> Result<(), GitrError>{  
     let repo = get_current_repo()?;
+    match fs::remove_file(repo.clone() + "/gitr/index"){
+        Ok(_) => (),
+        Err(_) => return Err(GitrError::FileWriteError(repo + "/gitr/index")),
+    };
     let path = Path::new(&repo);
     if let Ok(entries) = fs::read_dir(path) {
         for entry in entries.flatten() {
@@ -554,6 +558,7 @@ pub fn create_blob(path: String, hash: String) -> Result<(), GitrError> {
     let new_blob = read_object(&(hash.to_string()))?;
     
     let new_blob_only_data = new_blob.split('\0').collect::<Vec<&str>>()[1];
+    add_to_index(&path, &hash)?;
 
     write_file(path.to_string(), new_blob_only_data.to_string())?;
     Ok(())
@@ -581,15 +586,8 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
             let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
             let new_path = repo.clone() + _new_path_hash.split('\0').collect::<Vec<&str>>()[0];
             let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
-
-            println!("parsed hash: {}", hash);
-            println!("parsed path: {}", new_path);
-
             create_tree(new_path.to_string(), hash.to_string())?;
         } else{
-            println!("parsed hash: {}", parse_blob_hash(entry.to_string().clone()));
-            println!("parsed path: {}", parse_blob_path(entry.to_string().clone()));
-
             let path_completo = repo.clone() + parse_blob_path(entry.to_string().clone()).as_str();
             let hash = parse_blob_hash(entry.to_string().clone());
 
