@@ -149,7 +149,7 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
         Err(_e) => return Err(gitr_errors::GitrError::PackFileError("read_pack_file".to_string(),"no se pudo obtener la # objetos".to_string()))
     };
     let num_objects = u32::from_be_bytes(num_objects);
-
+    println!("numero recibido: {}",num_objects);
     let mut objects = vec![];
 
     let mut index: usize = 0;
@@ -178,14 +178,12 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
 pub fn create_packfile(contents: Vec<String>) -> Result<Vec<u8>,GitrError> {
     // ########## HEADER ##########
     let mut final_data: Vec<u8> = Vec::new();
-    let mut header = "PACK0002".to_string();
-    let cant_str = contents.len().to_string();
-    for _ in 0..(4-cant_str.len()){
-        header.push('0');
-    }
-    header.push_str(&cant_str);
+    let header = "PACK".to_string();
     final_data.extend(header.as_bytes());
-
+    let cant_bytes = contents.len().to_be_bytes();
+    let ver: u32 = 2;
+    final_data.extend(&ver.to_be_bytes());
+    final_data.extend(&cant_bytes[4..8]);
     // ########## OBJECTS ##########
     for obj in contents {
         let mut obj_data: Vec<u8> = Vec::new();
@@ -221,22 +219,15 @@ pub fn create_packfile(contents: Vec<String>) -> Result<Vec<u8>,GitrError> {
             Err(_e) => return Err(GitrError::PackFileError("create_packfile".to_string(),"Error al comprimir el objeto".to_string()))
         };
         obj_data.extend(compressed);
-        final_data.extend(obj_data);
+        final_data.extend(obj_data); 
+        println!("objeto termina en {}",final_data.len())
     }
     
 
     Ok(final_data)
 }
 
-fn get_object(id: String, r_path: String) -> std::io::Result<String> {
-    let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
-    let mut archivo = File::open(&format!("{}/{}",dir_path,id.split_at(2).1))?; // si no existe tira error
-    let mut contenido: Vec<u8>= Vec::new();
-    archivo.read_to_end(&mut contenido)?;
 
-    let descomprimido = String::from_utf8_lossy(&decode(&contenido)?.0).to_string();
-    Ok(descomprimido)
-}
 
 impl PackFile{
     pub fn new_from_server_packfile(buffer: &mut[u8])->Result<PackFile, GitrError>{
@@ -257,7 +248,15 @@ mod tests{
     use std::{net::TcpStream, io::{Write, Read}};
 
     use super::*;
-
+    fn get_object(id: String, r_path: String) -> std::io::Result<String> {
+        let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
+        let mut archivo = File::open(&format!("{}/{}",dir_path,id.split_at(2).1))?; // si no existe tira error
+        let mut contenido: Vec<u8>= Vec::new();
+        archivo.read_to_end(&mut contenido)?;
+    
+        let descomprimido = String::from_utf8_lossy(&decode(&contenido)?.0).to_string();
+        Ok(descomprimido)
+    }
     #[test]
     fn test00_receiveing_wrong_signature_throws_error(){
         let mut buffer= [(13),(14),(23),(44)];
@@ -362,7 +361,8 @@ mod tests{
         contents.push(get_object(id4.to_string(), "repo/gitr".to_string()).unwrap());
         contents.push(get_object(id5.to_string(), "repo/gitr".to_string()).unwrap());
         let mut packfile_coded = create_packfile(contents).unwrap();
-        let mut packfile_decoded = PackFile::new_from_server_packfile(&mut packfile_coded[..]).unwrap();
+        println!("coded:{:?}:::::::",packfile_coded);
+        let packfile_decoded = PackFile::new_from_server_packfile(&mut packfile_coded[..]).unwrap();
         for obj in packfile_decoded.objects{
             let (h,d) = match obj{
                 GitObject::Commit(obj) => (obj.get_hash(),obj.get_data()),
