@@ -60,10 +60,8 @@ impl Commit{
 
         let size = format_data.as_bytes().len();
 
-        println!("size: {}", size);
         
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
-        println!("format_data_entera: {:?}", format_data_entera);
 
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());

@@ -149,19 +149,15 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
         Err(_e) => return Err(gitr_errors::GitrError::PackFileError("read_pack_file".to_string(),"no se pudo obtener la # objetos".to_string()))
     };
     let num_objects = u32::from_be_bytes(num_objects);
-    println!("numero recibido: {}",num_objects);
     let mut objects = vec![];
 
     let mut index: usize = 0;
     for i in 0..num_objects {
-        print!("=========index: {}, vuelta {}\n",index + 12, i);
         match parse_git_object(&buffer[12+index..]) {
             Ok((object_type, _length, object_content,cursor)) => {
-                println!("Tipo del objeto: {}", object_type);
                 //println!("Longitud del objeto: {}", length);
                 let (decodeado, leidos) = decode(object_content).unwrap();
                 //print!("leidos: {}\n",leidos);
-                println!("Contenido del objeto: {:?}", String::from_utf8_lossy(&decodeado[..]));
                 objects.push(git_valid_object_from_packfile(object_type, &decodeado[..])?);
                 index += leidos as usize + cursor;
             }
@@ -171,7 +167,6 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
             }
         }
     }
-    println!("Sali del for, lei todos los objetos");
     Ok(objects)
 }
 
@@ -214,13 +209,17 @@ pub fn create_packfile(contents: Vec<String>) -> Result<Vec<u8>,GitrError> {
             size_bytes.push(size as u8); // meto los últimos ultimos 7 bits de la longitud con un 0 adelante
             obj_data.extend(size_bytes);
         }
+        let obj = match obj.split_once("\0") {
+            Some(tupla) => tupla.1,
+            None => return Err(GitrError::PackFileError("create_packfile".to_string(),"Error al parsear el objeto".to_string()))
+        };
+        
         let compressed = match code(obj.as_bytes()) {
             Ok(compressed) => compressed,
             Err(_e) => return Err(GitrError::PackFileError("create_packfile".to_string(),"Error al comprimir el objeto".to_string()))
         };
         obj_data.extend(compressed);
         final_data.extend(obj_data); 
-        println!("objeto termina en {}",final_data.len())
     }
     
 
@@ -350,27 +349,28 @@ mod tests{
     #[test]
     fn test05armo_y_desarmo_packfiles_correctamente(){
         let mut contents = Vec::new();
-        let id1 = "0f4af869fb2e71a0b2f6c8cf5af15388384fc140";
-        let id2 = "5c1b14949828006ed75a3e8858957f86a2f7e2eb";
-        let id3 = "7d6d6182dd7e2415325d78c9371e71a359387a8d";
-        let id4 = "7d002497f8b08b369ebf42d5f0e3f49c22bd3930";
-        let id5 = "2677ee483d86070859ef100f2b28f019ee0d4e28";
-        contents.push(get_object(id1.to_string(), "repo/gitr".to_string()).unwrap());
-        contents.push(get_object(id2.to_string(), "repo/gitr".to_string()).unwrap());
-        contents.push(get_object(id3.to_string(), "repo/gitr".to_string()).unwrap());
-        contents.push(get_object(id4.to_string(), "repo/gitr".to_string()).unwrap());
-        contents.push(get_object(id5.to_string(), "repo/gitr".to_string()).unwrap());
-        let mut packfile_coded = create_packfile(contents).unwrap();
-        println!("coded:{:?}:::::::",packfile_coded);
+        let ids = vec![
+        "0f4af869fb2e71a0b2f6c8cf5af15388384fc140",
+        "5c1b14949828006ed75a3e8858957f86a2f7e2eb",
+        "7d6d6182dd7e2415325d78c9371e71a359387a8d",
+        "7d002497f8b08b369ebf42d5f0e3f49c22bd3930",
+        "2677ee483d86070859ef100f2b28f019ee0d4e28"];
+        for id in ids.clone(){
+            contents.push(get_object(id.to_string(), "repo/gitr".to_string()).unwrap());
+        }
+        
+        let mut packfile_coded = create_packfile(contents.clone()).unwrap();
         let packfile_decoded = PackFile::new_from_server_packfile(&mut packfile_coded[..]).unwrap();
+        let mut i = 0;
         for obj in packfile_decoded.objects{
             let (h,d) = match obj{
                 GitObject::Commit(obj) => (obj.get_hash(),obj.get_data()),
                 GitObject::Tree(obj) => (obj.get_hash(),obj.get_data()),
                 GitObject::Blob(obj) => (obj.get_hash(),obj.get_data()),
-            };
-            
-            println!("Hash: {}",h);
+            };    
+            assert_eq!(ids[i],h);
+            assert_eq!(contents[i],String::from_utf8_lossy(&decode(&d).unwrap().0));
+            i +=1;
         }
     }
 }

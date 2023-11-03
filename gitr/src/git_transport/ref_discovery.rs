@@ -6,7 +6,6 @@ use crate::{gitr_errors::{GitrError, self}, file_manager};
 
 pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
     let str_received = String::from_utf8_lossy(header_slice);
-    println!("verify_header(): str_received: {:?}", str_received);
     if str_received != "PACK"{
         return Err(GitrError::PackFileError("verify_header".to_string(), "La signature no es PACK".to_string()));
     }
@@ -19,7 +18,6 @@ pub fn extract_version(version_slice:&[u8])->Result<u32,GitrError>{
         Err(_e) => return Err(gitr_errors::GitrError::PackFileError("extract_version".to_string(),"no se pudo obtener la version".to_string()))
     };
     let version = u32::from_be_bytes(version);
-    println!("Versión del archivo de pack: {:?}", version);
     Ok(version)
 }
 
