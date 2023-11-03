@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::path::Path;
 
-use crate::file_manager::{get_head, get_main_tree};
+use crate::file_manager::{get_head, get_main_tree, get_parent_commit};
 use crate::command_utils::{*, self};
 
 use std::net::TcpStream;
@@ -530,7 +530,7 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
             Tree(tree) => tree.save()?,
         }
     }
-    //update_working_directory(get_current_commit()?)?;
+    update_working_directory(get_current_commit()?)?;
     Ok(())
 }
 
@@ -538,8 +538,33 @@ pub fn fetch(_flags: Vec<String>) {
     println!("fetch");
 }
 
-pub fn merge(_flags: Vec<String>) {
-    println!("merge");
+pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
+    if _flags.len() == 0{
+        return Err(GitrError::InvalidArgumentError(_flags.join(" "), "merge <branch-name>".to_string()))
+    }
+
+    let branch_name = _flags[0].clone();
+    let origin_name = file_manager::get_head()?.split('/').collect::<Vec<&str>>()[2].to_string();
+
+    let branch_commits = command_utils::branch_commits_list(branch_name.clone())?;
+    let origin_commits = command_utils::branch_commits_list(origin_name)?;
+
+    for commit in branch_commits.clone() {
+        if origin_commits.contains(&commit) {
+            if commit == origin_commits[origin_commits.len() -1]{
+                // fast-forward merge (caso facil)
+ 
+                println!("Updating {}..{}" ,&origin_commits[origin_commits.len() -1][..7], &branch_commits[branch_commits.len() -1][..7]);
+                println!("Fast-forward");
+
+                command_utils::fast_forward_merge(branch_name)?;
+                break;
+            }
+            // three way merge (caso dificil)
+            //command_utils::three_way_merge();
+        }
+    }
+    Ok(())
 }
 
 pub fn remote(_flags: Vec<String>) {
@@ -711,3 +736,4 @@ mod tests{
         assert!(clone(flags).is_ok());
     }
 }
+

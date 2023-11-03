@@ -6,7 +6,7 @@ use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 
 
-use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo};
+use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, update_working_directory};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
@@ -357,6 +357,30 @@ pub fn branch_newbranch_flag(branch:String) -> Result<(), GitrError>{
     
 }
 
+
+    // O--O--O--O
+    //     \
+    //      O--O
+
+
+pub fn branch_commits_list(branch_name: String)->Result<Vec<String>, GitrError>{
+    let mut commits = Vec::new();
+    let mut commit = file_manager::get_commit(branch_name)?;
+    commits.push(commit.clone());
+    loop {
+        let parent = file_manager::get_parent_commit(commit.clone())?;
+
+        if parent == "None" {
+            break;
+        }
+
+        commit = parent;
+        commits.push(commit.clone());
+    }
+    commits.reverse();
+    Ok(commits)
+}
+
 pub fn print_commit_confirmation(message:String)->Result<(), GitrError>{
     let branch = get_head()?
             .split('/')
@@ -375,6 +399,17 @@ pub fn commit_existing() -> Result<(), GitrError>{
     if fs::metadata(repo.clone() + "/gitr/" + &head).is_err(){
         return Err(GitrError::NoCommitExisting(branch_name.to_string()))
     }
+    Ok(())
+}
+
+
+pub fn fast_forward_merge(branch_name:String)->Result<(),GitrError> {
+    let commit: String = file_manager::get_commit(branch_name)?;
+    let head = get_head()?;
+    let repo = get_current_repo()?;
+    let path = format!("{}/gitr/{}", repo, head);
+    file_manager::write_file(path, commit.clone())?;
+    update_working_directory(commit)?;
     Ok(())
 }
 
