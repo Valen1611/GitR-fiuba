@@ -170,6 +170,7 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     Ok(objects)
 }
 
+/// Recibe vector de strings con los objetos a comprimir y devuelve un vector de bytes con el packfile
 pub fn create_packfile(contents: Vec<String>) -> Result<Vec<u8>,GitrError> {
     // ########## HEADER ##########
     let mut final_data: Vec<u8> = Vec::new();

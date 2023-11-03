@@ -1,7 +1,12 @@
-use chrono::{Utc, Local, format};
+use std::collections::HashSet;
 
+use chrono::Utc;
+
+use crate::file_manager;
 use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing};
+
+use super::tree::Tree;
 
 #[derive(Debug)]
 pub struct Commit{
@@ -110,12 +115,37 @@ impl Commit{
        let commit_string = data.split("\0").collect::<Vec<&str>>()[1].to_string();
        Ok(Self::new_commit_from_string(commit_string)?)
     }
+
+    pub fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> Result<Vec<String>,GitrError> {
+        // Voy metiendo en el objects todo lo que no haya que mandarle denuevo al cliente
+        let mut object_ids: HashSet<String> = HashSet::new();
+        for obj_id in client_objects.clone() {
+            object_ids.insert(obj_id);
+        }
+        let mut commits: Vec<Commit> = Vec::new();
+        for id in commits_id {
+            match Commit::new_commit_from_string(file_manager::get_object(id, r_path.clone())?) {
+                Ok(commit) => {commits.push(commit)},
+                _ => {return Err(GitrError::InvalidCommitError)}
+            }
+        } // Ahora tengo los Commits como objeto en el vector commits
+        for commit in commits {
+            object_ids.insert(commit.get_tree());
+            Tree::get_all_tree_objects(commit.get_tree(), r_path.clone(), &mut object_ids);
+        }
+        // Sacamos los que ya tiene el cliente
+        for obj in client_objects{
+            object_ids.remove(&obj);
+        } 
+        Ok(Vec::from_iter(object_ids.into_iter()))
+    
+        
+    }
 }
 
 
 #[cfg(test)]
 mod tests {
-    use std::mem;
 
     use crate::objects::commit::Commit;
     #[test]

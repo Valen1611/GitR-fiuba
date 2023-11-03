@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::path::Path;
 
-use crate::file_manager::{get_head, get_main_tree};
+use crate::file_manager::{get_head, get_main_tree, get_branches};
 use crate::command_utils::{*, self};
 
 use std::net::TcpStream;
@@ -16,8 +16,8 @@ use std::ops::IndexMut;
 
 use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
 use crate::objects::git_object::GitObject::*;
-use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
-use crate::git_transport::pack_file::read_pack_file;
+use crate::{objects::blob::Blob,objects::commit::Commit, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
+use crate::git_transport::pack_file::{read_pack_file, create_packfile};
 use crate::{command_utils::*, commands};
 
 
@@ -592,7 +592,6 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         }
     }
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
-    println!("\n\nreferencias: {:?}\n\n",hash_n_references);
 
     let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids()?)?;
     
@@ -603,8 +602,10 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
             return Ok(())
         }
     };
-    println!("\n\nwant message{}\n\n",want_message);
-
+    if want_message == "0000" {
+        println!("cliente al día");
+        return Ok(())
+    }
     match stream.read(&mut buffer) { // Leo si huvo error
         Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
             println!("Error: {}", String::from_utf8_lossy(&buffer));
@@ -616,9 +617,8 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         }
         
     }
-    
+    // ########## PACKFILE ##########
     match stream.read(&mut buffer) { // Leo el packfile
-        
         Err(e) => {
             println!("Error: {}", e);
             return Ok(())
@@ -638,8 +638,70 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn push(_flags: Vec<String>) {
+pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
+    if !flags.is_empty(){
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "push <no-args>".to_string()));
+    }
+    // ########## HANDSHAKE ##########
+    let repo = file_manager::get_current_repo()?;
+    let remote = file_manager::get_remote()?;
+    let msj = format!("git-upload-pack /{}\0host={}\0","mi-repo", remote);
+    let msj = format!("{:04x}{}", msj.len() + 4, msj);
+    let mut stream = match TcpStream::connect(remote) {
+        Ok(socket) => socket,
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+    };
+    match stream.write(msj.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+    };
+    //  ########## REFERENCE DISCOVERY ##########
+    let mut buffer = [0;1024];
+    let mut ref_disc = String::new();
+    loop {
+        match stream.read(&mut buffer) {
+            Ok(n) => {
+                let bytes = &buffer[..n];
+                let s = String::from_utf8_lossy(bytes);
+                ref_disc.push_str(&s);
+                if n < 1024 {
+                    break;
+                }
+            },
+            Err(e) => {
+                println!("Error: {}", e);
+                return Ok(())
+            }
+        }
+    }
+    let hash_n_references = ref_discovery::discover_references(ref_disc)?;
+
+    // ########## REFERENCE UPDATE REQUEST ##########
+    let ids_propios = file_manager::get_heads_ids()?; // esta sacando de gitr/refs/heads
+    let refs_propios = get_branches()?; // tambien de gitr/refs/heads
+    let (ref_upd,pkt_needed,pkt_ids) = ref_discovery::reference_update_request(hash_n_references.clone(),ids_propios,refs_propios)?;
+    if let Err(e) = stream.write(ref_upd.as_bytes()) {
+        println!("Error: {}", e);
+        return Ok(())
+    };
+    if pkt_needed {
+        let repo = file_manager::get_current_repo()? + "/gitr";
+        let contents = Commit::get_objects_from_commits(pkt_ids,vec![],repo)?;
+        if let Err(e) = stream.write(&create_packfile(contents)?) { // Mando el Packfile
+            println!("Error: {}", e);
+            return Ok(())
+        };
+        
+    }
+
     println!("push");
+    Ok(())
 }
 
 pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
@@ -750,4 +812,5 @@ mod tests{
         flags.push("localhost:9418".to_string());
         assert!(clone(flags).is_ok());
     }
+
 }

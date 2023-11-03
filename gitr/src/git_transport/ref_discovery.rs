@@ -53,6 +53,47 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     Ok(references)
 }
 
+pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_ids: Vec<String>, heads_refs: Vec<String>)->Result<(String,bool,Vec<String>),GitrError>{
+    let mut request = String::new();
+    let mut j = 0;
+    let mut pkt_needed = false;
+    let mut pkt_ids:Vec<String> = vec![];
+    for refer in heads_refs { // veo si tengo que crear o modificar alguna
+        let mut falta = true;
+        for hash_n_ref in hash_n_references.clone() {
+            if refer == hash_n_ref.1 { 
+                falta = false;
+                if hash_n_ref.0 != heads_ids[j]{
+                    pkt_needed = true;
+                    pkt_ids.push(heads_ids[j].clone());
+                    let line = format!("{} {} {}\n",hash_n_ref.0,heads_ids[j],hash_n_ref.1);
+                    request.push_str(&format!("{:04X}{}",line.len()+4,line));
+                }
+                break; 
+            }
+        }
+        if falta {
+            pkt_needed = true;
+            let mut ya_lo_tiene = false;
+            for hash_n_ref in hash_n_references.clone() {
+                if heads_ids[j] == hash_n_ref.0 {
+                    ya_lo_tiene = true;
+                    break;
+                }
+            }
+            if !ya_lo_tiene {
+                pkt_ids.push(heads_ids[j].clone());
+            }
+            let line = format!("0000 {} {}\n",heads_ids[j],refer);
+            request.push_str(&format!("{:04X}{}",line.len()+4,line));
+        }
+        j += 1;
+    }
+
+    request.push_str("0000");
+    Ok((request,pkt_needed,pkt_ids))
+}
+
 pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:Vec<String>)->Result<String,GitrError>{
     let set = client_commits.clone().into_iter().collect::<HashSet<String>>();
     let mut want_message = String::new();
@@ -64,6 +105,9 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
         want_message.push_str(&format!("{:04X}{}",want_line.len()+4,want_line));
     }
     want_message.push_str("0000");
+    if want_message == "0000"{
+        return Ok(want_message.to_string());
+    }
     if !client_commits.len() == 0{
         for have in file_manager::get_all_objects()? {
             let have_line = format!("have {}\n",have);

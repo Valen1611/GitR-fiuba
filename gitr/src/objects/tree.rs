@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::gitr_errors::GitrError;
 use crate::{file_manager, command_utils};
 use super::blob::TreeEntry;
@@ -156,6 +158,24 @@ impl Tree{
         Ok(objects_id)
 
     }
+
+    pub fn get_all_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> Result<(),GitrError> {
+        // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
+        if let Ok(tree_str) = file_manager::get_object(tree_id, r_path.clone()){
+            let tree_objects = match Tree::get_objects_id_from_string(tree_str){
+                Ok(ids) => {ids},
+                _ => return Err(GitrError::InvalidTreeError)
+            };
+            for obj_id in tree_objects {
+                object_ids.insert(obj_id.clone());
+                let _ = Self::get_all_tree_objects(obj_id.clone(), r_path.clone(),object_ids); 
+            }
+
+            return Ok(())
+        }
+        Err(GitrError::InvalidTreeError)
+    }
+    
 }
 
 

@@ -12,12 +12,11 @@ use std::str::from_utf8;
 use std::thread;
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
-use flate2::read::ZlibDecoder;
 
+use crate::file_manager;
 use crate::git_transport::pack_file::PackFile;
 use crate::objects::commit::Commit;
 use crate::objects::git_object::GitObject;
-use crate::objects::tree::Tree;
 
 
 pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
@@ -114,32 +113,32 @@ fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<
 }
 
 /// INCOMPLETA -> ERA DEL CLIENTE
-fn _make_push_cert(ids: Vec<String>, r_path: String, host: String) -> std::io::Result<String> {
-    let mut push_cert = String::new();
-    let mut line: &str = "push-cert0\n";
-    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
-    line = "certificate version 0.1\n";
-    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
-    let mut ident: Vec<&str> = vec!["nombre","mail"];
-    let mut obj: String;
-    for id in ids {
-        obj = get_object(id, r_path.clone())?;
-        if _is_commit(obj.clone()) {
-            let div1: Vec<&str> = obj.split("committer ").collect();
-            let div2: Vec<&str> = div1[1].split(">").collect();
-            ident = div2[0].split(" <").collect();
-            break
-        }
-    }
-    let line: &str = &format!("pusher {} {}\n",ident[0],ident[1]);
-    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
-    let line: &str = &format!("pushee {}\n",host);
-    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
-    // ...
-    // ... ...
-    // ... ... ...
-    Ok("".to_string())
-}
+// fn _make_push_cert(ids: Vec<String>, r_path: String, host: String) -> std::io::Result<String> {
+//     let mut push_cert = String::new();
+//     let mut line: &str = "push-cert0\n";
+//     push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+//     line = "certificate version 0.1\n";
+//     push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+//     let mut ident: Vec<&str> = vec!["nombre","mail"];
+//     let mut obj: String;
+//     for id in ids {
+//         obj = file_manager::get_object(id, r_path.clone())?;
+//         if _is_commit(obj.clone()) {
+//             let div1: Vec<&str> = obj.split("committer ").collect();
+//             let div2: Vec<&str> = div1[1].split(">").collect();
+//             ident = div2[0].split(" <").collect();
+//             break
+//         }
+//     }
+//     let line: &str = &format!("pusher {} {}\n",ident[0],ident[1]);
+//     push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+//     let line: &str = &format!("pushee {}\n",host);
+//     push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+//     // ...
+//     // ... ...
+//     // ... ... ...
+//     Ok("".to_string())
+// }
 
 fn _is_commit(obj: String) -> bool {
     let mut lines = obj.lines();
@@ -150,14 +149,7 @@ fn _is_commit(obj: String) -> bool {
     false
 }
 
-fn get_object(id: String, r_path: String) -> std::io::Result<String> {
-    let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
-    let mut archivo = File::open(&format!("{}/{}",dir_path,id.split_at(2).1))?; // si no existe tira error
-    let mut contenido: Vec<u8>= Vec::new();
-    archivo.read_to_end(&mut contenido)?;
-    let descomprimido = String::from_utf8_lossy(&decode(&contenido)?).to_string();
-    Ok(descomprimido)
-}
+
 
 fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> std::io::Result<()> {
     if ids.len() != content.len() {
@@ -177,9 +169,12 @@ fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> s
 
 fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<String>, r_path: String) -> std::io::Result<()> {
     let mut contents: Vec<String> = vec![];
-    let wants_id = get_objects_from_commits(wants_id.clone(), haves_id, r_path.clone())?;
+    let wants_id = Commit::get_objects_from_commits(wants_id.clone(), haves_id, r_path.clone()).unwrap_or(vec![]);
     for id in wants_id.clone() {
-        contents.push(get_object(id, r_path.clone())?);
+        match file_manager::get_object(id, r_path.clone()){
+            Ok(obj) => contents.push(obj),
+            Err(_) => return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo obtener el objeto"))
+        }
     }
 
     if let Ok(pack_string) = pack_data_bruno(wants_id, contents) {
@@ -190,45 +185,9 @@ fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<Stri
     Ok(())
 }
 
-fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> std::io::Result<Vec<String>> {
-    // Voy metiendo en el objects todo lo que no haya que mandarle denuevo al cliente
-    let mut object_ids: HashSet<String> = HashSet::new();
-    for obj_id in client_objects.clone() {
-        object_ids.insert(obj_id);
-    }
-    let mut commits: Vec<Commit> = Vec::new();
-    for id in commits_id {
-        match Commit::new_commit_from_string(get_object(id, r_path.clone())?) {
-            Ok(commit) => {commits.push(commit)},
-            _ => {return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo crear el commit"))}
-        }
-    } // Ahora tengo los Commits como objeto en el vector commits
-    for commit in commits {
-        object_ids.insert(commit.get_tree());
-        get_tree_objects(commit.get_tree(), r_path.clone(), &mut object_ids)?;
-    }
-    // Sacamos los que ya tiene el cliente
-    for obj in client_objects{
-        object_ids.remove(&obj);
-    } 
-    Ok(Vec::from_iter(object_ids.into_iter()))
 
-    
-}
 
-fn get_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> std::io::Result<()> {
-    // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
 
-    let tree_objects = match Tree::get_objects_id_from_string(get_object(tree_id, r_path.clone())?){
-        Ok(ids) => {ids},
-        _ => {return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo crear el arbol"))}
-    };
-    for obj_id in tree_objects {
-        object_ids.insert(obj_id.clone());
-        let _ = get_tree_objects(obj_id.clone(), r_path.clone(),object_ids); 
-    }
-    Ok(())
-}
 
 fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>) -> std::io::Result<(Vec<String>, Vec<String>)> {
     let (mut buffer, mut reply) = ([0; 1024], "0008NAK\n".to_string());
@@ -482,12 +441,7 @@ fn code(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
     encoder.finish()
 }
 
-fn decode(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
-    let mut decoder = ZlibDecoder::new(input);
-    let mut decoded_data = Vec::new();
-    decoder.read_to_end(&mut decoded_data)?;
-    Ok(decoded_data)
-}
+
 
 fn _main(){
       
@@ -515,7 +469,7 @@ mod tests{
             let mut buffer = [0; 1024];
             
             socket.read(&mut buffer).unwrap();
-            assert_eq!(from_utf8(&decode(&buffer).unwrap()), Ok("Error: no se respeta el formato pkt-line"));
+            assert_eq!(from_utf8(&file_manager::decode(&buffer).unwrap()), Ok("Error: no se respeta el formato pkt-line"));
             return ;
         }).unwrap();
 
@@ -527,7 +481,7 @@ mod tests{
     fn test01_encoder_decoder() {
         let input = "Hola mundo".as_bytes();
         let encoded = code(input).unwrap();
-        let decoded = decode(&encoded).unwrap();
+        let decoded = file_manager::decode(&encoded).unwrap();
         assert_eq!(input, decoded.as_slice());
     }
 
@@ -642,8 +596,8 @@ mod tests{
         let ids = vec!["74730d410fcb6603ace96f1dc55ea6196122532d".to_string(),"5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string()];
         let content: Vec<Vec<u8>> = vec!["Hola mundo".to_string().as_bytes().to_vec(),"Chau mundo".to_string().as_bytes().to_vec()];
         update_contents(ids, content, r_path.to_string()).unwrap();
-        assert_eq!(get_object("74730d410fcb6603ace96f1dc55ea6196122532d".to_string(), r_path.to_string()).unwrap(), "Hola mundo");
-        assert_eq!(get_object("5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string(), r_path.to_string()).unwrap(), "Chau mundo");         
+        assert_eq!(file_manager::get_object("74730d410fcb6603ace96f1dc55ea6196122532d".to_string(), r_path.to_string()).unwrap(), "Hola mundo");
+        assert_eq!(file_manager::get_object("5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string(), r_path.to_string()).unwrap(), "Chau mundo");         
 
     }
 
