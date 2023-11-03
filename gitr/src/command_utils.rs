@@ -6,7 +6,7 @@ use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 
 
-use crate::file_manager::{read_index, self, get_head, get_current_commit};
+use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 pub fn flate2compress2(input: Vec<u8>) -> Result<Vec<u8>, GitrError>{
@@ -318,6 +318,45 @@ pub fn branch_exists(branch: String) -> bool{
     false
 }
 
+pub fn branch_delete_flag(branch:String)-> Result<(),GitrError>{
+    if !branch_exists(branch.clone()){
+        return Err(GitrError::BranchNonExistsError(branch))
+    }
+    file_manager::delete_branch(branch, false)?;
+    return Ok(())
+}
+
+pub fn branch_move_flag(branch_origin:String, branch_destination:String)->Result<(),GitrError>{
+    if !branch_exists(branch_origin.clone()){
+        return Err(GitrError::BranchNonExistsError(branch_origin))
+    }
+    if branch_exists(branch_destination.clone()){
+        return Err(GitrError::BranchAlreadyExistsError(branch_destination))
+    }
+    let repo = get_current_repo()?;
+    let old_path = format!("{}/gitr/refs/heads/{}", repo.clone(), branch_origin);
+    let new_path = format!("{}/gitr/refs/heads/{}", repo.clone(), branch_destination);
+    file_manager::move_branch(old_path.clone(), new_path.clone())?;
+    let head = get_head()?;
+    if branch_origin == head.split('/').collect::<Vec<&str>>()[2]{
+        println!("{}", branch_origin);
+        println!("{}", head.split('/').collect::<Vec<&str>>()[2]);
+        let ref_correct = format!("refs/heads/{}", branch_destination);
+        file_manager::update_head(&ref_correct)?;
+    }   
+    return Ok(())
+}
+pub fn branch_newbranch_flag(branch:String) -> Result<(), GitrError>{
+    let repo = get_current_repo()?;
+    if branch_exists(branch.clone()){
+        return Err(GitrError::BranchAlreadyExistsError(branch))
+    }
+    let current_commit = file_manager::get_current_commit()?;
+    file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo.clone(), branch), current_commit)?;
+    Ok(())
+    
+}
+
 pub fn print_commit_confirmation(message:String)->Result<(), GitrError>{
     let branch = get_head()?
             .split('/')
@@ -327,6 +366,16 @@ pub fn print_commit_confirmation(message:String)->Result<(), GitrError>{
 
         println!("[{} {}] {}", branch, hash_recortado, message);
         Ok(())
+}
+
+pub fn commit_existing() -> Result<(), GitrError>{
+    let repo = file_manager::get_current_repo()?;
+    let head = file_manager::get_head()?;
+    let branch_name = head.split("/").collect::<Vec<&str>>()[2];
+    if fs::metadata(repo.clone() + "/gitr/" + &head).is_err(){
+        return Err(GitrError::NoCommitExisting(branch_name.to_string()))
+    }
+    Ok(())
 }
 
 pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{

@@ -466,8 +466,11 @@ pub fn delete_branch(branch:String, moving: bool)-> Result<(), GitrError>{
     Ok(())
 }
 
-pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), Box<dyn Error>> {
-    fs::rename(old_branch, new_branch)?;
+pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), GitrError>{
+    match fs::rename(old_branch, new_branch.clone()){
+        Ok(_) => (),
+        Err(_) => return Err(GitrError::FileCreationError(new_branch))
+    }
     Ok(())
 }   
 
