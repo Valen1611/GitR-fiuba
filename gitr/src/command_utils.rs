@@ -276,6 +276,18 @@ pub fn get_current_username() -> String{
     }
 }
 
+pub fn get_user_mail_from_config() -> Result<String, GitrError>{
+    let config_data = match file_manager::read_file("gitrconfig".to_string()) {
+        Ok(config_data) => config_data,
+        Err(e) => {
+            return Err(GitrError::FileReadError(e.to_string()))
+        }
+    };
+
+    let lines = config_data.split('\n').collect::<Vec<&str>>();
+    let email = lines[1].split('=').collect::<Vec<&str>>()[1].trim_start();
+    Ok(email.to_string())
+}
 pub fn print_branches()-> Result<(), GitrError>{
     let head = file_manager::get_head()?;
     let head_vec = head.split('/').collect::<Vec<&str>>();
