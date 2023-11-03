@@ -77,6 +77,7 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_i
             let mut ya_lo_tiene = false;
             for hash_n_ref in hash_n_references.clone() {
                 if heads_ids[j] == hash_n_ref.0 {
+                    print!("/\\ya lo tiene = true");
                     ya_lo_tiene = true;
                     break;
                 }
@@ -84,8 +85,9 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_i
             if !ya_lo_tiene {
                 pkt_ids.push(heads_ids[j].clone());
             }
-            let line = format!("0000 {} {}\n",heads_ids[j],refer);
+            let line = format!("0000000000000000000000000000000000000000 {} refs\\{}\n",heads_ids[j],refer);
             request.push_str(&format!("{:04X}{}",line.len()+4,line));
+            println!("{}",request)
         }
         j += 1;
     }

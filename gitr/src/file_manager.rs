@@ -91,7 +91,7 @@ pub fn delete_all_files()-> Result<(), GitrError>{
     let path = Path::new(&repo);
     if let Ok(entries) = fs::read_dir(path) {
         for entry in entries.flatten() {
-                if entry.file_name() != "gitr" {
+                if entry.file_name() != "gitr" && entry.file_name() != ".git" {
                     println!("Deleting {:?}", entry.path());
                     
                     if entry.path().is_file() {
@@ -339,7 +339,10 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/refs"))?;
         create_directory(&(name.clone() + "/gitr/refs/heads"))?;
         create_directory(&(name.clone() + "/gitr/refs/remotes"))?;
+        create_directory(&(name.clone() + "/gitr/refs/remotes/daemon"))?;
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
+        write_file(name.clone() + "/gitr/index", "".to_string())?;
+
     Ok(())
 }
 

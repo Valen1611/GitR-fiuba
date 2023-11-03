@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::path::Path;
 
-use crate::file_manager::{get_head, get_main_tree, get_branches};
+use crate::file_manager::{get_head, get_main_tree, get_branches, get_object};
 use crate::command_utils::{*, self};
 
 use std::net::TcpStream;
@@ -486,7 +486,7 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     let address = flags[0].clone();
     let nombre_repo = flags[1].clone();
 
-    init(vec![nombre_repo.clone()])?;
+    let _ = init(vec![nombre_repo.clone()]);
 
     let mut socket = clone_connect_to_server(address)?;
     // println!("clone():Servidor conectado.");
@@ -530,7 +530,7 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
             Tree(tree) => tree.save()?,
         }
     }
-    //update_working_directory(get_current_commit()?)?;
+    update_working_directory(get_current_commit()?)?;
     Ok(())
 }
 
@@ -645,7 +645,7 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
     // ########## HANDSHAKE ##########
     let repo = file_manager::get_current_repo()?;
     let remote = file_manager::get_remote()?;
-    let msj = format!("git-upload-pack /{}\0host={}\0","mi-repo", remote);
+    let msj = format!("git-receive-pack /{}\0host={}\0","mi-repo", remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
     let mut stream = match TcpStream::connect(remote) {
         Ok(socket) => socket,
@@ -669,10 +669,10 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
             Ok(n) => {
                 let bytes = &buffer[..n];
                 let s = String::from_utf8_lossy(bytes);
-                ref_disc.push_str(&s);
-                if n < 1024 {
+                if s.ends_with("0000") {
                     break;
                 }
+                ref_disc.push_str(&s);
             },
             Err(e) => {
                 println!("Error: {}", e);
@@ -692,12 +692,29 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
     };
     if pkt_needed {
         let repo = file_manager::get_current_repo()? + "/gitr";
-        let contents = Commit::get_objects_from_commits(pkt_ids,vec![],repo)?;
-        if let Err(e) = stream.write(&create_packfile(contents)?) { // Mando el Packfile
+        let ids = Commit::get_objects_from_commits(pkt_ids,vec![],repo.clone())?;
+        let mut contents: Vec<String> = Vec::new();
+        for id in ids {
+            contents.push(get_object(id, repo.clone())?)
+        }
+        if let Err(e) = stream.write(&create_packfile(contents.clone())?) { // Mando el Packfile
             println!("Error: {}", e);
             return Ok(())
         };
+        println!("paquete enviado {:?}\n",contents);
         
+    }
+    print!("voy a leer");
+    match stream.read(&mut buffer) {
+        Ok(n) => {
+            let bytes = &buffer[..n];
+            let s = String::from_utf8_lossy(bytes);
+            println!("read:::{}",s);        
+        },
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
     }
 
     println!("push");

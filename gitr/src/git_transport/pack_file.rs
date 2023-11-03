@@ -183,6 +183,7 @@ pub fn create_packfile(contents: Vec<String>) -> Result<Vec<u8>,GitrError> {
     // ########## OBJECTS ##########
     for obj in contents {
         let mut obj_data: Vec<u8> = Vec::new();
+        println!("{}",obj);
         let obj_type: u8 = match obj.split(' ').collect::<Vec<&str>>()[0] { // obtengo el tipo de objeto
             "commit" => 1,
             "tree" => 2,

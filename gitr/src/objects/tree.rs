@@ -47,8 +47,8 @@ impl Tree{
                     let hash = blob.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
 
-                    let _path_no_repo = path.split_once('/').unwrap().1;
-                    let file_name = path.split('/').last().unwrap();
+                    let _path_no_repo = path.split_once('\\').unwrap().1;
+                    let file_name = path.split('\\').last().unwrap();
                     let obj_entry = [
                         b"100644 ",
                         file_name.as_bytes(),
@@ -144,24 +144,34 @@ impl Tree{
     }
 
     pub fn get_objects_id_from_string(data: String) -> Result<Vec<String>, GitrError> {
-        // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
+        // tree <content length><NUL><file mode> <filename><NUL><item sha>\n<file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
+        
         if data.split_at(4).0 != "tree"{
             return Err(GitrError::InvalidTreeError);
         }
-        let mut elems =  data.split('\0').collect::<Vec<&str>>(); 
-        elems = elems[2..].to_vec();
+        
         let mut objects_id = Vec::new();
-        for elem in elems {
-            let elem_hash = elem.split_at(20);
-            objects_id.push(elem_hash.0.to_string());
+        
+        let raw_data = match data.split_once('\0') {
+            Some((_, raw_data)) => raw_data,
+            None => {
+                println!("Error: invalid object type");
+                return Err(GitrError::InvalidTreeError)
+            }
+        };
+        for entry in raw_data.split('\n'){
+            let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
+            let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
+            objects_id.push(hash.to_string());
         }
         Ok(objects_id)
-
     }
-
+            
+          
+    
     pub fn get_all_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> Result<(),GitrError> {
         // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
-        if let Ok(tree_str) = file_manager::get_object(tree_id, r_path.clone()){
+        if let Ok(tree_str) = file_manager::read_object(&tree_id) {//, r_path.clone()){
             let tree_objects = match Tree::get_objects_id_from_string(tree_str){
                 Ok(ids) => {ids},
                 _ => return Err(GitrError::InvalidTreeError)
