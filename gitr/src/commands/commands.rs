@@ -644,58 +644,18 @@ pub fn push(_flags: Vec<String>) {
 
 pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
     if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
-        match print_branches() {
-            Ok(()) => (),
-            Err(_e) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
-
-        };
+        print_branches()?;
+        return Ok(())
     }
+    commit_existing()?;
     if flags.len() == 2 && flags[0] == "-d"{
-        // falta chequear si el branch está al día, xq sino se usa -D
-        if !branch_exists(flags[1].clone()){
-            println!("error: branch '{}' not found.", flags[1]);
-            return Ok(())
-        }
-        let _ = file_manager::delete_branch(flags[1].clone(), false);
-        return Ok(())
-    }
-    if flags.len() == 2 && flags[0] == "-D"{
-        if !branch_exists(flags[1].clone()){
-            println!("error: branch '{}' not found.", flags[1]);
-            return Ok(())
-        }
-        let _ = file_manager::delete_branch(flags[1].clone(), false);
-        return Ok(())
+        branch_delete_flag(flags[1].clone())?;
     }
     if flags.len() == 3 && flags[0] == "-m"{
-        if !branch_exists(flags[1].clone()){
-            println!("error: branch '{}' not found.", flags[1]);
-            return Ok(())
-        }
-        if branch_exists(flags[2].clone()){
-            println!("error: a branch named '{}' already exists.", flags[2]);
-            return Ok(())
-        }
-        let repo = file_manager::get_current_repo()?;
-        let old_path = format!("{}/gitr/refs/heads/{}", repo, flags[1]);
-        let new_path = format!("{}/gitr/refs/heads/{}", repo, flags[2]);
-        match file_manager::move_branch(old_path.clone(), new_path.clone()) {
-            Ok(()) => (),
-            Err(_) => return Err(GitrError::InvalidArgumentError(flags.join(" "), "TODO: escribir como se usa branch aca".into()))
-
-        };
-        file_manager::update_head(&new_path)?;
-        return Ok(())
-
+        branch_move_flag(flags[1].clone(), flags[2].clone())?;
     }
     if flags.len() == 1 && flags[0] != "-l" && flags[0] != "--list"{
-        if branch_exists(flags[0].clone()){
-            println!("fatal: A branch named '{}' already exists.", flags[0]);
-            return Ok(())
-        }
-        let current_commit = file_manager::get_current_commit()?;
-        let repo = file_manager::get_current_repo()?;
-        file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo, flags[0]), current_commit)?;
+        branch_newbranch_flag(flags[0].clone())?;
     }
     Ok(())
 }

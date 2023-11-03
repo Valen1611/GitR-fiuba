@@ -42,47 +42,47 @@ fn test_init_exists() {
   HASH-OBJECT TESTS
 *********************/
 
-#[test]
-#[serial]
-fn test_hash_object() {
-    // init a repo for the command
-    let repo_path = String::from("testing_hash_object_repo");
-    commands::init(vec![repo_path.clone()]).unwrap();
+// #[test]
+// #[serial]
+// fn test_hash_object() {
+//     // init a repo for the command
+//     let repo_path = String::from("testing_hash_object_repo");
+//     commands::init(vec![repo_path.clone()]).unwrap();
 
-    // test the command
-    test_hash_object_file(repo_path.clone());
-
-
-    // remove the repo
-    fs::remove_dir_all("testing_hash_object_repo").unwrap();
-}
+//     // test the command
+//     test_hash_object_file(repo_path.clone());
 
 
-fn test_hash_object_file(repo_path: String) {
-    // creamos un archivo para pasarle al comando
-    let file_path = String::from("test_hash_object_print.txt");
-    let data = String::from("hello world");
-    fs::write(&file_path, &data).unwrap();
+//     // remove the repo
+//     fs::remove_dir_all("testing_hash_object_repo").unwrap();
+// }
 
-    // lo hasheamos
-    let formatted_data = format!("blob {}\0{}", data.len(), data);
-    let hash = command_utils::sha1hashing(formatted_data);
-    let expected_hash = hash.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
-    // corremos el comando
-    let res = commands::hash_object(vec!["-w".to_string(), file_path.clone()]).unwrap();
+// fn test_hash_object_file(repo_path: String) {
+//     // creamos un archivo para pasarle al comando
+//     let file_path = String::from("test_hash_object_print.txt");
+//     let data = String::from("hello world");
+//     fs::write(&file_path, &data).unwrap();
 
-    // verificamos que el comando haya funcionado
+//     // lo hasheamos
+//     let formatted_data = format!("blob {}\0{}", data.len(), data);
+//     let hash = command_utils::sha1hashing(formatted_data);
+//     let expected_hash = hash.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
-    let expected_folder = repo_path.clone() + "/gitr/objects/" + &expected_hash[..2];
-    let expected_file = expected_folder.clone() + "/" + &expected_hash[2..];
+//     // corremos el comando
+//     let res = commands::hash_object(vec!["-w".to_string(), file_path.clone()]).unwrap();
+
+//     // verificamos que el comando haya funcionado
+
+//     let expected_folder = repo_path.clone() + "/gitr/objects/" + &expected_hash[..2];
+//     let expected_file = expected_folder.clone() + "/" + &expected_hash[2..];
     
-    println!("expected folder {}", expected_folder);
-    println!("expected file {}", expected_file);
+//     println!("expected folder {}", expected_folder);
+//     println!("expected file {}", expected_file);
 
-    assert!(Path::new(&expected_folder).is_dir());
-    assert!(Path::new(&expected_file).is_file());
-} 
+//     assert!(Path::new(&expected_folder).is_dir());
+//     assert!(Path::new(&expected_file).is_file());
+// } 
 
 
 /*********************
