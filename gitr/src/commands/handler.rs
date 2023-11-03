@@ -7,6 +7,11 @@ pub fn parse_input(input: String) -> Vec<String> {
 
 /// ["command", "flag1", "flag2", ...]
 pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
+
+    if argv.is_empty() {
+        return Ok(())
+    }
+
     let command = argv[0].clone();
 
     let flags = argv[1..].to_vec();

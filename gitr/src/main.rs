@@ -1,6 +1,6 @@
-use gitr::{commands, logger, gitr_errors::GitrError};
+use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager};
 
-use std::io::{Write, self};
+use std::{io::{Write, self}, fs};
 extern crate flate2;
 use gitr::gui::gui_from_glade::initialize_gui;
 
@@ -63,31 +63,67 @@ use gitr::gui::gui_from_glade::initialize_gui;
         Ok(input)
     }
 
+    fn email_valido(email_recibido: String) -> bool {
+        let email_parts:Vec<&str>  = email_recibido.split('@').collect::<Vec<&str>>();
+
+        if email_parts.len() != 2 {
+            return false; 
+        }
+        
+        let domain = email_parts[1];
+
+        if !domain.contains('.') {
+            return false
+        }
+
+        true
+    }
+
     fn setup_config_file(){
-        let email = match std::env::var("CARGO_WORKSPACE_DIR") {
-            Ok(email) => email,
-            Err(_) => {
-                println!("No se encontró la variable de entorno CARGO_EMAIL");
-                println!("Se usará el email por defecto:");
-                String::new()
-         }
-        };
-        println!("{}",email);
+        let mut email_recibido = String::new();
+
+        while !email_valido(email_recibido.clone()) {
+            println!("Ingrese su email: ");
+            email_recibido = match get_input() {
+                Ok(email) => email,
+                Err(_) => "user@mail.com".to_string(),
+            };
+        }
+        println!("El email es valido, ya puede comenzar a usar Gitr");
+        let name = command_utils::get_current_username();
+        let config_file_data = format!("[user]\n\temail = {}\tname = {}\n", email_recibido, name);
+        file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
+        return;
+    }
+
+    fn existe_config() -> bool{
+        fs::metadata("gitrconfig").is_ok()
+    }
+
+    fn print_bienvenida() {
+        println!(        "\t╔══════════════════════════════════════════════╗");
+        println!("\t║ \x1b[34mBienvenido a la version command-line de Gitr\x1b[0m ║");
+        println!("\t║ \x1b[34mIntroduzca los comandos que desea realizar\x1b[0m   ║");
+        println!("\t║ \x1b[34m(introduzca q para salir del programa)\x1b[0m       ║");
+        println!(        "\t╚══════════════════════════════════════════════╝");
     }
 
     fn main() {
-        //Start new thread for GUI
         let child = std::thread::spawn(move || {
             initialize_gui();
         });
-        //initialize_gui();
+
+        print_bienvenida();
+
+        if !existe_config() {
+            setup_config_file();
+        }
+        
     
-        let mut input = String::new();
-    
-        while input != "q" {
+        loop {
     
             // Cuando tengamos la interfaz se deberia actualizar este mismo input supongo
-            input = match get_input() {
+            let input = match get_input() {
                 Ok(input) => input,
                 Err(e) => {
                     println!("Error: {}", e);
@@ -95,6 +131,10 @@ use gitr::gui::gui_from_glade::initialize_gui;
                 }
             };
     
+            if input == "q\n" {
+                return;
+            }
+
             let argv: Vec<String> = commands::handler::parse_input(input);
             
             // argv = ["command", "flag1", "flag2", ...]
@@ -108,7 +148,8 @@ use gitr::gui::gui_from_glade::initialize_gui;
                     };
                 }
             };
-            input = String::new();
+
+            
     
         }
         match child.join(){
