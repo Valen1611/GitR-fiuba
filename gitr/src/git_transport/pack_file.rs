@@ -17,7 +17,7 @@ use crate::git_transport::ref_discovery::*;
 //Luego cae el numero de versión: Son 4 bytes
 #[derive(Debug)]
 pub struct PackFile{
-    version: u32,
+    _version: u32,
     pub objects: Vec<GitObject>,
 }
 
@@ -171,7 +171,7 @@ impl PackFile{
         let objects = read_pack_file(buffer)?;
 
         Ok(PackFile {
-            version: version,
+            _version: version,
             objects: objects,})
     }
 }

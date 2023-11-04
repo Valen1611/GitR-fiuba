@@ -1,18 +1,9 @@
-use std::collections::HashMap;
-use std::hash::Hash;
-use std::path::Path;
-use crate::file_manager::{get_head, get_main_tree, get_parent_commit,get_current_repo};
-
 use crate::command_utils::{*, self};
 use std::net::TcpStream;
 use std::io::prelude::*;
-use std::{fs, hash};
-use std::ops::IndexMut;
 use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
 use crate::objects::git_object::GitObject::*;
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
-use crate::git_transport::pack_file::read_pack_file;
-use crate::{command_utils::*, commands};
 use crate::git_transport::ref_discovery;
 
 /***************************
@@ -248,7 +239,13 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
     command_utils::status_print_current_branch()?;
     let working_dir_hashmap = get_working_dir_hashmap()?;
     let (index_hashmap, hayindex) = get_index_hashmap()?;
-    let current_commit_hashmap = get_current_commit_hashmap()?;
+
+    let current_commit = match file_manager::get_current_commit() {
+        Ok(commit) => commit,
+        Err(_) => String::new(),
+    };
+
+    let current_commit_hashmap = get_commit_hashmap(current_commit)?;
 
     let mut to_be_commited = Vec::new();
     let mut not_staged = Vec::new();
@@ -315,20 +312,28 @@ pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
 
     let branch_commits = command_utils::branch_commits_list(branch_name.clone())?;
     let origin_commits = command_utils::branch_commits_list(origin_name)?;
+    /*
+        O--O--O--O--O
+            \        
+            O--O--O--O
 
+     */
     for commit in branch_commits.clone() {
         if origin_commits.contains(&commit) {
-            if commit == origin_commits[origin_commits.len() -1]{
+            // commit es "main"
+            if commit == origin_commits[0] {
                 // fast-forward merge (caso facil)
  
-                println!("Updating {}..{}" ,&origin_commits[origin_commits.len() -1][..7], &branch_commits[branch_commits.len() -1][..7]);
+                println!("Updating {}..{}" ,&origin_commits[0][..7], &branch_commits[0][..7]);
                 println!("Fast-forward");
 
                 command_utils::fast_forward_merge(branch_name)?;
                 break;
             }
             // three way merge (caso dificil)
-            //command_utils::three_way_merge();
+            // commit es base
+            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone())?;
+            break;
         }
     }
     Ok(())
