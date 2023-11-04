@@ -4,7 +4,7 @@ use std::fs::{File, OpenOptions};
 use std::io::{prelude::*, Bytes};
 use std::fs;
 use std::path::Path;
-
+use std::collections::HashMap;
 use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
 use crate::{logger, file_manager};
@@ -130,6 +130,26 @@ pub fn delete_all_files()-> Result<(), GitrError>{
 }
 
 
+pub fn add_new_files_from_merge(origin_hashmap: HashMap<String, String>, branch_hashmap: HashMap<String, String>) ->Result<(), GitrError>{
+    for (path, hash) in branch_hashmap.iter(){
+        println!("path: {}", path);
+        println!("origin hashmap: {:?}", origin_hashmap);
+        println!("branch hashmap: {:?}", branch_hashmap);
+        if !origin_hashmap.contains_key(path){
+            file_manager::add_to_index(&path, &hash)?;
+            if let Some(parent) = std::path::Path::new(&path).parent() {
+                match fs::create_dir_all(parent){
+                    Ok(_) => (),
+                    Err(_) => return Err(GitrError::FileWriteError(parent.display().to_string())),
+                };
+            };
+                let raw_data = read_file_data_from_blob_hash(hash.to_string())?;
+                write_file(path.to_string(), raw_data)?;    
+        }
+    }
+        Ok(())
+    }
+
 
 
 /***************************
@@ -196,6 +216,24 @@ pub fn read_object(object: &String)->Result<String, GitrError>{
 
 
     Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
+}
+
+pub fn read_file_data_from_blob_hash(hash: String) -> Result<String, GitrError>{
+    let object_raw_data = read_object(&hash)?;
+    let (header, raw_data) = match object_raw_data.split_once('\0') {
+        Some((header, raw_data)) => (header, raw_data),
+        None => {
+            println!("Error: invalid object type");
+            return Err(GitrError::FileReadError(hash));
+        }
+    };
+
+    if !header.starts_with("blob") {
+        println!("Error: invalid object type");
+        return Err(GitrError::FileReadError(hash));
+    }
+
+    Ok(raw_data.to_string())
 }
 
 pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{

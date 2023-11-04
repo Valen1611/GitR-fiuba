@@ -1,8 +1,8 @@
 use std::cmp::max;
 
 pub struct Diff{
-    pub indices_agregados: Vec<usize>,
-    pub indices_eliminados: Vec<usize>,
+    pub lineas_eliminadas: Vec<(usize,String)>,
+    pub lineas_agregadas: Vec<(usize,String)>,
 }
 #[derive(Clone)]
 #[derive(Debug)]
@@ -24,8 +24,8 @@ struct Celda{
 
 fn empty_diff()->Diff{
     Diff{
-        indices_agregados: vec![],
-        indices_eliminados: vec![],
+        lineas_eliminadas: vec![],
+        lineas_agregadas: vec![],
     }
 }
 
@@ -127,8 +127,6 @@ impl Diff{
         let base_lines = base.lines().collect::<Vec<&str>>();
         let new_lines = new.lines().collect::<Vec<&str>>();
 
-        println!("base_lines: {:?}", base_lines);
-        println!("new_lines:  {:?}", new_lines);
         
         let mut matriz_coincidencias: Vec<Vec<Celda>> = vec![vec![]];
 
@@ -158,25 +156,58 @@ impl Diff{
             matriz_coincidencias.push(vec![]);
         }
 
-        let (lineas_eliminadas, lineas_agregadas) = get_diff(matriz_coincidencias, base_lines.len()-1, new_lines.len()-1);
+        let (indices_lineas_eliminadas, indices_lineas_agregadas) = get_diff(matriz_coincidencias, base_lines.len()-1, new_lines.len()-1);
 
-        
+        let mut lineas_eliminadas = Vec::new();
+        let mut lineas_agregadas = Vec::new();
+
         for (i, line) in base_lines.iter().enumerate() {
-            if lineas_eliminadas.contains(&i) {
+            if indices_lineas_eliminadas.contains(&i) {
                 println!("{}. -{}",i, line);
+                lineas_eliminadas.push((i, line.to_string()));
             }
         }
         for (i, line) in new_lines.iter().enumerate() {
-            if lineas_agregadas.contains(&i) {
+            if indices_lineas_agregadas.contains(&i) {
                 println!("{}. +{}",i, line);
+                lineas_agregadas.push((i, line.to_string()));
             }
         }
         
-    
+        
         Diff{
-            indices_agregados: lineas_agregadas,
-            indices_eliminados: lineas_eliminadas,
+            lineas_eliminadas: lineas_eliminadas,
+            lineas_agregadas: lineas_agregadas,
         }
+    }
+
+    pub fn contains_line_num(&self, i: usize)->bool{
+        for line in self.lineas_eliminadas.iter(){
+            if line.0 == i{
+                return true;
+            }
+        }
+        for line in self.lineas_agregadas.iter(){
+            if line.0 == i{
+                return true;
+            }
+        }
+        return false
+    }
+
+    pub fn return_line(&self,i:usize) -> (bool,String){
+        let linea = (false,"".to_string());
+        for line in self.lineas_eliminadas.iter(){
+            if line.0 == i{
+                return (false,line.1.clone());
+            }
+        }
+        for line in self.lineas_agregadas.iter(){
+            if line.0 == i{
+                return (true,line.1.clone());
+            }
+        }
+        linea
     }
 }
 
@@ -198,7 +229,7 @@ mod tests{
         let base = "hola".to_string();
         let new = "hola".to_string();
         let diff = Diff::new(base,new);
-        assert!(diff.indices_eliminados.is_empty());
+        assert!(diff.lineas_eliminadas.is_empty());
     }
 
     #[test]
@@ -221,6 +252,6 @@ mod tests{
 
         let new = format!("fn main () {{\tprintln!(\"hello word!\");}}\na");
         
-        
+        let diff = Diff::new(base,new);
     }
 }

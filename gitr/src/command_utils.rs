@@ -424,22 +424,187 @@ pub fn get_blobs_from_commit(commit_hash: String)->Result<(),GitrError> {
     Ok(())
 }
 
+fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
+    let string_archivo = file_manager::read_file(path)?;
+    let mut archivo_reconstruido = vec![];
+    
+    for (i,line) in string_archivo.lines().enumerate(){
+        if diff.contains_line_num(i){ //es una linea modificada
+            if diff.return_line(i).0{ //la linea se tiene que agregar
+                archivo_reconstruido.push(diff.return_line(i).1.clone());
+                archivo_reconstruido.push(line.to_string());
+            }
+            else{
+                continue;
+            }
+        }
+        else{ //es una linea que no se modifico
+            archivo_reconstruido.push(line.to_string());
+        }
+    }
+
+    /*{+2,-3}
+            0.
+            1.                  
+            2.
+            3.
+            4.
+            [0,1, 2(+), 2, 4]
+
+    */
+
+    println!("archivo_reconstruido: {:?}", archivo_reconstruido);
+
+    Ok(())
+}
+
+fn comparar_conflicts(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<(), GitrError> {
+    let mut conflicts = false;
+    let mut origin_conflicts = Vec::new();
+    let mut branch_conflicts = Vec::new();
+    for (i, line) in diff_base_origin.lineas_agregadas.iter().enumerate(){
+        if diff_base_branch.contains_line_num(line.0){
+            conflicts = true;
+            origin_conflicts.push(i);
+        }
+    }
+    for (i, line) in diff_base_branch.lineas_agregadas.iter().enumerate(){
+        if diff_base_origin.contains_line_num(line.0){
+            conflicts = true;
+            branch_conflicts.push(i);
+        }
+    }
+    if conflicts{
+        println!("CONFLICTS");
+        println!("origin_conflicts: {:?}", origin_conflicts);
+        println!("branch_conflicts: {:?}", branch_conflicts);
+    }
+    Ok(())
+}
+
+
 pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String) -> Result<(), GitrError> {
+    println!("entro a three way");
+
     let branch_hashmap = get_commit_hashmap(branch_commit.clone())?;
-    let origin_hashmap = get_commit_hashmap(origin_commit.clone())?;
+    let mut origin_hashmap: HashMap<String, String> = get_commit_hashmap(origin_commit.clone())?;
+    file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone())?;
+    origin_hashmap = get_commit_hashmap(origin_commit.clone())?;
     let base_hashmap = get_commit_hashmap(base_commit.clone())?;
 
     //IDEA: Agarrar todos los archivos y carpetas de branch y crearlos en el working dir.
+    /*
+    base_file_data: "hola\ncambios en otra"
+    origin_file_data: "hola y chau en master\n"
+    branch_file_data: "hola\n"
+    
+     */
+    
 
-    for (path, hash) in origin_hashmap.iter(){
-        println!("path: {:?}, hash: {:?}", path, hash);
-        if base_hashmap.contains_key(path){
-            let contenido_base = file_manager::read_object(hash)?;
-            let contenido_branch = file_manager::read_object(&base_hashmap[path])?;
-            Diff::new(contenido_base, contenido_branch);
+    for (path, origin_file_hash) in origin_hashmap.iter(){
+
+        let origin_file_data =file_manager::read_file(path.clone())?; 
+        
+        
+        if branch_hashmap.contains_key(&path.clone()){
+            let branch_file_hash = branch_hashmap[path].clone(); //aax
+            let branch_file_data = file_manager::read_file_data_from_blob_hash(branch_file_hash.clone())?;
+
+            
+            if origin_file_hash == &branch_file_hash{
+                // base     origin     branch    result
+                //          aaa        aaa       aaa
+                continue;
+            }
+            
+            let base_file_hash = base_hashmap[path].clone(); // chequear que capaz puede no exisiir en base
+            let base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone())?;
+
+            if &base_file_hash == origin_file_hash {
+                // base     origin     branch    result
+                // aaa      aaa        aax       aaxa
+
+
+
+                //me quedo con branch
+                //saco el diff entre branch y base
+
+                
+
+                println!("no deberia caer aca");
+
+                println!("base_file_data: {:?}", base_file_data);
+                println!("branch_file_data: {:?}", branch_file_data);
+
+                let diff_base_branch = Diff::new(base_file_data, branch_file_data);
+                aplicar_difs(path.clone(), diff_base_branch)?;
+                continue;
+            }
+            
+            if base_file_hash == branch_file_hash {
+                // base     origin     branch    result
+                // aaa      aax        aaa       aax
+
+                //me quedo con origin porque en branch no hubo cambios nuevos ahi                
+                continue;
+           
+            }
+
+            // aca se modifico el mismo archivo en ambas ramas (origin y branch)
+            // con respecto a base
+            
+            //      base     origin     branch    result
+            //      aaa      aax        aaz       
+
+            // si los indices de los diffs, coinciden, hay conflicts
+            // si no coinciden, solamente se mergean los cambios
+            
+            println!("aca si deberia caer");
+            println!("base_file_data: {:?}", base_file_data);
+            println!("origin_file_data: {:?}", origin_file_data);
+            println!("branch_file_data: {:?}", branch_file_data);
+
+            let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
+            let diff_base_branch = Diff::new(base_file_data, branch_file_data);
+
+
+            
+
+            comparar_conflicts(diff_base_origin, diff_base_branch)?;
+            
+
+
+            /*
+            (1, hola, chau)
+            (2,---,agregar algo)
+            (3, chau, )
+            4 ---
+            
+
+            
+             */
+            /*
+             <<<<<<<<,
+            generar_incoming() = Vec[string],
+             ==========,
+            generar_actual() = Vec[String],
+             >>>>>,
+             .concat()
+             */
+
+            
+            /*
+
+            
+            conflit
+
+
+
+            */
+
         }
         else{
-            agregar_archivo(path, hash);
+            continue;
         }
     }
 
@@ -459,11 +624,15 @@ hashmap:
     /*
     base    origin  branch      result
     
-    aaa     bbx     aax         aax                     diff={}U{-a(3) +x(3)}
-    bbb     aaa     bbb         bbx                     diff={-b(3) +x(3)}U{}
+    aaa     aaa     aax         aax                     diff={}U{-a(3) +x(3)}
+    bbb     bbx     bbb         bbx                     diff={-b(3) +x(3)}U{}
     ccc     ccx     ccz         ver diferencias         diff={-c(3) +x(3)}U{-c(3) +z(3)} ---> conflict y tenes que elegir
             DDD     
     
+
+    O--N--O--M
+   \      /
+    X--M-/
      */
 
 
@@ -601,6 +770,12 @@ pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, mut tr
             get_subtrees_data(file_hash, file_path, &mut tree_hashmap)?;
         }
 
+
+        if entry.split(' ').collect::<Vec<&str>>()[0] == "40000"{
+            continue;
+        }
+
+
         let attributes = entry.split(' ').collect::<Vec<&str>>()[1];
         let relative_file_path= attributes.split('\0').collect::<Vec<&str>>()[0].to_string();
         let file_path = format!("{}/{}", file_path, relative_file_path);
@@ -611,9 +786,16 @@ pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, mut tr
     Ok(())
 }
 
+
+/// only blobs
 pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, GitrError> {
       // current commit
       let mut tree_hashmap = HashMap::new();
+    let current_commit = get_current_commit()?;
+    if current_commit == commit{
+        let (index_hashmap, _) = get_index_hashmap()?;
+        return Ok(index_hashmap);
+    }
       //busco el commit
       if !commit.is_empty() {
         
@@ -627,7 +809,6 @@ pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, Git
           // cargo el diccionario
           
         for entry in tree_entries.split('\n') {
-            println!("entry: {:?}", entry);
             if entry.split(' ').collect::<Vec<&str>>()[0] == "40000"{
                 let attributes = entry.split(' ').collect::<Vec<&str>>()[1];
                 let _file_path= attributes.split('\0').collect::<Vec<&str>>()[0].to_string();
@@ -635,7 +816,11 @@ pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, Git
                 let file_hash = attributes.split('\0').collect::<Vec<&str>>()[1].to_string();
                 get_subtrees_data(file_hash, file_path, &mut tree_hashmap)?;
             }
-                
+            
+            if entry.split(' ').collect::<Vec<&str>>()[0] == "40000"{
+                continue;
+            }
+
             let attributes = entry.split(' ').collect::<Vec<&str>>()[1];
             let _file_path= attributes.split('\0').collect::<Vec<&str>>()[0].to_string();
             let file_path = format!("{}/{}", repo, _file_path);
@@ -648,6 +833,8 @@ pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, Git
 
       Ok(tree_hashmap)
 }
+
+
 
 /***************************
  *************************** 
@@ -846,9 +1033,12 @@ mod tests_clone{
 #[cfg(test)]
 mod tests_merge{
     use super::*;
+    use crate::commands::*;
     
     #[test]
     fn test00_three_way_merge(){
-        get_blobs_from_commit("c1231533842cda7bf87bda8410cc688e8876134a".to_string()).unwrap();
+        let commit_master = "ad43f12629f80764e4d5217537a12de193c48f15".to_string();
+        let commit_branch = "3b7ddd0af8f07fd7c3b08bda494c1d9f1929fa3d".to_string();
+        commands::merge(vec!["c1231533842cda7bf87bda8410cc688e8876134a".to_string()]).unwrap();
     }
 }
