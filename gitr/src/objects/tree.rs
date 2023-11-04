@@ -64,7 +64,6 @@ impl Tree{
                 TreeEntry::Tree(tree) => {
                     let hash = tree.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
-                    println!("path: {:?}", path);
                     //let path_no_repo = path.split_once('/').unwrap().1;
 
                     let obj_entry = [
@@ -111,16 +110,13 @@ impl Tree{
     }
 
     pub fn new_from_packfile(raw_data: &[u8])->  Result<Self, GitrError>{
-        println!("new_from_packfile(): raw_data: {:?}", raw_data);
         let header_len = raw_data.len();
-        println!("new_from_packfile(): header_len: {:?}", header_len);
         let tree_raw_file = vec![
             b"tree ",
             header_len.to_string().as_bytes(),
             b"\0",
             raw_data,
         ].concat();
-        println!("new_from_packfile(): read_tree_file output {:?}", file_manager::read_tree_file(tree_raw_file.clone())?);
 
         let compressed_data = command_utils::flate2compress2(tree_raw_file.clone())?;
         let hash = command_utils::sha1hashing2(tree_raw_file.clone());

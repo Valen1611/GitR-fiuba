@@ -42,7 +42,7 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     references.push((head_hash,"HEAD".to_string()));
     
     for refs in &iter_refs[1..]{
-        if *refs == ""{
+        if *refs == "" || *refs == "0000"{
             break;
         }
         references.push(extract_hash_and_ref(refs));
@@ -59,7 +59,7 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_i
     for refer in heads_refs { // veo si tengo que crear o modificar alguna
         let mut falta = true;
         for hash_n_ref in hash_n_references.clone() {
-            if refer == hash_n_ref.1 { 
+            if hash_n_ref.1.ends_with(&refer) { 
                 falta = false;
                 if hash_n_ref.0 != heads_ids[j]{
                     pkt_needed = true;

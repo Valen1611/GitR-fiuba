@@ -169,7 +169,6 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
             }
         }
     }
-    println!("\n\nChecksum: {:?}\n\n", &buffer[12+index..]);
     Ok(objects)
 }
 
@@ -184,9 +183,7 @@ pub fn prepare_contents(datos: Vec<Vec<u8>>) -> Vec<(String,String,Vec<u8>)> {
             i += 1;
         }
         let (header, raw_data) = data.split_at(i);
-        println!("header: {:?}", header);
         let h_str = String::from_utf8_lossy(header).to_string();
-        println!("header: {:?}", h_str);
         let div = h_str.split(' ').collect::<Vec<&str>>();
         let (obj_type, obj_len) = (div[0].to_string(), div[1].to_string());
         let (_, raw_data) = raw_data.split_at(1);
@@ -246,7 +243,6 @@ pub fn create_packfile(contents: Vec<(String,String,Vec<u8>)>) -> Result<Vec<u8>
     
     // ########## CHECKSUM ##########
     let hasheado = command_utils::sha1hashing2(final_data.clone());
-    println!("hasheado: {:?}", hasheado);
     final_data.extend(&hasheado);
 
 

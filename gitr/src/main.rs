@@ -1,7 +1,8 @@
-use gitr::{commands, logger, gitr_errors::GitrError};
+use gitr::{commands, logger, gitr_errors::GitrError, server};
 
 use std::io::{Write, self};
 extern crate flate2;
+
 // use gitr::gui::gui_from_glade::initialize_gui;
 
 
@@ -79,6 +80,7 @@ extern crate flate2;
         //Start new thread for GUI
         let child = std::thread::spawn(move || {
             // initialize_gui();
+            server::server_init("repo_remoto", "localhost:9418")
         });
         //initialize_gui();
     

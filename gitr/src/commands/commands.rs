@@ -356,8 +356,8 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
 
     let index_path = &(repo.clone() + "/gitr/index");
     if Path::new(index_path).is_file() {
-        
         let index_data = file_manager::read_index()?;
+        print!("index exists");
 
         let mut index_vector: Vec<&str> = Vec::new();
 
@@ -667,12 +667,15 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
     loop {
         match stream.read(&mut buffer) {
             Ok(n) => {
+                if n == 0 {
+                    return Ok(());
+                }
                 let bytes = &buffer[..n];
                 let s = String::from_utf8_lossy(bytes);
+                ref_disc.push_str(&s);
                 if s.ends_with("0000") {
                     break;
                 }
-                ref_disc.push_str(&s);
             },
             Err(e) => {
                 println!("Error: {}", e);
@@ -681,7 +684,6 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
         }
     }
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
-
     // ########## REFERENCE UPDATE REQUEST ##########
     let ids_propios = file_manager::get_heads_ids()?; // esta sacando de gitr/refs/heads
     let refs_propios = get_branches()?; // tambien de gitr/refs/heads
@@ -690,6 +692,10 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
         println!("Error: {}", e);
         return Ok(())
     };
+    if ref_upd == "0000" {
+        println!("client up to date");
+        return Ok(())
+    }
     if pkt_needed {
         let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|t.0.clone()).collect(),repo + "/gitr")?;
         let repo = file_manager::get_current_repo()? + "/gitr";
@@ -704,13 +710,11 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
             println!("Error: {}", e);
             return Ok(())
         };
-        println!("paquete enviado {:?}\n",pk);
         // if let Err(e) = stream.write("0000".as_bytes()) { // Mando el Packfile
         //     println!("Error: {}", e);
         //     return Ok(())
         // };
     }
-    println!("voy a leer");
     // match stream.read(&mut buffer) {
     //     Ok(n) => {
     //         let bytes = &buffer[..n];
@@ -723,7 +727,6 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
     //     }
     // }
 
-    println!("push");
     Ok(())
 }
 

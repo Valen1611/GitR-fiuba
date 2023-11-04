@@ -4504,3 +4504,568 @@
 {"type": "FileOperation","timestamp": "04-11-2023 00:42:32","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "04-11-2023 00:42:32","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "04-11-2023 00:42:32","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 13:41:01","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: pruebas_3/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: pruebas_3/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:41:01","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 13:46:48","message": "calling init with flags: ["new_repo_pruebas"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "creating dir: new_repo_pruebas"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "creating dir: new_repo_pruebas/gitr"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "creating dir: new_repo_pruebas/gitr/objects"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "creating dir: new_repo_pruebas/gitr/refs"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "creating dir: new_repo_pruebas/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "creating dir: new_repo_pruebas/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "creating dir: new_repo_pruebas/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "writing data to: new_repo_pruebas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "writing data to: new_repo_pruebas/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:46:48","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 13:49:36","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:49:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:49:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:49:36","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 13:49:36","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 13:50:47","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:50:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:50:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:50:47","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 13:50:47","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 13:53:42","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:53:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:53:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:53:42","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 13:53:42","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 13:55:45","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 13:55:45","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 13:55:45","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:01:33","message": "calling ls-files with flags: []"}
+{"type": "Error","timestamp": "04-11-2023 14:01:33","message": "Argumentos invalidos.
+    Recibi: 
+    Uso: ls-files --stage
+"}
+{"type": "Action","timestamp": "04-11-2023 14:01:42","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:01:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:01:42","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 14:01:42","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:02:39","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:02:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:02:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:02:39","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 14:02:39","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:03:13","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:03:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:03:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:03:13","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 14:03:13","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:03:51","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:03:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:03:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:03:51","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 14:03:51","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:04:49","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:04:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:04:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:04:49","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 14:04:49","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:05:01","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:05:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:05:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:05:01","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 14:05:01","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:06:29","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:06:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:06:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:06:29","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "Error","timestamp": "04-11-2023 14:06:29","message": "No se pudo leer el archivo new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:24:41","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: new_repo_pruebas\mama\hijo.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "writing object 0e0bd08f0c5a970ce9cefb69e6c53e43bf20f405"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "creating dir: new_repo_pruebas/gitr/objects/0e"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "writing data to: new_repo_pruebas/gitr/objects/0e/0bd08f0c5a970ce9cefb69e6c53e43bf20f405"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "writing data to: new_repo_pruebas/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "writing data to: new_repo_pruebas/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: new_repo_pruebas\papa.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "writing object 7a3d50a103c1e9049e1a1f918a0b8274dc2f81d0"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "creating dir: new_repo_pruebas/gitr/objects/7a"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "writing data to: new_repo_pruebas/gitr/objects/7a/3d50a103c1e9049e1a1f918a0b8274dc2f81d0"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:24:41","message": "writing data to: new_repo_pruebas/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 14:27:54","message": "calling commit with flags: ["-m", "\"familia", "feliz\""]"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: new_repo_pruebas/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: new_repo_pruebas\mama\hijo.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing object 129da2c21b9a109af7dc39c6e04873f181e2e7ff"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "creating dir: new_repo_pruebas/gitr/objects/12"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing data to: new_repo_pruebas/gitr/objects/12/9da2c21b9a109af7dc39c6e04873f181e2e7ff"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: new_repo_pruebas\papa.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing object 139e53939b17acc7605e59abbac450ae50eb564c"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "creating dir: new_repo_pruebas/gitr/objects/13"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing data to: new_repo_pruebas/gitr/objects/13/9e53939b17acc7605e59abbac450ae50eb564c"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing object 139e53939b17acc7605e59abbac450ae50eb564c"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing data to: new_repo_pruebas/gitr/objects/13/9e53939b17acc7605e59abbac450ae50eb564c"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: new_repo_pruebas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing data to: new_repo_pruebas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing object dc42e4db89651fd4403b8f4f1895f93d17ba3fdf"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "creating dir: new_repo_pruebas/gitr/objects/dc"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing data to: new_repo_pruebas/gitr/objects/dc/42e4db89651fd4403b8f4f1895f93d17ba3fdf"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "writing data to: new_repo_pruebas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: new_repo_pruebas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: new_repo_pruebas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:27:54","message": "reading data from: new_repo_pruebas/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "04-11-2023 14:28:17","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:28:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:28:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:28:17","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Error","timestamp": "04-11-2023 14:28:17","message": "No se pudo leer: new_repo_pruebas/gitr/remote"}
+{"type": "Error","timestamp": "04-11-2023 14:28:17","message": "No se pudo leer el archivo new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:28:46","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:28:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:28:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:28:46","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:32:33","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:32:33","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:32:33","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:32:33","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:33:23","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:33:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:33:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:33:23","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:35:46","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:35:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:35:46","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:35:46","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:37:23","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:37:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:37:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:37:23","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:37:57","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:37:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:37:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:37:57","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:38:50","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:38:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:38:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:38:50","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:39:02","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:39:02","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:39:02","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:39:02","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:39:38","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:39:38","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:39:38","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:39:38","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:40:23","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:40:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:40:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:40:23","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:44:22","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:44:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:44:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:44:22","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:45:08","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:45:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:45:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:45:08","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:46:23","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:46:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:46:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:46:23","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:46:43","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:46:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:46:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:46:43","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 14:49:59","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:49:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:49:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 14:49:59","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:30:26","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:30:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:30:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:30:26","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:30:50","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:30:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:30:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:30:50","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:31:49","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:31:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:31:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:31:49","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:32:24","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:32:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:32:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:32:24","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:34:35","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:34:35","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:34:35","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:34:35","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:36:42","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: new_repo_pruebas/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: new_repo_pruebas/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:36:42","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 15:38:18","message": "calling init with flags: ["repo_boca"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "creating dir: repo_boca"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "creating dir: repo_boca/gitr"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "creating dir: repo_boca/gitr/objects"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "creating dir: repo_boca/gitr/refs"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "creating dir: repo_boca/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "creating dir: repo_boca/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "creating dir: repo_boca/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "writing data to: repo_boca/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "writing data to: repo_boca/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:38:18","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 15:39:30","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: repo_boca/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: repo_boca\hola\valen.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "writing object 2c66b74cf23ed2b07efb911aa3039d014d65ddcc"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "creating dir: repo_boca/gitr/objects/2c"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "writing data to: repo_boca/gitr/objects/2c/66b74cf23ed2b07efb911aa3039d014d65ddcc"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "writing data to: repo_boca/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "writing data to: repo_boca/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: repo_boca\hola_bruno.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "creating dir: repo_boca/gitr/objects/b8"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "writing data to: repo_boca/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "reading data from: repo_boca/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:30","message": "writing data to: repo_boca/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 15:39:44","message": "calling commit with flags: ["-m", "\"bocaaa\""]"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: repo_boca/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: repo_boca\hola\valen.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing object 9c2c4aa2fcb9d39fcab55145bd08af38741ed9c8"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "creating dir: repo_boca/gitr/objects/9c"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing data to: repo_boca/gitr/objects/9c/2c4aa2fcb9d39fcab55145bd08af38741ed9c8"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: repo_boca\hola_bruno.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing object 5c0347b0a7c46435770ba2c9bb58670eea0664a1"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "creating dir: repo_boca/gitr/objects/5c"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing data to: repo_boca/gitr/objects/5c/0347b0a7c46435770ba2c9bb58670eea0664a1"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing object 5c0347b0a7c46435770ba2c9bb58670eea0664a1"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing data to: repo_boca/gitr/objects/5c/0347b0a7c46435770ba2c9bb58670eea0664a1"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: repo_boca/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing data to: repo_boca/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing object 49951e60f2b468df8ee07a836fc0007885bafead"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "creating dir: repo_boca/gitr/objects/49"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing data to: repo_boca/gitr/objects/49/951e60f2b468df8ee07a836fc0007885bafead"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "writing data to: repo_boca/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: repo_boca/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: repo_boca/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:44","message": "reading data from: repo_boca/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "04-11-2023 15:39:54","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:39:54","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Error","timestamp": "04-11-2023 15:39:54","message": "No se pudo leer: repo_boca/gitr/remote"}
+{"type": "Error","timestamp": "04-11-2023 15:39:54","message": "No se pudo leer el archivo repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:40:16","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:40:16","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 15:41:43","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:43","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 15:41:50","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: repo_boca/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: repo_boca\hola\valen.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: repo_boca\hola_bruno.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: repo_boca/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: repo_boca/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: repo_boca/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:41:50","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 15:42:32","message": "calling pull with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:42:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:42:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:42:32","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:42:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:42:32","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "Error","timestamp": "04-11-2023 15:42:32","message": "PackFileError en la funcion verify_header. Info: La signature no es PACK"}
+{"type": "Action","timestamp": "04-11-2023 15:50:34","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:50:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:50:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:50:34","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:51:45","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:51:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:51:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:51:45","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:53:36","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:53:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:53:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:53:36","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:54:52","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:54:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:54:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:54:52","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:55:52","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:55:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:55:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:55:52","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:56:10","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:56:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:56:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:56:10","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:56:34","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:56:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:56:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:56:34","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:57:27","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:57:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:57:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:57:27","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 15:58:44","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:58:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:58:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 15:58:44","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 16:00:50","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:00:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:00:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:00:50","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 16:02:00","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:00","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 16:02:13","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:13","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 16:02:57","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:02:57","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 16:04:06","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:06","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 16:04:30","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:30","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:04:36","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: repo_boca/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: repo_boca\hola\valen.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: repo_boca\hola_bruno.rs"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: repo_boca/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: repo_boca/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: repo_boca/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:04:36","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:11:20","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:11:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:11:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:11:20","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:11:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:11:20","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:11:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:11:20","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:18:30","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:18:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:18:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:18:30","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:18:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:18:30","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:18:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:18:30","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:20:25","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:20:25","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:20:25","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:20:25","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:20:25","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:20:25","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:20:25","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:20:25","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:22:10","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:10","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:10","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:10","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:22:59","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:59","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:59","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:22:59","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:23:57","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:23:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:23:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:23:57","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:23:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:23:57","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:23:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:23:57","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:25:07","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:25:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:25:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:25:07","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:25:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:25:07","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:25:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:25:07","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:27:34","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:27:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:27:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:27:34","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:27:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:27:34","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:27:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:27:34","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:37:59","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:37:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:37:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:37:59","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:37:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:37:59","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:37:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:37:59","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:39:11","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:39:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:39:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:39:11","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:39:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:39:11","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:39:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:39:11","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:40:24","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:40:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:40:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:40:24","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:40:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:40:24","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:40:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:40:24","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:47:34","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:47:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:47:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:47:34","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:47:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:47:34","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:47:34","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:53:48","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:53:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:53:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:53:48","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:53:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:53:48","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:53:48","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:55:37","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:37","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:37","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:37","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:55:52","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:52","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:52","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:55:52","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:56:28","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:56:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:56:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:56:28","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:56:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:56:28","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:56:28","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:57:35","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:57:35","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:57:35","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:57:35","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:57:35","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:57:35","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:57:35","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 16:58:20","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: repo_boca/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: repo_boca/gitr/refs/heads\master"}
+{"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: .head_repo"}

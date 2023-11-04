@@ -137,11 +137,15 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
         Ok(file) => file,
         Err(_) => return Err(GitrError::FileReadError(path.to_string())),
     };
+    if file.metadata().is_err() || file.metadata().unwrap().len() == 0 {
+        return Ok(Vec::new());
+    }
     let mut decoder = ZlibDecoder::new(file);
     let mut buffer = Vec::new();
     match decoder.read_to_end(&mut buffer){
         Ok(_) => Ok(buffer.clone()),
-        Err(_) => Err(GitrError::FileReadError(path.to_string())),
+        Err(_) => { println!("error");
+            Err(GitrError::FileReadError(path.to_string()))}
     }
 }
 
@@ -355,9 +359,10 @@ pub fn read_index() -> Result<String, GitrError>{
     let repo = get_current_repo()?;
     let path = repo + "/gitr/index";
     let data = read_compressed_file(&path);
+    
     let data = match data{
         Ok(data) => data,
-        Err(_) => return Err(GitrError::FileReadError(path)),
+        Err(_) => {return Err(GitrError::FileReadError(path))}
     };
     let data = String::from_utf8(data);
     let data = match data{
