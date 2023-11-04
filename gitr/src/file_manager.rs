@@ -112,7 +112,7 @@ pub fn delete_all_files()-> Result<(), GitrError>{
     let path = Path::new(&repo);
     if let Ok(entries) = fs::read_dir(path) {
         for entry in entries.flatten() {
-                if entry.file_name() != "gitr" {
+                if entry.file_name() != "gitr" && entry.file_name() != ".git" {
                     if entry.path().is_file() {
                         match fs::remove_file(entry.path()) {
                             Ok(_) => continue,

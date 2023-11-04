@@ -4,8 +4,8 @@ use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
-
-
+use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, update_working_directory};
+use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 /***************************
  *************************** 
  *  DEFLATING AND HASHING
@@ -349,6 +349,23 @@ pub fn branch_newbranch_flag(branch:String) -> Result<(), GitrError>{
     
 }
 
+pub fn branch_commits_list(branch_name: String)->Result<Vec<String>, GitrError>{
+    let mut commits = Vec::new();
+    let mut commit = file_manager::get_commit(branch_name)?;
+    commits.push(commit.clone());
+    loop {
+        let parent = file_manager::get_parent_commit(commit.clone())?;
+
+        if parent == "None" {
+            break;
+        }
+
+        commit = parent;
+        commits.push(commit.clone());
+    }
+    commits.reverse();
+    Ok(commits)
+}
 /***************************
  *************************** 
  *   COMMIT FUNCTIONS
@@ -376,6 +393,15 @@ pub fn commit_existing() -> Result<(), GitrError>{
     Ok(())
 }
 
+pub fn fast_forward_merge(branch_name:String)->Result<(),GitrError> {
+    let commit: String = file_manager::get_commit(branch_name)?;
+    let head = get_head()?;
+    let repo = get_current_repo()?;
+    let path = format!("{}/gitr/{}", repo, head);
+    file_manager::write_file(path, commit.clone())?;
+    update_working_directory(commit)?;
+    Ok(())
+}
 
 /***************************
  *************************** 
@@ -622,7 +648,6 @@ pub fn rm_from_index(file_to_delete: &str)->Result<bool, GitrError>{
  *    CLONE FUNCTIONS
  **************************
  **************************/
-
 
 pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
     let socket = match TcpStream::connect(address) {
