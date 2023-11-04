@@ -1877,3 +1877,498 @@
 {"type": "FileOperation","timestamp": "02-11-2023 23:02:37","message": "writing data to: MAS/hola"}
 {"type": "FileOperation","timestamp": "02-11-2023 23:02:37","message": "reading data from: .head_repo"}
 
+{"type": "Action","timestamp": "03-11-2023 20:26:39","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:39","message": "writing data to: abersiahora
+/gitr/HEAD"}
+{"type": "Error","timestamp": "03-11-2023 20:26:39","message": "ERROR: No se pudo crear el archivo abersiahora
+/gitr/HEAD"}
+{"type": "Action","timestamp": "03-11-2023 20:26:58","message": "calling init with flags: ["nuevito"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:58","message": "creating dir: nuevito"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:58","message": "creating dir: nuevito/gitr"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:58","message": "creating dir: nuevito/gitr/objects"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:58","message": "creating dir: nuevito/gitr/refs"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:58","message": "creating dir: nuevito/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:58","message": "creating dir: nuevito/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:58","message": "writing data to: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:26:58","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 20:27:00","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:00","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:00","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 20:27:04","message": "calling branch with flags: ["-m", "hola"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:04","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "Error","timestamp": "03-11-2023 20:27:04","message": "fatal: Not a valid object name: 'master'"}
+{"type": "Action","timestamp": "03-11-2023 20:27:10","message": "calling branch with flags: ["-d", "hola"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:10","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "Error","timestamp": "03-11-2023 20:27:10","message": "fatal: Not a valid object name: 'master'"}
+{"type": "Action","timestamp": "03-11-2023 20:27:24","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:24","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 20:27:28","message": "calling commit with flags: ["-m", "\"primero\""]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:28","message": "reading data from: nuevito/gitr/index"}
+{"type": "Error","timestamp": "03-11-2023 20:27:28","message": "No se pudo leer el archivo nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 20:27:41","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "creating dir: nuevito/gitr/objects/b8"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "writing data to: nuevito/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:41","message": "writing data to: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 20:27:45","message": "calling commit with flags: ["-m", "\"primero\""]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "writing object a7ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "creating dir: nuevito/gitr/objects/a7"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "writing data to: nuevito/gitr/objects/a7/ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "writing object a7ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "writing data to: nuevito/gitr/objects/a7/ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "writing data to: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "writing object 48a8eb4bb6119eea7db572c5401f9e3fb4669e88"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "creating dir: nuevito/gitr/objects/48"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "writing data to: nuevito/gitr/objects/48/a8eb4bb6119eea7db572c5401f9e3fb4669e88"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "writing data to: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:27:45","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "03-11-2023 20:33:22","message": "calling h with flags: ["gol"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:33:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:33:22","message": "reading data from: nuevito/gol"}
+{"type": "Error","timestamp": "03-11-2023 20:33:22","message": "No se pudo leer: nuevito/gol"}
+{"type": "Error","timestamp": "03-11-2023 20:33:22","message": "No se pudo leer el archivo nuevito/gol"}
+{"type": "Action","timestamp": "03-11-2023 20:33:28","message": "calling h with flags: ["lol"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:33:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:33:28","message": "reading data from: nuevito/lol"}
+{"type": "Error","timestamp": "03-11-2023 20:33:28","message": "No se pudo leer: nuevito/lol"}
+{"type": "Error","timestamp": "03-11-2023 20:33:28","message": "No se pudo leer el archivo nuevito/lol"}
+{"type": "Action","timestamp": "03-11-2023 20:33:31","message": "calling h with flags: ["hola"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:33:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:33:31","message": "reading data from: nuevito/hola"}
+{"type": "Action","timestamp": "03-11-2023 20:33:35","message": "calling h with flags: ["hola"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:33:35","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:33:35","message": "reading data from: nuevito/hola"}
+{"type": "Action","timestamp": "03-11-2023 20:34:12","message": "calling h with flags: ["hola"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:34:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:34:12","message": "reading data from: nuevito/hola"}
+{"type": "Action","timestamp": "03-11-2023 20:40:15","message": "calling init with flags: ["nuevito"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:40:15","message": "creating dir: nuevito"}
+{"type": "Error","timestamp": "03-11-2023 20:40:15","message": "ERROR: El repositorio ya esta inicializado"}
+{"type": "Action","timestamp": "03-11-2023 20:56:22","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:56:22","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 20:56:39","message": "calling c with flags: ["-p", "48a8eb4bb6119eea7db572c5401f9e3fb4669e88"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:56:39","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 20:57:19","message": "calling c with flags: ["-s", "a8eb4bb6119eea7db572c5401f9e3fb4669e88"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:19","message": "reading data from: .head_repo"}
+{"type": "Error","timestamp": "03-11-2023 20:57:19","message": "ERROR: No se encontro el objeto a8eb4bb6119eea7db572c5401f9e3fb4669e88"}
+{"type": "Action","timestamp": "03-11-2023 20:57:25","message": "calling c with flags: ["-s", "48a8eb4bb6119eea7db572c5401f9e3fb4669e88"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:25","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 20:57:30","message": "calling c with flags: ["-t", "48a8eb4bb6119eea7db572c5401f9e3fb4669e88"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:30","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 20:57:32","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:32","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:32","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 20:57:32","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 21:11:28","message": "calling c with flags: ["-p", "48a8eb4bb6119eea7db572c5401f9e3fb4669e88"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 21:11:28","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 21:11:34","message": "calling c with flags: ["-s", "48a8eb4bb6119eea7db572c5401f9e3fb4669e88"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 21:11:34","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 21:11:38","message": "calling c with flags: ["-t", "48a8eb4bb6119eea7db572c5401f9e3fb4669e88"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 21:11:38","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 22:16:25","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:25","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 22:16:55","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "writing data to: nuevito/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "writing data to: nuevito/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "reading data from: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:16:55","message": "adding nuevito/hola to index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:55","message": "writing data to: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:16:59","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:16:59","message": "reading data from: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:17:09","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "writing object be6df36e3052b3618d23117fa193c4c141ab932b"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "creating dir: nuevito/gitr/objects/be"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "writing data to: nuevito/gitr/objects/be/6df36e3052b3618d23117fa193c4c141ab932b"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "writing object be6df36e3052b3618d23117fa193c4c141ab932b"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "writing data to: nuevito/gitr/objects/be/6df36e3052b3618d23117fa193c4c141ab932b"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "reading data from: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:17:09","message": "adding nuevito/hola to index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:09","message": "writing data to: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:17:13","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:13","message": "reading data from: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:17:22","message": "calling commit with flags: ["-m", "\"nuevitooo\""]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "writing object 924c68557c4ab99a59e9a62f58ed64b98e74872f"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "creating dir: nuevito/gitr/objects/92"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "writing data to: nuevito/gitr/objects/92/4c68557c4ab99a59e9a62f58ed64b98e74872f"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "writing object 924c68557c4ab99a59e9a62f58ed64b98e74872f"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "writing data to: nuevito/gitr/objects/92/4c68557c4ab99a59e9a62f58ed64b98e74872f"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "writing object f3757cafda6af623afbbdd782d3bcd5aac90d3fb"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "creating dir: nuevito/gitr/objects/f3"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "writing data to: nuevito/gitr/objects/f3/757cafda6af623afbbdd782d3bcd5aac90d3fb"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "writing data to: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:22","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "03-11-2023 22:17:24","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:17:24","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 22:19:51","message": "calling rm with flags: []"}
+{"type": "Error","timestamp": "03-11-2023 22:19:51","message": "Argumentos invalidos.
+    Recibi: 
+    Uso: rm <file>
+"}
+{"type": "Action","timestamp": "03-11-2023 22:19:56","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:19:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:19:56","message": "reading data from: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:19:58","message": "calling rm with flags: ["hola"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:19:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:19:58","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:19:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:19:58","message": "writing data to: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:20:01","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:01","message": "reading data from: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:20:04","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "writing object be6df36e3052b3618d23117fa193c4c141ab932b"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "writing data to: nuevito/gitr/objects/be/6df36e3052b3618d23117fa193c4c141ab932b"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:04","message": "writing data to: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:20:07","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:07","message": "reading data from: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 22:20:09","message": "calling rm with flags: ["hola"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:09","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 22:20:09","message": "writing data to: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 23:30:58","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:30:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:30:58","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:30:58","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 23:31:04","message": "calling branch with flags: ["nueva"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:04","message": "writing data to: nuevito/gitr/refs/heads/nueva"}
+{"type": "Action","timestamp": "03-11-2023 23:31:05","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:05","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:05","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 23:31:14","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "writing object 13fd0cb913ab1725abab00937407c4e046314228"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "creating dir: nuevito/gitr/objects/13"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "writing data to: nuevito/gitr/objects/13/fd0cb913ab1725abab00937407c4e046314228"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:14","message": "writing data to: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 23:31:18","message": "calling commit with flags: ["-m", "\"nuevito\""]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "writing object 42d1638bce7ce0a9a693bb64c2f831b837b7ebc6"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "creating dir: nuevito/gitr/objects/42"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "writing data to: nuevito/gitr/objects/42/d1638bce7ce0a9a693bb64c2f831b837b7ebc6"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "writing object 42d1638bce7ce0a9a693bb64c2f831b837b7ebc6"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "writing data to: nuevito/gitr/objects/42/d1638bce7ce0a9a693bb64c2f831b837b7ebc6"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "writing object c4805f932edd09bc1c56d79b1d96e9b3ce584eac"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "creating dir: nuevito/gitr/objects/c4"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "writing data to: nuevito/gitr/objects/c4/805f932edd09bc1c56d79b1d96e9b3ce584eac"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "writing data to: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:18","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "03-11-2023 23:31:27","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:27","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:27","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 23:31:28","message": "calling checkout with flags: ["nueva"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: nuevito/gitr/refs/heads/nueva"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "writing data to: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:28","message": "writing data to: nuevito/gitr/HEAD"}
+{"type": "Action","timestamp": "03-11-2023 23:31:34","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "writing data to: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:34","message": "writing data to: nuevito/gitr/HEAD"}
+{"type": "Action","timestamp": "03-11-2023 23:31:56","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing object 13fd0cb913ab1725abab00937407c4e046314228"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing data to: nuevito/gitr/objects/13/fd0cb913ab1725abab00937407c4e046314228"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: nuevito/otra/ola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing object 6fcf9a84b35d93e984047e3c7e8418289ec09f19"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "creating dir: nuevito/gitr/objects/6f"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing data to: nuevito/gitr/objects/6f/cf9a84b35d93e984047e3c7e8418289ec09f19"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing object 13fd0cb913ab1725abab00937407c4e046314228"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing data to: nuevito/gitr/objects/13/fd0cb913ab1725abab00937407c4e046314228"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "reading data from: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 23:31:56","message": "adding nuevito/hola to index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:31:56","message": "writing data to: nuevito/gitr/index"}
+{"type": "Action","timestamp": "03-11-2023 23:32:00","message": "calling commit with flags: ["-m", "\"aberahora\""]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/otra/ola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing object 5e8cf4544ba6d6bafa636e0b38bdc2277da8bef1"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "creating dir: nuevito/gitr/objects/5e"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing data to: nuevito/gitr/objects/5e/8cf4544ba6d6bafa636e0b38bdc2277da8bef1"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing object 9309d24563adca5bfcaa27b9af3b2ad4cf200b93"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "creating dir: nuevito/gitr/objects/93"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing data to: nuevito/gitr/objects/93/09d24563adca5bfcaa27b9af3b2ad4cf200b93"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing object 9309d24563adca5bfcaa27b9af3b2ad4cf200b93"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing data to: nuevito/gitr/objects/93/09d24563adca5bfcaa27b9af3b2ad4cf200b93"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing object c1231533842cda7bf87bda8410cc688e8876134a"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "creating dir: nuevito/gitr/objects/c1"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing data to: nuevito/gitr/objects/c1/231533842cda7bf87bda8410cc688e8876134a"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "writing data to: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:00","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "03-11-2023 23:32:03","message": "calling checkout with flags: ["nueva"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: nuevito/gitr/refs/heads/nueva"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "writing data to: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:03","message": "writing data to: nuevito/gitr/HEAD"}
+{"type": "Action","timestamp": "03-11-2023 23:32:08","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:08","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:08","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "writing data to: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "creating dir: nuevito/otra"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "writing data to: nuevito/otra/ola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:32:09","message": "writing data to: nuevito/gitr/HEAD"}
+{"type": "Action","timestamp": "03-11-2023 23:58:01","message": "calling branch with flags: ["otramas"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "reading data from: nuevito/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:01","message": "writing data to: nuevito/gitr/refs/heads/otramas"}
+{"type": "Action","timestamp": "03-11-2023 23:58:02","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:02","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:02","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:02","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "03-11-2023 23:58:06","message": "calling checkout with flags: ["otramas"]"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: nuevito/gitr/refs/heads/otramas"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "writing data to: nuevito/hola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "creating dir: nuevito/otra"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "writing data to: nuevito/gitr/index"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "writing data to: nuevito/otra/ola"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:06","message": "writing data to: nuevito/gitr/HEAD"}
+{"type": "Action","timestamp": "03-11-2023 23:58:07","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:07","message": "reading data from: nuevito/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "03-11-2023 23:58:07","message": "reading data from: .head_repo"}
