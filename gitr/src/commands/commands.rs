@@ -18,7 +18,7 @@ use crate::file_manager::{commit_log, update_working_directory, get_current_comm
 use crate::objects::git_object::GitObject::*;
 use crate::{objects::blob::Blob,objects::commit::Commit, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
 use crate::git_transport::pack_file::{read_pack_file, create_packfile};
-use crate::{command_utils::*, commands};
+use crate::{command_utils::*, commands, git_transport};
 
 
 use crate::git_transport::ref_discovery;
@@ -691,31 +691,37 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
         return Ok(())
     };
     if pkt_needed {
+        let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|t.0.clone()).collect(),repo + "/gitr")?;
         let repo = file_manager::get_current_repo()? + "/gitr";
-        let ids = Commit::get_objects_from_commits(pkt_ids,vec![],repo.clone())?;
-        let mut contents: Vec<String> = Vec::new();
+        let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
+        let mut contents: Vec<Vec<u8>> = Vec::new();
         for id in ids {
-            contents.push(get_object(id, repo.clone())?)
+            contents.push(file_manager::get_object_bytes(id, repo.clone())?)
         }
-        if let Err(e) = stream.write(&create_packfile(contents.clone())?) { // Mando el Packfile
+        let cont: Vec<(String, String, Vec<u8>)> = git_transport::pack_file::prepare_contents(contents.clone());
+        let pk = create_packfile(cont.clone())?;
+        if let Err(e) = stream.write(&pk) { // Mando el Packfile
             println!("Error: {}", e);
             return Ok(())
         };
-        println!("paquete enviado {:?}\n",contents);
-        
+        println!("paquete enviado {:?}\n",pk);
+        // if let Err(e) = stream.write("0000".as_bytes()) { // Mando el Packfile
+        //     println!("Error: {}", e);
+        //     return Ok(())
+        // };
     }
-    print!("voy a leer");
-    match stream.read(&mut buffer) {
-        Ok(n) => {
-            let bytes = &buffer[..n];
-            let s = String::from_utf8_lossy(bytes);
-            println!("read:::{}",s);        
-        },
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    }
+    println!("voy a leer");
+    // match stream.read(&mut buffer) {
+    //     Ok(n) => {
+    //         let bytes = &buffer[..n];
+    //         let s = String::from_utf8_lossy(bytes);
+    //         println!("read:::{}",s);        
+    //     },
+    //     Err(e) => {
+    //         println!("Error: {}", e);
+    //         return Ok(())
+    //     }
+    // }
 
     println!("push");
     Ok(())

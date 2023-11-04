@@ -785,23 +785,37 @@ pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
 }
 
 pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
+    println!("llega a pedir object{:?}",id);
     let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
     let mut archivo = match File::open(&format!("{}/{}",dir_path,id.split_at(2).1)) {
         Ok(archivo) => archivo,
         Err(_) => return Err(GitrError::FileReadError(dir_path)),
     }; // si no existe tira error
     let mut contenido: Vec<u8>= Vec::new();
-    if let Err(e) = archivo.read_to_end(&mut contenido) {
+    if let Err(_) = archivo.read_to_end(&mut contenido) {
         return Err(GitrError::FileReadError(dir_path));
     }
     let descomprimido = String::from_utf8_lossy(&decode(&contenido)?).to_string();
+    println!("llega a dar object");
     Ok(descomprimido)
+}
+pub fn get_object_bytes(id: String, r_path: String) -> Result<Vec<u8>,GitrError> {
+    let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
+    let mut archivo = match File::open(&format!("{}/{}",dir_path,id.split_at(2).1)) {
+        Ok(archivo) => archivo,
+        Err(_) => return Err(GitrError::FileReadError(dir_path)),
+    }; // si no existe tira error
+    let mut contenido: Vec<u8>= Vec::new();
+    if let Err(_) = archivo.read_to_end(&mut contenido) {
+        return Err(GitrError::FileReadError(dir_path));
+    }
+    Ok(decode(&contenido)?)
 }
 
 pub fn decode(input: &[u8]) -> Result<Vec<u8>, GitrError> {
     let mut decoder = ZlibDecoder::new(input);
     let mut decoded_data = Vec::new();
-    if let Err(e) = decoder.read_to_end(&mut decoded_data) {
+    if let Err(_) = decoder.read_to_end(&mut decoded_data) {
         return Err(GitrError::CompressionError);
     }
     Ok(decoded_data)

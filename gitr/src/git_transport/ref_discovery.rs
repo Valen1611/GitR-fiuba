@@ -22,13 +22,11 @@ pub fn extract_version(version_slice:&[u8])->Result<u32,GitrError>{
 }
 
 fn extract_head_hash(head_slice: &str)->String{
-    println!("extract_head_hash(): {}", head_slice);
     let head_hash = head_slice.split(' ').collect::<Vec<&str>>()[0];
     head_hash.to_string().split_off(4)
 }
 
 fn extract_hash_and_ref(ref_slice: &str)->(String,String){
-    println!("extract_hash_and_ref(): [param:ref_slice]{:?}", ref_slice);
     let split = ref_slice.split(' ').collect::<Vec<&str>>();
     let hash = split[0];
     let reference = split[1];
@@ -77,7 +75,6 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_i
             let mut ya_lo_tiene = false;
             for hash_n_ref in hash_n_references.clone() {
                 if heads_ids[j] == hash_n_ref.0 {
-                    print!("/\\ya lo tiene = true");
                     ya_lo_tiene = true;
                     break;
                 }
@@ -87,7 +84,6 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_i
             }
             let line = format!("0000000000000000000000000000000000000000 {} refs\\{}\n",heads_ids[j],refer);
             request.push_str(&format!("{:04X}{}",line.len()+4,line));
-            println!("{}",request)
         }
         j += 1;
     }
