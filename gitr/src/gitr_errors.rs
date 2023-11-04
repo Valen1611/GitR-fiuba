@@ -5,15 +5,12 @@ use std::fmt;
 
 #[derive(Debug)]
 pub enum GitrError{
-    //DirectoryCreationError,
     FileCreationError(String),
     FileWriteError(String),
     FileDeletionError(String),
     ObjectNotFound(String),
     FileReadError(String),
     FileDeleteError(String),
-    //InvalidNumberOfArguments(usize, usize),
-    //InvalidArguments(Vec<String>),
     NoCommitExisting(String),
     NoHead,
     AlreadyInitialized,
@@ -35,7 +32,6 @@ impl fmt::Display for GitrError{
         match self {
             Self::BranchNonExistsError(branch) => write!(f, "error: branch '{}' not found.", branch),
             Self::FileDeletionError(fun) => write!(f, "En la funcion {} falló una eliminación", fun),
-            //Self::DirectoryCreationError => write!(f, "ERROR: No se pudo crear el directorio."),
             Self::FileCreationError(path) => write!(f, "ERROR: No se pudo crear el archivo {}", path),
             Self::FileWriteError(path)=>write!(f, "ERROR: No se pudo escribir el archivo {}", path),
             Self::FileDeleteError(path) => write!(f, "ERROR: No se pudo borrar el archivo {}", path),
@@ -46,7 +42,6 @@ impl fmt::Display for GitrError{
             Self::AlreadyInitialized => write!(f, "ERROR: El repositorio ya esta inicializado"),
             Self::NoRepository => write!(f, "ERROR: No se encontro el repositorio"),
             Self::NoCommitExisting(brch)=> write! (f, "fatal: Not a valid object name: '{}'", brch),
-           // Self::NoRepository => write!(f, "ERROR: No se encontro el repositorio"),
             Self::LogError => write!(f, "ERROR: No se pudo escribir en el log"),
             Self::CompressionError => write!(f, "No se pudo comprimir el archivo"),
             Self::InvalidArgumentError(got, usage) => write!(f, "Argumentos invalidos.\n    Recibi: {}\n    Uso: {}\n", got, usage),
@@ -59,5 +54,3 @@ impl fmt::Display for GitrError{
 }
 
 }
-
-//impl Error for GitrError {}
