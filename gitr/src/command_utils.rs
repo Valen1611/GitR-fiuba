@@ -184,7 +184,7 @@ pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
     let index_files = read_index()?;
     for file_info in index_files.split('\n') {
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
-        let splitted_file_path = file_path.split('\\').collect::<Vec<&str>>();
+        let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
         println!("{}",file_path);
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
             if let Some(last_element) = splitted_file_path.last() { //es el ultimo?

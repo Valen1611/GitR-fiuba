@@ -5069,3 +5069,894 @@
 {"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: repo_boca/gitr/refs/heads\master"}
 {"type": "FileOperation","timestamp": "04-11-2023 16:58:20","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 18:53:03","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:03","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 18:53:06","message": "calling init with flags: ["repo_fluminense"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "creating dir: repo_fluminense"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "creating dir: repo_fluminense/gitr"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "creating dir: repo_fluminense/gitr/objects"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "creating dir: repo_fluminense/gitr/refs"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "creating dir: repo_fluminense/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "creating dir: repo_fluminense/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "creating dir: repo_fluminense/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "writing data to: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:06","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 18:53:52","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "writing object d851feb9f93f1bd34ca645d3afa5e9ce4d419263"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "creating dir: repo_fluminense/gitr/objects/d8"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "writing data to: repo_fluminense/gitr/objects/d8/51feb9f93f1bd34ca645d3afa5e9ce4d419263"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "writing object 9739d1b25275f9b6ee89218c25f559f12da6f068"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "creating dir: repo_fluminense/gitr/objects/97"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "writing data to: repo_fluminense/gitr/objects/97/39d1b25275f9b6ee89218c25f559f12da6f068"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:52","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 18:53:56","message": "calling commit with flags: ["-m", "\"primercommit\""]"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:53:56","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 18:55:06","message": "calling commit with flags: ["-m", "\"primercommit\""]"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:06","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:06","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:06","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "Action","timestamp": "04-11-2023 18:55:30","message": "calling commit with flags: ["-m", "\"primercommit\""]"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing object a695d13afd225502017512c6e5e4961140b24e7d"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "creating dir: repo_fluminense/gitr/objects/a6"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing data to: repo_fluminense/gitr/objects/a6/95d13afd225502017512c6e5e4961140b24e7d"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing object c5d252a2a1a23d1eee86f07283accb85999b2aef"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "creating dir: repo_fluminense/gitr/objects/c5"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing data to: repo_fluminense/gitr/objects/c5/d252a2a1a23d1eee86f07283accb85999b2aef"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing object c5d252a2a1a23d1eee86f07283accb85999b2aef"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing data to: repo_fluminense/gitr/objects/c5/d252a2a1a23d1eee86f07283accb85999b2aef"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing data to: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing object 92d1636d766089338ca27f09e9ff14912483e98c"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "creating dir: repo_fluminense/gitr/objects/92"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing data to: repo_fluminense/gitr/objects/92/d1636d766089338ca27f09e9ff14912483e98c"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "writing data to: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:30","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "04-11-2023 18:55:34","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:34","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 18:55:45","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:55:45","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 18:57:22","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:57:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:57:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:57:22","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Error","timestamp": "04-11-2023 18:57:22","message": "No se pudo leer: repo_fluminense/gitr/remote"}
+{"type": "Error","timestamp": "04-11-2023 18:57:22","message": "No se pudo leer el archivo repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 18:58:06","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:06","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 18:58:54","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:58:54","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 18:59:00","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:59:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:59:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:59:00","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 18:59:45","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:59:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 18:59:45","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:01:45","message": "calling fsdfdddd with flags: []"}
+{"type": "Error","timestamp": "04-11-2023 19:01:45","message": "Argumentos invalidos.
+    Recibi: invalid command: fsdfdddd
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "04-11-2023 19:01:51","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:01:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:01:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:01:51","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:03:20","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:03:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:03:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:03:20","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:03:45","message": "calling ppush with flags: []"}
+{"type": "Error","timestamp": "04-11-2023 19:03:45","message": "Argumentos invalidos.
+    Recibi: invalid command: ppush
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "04-11-2023 19:03:53","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:03:53","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:03:53","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:03:53","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:04:21","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:04:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:04:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:04:21","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:04:24","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:04:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:04:24","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:04:24","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:05:37","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:05:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:05:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:05:37","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:05:57","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:05:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:05:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:05:57","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:06:22","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:06:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:06:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:06:22","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:07:19","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:07:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:07:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:07:19","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:07:34","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:07:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:07:34","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:07:34","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:08:09","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:08:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:08:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:08:09","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:09:20","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:09:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:09:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:09:20","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 19:20:42","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:20:42","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:22:27","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:22:27","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:23:43","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:23:43","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:24:47","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:24:47","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:26:21","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:26:21","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:28:56","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:28:56","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:32:19","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:19","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:32:37","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:32:37","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:34:22","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:34:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:34:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:34:22","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:34:22","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:34:22","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:34:22","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:39:19","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:19","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:19","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:19","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:39:59","message": "calling branch with flags: ["rama_testing"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:59","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:59","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:39:59","message": "writing data to: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "Action","timestamp": "04-11-2023 19:40:41","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:40:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:40:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:40:41","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:40:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:40:41","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:40:41","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:40:41","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:40:41","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:43:07","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:07","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:07","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:07","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:07","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:43:20","message": "calling branch with flags: ["rama_2"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:20","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:20","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:20","message": "writing data to: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "Action","timestamp": "04-11-2023 19:43:32","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:43:32","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:47:30","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:47:30","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:56:17","message": "calling c with flags: ["-p", "92d1636d766089338ca27f09e9ff14912483e98c"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:56:17","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:56:25","message": "calling c with flags: ["-p", "92d1636d766089338ca27f09e9ff14912483e98c"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:56:25","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:58:14","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:14","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:58:20","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:20","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:20","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 19:58:29","message": "calling checkout with flags: ["rama_2"]"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "creating dir: repo_fluminense/nuevacarpeta"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "writing data to: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "writing data to: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 19:58:29","message": "writing data to: repo_fluminense/gitr/HEAD"}
+{"type": "Action","timestamp": "04-11-2023 20:01:56","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:01:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:01:56","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:01:56","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:02:11","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing object 9739d1b25275f9b6ee89218c25f559f12da6f068"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/objects/97/39d1b25275f9b6ee89218c25f559f12da6f068"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing object d851feb9f93f1bd34ca645d3afa5e9ce4d419263"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/objects/d8/51feb9f93f1bd34ca645d3afa5e9ce4d419263"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/carpeta_r2/cosa1"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing object e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "creating dir: repo_fluminense/gitr/objects/e6"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/carpeta_r2/cosa2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing object e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing object d851feb9f93f1bd34ca645d3afa5e9ce4d419263"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/objects/d8/51feb9f93f1bd34ca645d3afa5e9ce4d419263"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 20:02:11","message": "adding repo_fluminense/hola to index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing object 9739d1b25275f9b6ee89218c25f559f12da6f068"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/objects/97/39d1b25275f9b6ee89218c25f559f12da6f068"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 20:02:11","message": "adding repo_fluminense/nuevacarpeta/hola2 to index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/nuevacarpeta/agregado_r2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing object e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:11","message": "writing data to: repo_fluminense/gitr/index"}
+{"type": "Action","timestamp": "04-11-2023 20:02:59","message": "calling commit with flags: ["-m", "\"commit", "de", "prueba", "rama2\""]"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/gitr/index"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/nuevacarpeta/hola2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/nuevacarpeta/agregado_r2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing object ebab63732643a3b9a1e91d6c733ca96454735e23"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "creating dir: repo_fluminense/gitr/objects/eb"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing data to: repo_fluminense/gitr/objects/eb/ab63732643a3b9a1e91d6c733ca96454735e23"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/hola"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/carpeta_r2/cosa1"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/carpeta_r2/cosa2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing object 3eee5ff3dd9858137e9e3725268acd837e5bcee2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "creating dir: repo_fluminense/gitr/objects/3e"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing data to: repo_fluminense/gitr/objects/3e/ee5ff3dd9858137e9e3725268acd837e5bcee2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing object 334603df3e3d0ca8a094dd9ce2726212ae79df20"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "creating dir: repo_fluminense/gitr/objects/33"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing data to: repo_fluminense/gitr/objects/33/4603df3e3d0ca8a094dd9ce2726212ae79df20"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing object 334603df3e3d0ca8a094dd9ce2726212ae79df20"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing data to: repo_fluminense/gitr/objects/33/4603df3e3d0ca8a094dd9ce2726212ae79df20"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing object 047504608d69d89198446ead0339a0512a21775d"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "creating dir: repo_fluminense/gitr/objects/04"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing data to: repo_fluminense/gitr/objects/04/7504608d69d89198446ead0339a0512a21775d"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "writing data to: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:02:59","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "Action","timestamp": "04-11-2023 20:03:55","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:03:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:03:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:03:55","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:04:29","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:04:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:04:29","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:04:29","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:05:40","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:05:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:05:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:05:40","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:09:31","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:09:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:09:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:09:31","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:09:52","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:09:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:09:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:09:52","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:10:17","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:17","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:10:40","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:40","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:40","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:10:51","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:51","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:10:56","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:56","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:10:56","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:11:09","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:11:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:11:09","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:11:09","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:11:52","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:11:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:11:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:11:52","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:12:01","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:12:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:12:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:12:01","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:12:09","message": "calling sds with flags: []"}
+{"type": "Error","timestamp": "04-11-2023 20:12:09","message": "Argumentos invalidos.
+    Recibi: invalid command: sds
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "04-11-2023 20:12:12","message": "calling gfsd with flags: []"}
+{"type": "Error","timestamp": "04-11-2023 20:12:12","message": "Argumentos invalidos.
+    Recibi: invalid command: gfsd
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "04-11-2023 20:12:17","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:12:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:12:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:12:17","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:13:05","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:13:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:13:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:13:05","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:13:38","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:13:38","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:13:38","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:13:38","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:14:20","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:14:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:14:20","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:14:20","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:15:21","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:15:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:15:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:15:21","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "Action","timestamp": "04-11-2023 20:16:23","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:16:23","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:17:21","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:17:21","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:18:13","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:18:13","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:20:48","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:20:48","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:21:27","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:21:27","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:22:43","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:22:43","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:24:54","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:24:54","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:26:52","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:26:52","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:30:16","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:30:16","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:31:19","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:31:19","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:32:18","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:32:18","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:33:01","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:33:01","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:37:10","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:37:10","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:38:04","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:04","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:38:37","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:38:37","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:40:55","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:40:55","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:44:42","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:44:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:44:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:44:42","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:44:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:44:42","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:44:42","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:44:42","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:44:42","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "04-11-2023 20:45:18","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: repo_fluminense/gitr/remote"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_2"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: repo_fluminense/gitr/refs/heads/rama_testing"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: repo_fluminense/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "04-11-2023 20:45:18","message": "reading data from: .head_repo"}

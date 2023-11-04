@@ -790,7 +790,6 @@ pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
 }
 
 pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
-    println!("llega a pedir object{:?}",id);
     let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
     let mut archivo = match File::open(&format!("{}/{}",dir_path,id.split_at(2).1)) {
         Ok(archivo) => archivo,
@@ -801,7 +800,6 @@ pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
         return Err(GitrError::FileReadError(dir_path));
     }
     let descomprimido = String::from_utf8_lossy(&decode(&contenido)?).to_string();
-    println!("llega a dar object");
     Ok(descomprimido)
 }
 pub fn get_object_bytes(id: String, r_path: String) -> Result<Vec<u8>,GitrError> {

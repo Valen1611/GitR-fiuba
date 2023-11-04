@@ -66,7 +66,6 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
         }
         let elems = split_n_validate_elems(&pkt_line)?;
         // ########## REFERENCE DISCOVERY ##########
-        
         (refs_string, guardados_id) = ref_discovery(&r_path)?;
         stream.write(&refs_string.as_bytes())?;
 
@@ -98,26 +97,27 @@ fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_pat
 }
 
 fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<()> {
-
+    
     // ##########  REFERENCE UPDATE ##########
     let mut buffer = [0; 1024];
-
+    
     if let Ok(n) = stream.read(&mut buffer) {
 
         let (old,new, names ) = get_changes(&buffer[..n])?;
+        println!("old: {:?}\nnew: {:?}\n names{:?}\n",old,new,names);
         if old.len() == 0 { //el cliente esta al dia
             return Ok(());
         }
         let pkt_needed = update_refs(old, new, names, r_path.clone())?;
-
         // ########## *PACKFILE DATA ##########
         if pkt_needed {
-        let (ids, content) = rcv_packfile_bruno(stream)?;
-        update_contents(ids, content, r_path.clone())?;
-    } 
+            let (ids, content) = rcv_packfile_bruno(stream)?;
+            update_contents(ids, content, r_path.clone())?;
+        } 
    
         return Ok(())
     }
+    println!("no entra al if");
     Err(Error::new(std::io::ErrorKind::Other, "Error: no se pudo leer el stream"))
 }
 
@@ -161,6 +161,7 @@ fn _is_commit(obj: String) -> bool {
 
 
 fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> std::io::Result<()> {
+    println!("entra al upd conts");
     if ids.len() != content.len() {
         return Err(Error::new(std::io::ErrorKind::Other, "Error: no coinciden los ids con los contenidos"))
     }
@@ -261,7 +262,7 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
     let nul_obj = "0000000000000000000000000000000000000000";
     let mut pkt_needed = false;
     for i in 0..old.len() {
-        let path = r_path.clone() + "/" + &names[i];
+        let path = r_path.clone() + "\\" + &names[i];
         if old[i] == nul_obj  && new[i] != nul_obj{ // caso de creacion de archivo
             let mut new_file = File::create(&path)?;
             new_file.write_all(new[i].as_bytes())?;
@@ -274,6 +275,8 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
             return Err(Error::new(std::io::ErrorKind::Other, "Error: el archivo no cambio")); // no se si es el error correcto
         } else { // caso de archivo modificado
             pkt_needed = true;
+            println!("tiene que cambiar {:?} por {:?}",old[i],new[i]);
+            let path = path.replace("\\", "/");
             let old_file = fs::File::open(&path)?;
             let mut old_ref = String::new();
             BufReader::new(old_file).read_line(&mut old_ref)?;
@@ -354,23 +357,22 @@ fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
     let ruta = format!("{}/HEAD",r_path);
     let mut cont = String::new();
     let archivo = fs::File::open(&ruta)?;
-    
     BufReader::new(archivo).read_line(&mut cont)?;
+    
     let c =r_path.to_string() +"/"+ cont.split_at(5).1;
     
-    let mut contenido = String::new();
-    match fs::File::open(c){
-        Ok(f) => {BufReader::new(f).read_line(&mut contenido)?;},
-        Err(_) => {return Err(Error::new(std::io::ErrorKind::Other, "Error: no se pudo abrir el archivo HEAD"))}
+    let mut contenido = "".to_string();
+    if let Ok(f) = fs::File::open(c){
+        BufReader::new(f).read_line(&mut contenido)?;
+        guardados.insert(contenido.clone());
+        let longitud = contenido.len() + 10;
+        let longitud_hex = format!("{:04x}", longitud);
+        contenido_total.push_str(&longitud_hex);
+        contenido_total.push_str(&contenido);
+        contenido_total.push_str(&(" ".to_string() + "HEAD"));
+        contenido_total.push('\n');
     }
-    
-    guardados.insert(contenido.clone());
-    let longitud = contenido.len() + 10;
-    let longitud_hex = format!("{:04x}", longitud);
-    contenido_total.push_str(&longitud_hex);
-    contenido_total.push_str(&contenido);
-    contenido_total.push_str(&(" ".to_string() + "HEAD"));
-    contenido_total.push('\n');
+
     
     let refs_path = format!("{}/refs",r_path);
     ref_discovery_dir(&(refs_path.clone() + "/heads"),r_path, &mut contenido_total,&mut guardados)?;
@@ -439,7 +441,7 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
 fn create_dirs(r_path: &str) -> std::io::Result<()> {
     let p_str = r_path.to_string();
     fs::create_dir(p_str.clone())?;
-    write_file(p_str.clone() + "/HEAD", "7217a7c7e582c46cec22a130adf4b9d7d950fba0".to_string())?;
+    write_file(p_str.clone() + "/HEAD", "ref: refs/heads/master".to_string())?;
     fs::create_dir(p_str.clone() + "/refs")?;
     fs::create_dir(p_str.clone() +"/refs/heads")?;
     fs::create_dir(p_str.clone() +"/refs/tags")?;

@@ -47,8 +47,8 @@ impl Tree{
                     let hash = blob.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
 
-                    let _path_no_repo = path.split_once('\\').unwrap().1;
-                    let file_name = path.split('\\').last().unwrap();
+                    let _path_no_repo = path.split_once('/').unwrap().1;
+                    let file_name = path.split('/').last().unwrap();
                     let obj_entry = [
                         b"100644 ",
                         file_name.as_bytes(),

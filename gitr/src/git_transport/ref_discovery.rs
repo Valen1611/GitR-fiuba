@@ -38,6 +38,9 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     let mut references: Vec<(String,String)> = vec![];
     let iter_refs: Vec<&str> = received_data.lines().collect();
     //Extraigo el primer hash al que apunta HEAD
+    if received_data == "0000"{
+        return Ok(references)
+    }
     let head_hash = extract_head_hash(iter_refs[0]);
     references.push((head_hash,"HEAD".to_string()));
     
@@ -82,7 +85,7 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_i
             if !ya_lo_tiene {
                 pkt_ids.push(heads_ids[j].clone());
             }
-            let line = format!("0000000000000000000000000000000000000000 {} refs\\{}\n",heads_ids[j],refer);
+            let line = format!("0000000000000000000000000000000000000000 {} refs/heads/{}\n",heads_ids[j],refer);
             request.push_str(&format!("{:04X}{}",line.len()+4,line));
         }
         j += 1;
