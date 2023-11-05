@@ -357,7 +357,6 @@ pub fn add(flags: Vec<String>)-> Result<(), GitrError> {
     let index_path = &(repo.clone() + "/gitr/index");
     if Path::new(index_path).is_file() {
         let index_data = file_manager::read_index()?;
-        print!("index exists");
 
         let mut index_vector: Vec<&str> = Vec::new();
 

@@ -137,9 +137,6 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
         Ok(file) => file,
         Err(_) => return Err(GitrError::FileReadError(path.to_string())),
     };
-    if file.metadata().is_err() || file.metadata().unwrap().len() == 0 {
-        return Ok(Vec::new());
-    }
     let mut decoder = ZlibDecoder::new(file);
     let mut buffer = Vec::new();
     match decoder.read_to_end(&mut buffer){
@@ -345,7 +342,6 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/refs/remotes"))?;
         create_directory(&(name.clone() + "/gitr/refs/remotes/daemon"))?;
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
-        write_file(name.clone() + "/gitr/index", "".to_string())?;
 
     Ok(())
 }
@@ -371,6 +367,7 @@ pub fn read_index() -> Result<String, GitrError>{
     };
     Ok(data)
 }
+
 
 pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
     let mut index;
