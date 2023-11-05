@@ -161,17 +161,20 @@ fn _is_commit(obj: String) -> bool {
 
 
 fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> std::io::Result<()> {
-    println!("entra al upd conts");
+    println!("entra al upd conts con ids: {ids:?}");
     if ids.len() != content.len() {
         return Err(Error::new(std::io::ErrorKind::Other, "Error: no coinciden los ids con los contenidos"))
     }
+    println!("check1");
     let mut i = 0;
     for id in ids {
-        
+        println!("check2");
         let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
         let _ = fs::create_dir(dir_path.clone()); // si ya existe tira error pero no pasa nada
         let mut archivo = File::create(&format!("{}/{}",dir_path,id.split_at(2).1))?;
+        println!("check3");
         archivo.write_all(&code(&content[i])?)?;
+        println!("check4");
         i += 1;
     }
     Ok(())
@@ -242,6 +245,7 @@ fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, V
     let mut hashes: Vec<String> = Vec::new();
     let mut contents: Vec<Vec<u8>> = Vec::new();
     for object in pk_file.objects.iter(){
+        println!("objeto: {object:?}\n");
         match object{
             GitObject::Blob(blob) => {
                 hashes.push(blob.get_hash());
@@ -262,7 +266,7 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
     let nul_obj = "0000000000000000000000000000000000000000";
     let mut pkt_needed = false;
     for i in 0..old.len() {
-        let path = r_path.clone() + "\\" + &names[i];
+        let path = r_path.clone() + "/" + &names[i];
         if old[i] == nul_obj  && new[i] != nul_obj{ // caso de creacion de archivo
             let mut new_file = File::create(&path)?;
             new_file.write_all(new[i].as_bytes())?;

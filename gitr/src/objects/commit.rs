@@ -115,13 +115,12 @@ impl Commit{
     pub fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> Result<Vec<String>,GitrError> {
         // Voy metiendo en el objects todo lo que no haya que mandarle denuevo al cliente
         let mut object_ids: HashSet<String> = HashSet::new();
-
-
         for obj_id in client_objects.clone() {
             object_ids.insert(obj_id.clone());
         }
         let mut commits: Vec<Commit> = Vec::new();
         for id in commits_id {
+            object_ids.insert(id.clone());
             match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
                 Ok(commit) => {commits.push(commit)},
                 _ => {return Err(GitrError::InvalidCommitError)}
