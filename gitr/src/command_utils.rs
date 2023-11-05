@@ -2,9 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::HashMap, net::
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs};
-use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
-use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, update_working_directory};
+use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs,update_working_directory};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 /***************************
  *************************** 
@@ -197,6 +195,7 @@ pub fn get_hashmap_for_checkout()->Result<(HashMap<String, Vec<String>>,Vec<Stri
     for file_info in index_files.split('\n') {
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
         let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
+        println!("{}",file_path);
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
             if let Some(last_element) = splitted_file_path.last() {
                 if dir == last_element {

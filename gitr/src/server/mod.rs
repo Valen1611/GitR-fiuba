@@ -12,10 +12,10 @@ use std::str::from_utf8;
 use std::thread;
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
-use flate2::read::ZlibDecoder;
-
+use crate::file_manager;
+use crate::git_transport::pack_file::PackFile;
 use crate::objects::commit::Commit;
-use crate::objects::tree::Tree;
+use crate::objects::git_object::GitObject;
 
 
 pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
@@ -58,23 +58,25 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
         }
         
         // ########## HANDSHAKE ##########
-        let pkt_line = from_utf8(&buffer).unwrap_or(""); 
-        match is_valid_pkt_line(pkt_line) {
+        let pkt_line = String::from_utf8_lossy(&buffer[..n]).to_string(); 
+        match is_valid_pkt_line(&pkt_line) {
             Ok(_) => {},
             Err(_) => {let _ = stream.write(&"Error: no se respeta el formato pkt-line".as_bytes());
             return Ok(())}
         }
-        let elems = split_n_validate_elems(pkt_line)?;
-        
+        let elems = split_n_validate_elems(&pkt_line)?;
         // ########## REFERENCE DISCOVERY ##########
-        
         (refs_string, guardados_id) = ref_discovery(&r_path)?;
         stream.write(&refs_string.as_bytes())?;
 
         // ########## ELECCION DE COMANDO ##########
         match elems[0] {
-            "gitr-upload-pack" => {gitr_upload_pack(&mut stream, guardados_id, r_path)?;}, // Mandar al cliente
-            "gitr-receive-pack" => {gitr_receive_pack(&mut stream, r_path)?;}, // Recibir del Cliente
+            "git-upload-pack" => {
+                println!("pudo entrar al git-upload-pack");
+                gitr_upload_pack(&mut stream, guardados_id, r_path)?;}, // Mandar al cliente
+            "git-receive-pack" => {
+                println!("pudo entrar al git-receive-pack");
+                gitr_receive_pack(&mut stream, r_path)?;}, // Recibir del Cliente
             _ => {stream.write(&"Error: comando git no reconocido".as_bytes())?;}
         }
     }
@@ -84,7 +86,7 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
 fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_path: String) -> std::io::Result<()>{
 
     // ##########  PACKFILE NEGOTIATION ##########
-    let (wants_id, haves_id) = packfile_negotiation(stream, guardados_id, r_path.clone())?;
+    let (wants_id, haves_id) = packfile_negotiation(stream, guardados_id)?;
     
     // ########## PACKFILE DATA ##########
     if !wants_id.is_empty() {
@@ -95,49 +97,57 @@ fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_pat
 }
 
 fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<()> {
-
+    
     // ##########  REFERENCE UPDATE ##########
     let mut buffer = [0; 1024];
-    stream.read(&mut buffer)?;
-    let (old,new, names ) = get_changes(&buffer)?;
-    let pkt_needed = update_refs(old, new, names, r_path.clone())?;
+    
+    if let Ok(n) = stream.read(&mut buffer) {
 
-    // ########## *PACKFILE DATA ##########
-    if pkt_needed {
-        let (ids, content) = rcv_packfile_bruno(stream)?;
-        update_contents(ids, content, r_path.clone())?;
-    } 
+        let (old,new, names ) = get_changes(&buffer[..n])?;
+        println!("old: {:?}\nnew: {:?}\n names{:?}\n",old,new,names);
+        if old.len() == 0 { //el cliente esta al dia
+            return Ok(());
+        }
+        let pkt_needed = update_refs(old, new, names, r_path.clone())?;
+        // ########## *PACKFILE DATA ##########
+        if pkt_needed {
+            let (ids, content) = rcv_packfile_bruno(stream)?;
+            update_contents(ids, content, r_path.clone())?;
+        } 
    
-    Ok(())
+        return Ok(())
+    }
+    println!("no entra al if");
+    Err(Error::new(std::io::ErrorKind::Other, "Error: no se pudo leer el stream"))
 }
 
 /// INCOMPLETA -> ERA DEL CLIENTE
-fn _make_push_cert(ids: Vec<String>, r_path: String, host: String) -> std::io::Result<String> {
-    let mut push_cert = String::new();
-    let mut line: &str = "push-cert0\n";
-    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
-    line = "certificate version 0.1\n";
-    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
-    let mut ident: Vec<&str> = vec!["nombre","mail"];
-    let mut obj: String;
-    for id in ids {
-        obj = get_object(id, r_path.clone())?;
-        if _is_commit(obj.clone()) {
-            let div1: Vec<&str> = obj.split("committer ").collect();
-            let div2: Vec<&str> = div1[1].split(">").collect();
-            ident = div2[0].split(" <").collect();
-            break
-        }
-    }
-    let line: &str = &format!("pusher {} {}\n",ident[0],ident[1]);
-    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
-    let line: &str = &format!("pushee {}\n",host);
-    push_cert.push_str(&format!("{:04x}{}",line.len(), line));
-    // ...
-    // ... ...
-    // ... ... ...
-    Ok("".to_string())
-}
+// fn _make_push_cert(ids: Vec<String>, r_path: String, host: String) -> std::io::Result<String> {
+//     let mut push_cert = String::new();
+//     let mut line: &str = "push-cert0\n";
+//     push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+//     line = "certificate version 0.1\n";
+//     push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+//     let mut ident: Vec<&str> = vec!["nombre","mail"];
+//     let mut obj: String;
+//     for id in ids {
+//         obj = file_manager::get_object(id, r_path.clone())?;
+//         if _is_commit(obj.clone()) {
+//             let div1: Vec<&str> = obj.split("committer ").collect();
+//             let div2: Vec<&str> = div1[1].split(">").collect();
+//             ident = div2[0].split(" <").collect();
+//             break
+//         }
+//     }
+//     let line: &str = &format!("pusher {} {}\n",ident[0],ident[1]);
+//     push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+//     let line: &str = &format!("pushee {}\n",host);
+//     push_cert.push_str(&format!("{:04x}{}",line.len(), line));
+//     // ...
+//     // ... ...
+//     // ... ... ...
+//     Ok("".to_string())
+// }
 
 fn _is_commit(obj: String) -> bool {
     let mut lines = obj.lines();
@@ -148,26 +158,23 @@ fn _is_commit(obj: String) -> bool {
     false
 }
 
-fn get_object(id: String, r_path: String) -> std::io::Result<String> {
-    let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
-    let mut archivo = File::open(&format!("{}/{}",dir_path,id.split_at(2).1))?; // si no existe tira error
-    let mut contenido: Vec<u8>= Vec::new();
-    archivo.read_to_end(&mut contenido)?;
-    let descomprimido = String::from_utf8_lossy(&decode(&contenido)?).to_string();
-    Ok(descomprimido)
-}
 
-fn update_contents(ids: Vec<String>, content: Vec<String>, r_path: String) -> std::io::Result<()> {
+
+fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> std::io::Result<()> {
+    println!("entra al upd conts con ids: {ids:?}");
     if ids.len() != content.len() {
         return Err(Error::new(std::io::ErrorKind::Other, "Error: no coinciden los ids con los contenidos"))
     }
+    println!("check1");
     let mut i = 0;
     for id in ids {
-        
+        println!("check2");
         let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
         let _ = fs::create_dir(dir_path.clone()); // si ya existe tira error pero no pasa nada
         let mut archivo = File::create(&format!("{}/{}",dir_path,id.split_at(2).1))?;
-        archivo.write_all(&code(content[i].as_bytes())?)?;
+        println!("check3");
+        archivo.write_all(&code(&content[i])?)?;
+        println!("check4");
         i += 1;
     }
     Ok(())
@@ -175,9 +182,12 @@ fn update_contents(ids: Vec<String>, content: Vec<String>, r_path: String) -> st
 
 fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<String>, r_path: String) -> std::io::Result<()> {
     let mut contents: Vec<String> = vec![];
-    let wants_id = get_objects_from_commits(wants_id.clone(), haves_id, r_path.clone())?;
+    let wants_id = Commit::get_objects_from_commits(wants_id.clone(), haves_id, r_path.clone()).unwrap_or(vec![]);
     for id in wants_id.clone() {
-        contents.push(get_object(id, r_path.clone())?);
+        match file_manager::get_object(id, r_path.clone()){
+            Ok(obj) => contents.push(obj),
+            Err(_) => return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo obtener el objeto"))
+        }
     }
 
     if let Ok(pack_string) = pack_data_bruno(wants_id, contents) {
@@ -188,47 +198,11 @@ fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<Stri
     Ok(())
 }
 
-fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> std::io::Result<Vec<String>> {
-    // Voy metiendo en el objects todo lo que no haya que mandarle denuevo al cliente
-    let mut object_ids: HashSet<String> = HashSet::new();
-    for obj_id in client_objects.clone() {
-        object_ids.insert(obj_id);
-    }
-    let mut commits: Vec<Commit> = Vec::new();
-    for id in commits_id {
-        match Commit::new_commit_from_string(get_object(id, r_path.clone())?) {
-            Ok(commit) => {commits.push(commit)},
-            _ => {return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo crear el commit"))}
-        }
-    } // Ahora tengo los Commits como objeto en el vector commits
-    for commit in commits {
-        object_ids.insert(commit.get_tree());
-        get_tree_objects(commit.get_tree(), r_path.clone(), &mut object_ids)?;
-    }
-    // Sacamos los que ya tiene el cliente
-    for obj in client_objects{
-        object_ids.remove(&obj);
-    } 
-    Ok(Vec::from_iter(object_ids.into_iter()))
 
-    
-}
 
-fn get_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> std::io::Result<()> {
-    // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
 
-    let tree_objects = match Tree::get_objects_id_from_string(get_object(tree_id, r_path.clone())?){
-        Ok(ids) => {ids},
-        _ => {return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo crear el arbol"))}
-    };
-    for obj_id in tree_objects {
-        object_ids.insert(obj_id.clone());
-        let _ = get_tree_objects(obj_id.clone(), r_path.clone(),object_ids); 
-    }
-    Ok(())
-}
 
-fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>, r_path: String) -> std::io::Result<(Vec<String>, Vec<String>)> {
+fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>) -> std::io::Result<(Vec<String>, Vec<String>)> {
     let (mut buffer, mut reply) = ([0; 1024], "0008NAK\n".to_string());
     let (mut wants_id, mut haves_id): (Vec<String>, Vec<String>) = (Vec::new(), Vec::new());    
     loop {
@@ -260,10 +234,32 @@ fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>, r
     Ok((wants_id, haves_id))
 }
 
-fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, Vec<String>)> {
+fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, Vec<Vec<u8>>)> {
     let mut buffer: [u8;1024] = [0; 1024];
     stream.read(&mut buffer)?;
-    Ok((vec![],vec![]))
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer);
+    let pk_file = match pack_file_struct {
+        Ok(pack_file) => {pack_file},
+        _ => {return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo crear el packfile"))}
+    };
+    let mut hashes: Vec<String> = Vec::new();
+    let mut contents: Vec<Vec<u8>> = Vec::new();
+    for object in pk_file.objects.iter(){
+        println!("objeto: {object:?}\n");
+        match object{
+            GitObject::Blob(blob) => {
+                hashes.push(blob.get_hash());
+                contents.push(blob.get_data());},
+            GitObject::Commit(commit) => {
+                hashes.push(commit.get_hash());
+                contents.push(commit.get_data());},
+            GitObject::Tree(tree) => {
+                hashes.push(tree.get_hash());
+                contents.push(tree.get_data());
+            },
+        }
+    }
+    Ok((hashes,contents))
 }
 
 fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: String) -> std::io::Result<bool> {
@@ -283,6 +279,8 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
             return Err(Error::new(std::io::ErrorKind::Other, "Error: el archivo no cambio")); // no se si es el error correcto
         } else { // caso de archivo modificado
             pkt_needed = true;
+            println!("tiene que cambiar {:?} por {:?}",old[i],new[i]);
+            let path = path.replace("\\", "/");
             let old_file = fs::File::open(&path)?;
             let mut old_ref = String::new();
             BufReader::new(old_file).read_line(&mut old_ref)?;
@@ -298,6 +296,7 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
 }
 
 fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<String>)> {
+
     let changes = from_utf8(&buffer).unwrap_or("");
     let mut old: Vec<String> = vec![];
     let mut new: Vec<String> = vec![];
@@ -319,7 +318,7 @@ fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<S
     Ok((old, new, names))
 }
 
-fn pack_data_bruno(ids: Vec<String>, contents: Vec<String>) -> std::io::Result<String> {
+fn pack_data_bruno(_ids: Vec<String>, _contents: Vec<String>) -> std::io::Result<String> {
     
     Ok(format!("ToDo"))
 }
@@ -360,22 +359,30 @@ fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
     let mut contenido_total = String::new();
     let mut guardados: HashSet<String> = HashSet::new();
     let ruta = format!("{}/HEAD",r_path);
-    let mut contenido = String::new();
+    let mut cont = String::new();
     let archivo = fs::File::open(&ruta)?;
+    BufReader::new(archivo).read_line(&mut cont)?;
+    
+    let c =r_path.to_string() +"/"+ cont.split_at(5).1;
+    
+    let mut contenido = "".to_string();
+    if let Ok(f) = fs::File::open(c){
+        BufReader::new(f).read_line(&mut contenido)?;
+        guardados.insert(contenido.clone());
+        let longitud = contenido.len() + 10;
+        let longitud_hex = format!("{:04x}", longitud);
+        contenido_total.push_str(&longitud_hex);
+        contenido_total.push_str(&contenido);
+        contenido_total.push_str(&(" ".to_string() + "HEAD"));
+        contenido_total.push('\n');
+    }
 
-    BufReader::new(archivo).read_line(&mut contenido)?;
-    guardados.insert(contenido.clone());
-    let longitud = contenido.len() + 10;
-    let longitud_hex = format!("{:04x}", longitud);
-    contenido_total.push_str(&longitud_hex);
-    contenido_total.push_str(&contenido);
-    contenido_total.push_str(&(" ".to_string() + "HEAD"));
-    contenido_total.push('\n');
     
     let refs_path = format!("{}/refs",r_path);
-    ref_discovery_dir(&refs_path,r_path, &mut contenido_total,&mut guardados)?;
+    ref_discovery_dir(&(refs_path.clone() + "/heads"),r_path, &mut contenido_total,&mut guardados)?;
+    ref_discovery_dir(&(refs_path + "/tags"),r_path, &mut contenido_total,&mut guardados)?;
     
-    contenido_total.push_str("0000\n");
+    contenido_total.push_str("0000");
     
     Ok((contenido_total,guardados))
 }
@@ -387,10 +394,10 @@ fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut St
         if ruta.is_file() {
             let mut contenido = String::new();
             let archivo = fs::File::open(&ruta)?;
-            
             BufReader::new(archivo).read_line(&mut contenido)?;
             guardados.insert(contenido.clone());
-            let path_str = ruta.to_str().unwrap_or("ERROR").strip_prefix(&format!("{}\\",original_path)).unwrap_or("ERROR");
+            let path_str = ruta.to_str().unwrap_or("ERROR").strip_prefix(&format!("{}/",original_path)).unwrap_or("ERROR2");
+            let path_str = &path_str.replace("/", "\\");
             let longitud = contenido.len() + path_str.len() + 6;
             let longitud_hex = format!("{:04x}", longitud);
             contenido_total.push_str(&longitud_hex);
@@ -403,12 +410,11 @@ fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut St
     Ok(())
 }
 
-fn capacidades() -> String {
+fn _capacidades() -> String {
     "capacidades-del-server ok_ok ...".to_string()
 }
 
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
-    println!("ok {:?}\n",pkt_line);
     if pkt_line != "" && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" || pkt_line == "0000" || pkt_line == "0009done\n" || pkt_line == "00000009done" ) {
         return Ok(())
     }
@@ -439,7 +445,7 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
 fn create_dirs(r_path: &str) -> std::io::Result<()> {
     let p_str = r_path.to_string();
     fs::create_dir(p_str.clone())?;
-    write_file(p_str.clone() + "/HEAD", "7217a7c7e582c46cec22a130adf4b9d7d950fba0".to_string())?;
+    write_file(p_str.clone() + "/HEAD", "ref: refs/heads/master".to_string())?;
     fs::create_dir(p_str.clone() + "/refs")?;
     fs::create_dir(p_str.clone() +"/refs/heads")?;
     fs::create_dir(p_str.clone() +"/refs/tags")?;
@@ -459,19 +465,18 @@ fn code(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
     encoder.finish()
 }
 
-fn decode(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
-    let mut decoder = ZlibDecoder::new(input);
-    let mut decoded_data = Vec::new();
-    decoder.read_to_end(&mut decoded_data)?;
-    Ok(decoded_data)
-}
+
 
 fn main(){
-      
+    let address =  "localhost:5454";
+    let ruta = "remote_repo";
+    let _ = server_init(ruta, address);
+    println!("Server inicializado en {}", address)
 }
 
 #[cfg(test)]
 mod tests{
+
     use super::*;
 
     #[test]
@@ -491,7 +496,7 @@ mod tests{
             let mut buffer = [0; 1024];
             
             socket.read(&mut buffer).unwrap();
-            assert_eq!(from_utf8(&decode(&buffer).unwrap()), Ok("Error: no se respeta el formato pkt-line"));
+            assert_eq!(from_utf8(&file_manager::decode(&buffer).unwrap()), Ok("Error: no se respeta el formato pkt-line"));
             return ;
         }).unwrap();
 
@@ -503,7 +508,7 @@ mod tests{
     fn test01_encoder_decoder() {
         let input = "Hola mundo".as_bytes();
         let encoded = code(input).unwrap();
-        let decoded = decode(&encoded).unwrap();
+        let decoded = file_manager::decode(&encoded).unwrap();
         assert_eq!(input, decoded.as_slice());
     }
 
@@ -616,10 +621,10 @@ mod tests{
         let r_path = "remote_repo";
         let _ = create_dirs(r_path);
         let ids = vec!["74730d410fcb6603ace96f1dc55ea6196122532d".to_string(),"5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string()];
-        let content = vec!["Hola mundo".to_string(),"Chau mundo".to_string()];
+        let content: Vec<Vec<u8>> = vec!["Hola mundo".to_string().as_bytes().to_vec(),"Chau mundo".to_string().as_bytes().to_vec()];
         update_contents(ids, content, r_path.to_string()).unwrap();
-        assert_eq!(get_object("74730d410fcb6603ace96f1dc55ea6196122532d".to_string(), r_path.to_string()).unwrap(), "Hola mundo");
-        assert_eq!(get_object("5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string(), r_path.to_string()).unwrap(), "Chau mundo");         
+        assert_eq!(file_manager::get_object("74730d410fcb6603ace96f1dc55ea6196122532d".to_string(), r_path.to_string()).unwrap(), "Hola mundo");
+        assert_eq!(file_manager::get_object("5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string(), r_path.to_string()).unwrap(), "Chau mundo");         
 
     }
 

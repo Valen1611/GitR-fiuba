@@ -1,7 +1,12 @@
-use chrono::{Utc, Local, format};
+use std::collections::HashSet;
 
+use chrono::Utc;
+
+use crate::file_manager::{self, get_object};
 use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing, get_user_mail_from_config};
+
+use super::tree::Tree;
 
 #[derive(Debug)]
 pub struct Commit{
@@ -24,8 +29,8 @@ impl Commit{
             format_data.push_str(&format!("parent {}\n", parent));
         }
         parent = "".to_string();
-        format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config()?, "1698972809"));
-        format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config()?, "1698972809"));
+        format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config()?, Utc::now().timestamp()));
+        format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config()?, Utc::now().timestamp()));
         format_data.push_str("\n");
         let message = message.replace("\"", "");
         format_data.push_str(&format!("{}\n", message));
@@ -54,10 +59,8 @@ impl Commit{
 
         let size = format_data.as_bytes().len();
 
-        println!("size: {}", size);
         
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
-        println!("format_data_entera: {:?}", format_data_entera);
 
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());
@@ -73,16 +76,19 @@ impl Commit{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
+
+    pub fn get_data(&self) -> Vec<u8>{
+        self.data.clone()
+    }
+    
     pub fn get_tree(&self) -> String{
         self.tree.clone()
     }
 
     pub fn new_commit_from_string(data: String)->Result<Commit,GitrError>{
         let (mut parent, mut tree, mut author, mut committer, mut message) = ("","None","None","None","None");
-        
         for line in data.lines() {
             let elems = line.split(" ").collect::<Vec<&str>>();
-            
             match elems[0] {
                 "tree" => tree = elems[1],
                 "parent" => parent = elems[1],
@@ -91,7 +97,6 @@ impl Commit{
                 _ => message = line,
             }
         }
-        
         let commit = Commit::new(tree.to_string(), parent.to_string(), author.to_string(), committer.to_string(), message.to_string())?;
         Ok(commit)
     }
@@ -100,12 +105,70 @@ impl Commit{
        let commit_string = data.split("\0").collect::<Vec<&str>>()[1].to_string();
        Ok(Self::new_commit_from_string(commit_string)?)
     }
+
+    pub fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> Result<Vec<String>,GitrError> {
+        // Voy metiendo en el objects todo lo que no haya que mandarle denuevo al cliente
+        let mut object_ids: HashSet<String> = HashSet::new();
+        for obj_id in client_objects.clone() {
+            object_ids.insert(obj_id.clone());
+        }
+        let mut commits: Vec<Commit> = Vec::new();
+        for id in commits_id {
+            object_ids.insert(id.clone());
+            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
+                Ok(commit) => {commits.push(commit)},
+                _ => {return Err(GitrError::InvalidCommitError)}
+            }
+        } // Ahora tengo los Commits como objeto en el vector commits
+        for commit in commits {
+            object_ids.insert(commit.get_tree());
+
+            Tree::get_all_tree_objects(commit.get_tree(), r_path.clone(), &mut object_ids)?;
+        }
+        // Sacamos los que ya tiene el cliente
+        for obj in client_objects{
+            object_ids.remove(&obj);
+        } 
+        Ok(Vec::from_iter(object_ids.into_iter()))
+    
+        
+    }
+
+    pub fn get_parents(commits_ids: Vec<String>, receivers_commits: Vec<String>, r_path: String) -> Result<Vec<String>, GitrError>{
+        let mut parents: Vec<String> = Vec::new();
+        let mut rcv_commits = HashSet::new();
+        for id in receivers_commits {
+            rcv_commits.insert(id);
+        }
+        for id in commits_ids {
+            if rcv_commits.contains(&id) {
+                continue;
+            } // Si el cliente ya tiene el commit, no lo agrego a los parents
+            parents.push(id.clone());
+            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
+                Ok(commit) => {Self::get_parents_rec(commit.parent, &rcv_commits,r_path.clone(),&mut parents)?},
+                _ => {return Err(GitrError::InvalidCommitError)}
+            }
+        }
+        Ok(Vec::from_iter(parents.into_iter()))
+    }
+
+    fn get_parents_rec(id: String, receivers_commits: &HashSet<String>,r_path: String, parents: &mut Vec<String>) -> Result<(), GitrError>{
+        if receivers_commits.contains(&id) || id == "None" || id == ""{
+            return Ok(());
+        } // Si el cliente ya tiene el commit, no lo agrego a los parents
+        parents.push(id.clone());
+        match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
+            Ok(commit) => {Self::get_parents_rec(commit.parent, receivers_commits, r_path, parents)
+            },
+            _ => {return Err(GitrError::InvalidCommitError)}
+        }
+    }
 }
 
 
 #[cfg(test)]
 mod tests {
-    use std::mem;
 
     use crate::objects::commit::Commit;
     #[test]

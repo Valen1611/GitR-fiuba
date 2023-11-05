@@ -38,7 +38,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
         "merge" => commands::merge(flags)?,
         "remote" =>commands::remote(flags),
         "pull" => commands::pull(flags)?,
-        "push" => commands::push(flags),
+        "push" => commands::push(flags)?,
         "branch" =>commands::branch(flags)?,
         "ls-files" => commands::ls_files(flags)?,
 

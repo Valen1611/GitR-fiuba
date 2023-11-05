@@ -6,7 +6,6 @@ use crate::{gitr_errors::{GitrError, self}, file_manager};
 
 pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
     let str_received = String::from_utf8_lossy(header_slice);
-    println!("verify_header(): str_received: {:?}", str_received);
     if str_received != "PACK"{
         return Err(GitrError::PackFileError("verify_header".to_string(), "La signature no es PACK".to_string()));
     }
@@ -19,18 +18,15 @@ pub fn extract_version(version_slice:&[u8])->Result<u32,GitrError>{
         Err(_e) => return Err(gitr_errors::GitrError::PackFileError("extract_version".to_string(),"no se pudo obtener la version".to_string()))
     };
     let version = u32::from_be_bytes(version);
-    println!("Versión del archivo de pack: {:?}", version);
     Ok(version)
 }
 
 fn extract_head_hash(head_slice: &str)->String{
-    println!("extract_head_hash(): {}", head_slice);
     let head_hash = head_slice.split(' ').collect::<Vec<&str>>()[0];
     head_hash.to_string().split_off(4)
 }
 
 fn extract_hash_and_ref(ref_slice: &str)->(String,String){
-    println!("extract_hash_and_ref(): [param:ref_slice]{:?}", ref_slice);
     let split = ref_slice.split(' ').collect::<Vec<&str>>();
     let hash = split[0];
     let reference = split[1];
@@ -42,17 +38,61 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     let mut references: Vec<(String,String)> = vec![];
     let iter_refs: Vec<&str> = received_data.lines().collect();
     //Extraigo el primer hash al que apunta HEAD
+    if received_data == "0000"{
+        return Ok(references)
+    }
     let head_hash = extract_head_hash(iter_refs[0]);
     references.push((head_hash,"HEAD".to_string()));
     
     for refs in &iter_refs[1..]{
-        if *refs == ""{
+        if *refs == "" || *refs == "0000"{
             break;
         }
         references.push(extract_hash_and_ref(refs));
     }
     // println!("Pares hash - ref{:?}", references);
     Ok(references)
+}
+
+pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_ids: Vec<String>, heads_refs: Vec<String>)->Result<(String,bool,Vec<String>),GitrError>{
+    let mut request = String::new();
+    let mut j = 0;
+    let mut pkt_needed = false;
+    let mut pkt_ids:Vec<String> = vec![];
+    for refer in heads_refs { // veo si tengo que crear o modificar alguna
+        let mut falta = true;
+        for hash_n_ref in hash_n_references.clone() {
+            if hash_n_ref.1.ends_with(&refer) { 
+                falta = false;
+                if hash_n_ref.0 != heads_ids[j]{
+                    pkt_needed = true;
+                    pkt_ids.push(heads_ids[j].clone());
+                    let line = format!("{} {} {}\n",hash_n_ref.0,heads_ids[j],hash_n_ref.1);
+                    request.push_str(&format!("{:04X}{}",line.len()+4,line));
+                }
+                break; 
+            }
+        }
+        if falta {
+            pkt_needed = true;
+            let mut ya_lo_tiene = false;
+            for hash_n_ref in hash_n_references.clone() {
+                if heads_ids[j] == hash_n_ref.0 {
+                    ya_lo_tiene = true;
+                    break;
+                }
+            }
+            if !ya_lo_tiene {
+                pkt_ids.push(heads_ids[j].clone());
+            }
+            let line = format!("0000000000000000000000000000000000000000 {} refs/heads/{}\n",heads_ids[j],refer);
+            request.push_str(&format!("{:04X}{}",line.len()+4,line));
+        }
+        j += 1;
+    }
+
+    request.push_str("0000");
+    Ok((request,pkt_needed,pkt_ids))
 }
 
 pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:Vec<String>)->Result<String,GitrError>{
@@ -66,6 +106,9 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
         want_message.push_str(&format!("{:04X}{}",want_line.len()+4,want_line));
     }
     want_message.push_str("0000");
+    if want_message == "0000"{
+        return Ok(want_message.to_string());
+    }
     if !client_commits.len() == 0{
         for have in file_manager::get_all_objects()? {
             let have_line = format!("have {}\n",have);
