@@ -24,8 +24,8 @@ impl Commit{
             format_data.push_str(&format!("parent {}\n", parent));
         }
         parent = "".to_string();
-        format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config()?, "1698972809"));
-        format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config()?, "1698972809"));
+        format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config()?, Utc::now().timestamp()));
+        format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config()?, Utc::now().timestamp()));
         format_data.push_str("\n");
         let message = message.replace("\"", "");
         format_data.push_str(&format!("{}\n", message));

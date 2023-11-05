@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::HashMap, net::
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, objects::git_object::GitObject, diff::Diff};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, objects::git_object::GitObject, diff::{Diff, self}};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -195,6 +195,7 @@ pub fn get_hashmap_for_checkout()->Result<(HashMap<String, Vec<String>>,Vec<Stri
     let mut tree_order: Vec<String> = Vec::new(); 
     let index_files = read_index()?;
     for file_info in index_files.split('\n') {
+        ///// ojo aca
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
         let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
@@ -427,58 +428,131 @@ pub fn get_blobs_from_commit(commit_hash: String)->Result<(),GitrError> {
 fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     let string_archivo = file_manager::read_file(path)?;
     let mut archivo_reconstruido = vec![];
-    
+    println!("string_archivo: {:?}", string_archivo);
     for (i,line) in string_archivo.lines().enumerate(){
-        if diff.contains_line_num(i){ //es una linea modificada
-            if diff.return_line(i).0{ //la linea se tiene que agregar
-                archivo_reconstruido.push(diff.return_line(i).1.clone());
-                archivo_reconstruido.push(line.to_string());
+        println!("");
+        println!("");
+        println!("Base[{}]: {}", i, line);
+        let tiene_add = diff.has_add_diff(i);
+        if diff.has_delete_diff(i){ //sí y la linea se tiene que agregar
+            print!(". Hay dif de delete. ");
+            if tiene_add.0{
+                print!(". Hay dif de add. Pusheo: {}",tiene_add.1.clone());
+                archivo_reconstruido.push(tiene_add.1.clone()); //luego el agregado
             }
-            else{
-                continue;
-            }
+            print!(". No hay diff de add.");
+            continue;
         }
-        else{ //es una linea que no se modifico
-            archivo_reconstruido.push(line.to_string());
+        else if tiene_add.0 { //sí y se elimina, no la pusheo porque la tengo que borrar, la salteo
+            print!(". No hay dif de delete. Sí hay de add. Agrego: [{},{}]",line.to_string().clone(),tiene_add.1.clone());
+            archivo_reconstruido.push(line.to_string()); //primero el base
+            archivo_reconstruido.push(tiene_add.1.clone()); //luego el agregado
+        } else {
+
+            archivo_reconstruido.push(line.to_string()); //primero el base
         }
     }
 
-    /*{+2,-3}
-            0.
-            1.                  
-            2.
-            3.
-            4.
-            [0,1, 2(+), 2, 4]
+    // /*{+2,-3}
+    //         0.
+    //         1.                  
+    //         2.
+    //         3.
+    //         4.
+    //         [0,1, 2(+), 2, 4]
 
-    */
+    // */
 
     println!("archivo_reconstruido: {:?}", archivo_reconstruido);
 
-    Ok(())
+    // Ok(())
+
+     // Read the original file
+
+
+    //  let mut original_content = file_manager::read_file(path)?;
+     
+        
+    //  // Apply differences to the content
+    //  let mut modified_content = String::new();
+
+  
+    //  let mut line_number = 1;
+ 
+    
+    // let new_file_len = diff.lineas_agregadas.len() + diff.lineas_eliminadas.len() + original_content.lines().count();
+    // println!("new_file_len: {:?}", new_file_len);
+
+    // let mut a_eliminar = Vec::new();
+    // // Si, tenemos diff.lineas_eliminadas pero
+    // // con esto anduvo por alguna razon
+
+    // for i in 0..new_file_len {
+    //     if diff.contains_line_num(i){
+    //         if diff.return_line(i).0{
+    //             modified_content.push_str(&diff.return_line(i).1);
+    //             modified_content.push_str("\n");
+    //         }
+    //         else{
+    //             println!("eliminar linea {}.{}", i, diff.return_line(i).1);
+    //             a_eliminar.push(i);
+    //             continue;
+    //         }
+    //     }
+    //     else{
+
+    //         let original_line = match original_content.lines().nth(line_number-1) {
+    //             Some(line) => line.to_string(),
+    //             None => "???".to_string(),
+    //         };
+            
+    //         if a_eliminar.contains(&line_number) {
+    //             continue;
+    //         }
+
+
+    //         modified_content.push_str(&original_line);
+    //         modified_content.push_str("\n");
+    //     }
+    //     if line_number != 1 {
+    //         line_number += 1;
+    //     }
+    // }
+ 
+    //  // Write the modified content to the file
+    // //  let mut file = fs::File::create(path)?;
+    // //  file.write_all(modified_content.as_bytes())?;
+    // println!("modified_content: {:?}", modified_content);
+    //  // Return the modified content
+    //  // if let Ok(content) = fs::read_to_string(path) {
+    //  //     Ok(content)
+    //  // } else {
+    //  //     Err(GitrError::FileReadError(path.to_string()))
+    //  //
+    
+
+
+ 
+     Ok(())
 }
 
-fn comparar_conflicts(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<(), GitrError> {
-    let mut conflicts = false;
-    let mut origin_conflicts = Vec::new();
-    let mut branch_conflicts = Vec::new();
-    for (i, line) in diff_base_origin.lineas_agregadas.iter().enumerate(){
-        if diff_base_branch.contains_line_num(line.0){
-            conflicts = true;
-            origin_conflicts.push(i);
-        }
-    }
-    for (i, line) in diff_base_branch.lineas_agregadas.iter().enumerate(){
-        if diff_base_origin.contains_line_num(line.0){
-            conflicts = true;
-            branch_conflicts.push(i);
-        }
-    }
-    if conflicts{
-        println!("CONFLICTS");
-        println!("origin_conflicts: {:?}", origin_conflicts);
-        println!("branch_conflicts: {:?}", branch_conflicts);
-    }
+fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<(), GitrError> {
+
+   // let mut union_diffs = Vec::new();
+
+    /*
+        1.  +hola                       1. +hola
+                    15. -chau           13. +chau
+        17. +otra                                   14. -otra
+                    26. -ola            15. +olas
+                                        27. +alo
+    
+     */
+
+    
+
+
+
     Ok(())
 }
 
@@ -529,9 +603,6 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
                 //me quedo con branch
                 //saco el diff entre branch y base
 
-                
-
-                println!("no deberia caer aca");
 
                 println!("base_file_data: {:?}", base_file_data);
                 println!("branch_file_data: {:?}", branch_file_data);
@@ -568,9 +639,22 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
             let diff_base_branch = Diff::new(base_file_data, branch_file_data);
 
 
-            
+            // no necesriamente hay conflicts
+            // aca necesitamos una funcion que compare los diffs
+            // y si devuelve un Diff, lo aplicamos y listo
+            // si devuelve un DiffConflict... tambien lo aplicamos y listo
+            // pero con su logica de conflictos
 
-            comparar_conflicts(diff_base_origin, diff_base_branch)?;
+            let union_diffs = comparar_diffs(diff_base_branch, diff_base_origin)?;
+
+            // match union_diffs {
+            //     /*
+            //     hacer eso de match Diff
+            //     o match DiffConclit como se hace con los GitObjects
+                
+            //      */
+            // }
+
             
 
 

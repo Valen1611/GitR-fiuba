@@ -155,7 +155,7 @@ impl Diff{
             }
             matriz_coincidencias.push(vec![]);
         }
-
+        
         let (indices_lineas_eliminadas, indices_lineas_agregadas) = get_diff(matriz_coincidencias, base_lines.len()-1, new_lines.len()-1);
 
         let mut lineas_eliminadas = Vec::new();
@@ -181,27 +181,17 @@ impl Diff{
         }
     }
 
-    pub fn contains_line_num(&self, i: usize)->bool{
+    pub fn has_delete_diff(&self,i:usize)->bool{
         for line in self.lineas_eliminadas.iter(){
             if line.0 == i{
                 return true;
             }
         }
-        for line in self.lineas_agregadas.iter(){
-            if line.0 == i{
-                return true;
-            }
-        }
-        return false
+        false
     }
 
-    pub fn return_line(&self,i:usize) -> (bool,String){
+    pub fn has_add_diff(&self,i:usize) -> (bool,String){
         let linea = (false,"".to_string());
-        for line in self.lineas_eliminadas.iter(){
-            if line.0 == i{
-                return (false,line.1.clone());
-            }
-        }
         for line in self.lineas_agregadas.iter(){
             if line.0 == i{
                 return (true,line.1.clone());
@@ -238,9 +228,9 @@ mod tests{
         let new = "B\nH\nD\nE\nF\nC\nK".to_string();
 
 
-        let base = format!("fn main () {{\tprintln!(\"hello word!\");}}\nkasjdklajsd");
+        // let base = format!("fn main () {{\tprintln!(\"hello word!\");}}\nkasjdklajsd");
 
-        let new = format!("fn main () {{\tprintln!(\"hello word!\");}}\nTEXti en el medio\nkasjdklajsd");
+        // let new = format!("fn main () {{\tprintln!(\"hello word!\");}}\nTEXti en el medio\nkasjdklajsd");
 
         let diff = Diff::new(base,new);
         //assert!(!diff.chunk.is_empty());

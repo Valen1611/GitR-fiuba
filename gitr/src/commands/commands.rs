@@ -288,6 +288,8 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
             }
         }
     }
+
+
     status_print_to_be_comited(&to_be_commited);
     status_print_not_staged(&not_staged);
     status_print_untracked(&untracked_files, hayindex);
