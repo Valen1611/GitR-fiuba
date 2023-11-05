@@ -232,6 +232,17 @@ pub fn update_hashmap_tree_entry(tree_map:&mut  HashMap<String, Vec<String>>, pr
     }
 }
 
+pub fn get_branch_to_checkout(args_received: Vec<String>) -> Result<String, GitrError>{
+    let mut branch_to_checkout: String = args_received[0].clone();
+    if args_received.len() == 2 && args_received[0] == "-b"{
+        branch_to_checkout = args_received[1].clone();
+        branch_newbranch_flag(branch_to_checkout.clone())?;
+    }
+    if !branch_exists(branch_to_checkout.clone()){
+        return Err(GitrError::BranchNonExistsError(args_received[0].clone()));
+    }
+    Ok(branch_to_checkout)
+}
 
 
 /***************************
@@ -426,19 +437,24 @@ pub fn fast_forward_merge(branch_name:String)->Result<(),GitrError> {
     Ok(working_dir_hashmap)
 }
 
-pub fn status_print_to_be_comited(to_be_commited: &Vec<String>){
+pub fn status_print_to_be_comited(to_be_commited: &Vec<String>)->Result<(), GitrError>{
+    let working_dir_hashmap = get_working_dir_hashmap()?;
     if !to_be_commited.is_empty() {
         println!("Changes to be committed:");
         println!("  (use \"rm <file>...\" to unstage)");
-
         for file in to_be_commited.clone() {
             let file_name = match file.split_once ('/'){
                 Some((_path, file)) => file.to_string(),
                 None => file.to_string(),
             };
-            println!("\t\x1b[92mmodified   {}\x1b[0m", file_name);
+            if !working_dir_hashmap.contains_key(file.as_str()) {
+                println!("\t\x1b[31mdeleted:   {}\x1b[0m", file_name);
+            }else{
+                println!("\t\x1b[92mmodified   {}\x1b[0m", file_name);
+            }
         }
     }
+    Ok(())
 }
 
 pub fn status_print_not_staged(not_staged: &Vec<String>) {
@@ -483,6 +499,9 @@ pub fn status_print_current_branch() -> Result<(), GitrError> {
     let head = file_manager::get_head()?;
     let current_branch = head.split('/').collect::<Vec<&str>>()[2];
     println!("On branch {}", current_branch);
+    if commit_existing().is_err(){
+        println!("No commits yet");
+    }
     Ok(())
 }
 
@@ -551,6 +570,62 @@ pub fn get_current_commit_hashmap() -> Result<HashMap<String, String>, GitrError
       }
 
       Ok(tree_hashmap)
+}
+
+
+pub fn get_untracked_notstaged_files()->Result<(Vec<String>, Vec<String>, bool), GitrError>{
+    let working_dir_hashmap = get_working_dir_hashmap()?;
+    let (index_hashmap, hayindex) = get_index_hashmap()?;
+    let current_commit_hashmap = get_current_commit_hashmap()?;
+    let mut not_staged = Vec::new();
+    let mut untracked_files = Vec::new();
+    for (path, hash) in working_dir_hashmap.clone().into_iter() {
+        if !index_hashmap.contains_key(path.as_str()) && !current_commit_hashmap.contains_key(path.as_str()) {
+            untracked_files.push(path.clone());
+        }
+        if current_commit_hashmap.contains_key(path.clone().as_str()){
+            if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
+                if &hash != commit_hash {
+                    if !index_hashmap.contains_key(&path) {
+                        not_staged.push(path.clone( ));
+                    }
+                }
+            };
+        }
+        if index_hashmap.contains_key(path.as_str()){
+            if let Some(index_hash) = index_hashmap.get(path.as_str()) {
+                if &hash != index_hash {
+                    not_staged.push(path);
+                }
+            };
+        }
+    }
+    Ok((not_staged, untracked_files, hayindex))
+}
+
+pub fn get_tobe_commited_files(not_staged: &Vec<String>)->Result<Vec<String>, GitrError>{
+    let working_dir_hashmap = get_working_dir_hashmap()?;
+    let (index_hashmap, _) = get_index_hashmap()?;
+    let current_commit_hashmap = get_current_commit_hashmap()?;
+    let mut to_be_commited = Vec::new();
+    for (path, hash) in index_hashmap.clone().into_iter() {
+        if !current_commit_hashmap.contains_key(path.as_str()) {
+            to_be_commited.push(path);
+        }
+        else {
+            if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
+                if hash != *commit_hash  && !not_staged.contains(&path){ 
+                    to_be_commited.push(path);
+                }
+            }
+        }
+    }
+    for (path, _) in current_commit_hashmap.clone().into_iter() {
+        if !working_dir_hashmap.contains_key(path.as_str()) {
+            to_be_commited.push(path);
+        }
+    }
+    Ok(to_be_commited)
 }
 
 /***************************
