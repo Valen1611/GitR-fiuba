@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::HashMap, net::
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs,update_working_directory};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs,update_working_directory}, git_transport::{ref_discovery, pack_file::PackFile}};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 /***************************
  *************************** 
@@ -722,6 +722,19 @@ pub fn rm_from_index(file_to_delete: &str)->Result<bool, GitrError>{
  *    CLONE FUNCTIONS
  **************************
  **************************/
+
+pub fn write_reference_from_cloning(references: Vec<(String, String)>, ref_disc:String)-> Result<(), GitrError>{
+    let repo = file_manager::get_current_repo()?;
+    for reference in &references[1..]{
+        let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); //ref path
+        if references[0].0 == reference.0{
+            file_manager::update_head(&reference.1.clone())?; //actualizo el head
+        }
+        let into_hash = reference.0.clone(); //hash a escribir en el archivo
+        file_manager::write_file(path_str, into_hash)?; //escribo el hash en el archivo
+    }
+    Ok(())
+}
 
 pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
     let socket = match TcpStream::connect(address) {
