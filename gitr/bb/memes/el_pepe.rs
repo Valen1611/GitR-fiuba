@@ -1,2 +1,0 @@
-el pepe
-eete sech
