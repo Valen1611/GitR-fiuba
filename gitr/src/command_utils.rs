@@ -425,8 +425,10 @@ pub fn get_blobs_from_commit(commit_hash: String)->Result<(),GitrError> {
     Ok(())
 }
 
+/// Toma el path de un archivo y los diffs que hay que aplicarle. (No detecta conflicts)
+/// Crea el archivo con los cambios aplicados.
 fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
-    let string_archivo = file_manager::read_file(path)?;
+    let string_archivo = file_manager::read_file(path.clone())?;
     let mut archivo_reconstruido = vec![];
     println!("string_archivo: {:?}", string_archivo);
     for (i,line) in string_archivo.lines().enumerate(){
@@ -438,18 +440,17 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
             print!(". Hay dif de delete. ");
             if tiene_add.0{
                 print!(". Hay dif de add. Pusheo: {}",tiene_add.1.clone());
-                archivo_reconstruido.push(tiene_add.1.clone()); //luego el agregado
+                archivo_reconstruido.push(tiene_add.1.clone()+"\n"); //luego el agregado
             }
             print!(". No hay diff de add.");
             continue;
         }
         else if tiene_add.0 { //sí y se elimina, no la pusheo porque la tengo que borrar, la salteo
             print!(". No hay dif de delete. Sí hay de add. Agrego: [{},{}]",line.to_string().clone(),tiene_add.1.clone());
-            archivo_reconstruido.push(line.to_string()); //primero el base
-            archivo_reconstruido.push(tiene_add.1.clone()); //luego el agregado
+            archivo_reconstruido.push(line.to_string()+"\n"); //primero el base
+            archivo_reconstruido.push(tiene_add.1.clone()+"\n"); //luego el agregado
         } else {
-
-            archivo_reconstruido.push(line.to_string()); //primero el base
+            archivo_reconstruido.push(line.to_string()+"\n"); //primero el base
         }
     }
 
@@ -464,76 +465,8 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     // */
 
     println!("archivo_reconstruido: {:?}", archivo_reconstruido);
-
-    // Ok(())
-
-     // Read the original file
-
-
-    //  let mut original_content = file_manager::read_file(path)?;
-     
-        
-    //  // Apply differences to the content
-    //  let mut modified_content = String::new();
-
-  
-    //  let mut line_number = 1;
- 
-    
-    // let new_file_len = diff.lineas_agregadas.len() + diff.lineas_eliminadas.len() + original_content.lines().count();
-    // println!("new_file_len: {:?}", new_file_len);
-
-    // let mut a_eliminar = Vec::new();
-    // // Si, tenemos diff.lineas_eliminadas pero
-    // // con esto anduvo por alguna razon
-
-    // for i in 0..new_file_len {
-    //     if diff.contains_line_num(i){
-    //         if diff.return_line(i).0{
-    //             modified_content.push_str(&diff.return_line(i).1);
-    //             modified_content.push_str("\n");
-    //         }
-    //         else{
-    //             println!("eliminar linea {}.{}", i, diff.return_line(i).1);
-    //             a_eliminar.push(i);
-    //             continue;
-    //         }
-    //     }
-    //     else{
-
-    //         let original_line = match original_content.lines().nth(line_number-1) {
-    //             Some(line) => line.to_string(),
-    //             None => "???".to_string(),
-    //         };
-            
-    //         if a_eliminar.contains(&line_number) {
-    //             continue;
-    //         }
-
-
-    //         modified_content.push_str(&original_line);
-    //         modified_content.push_str("\n");
-    //     }
-    //     if line_number != 1 {
-    //         line_number += 1;
-    //     }
-    // }
- 
-    //  // Write the modified content to the file
-    // //  let mut file = fs::File::create(path)?;
-    // //  file.write_all(modified_content.as_bytes())?;
-    // println!("modified_content: {:?}", modified_content);
-    //  // Return the modified content
-    //  // if let Ok(content) = fs::read_to_string(path) {
-    //  //     Ok(content)
-    //  // } else {
-    //  //     Err(GitrError::FileReadError(path.to_string()))
-    //  //
-    
-
-
- 
-     Ok(())
+    file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
+    Ok(())
 }
 
 fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<(), GitrError> {
