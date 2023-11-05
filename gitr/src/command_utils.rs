@@ -453,38 +453,19 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
             archivo_reconstruido.push(line.to_string()+"\n"); //primero el base
         }
     }
-
-    // /*{+2,-3}
-    //         0.
-    //         1.                  
-    //         2.
-    //         3.
-    //         4.
-    //         [0,1, 2(+), 2, 4]
-
-    // */
-
     println!("archivo_reconstruido: {:?}", archivo_reconstruido);
     file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
     Ok(())
 }
 
 fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<(), GitrError> {
+    let (mut i, mut j) = (0,0);
+    let mut diff_final = Vec::new();
+    loop{
+        
+    }
 
-   // let mut union_diffs = Vec::new();
-
-    /*
-        1.  +hola                       1. +hola
-                    15. -chau           13. +chau
-        17. +otra                                   14. -otra
-                    26. -ola            15. +olas
-                                        27. +alo
-    
-     */
-
-    
-
-
+                                    
 
     Ok(())
 }
@@ -535,10 +516,6 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
 
                 //me quedo con branch
                 //saco el diff entre branch y base
-
-
-                println!("base_file_data: {:?}", base_file_data);
-                println!("branch_file_data: {:?}", branch_file_data);
 
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
                 aplicar_difs(path.clone(), diff_base_branch)?;

@@ -3,6 +3,7 @@ use std::cmp::max;
 pub struct Diff{
     pub lineas_eliminadas: Vec<(usize,String)>,
     pub lineas_agregadas: Vec<(usize,String)>,
+    pub lineas: Vec<(usize,bool,String)>,
 }
 #[derive(Clone)]
 #[derive(Debug)]
@@ -26,6 +27,7 @@ fn empty_diff()->Diff{
     Diff{
         lineas_eliminadas: vec![],
         lineas_agregadas: vec![],
+        lineas: vec![],
     }
 }
 
@@ -158,26 +160,44 @@ impl Diff{
         
         let (indices_lineas_eliminadas, indices_lineas_agregadas) = get_diff(matriz_coincidencias, base_lines.len()-1, new_lines.len()-1);
 
-        let mut lineas_eliminadas = Vec::new();
-        let mut lineas_agregadas = Vec::new();
+        let mut lineas_eliminadas = Vec::new(); //las que tengo que sacar de base: push(i,false,base[i])
+        let mut lineas_agregadas = Vec::new(); //las que tengo que agrega a base: push(i,true,new[i])
+
+        let mut lineas = Vec::new();
 
         for (i, line) in base_lines.iter().enumerate() {
             if indices_lineas_eliminadas.contains(&i) {
                 println!("{}. -{}",i, line);
-                lineas_eliminadas.push((i, line.to_string()));
+                lineas.push((i, false, line.to_string()));
             }
         }
         for (i, line) in new_lines.iter().enumerate() {
             if indices_lineas_agregadas.contains(&i) {
                 println!("{}. +{}",i, line);
-                lineas_agregadas.push((i, line.to_string()));
+                lineas.push((i, true, line.to_string()));
             }
-        }
+        } 
+        lineas.sort_by(|a, b| a.0.cmp(&b.0)); //ordeno ascendente
+        println!("lineas: {:?}", lineas);
+
+        // for (i, line) in base_lines.iter().enumerate() {
+        //     if indices_lineas_eliminadas.contains(&i) {
+        //         println!("{}. -{}",i, line);
+        //         lineas_eliminadas.push((i, line.to_string()));
+        //     }
+        // }
+        // for (i, line) in new_lines.iter().enumerate() {
+        //     if indices_lineas_agregadas.contains(&i) {
+        //         println!("{}. +{}",i, line);
+        //         lineas_agregadas.push((i, line.to_string()));
+        //     }
+        // }
         
         
         Diff{
             lineas_eliminadas: lineas_eliminadas,
             lineas_agregadas: lineas_agregadas,
+            lineas: lineas,
         }
     }
 
@@ -193,7 +213,7 @@ impl Diff{
     pub fn has_add_diff(&self,i:usize) -> (bool,String){
         let linea = (false,"".to_string());
         for line in self.lineas_agregadas.iter(){
-            if line.0 == i{
+            if line.0 == i {
                 return (true,line.1.clone());
             }
         }
