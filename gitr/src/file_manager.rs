@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fs::{File, OpenOptions};
 use std::io::{prelude::*, Bytes};
-use std::fs;
+use std::{fs, hash};
 use std::path::Path;
 
 use crate::command_utils::flate2compress;
@@ -104,10 +104,7 @@ pub fn create_directory(path: &String)->Result<(), GitrError>{
 //delete all files without gitr
 pub fn delete_all_files()-> Result<(), GitrError>{  
     let repo = get_current_repo()?;
-    match fs::remove_file(repo.clone() + "/gitr/index"){
-        Ok(_) => (),
-        Err(_) => return Err(GitrError::FileWriteError(repo + "/gitr/index")),
-    };
+    let _ = fs::remove_file(repo.clone() + "/gitr/index");
     let path = Path::new(&repo);
     if let Ok(entries) = fs::read_dir(path) {
         for entry in entries.flatten() {
@@ -161,6 +158,45 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 //reads and object and returns raw data
 pub fn read_object(object: &String)->Result<String, GitrError>{
     let path = parse_object_hash(object)?;
+    let bytes = deflate_file(path.clone())?;
+    let mut object_data: Vec<u8> = Vec::new();
+    for byte in bytes {
+        let byte = match byte {
+            Ok(byte) => byte,
+            Err(_) => return Err(GitrError::FileReadError(path)),
+        };
+        object_data.push(byte);
+    }
+    let first_byte = object_data[0];
+    let mut object_data_str = String::new();
+    for byte in object_data.clone() {
+        if byte == 0 {
+            break;
+        }
+        object_data_str.push(byte as char);
+    }
+    if first_byte as char == 't' {
+        let tree_data = match read_tree_file(object_data) {
+            Ok(data) => data,
+            Err(_) => return Err(GitrError::FileReadError(path)),
+        };
+        
+        return Ok(tree_data);
+    }
+    if first_byte as char == 'b' || first_byte as char == 'c' {
+        let mut buffer = String::new();
+        for byte in object_data {
+            buffer.push(byte as char);
+        }
+        return Ok(buffer);
+    }
+
+
+    Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
+}
+
+pub fn read_object_w_path(object: &String,path: String)->Result<String, GitrError>{
+    let path = parse_object_hash_w_path(object, path)?;
     let bytes = deflate_file(path.clone())?;
     let mut object_data: Vec<u8> = Vec::new();
     for byte in bytes {
@@ -325,6 +361,27 @@ fn parse_object_hash(object: &String) -> Result<String, GitrError>{
     Ok(path)
 }
 
+fn parse_object_hash_w_path(object: &String, path: String) -> Result<String, GitrError>{
+    if object.len() < 3{
+        return Err(GitrError::ObjectNotFound(object.clone()));
+    }
+    let folder_name = object[0..2].to_string();
+    let file_name = object[2..].to_string();
+
+    let repo = path;
+    let dir = repo + "/objects/";
+    
+    let folder_dir = dir.clone() + &folder_name;
+    let path = dir + &folder_name +  "/" + &file_name;
+    if fs::metadata(folder_dir).is_err(){
+        return Err(GitrError::ObjectNotFound(object.clone()));
+    }
+    if fs::metadata(&path).is_err(){
+        return Err(GitrError::ObjectNotFound(object.clone()));
+    }
+    Ok(path)
+}
+
 
 
 
@@ -345,7 +402,7 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/refs/remotes"))?;
         create_directory(&(name.clone() + "/gitr/refs/remotes/daemon"))?;
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
-
+        write_file(name.clone() + "/gitr/remote", "localhost:9418".to_string())?;
     Ok(())
 }
 
@@ -413,7 +470,6 @@ pub fn get_head() ->  Result<String, GitrError>{
     if fs::metadata(path.clone()).is_err(){
         write_file(path.clone(), String::from("ref: refs/heads/master"))?;
         return Ok("None".to_string())
-        // return Err(GitrError::NoHead);
     }
     let head = read_file(path.clone())?;
     let head = head.trim_end().to_string();
@@ -428,6 +484,20 @@ pub fn update_head(head: &String) -> Result<(), GitrError>{
     Ok(())
 }
 
+pub fn update_client_refs(hash_n_refs: Vec<(String,String)>, r_path: String) -> Result<(),GitrError> {
+    let path = r_path + "/gitr/";
+    for (h,r) in hash_n_refs {
+        if r.clone() == "HEAD" {
+            continue;
+        }
+        let path_ref = path.clone() + &r.replace("\\", "/");
+        if let Ok(()) = file_manager::write_file(path_ref.clone(), h) {
+            continue;
+        }
+        return Err(GitrError::FileCreationError(path_ref));
+    }
+    Ok(())
+}
 
 pub fn get_branches()-> Result<Vec<String>, GitrError>{
     let mut branches: Vec<String> = Vec::new();
@@ -575,7 +645,6 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
     };
 
     let repo = get_current_repo()? + "/";
-
 
     for entry in raw_data.split('\n'){
         let object: &str = entry.split(' ').collect::<Vec<&str>>()[0];

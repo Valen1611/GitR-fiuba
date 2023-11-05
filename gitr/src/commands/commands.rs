@@ -365,10 +365,13 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     loop {
         match stream.read(&mut buffer) {
             Ok(n) => {
+                if n == 0 {
+                    return Ok(());
+                }
                 let bytes = &buffer[..n];
                 let s = String::from_utf8_lossy(bytes);
                 ref_disc.push_str(&s);
-                if n < 1024 {
+                if s.ends_with("0000") {
                     break;
                 }
             },
@@ -379,9 +382,8 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         }
     }
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
-
     let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids()?)?;
-    
+    file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo()?)?;
     match stream.write(want_message.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -405,14 +407,14 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         
     }
     // ########## PACKFILE ##########
-    match stream.read(&mut buffer) { // Leo el packfile
+    let n = match stream.read(&mut buffer) { // Leo el packfile
         Err(e) => {
             println!("Error: {}", e);
             return Ok(())
         },
-        _ => ()
-    }
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
+        Ok(n) => n
+    };
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
     for object in pack_file_struct.objects.iter(){
         match object{
             Blob(blob) => blob.save()?,
@@ -420,6 +422,7 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
             Tree(tree) => tree.save()?,
         }
     }
+    
     update_working_directory(get_current_commit()?)?;
     println!("pull successfull");
     Ok(())

@@ -9,11 +9,15 @@ use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
 use std::str::from_utf8;
+use std::task::Context;
 use std::thread;
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use crate::file_manager;
 use crate::git_transport::pack_file::PackFile;
+use crate::git_transport::pack_file::create_packfile;
+use crate::git_transport::pack_file::prepare_contents;
+use crate::gitr_errors::GitrError;
 use crate::objects::commit::Commit;
 use crate::objects::git_object::GitObject;
 
@@ -71,12 +75,8 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
 
         // ########## ELECCION DE COMANDO ##########
         match elems[0] {
-            "git-upload-pack" => {
-                println!("pudo entrar al git-upload-pack");
-                gitr_upload_pack(&mut stream, guardados_id, r_path)?;}, // Mandar al cliente
-            "git-receive-pack" => {
-                println!("pudo entrar al git-receive-pack");
-                gitr_receive_pack(&mut stream, r_path)?;}, // Recibir del Cliente
+            "git-upload-pack" => {gitr_upload_pack(&mut stream, guardados_id, r_path)?;}, // Mandar al cliente
+            "git-receive-pack" => {gitr_receive_pack(&mut stream, r_path)?;}, // Recibir del Cliente
             _ => {stream.write(&"Error: comando git no reconocido".as_bytes())?;}
         }
     }
@@ -87,7 +87,6 @@ fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_pat
 
     // ##########  PACKFILE NEGOTIATION ##########
     let (wants_id, haves_id) = packfile_negotiation(stream, guardados_id)?;
-    
     // ########## PACKFILE DATA ##########
     if !wants_id.is_empty() {
         snd_packfile(stream, wants_id,haves_id, r_path)?;
@@ -104,7 +103,6 @@ fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<
     if let Ok(n) = stream.read(&mut buffer) {
 
         let (old,new, names ) = get_changes(&buffer[..n])?;
-        println!("old: {:?}\nnew: {:?}\n names{:?}\n",old,new,names);
         if old.len() == 0 { //el cliente esta al dia
             return Ok(());
         }
@@ -117,7 +115,6 @@ fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<
    
         return Ok(())
     }
-    println!("no entra al if");
     Err(Error::new(std::io::ErrorKind::Other, "Error: no se pudo leer el stream"))
 }
 
@@ -161,7 +158,6 @@ fn _is_commit(obj: String) -> bool {
 
 
 fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> std::io::Result<()> {
-    println!("entra al upd conts con ids: {ids:?}");
     if ids.len() != content.len() {
         return Err(Error::new(std::io::ErrorKind::Other, "Error: no coinciden los ids con los contenidos"))
     }
@@ -173,7 +169,7 @@ fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> s
         let _ = fs::create_dir(dir_path.clone()); // si ya existe tira error pero no pasa nada
         let mut archivo = File::create(&format!("{}/{}",dir_path,id.split_at(2).1))?;
         println!("check3");
-        archivo.write_all(&code(&content[i])?)?;
+        archivo.write_all(&content[i])?;
         println!("check4");
         i += 1;
     }
@@ -181,17 +177,17 @@ fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> s
 }
 
 fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<String>, r_path: String) -> std::io::Result<()> {
-    let mut contents: Vec<String> = vec![];
+    let mut contents: Vec<Vec<u8>> = vec![];
     let wants_id = Commit::get_objects_from_commits(wants_id.clone(), haves_id, r_path.clone()).unwrap_or(vec![]);
     for id in wants_id.clone() {
-        match file_manager::get_object(id, r_path.clone()){
+        match file_manager::get_object_bytes(id, r_path.clone()){
             Ok(obj) => contents.push(obj),
             Err(_) => return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo obtener el objeto"))
         }
     }
 
-    if let Ok(pack_string) = pack_data_bruno(wants_id, contents) {
-        stream.write(&pack_string.as_bytes())?;
+    if let Ok(pack) = pack_data_bruno(contents) {
+        stream.write(&pack)?;
     } else {
         return Err(Error::new(std::io::ErrorKind::InvalidInput, "Algo salio mal\n"))
     }
@@ -206,14 +202,14 @@ fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>) -
     let (mut buffer, mut reply) = ([0; 1024], "0008NAK\n".to_string());
     let (mut wants_id, mut haves_id): (Vec<String>, Vec<String>) = (Vec::new(), Vec::new());    
     loop {
-        stream.read(&mut buffer)?;
-        let pkt_line = from_utf8(&buffer).unwrap_or("");
+        let n = stream.read(&mut buffer)?;
+        let pkt_line = from_utf8(&buffer[..n]).unwrap_or("");
         if pkt_line == "0000" { // si la primera linea es 0000, el cliente esta al dia y no hay mas que hacer con el
             return Ok((wants_id, haves_id));
-        } else if pkt_line == "0009done\n" { // el cliente cierra el packet-file
-            break;
-        }
-        (wants_id, haves_id) = wants_n_haves(String::from_utf8_lossy(&buffer).to_string(),wants_id,haves_id)?;
+        } 
+        (wants_id, haves_id) = wants_n_haves(pkt_line.to_string(),wants_id,haves_id)?;
+        
+        
         for want in wants_id.clone() {
             if !guardados_id.contains(&want) {
                 return  Err(Error::new(std::io::ErrorKind::InvalidInput, format!("Error: not our ref: {}\n",want)));
@@ -227,6 +223,9 @@ fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>) -
                 break
             }
         }  
+        if pkt_line.ends_with("0009done\n") { // el cliente cierra el packet-file
+            break;
+        }
     }
     if reply == "0008NAK\n".to_string() {
         stream.write(&reply.as_bytes())?;
@@ -279,7 +278,6 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
             return Err(Error::new(std::io::ErrorKind::Other, "Error: el archivo no cambio")); // no se si es el error correcto
         } else { // caso de archivo modificado
             pkt_needed = true;
-            println!("tiene que cambiar {:?} por {:?}",old[i],new[i]);
             let path = path.replace("\\", "/");
             let old_file = fs::File::open(&path)?;
             let mut old_ref = String::new();
@@ -318,18 +316,19 @@ fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<S
     Ok((old, new, names))
 }
 
-fn pack_data_bruno(_ids: Vec<String>, _contents: Vec<String>) -> std::io::Result<String> {
+fn pack_data_bruno(contents: Vec<Vec<u8>>) -> std::io::Result<Vec<u8>> {
+    match create_packfile(prepare_contents(contents)) {
+        Ok(pack) => Ok(pack),
+        Err(_) => Err(Error::new(std::io::ErrorKind::Other, "Error: Armado de PACK fallido"))
+    }
     
-    Ok(format!("ToDo"))
 }
 
 fn wants_n_haves(requests: String, mut wants: Vec<String>, mut haves: Vec<String>) -> std::io::Result<(Vec<String>,Vec<String>)> {
-    
     let mut nuls_cont = 0;
 
     for line in requests.lines() {
         is_valid_pkt_line(&(line.to_string()+"\n"))?;
-        
         let elems: Vec<&str> = line.split_at(4).1.split(" ").collect(); // [want/have, obj-id]
         if nuls_cont == 0 {
             match elems[0] {
@@ -415,7 +414,8 @@ fn _capacidades() -> String {
 }
 
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
-    if pkt_line != "" && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" || pkt_line == "0000" || pkt_line == "0009done\n" || pkt_line == "00000009done" ) {
+    println!("{pkt_line:?}");
+    if pkt_line != "" && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" || pkt_line == "0000" || pkt_line == "0009done\n" || pkt_line == "00000009done" || pkt_line == "00000009done\n" ) {
         return Ok(())
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))

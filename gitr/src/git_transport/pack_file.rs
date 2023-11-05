@@ -45,7 +45,6 @@ fn code(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
 }
 
 fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), GitrError> {
-    //println!("Entrada a parse_object {:?}",data);
     // Verifica si hay suficientes bytes para el encabezado mínimo
     if data.len() < 2 {
         return Err(GitrError::PackFileError("parse_git_object".to_string(),"No hay suficientes bytes para el encabezado mínimo".to_string()));
