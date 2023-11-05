@@ -1,7 +1,7 @@
 diff base-origin
 TODO ORDENADO
 
-[i] -> k
+[i]
 0.- Hola 
 0.+ Que tal
 3.- Gianni 
@@ -14,7 +14,7 @@ TODO ORDENADO
 
 diff base-new
 
-[j] -> l
+[j]
 3.- Gianni 
 3.+ Agus 
 8.- Juanma ~

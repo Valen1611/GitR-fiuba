@@ -460,9 +460,31 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
 
 fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<(), GitrError> {
     let (mut i, mut j) = (0,0);
-    let mut diff_final = Vec::new();
-    loop{
-        
+    let mut diff_final = Diff::new("".to_string(), "".to_string());
+    
+    let origin = diff_base_origin.lineas.clone();
+    let new = diff_base_branch.lineas.clone();
+    
+    loop {
+        if origin[i] == new[j]{
+            //conflict
+        }
+        else{
+            if origin[i].0 < new[j].0{
+                diff_final.lineas.push(origin[i].clone());
+                // lo hacemos con lineas
+                // o pateamos el refactor y lo armamanos
+                // a mano con las lines agregadsa y eliminadas??
+
+
+                i+=1;
+            }
+            else{
+                diff_final.lineas.push(new[j].clone());
+                j+=1;
+            } 
+        }
+       
     }
 
                                     
