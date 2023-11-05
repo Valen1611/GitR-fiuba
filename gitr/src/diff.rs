@@ -56,7 +56,7 @@ fn valor_unmatch(matriz: &Vec<Vec<Celda>>, i: usize,j:usize)->usize{
 }
 
 fn get_diff(matriz_coincidencias: Vec<Vec<Celda>>, len_columna: usize, len_fila: usize) -> (Vec<usize>, Vec<usize>){
-    let mut stack = Vec::new();
+    let mut stack = Vec::new(); //es un vector de Celdas (struct)
 
     let mut j = len_columna;
     let mut i = len_fila;
@@ -71,6 +71,7 @@ fn get_diff(matriz_coincidencias: Vec<Vec<Celda>>, len_columna: usize, len_fila:
         }
 
         if matriz_coincidencias[j][i].es_match {
+            println!("Pusheo un match");
             stack.push(matriz_coincidencias[j][i].clone());
              // me muevo a la diagonal
             if i != 0 {
@@ -82,18 +83,21 @@ fn get_diff(matriz_coincidencias: Vec<Vec<Celda>>, len_columna: usize, len_fila:
 
             continue;
         } else {
+            //me muevo a la diagonal
             if i != 0 {
                 i -= 1;
-            } else if j != 0 {
+            } 
+            if j != 0 {
                 j -= 1;
-            } else {
-                // estoy en 0,0
-                break;
             }
+            //  else {
+            //     // estoy en 0,0
+            //     break;
+            // }
             continue;
         }
     }
-
+    println!("Stack filtro {:?}", stack);
     for value in stack.iter().rev() {
         println!("{}: ({},{})", value.valor_matcheado, value.fila, value.columna);
     }
@@ -128,7 +132,8 @@ impl Diff{
         }
         let base_lines = base.lines().collect::<Vec<&str>>();
         let new_lines = new.lines().collect::<Vec<&str>>();
-
+        println!("base_lines: {:?}", base_lines);
+        println!("new_lines: {:?}", new_lines);
         
         let mut matriz_coincidencias: Vec<Vec<Celda>> = vec![vec![]];
 
@@ -155,9 +160,20 @@ impl Diff{
                         );
                 }
             }
+            
             matriz_coincidencias.push(vec![]);
         }
-        
+        // print the matrix
+        for (i, row) in matriz_coincidencias.iter().enumerate() {
+            for (j, cell) in row.iter().enumerate() {
+                print!("{} ", cell.valor);
+            }
+            println!();
+        }
+
+
+
+
         let (indices_lineas_eliminadas, indices_lineas_agregadas) = get_diff(matriz_coincidencias, base_lines.len()-1, new_lines.len()-1);
 
         let mut lineas_eliminadas = Vec::new(); //las que tengo que sacar de base: push(i,false,base[i])
@@ -244,8 +260,8 @@ mod tests{
 
     #[test]
     fn test01_diff_entre_strings_diferentes_no_esta_vacio(){
-        let base = "A\nB\nC\nD\nE\nF\nK".to_string();
-        let new = "B\nH\nD\nE\nF\nC\nK".to_string();
+        let base = "H\nC\nE\nG\n?\nB\nO".to_string();
+        let new = "Q\nC\nE\nV\n?\nB\nY".to_string();
 
 
         // let base = format!("fn main () {{\tprintln!(\"hello word!\");}}\nkasjdklajsd");
