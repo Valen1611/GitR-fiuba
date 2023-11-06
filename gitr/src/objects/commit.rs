@@ -50,7 +50,6 @@ impl Commit{
         if parent != "None" {
             format_data.push_str(&format!("parent {}\n", parent));
         }
-        parent = "".to_string();
         format_data.push_str(&format!("author {}\n", author)); //Utc::now().timestamp()
         format_data.push_str(&format!("committer {}", committer));
         format_data.push('\n');
