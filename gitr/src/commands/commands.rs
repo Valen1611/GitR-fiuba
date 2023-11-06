@@ -1,7 +1,8 @@
 use std::collections::HashMap;
+use std::fs::File;
 use std::hash::Hash;
 use std::path::Path;
-use crate::file_manager::{get_head, get_main_tree, get_branches, get_object};
+use crate::file_manager::{get_head, get_main_tree, get_branches, get_object, get_current_repo};
 use crate::command_utils::{*, self};
 use std::net::TcpStream;
 use std::io::prelude::*;
@@ -197,32 +198,8 @@ pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
 }
 
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
-    let address = flags[0].clone();
-    let nombre_repo = flags[1].clone();
-    let _ = init(vec![nombre_repo.clone()]);
-    let mut socket = clone_connect_to_server(address)?;
-    clone_send_git_upload_pack(&mut socket)?;
-    let ref_disc = clone_read_reference_discovery(&mut socket)?;
-    let references = ref_discovery::discover_references(ref_disc.clone())?;
-    write_reference_from_cloning(references.clone(), ref_disc)?;
-    let want_message = ref_discovery::assemble_want_message(&references,Vec::new())?;
-    write_socket(&mut socket, want_message.as_bytes())?;
-    let mut buffer = [0;1024];
-    match socket.read(&mut buffer){
-        Ok(a)=>a,
-        Err(e)=>return Err(GitrError::SocketError("clone".into(), e.to_string()))
-    };
-    print!("clone(): recepción de packfile:");
-    read_socket(&mut socket, &mut buffer)?;
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
-    for object in pack_file_struct.objects.iter(){
-        match object{
-            Blob(blob) => blob.save()?,
-            Commit(commit) => commit.save()?,
-            Tree(tree) => tree.save()?,
-        }
-    }
-    update_working_directory(get_current_commit()?)?;
+    init(vec![flags[1].clone()])?;
+    pullear(vec![],true)?;
     Ok(())
 }
 
@@ -241,8 +218,8 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
 }
 
 
-pub fn fetch(_flags: Vec<String>) {
-    println!("fetch");
+pub fn fetch(flags: Vec<String>) -> Result<(), GitrError>{
+    pullear(flags, false)
 }
 
 pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
@@ -274,11 +251,17 @@ pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
     Ok(())
 }
 
-pub fn remote(_flags: Vec<String>) {
-    println!("remote");
+pub fn remote(flags: Vec<String>) -> Result<(), GitrError> {
+    if flags.len() == 0 {
+        let remote = file_manager::read_file(get_current_repo()? + "/gitr/remote")?;
+        println!("remote: {}",remote);
+    } else {
+        file_manager::write_file(get_current_repo()? + "/gitr/remote", flags[0].clone())?;
+    }
+    Ok(())
 }
 
-pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
+fn pullear (flags: Vec<String>, actualizar_work_dir: bool) -> Result<(), GitrError> {
     if !flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "pull <no-args>".to_string()));
     }
@@ -310,10 +293,13 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     loop {
         match stream.read(&mut buffer) {
             Ok(n) => {
+                if n == 0 {
+                    return Ok(());
+                }
                 let bytes = &buffer[..n];
                 let s = String::from_utf8_lossy(bytes);
                 ref_disc.push_str(&s);
-                if n < 1024 {
+                if s.ends_with("0000") {
                     break;
                 }
             },
@@ -324,9 +310,8 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         }
     }
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
-
     let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids()?)?;
-    
+    file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo()?)?;
     match stream.write(want_message.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -350,14 +335,14 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         
     }
     // ########## PACKFILE ##########
-    match stream.read(&mut buffer) { // Leo el packfile
+    let n = match stream.read(&mut buffer) { // Leo el packfile
         Err(e) => {
             println!("Error: {}", e);
             return Ok(())
         },
-        _ => ()
-    }
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
+        Ok(n) => n
+    };
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
     for object in pack_file_struct.objects.iter(){
         match object{
             Blob(blob) => blob.save()?,
@@ -365,9 +350,15 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
             Tree(tree) => tree.save()?,
         }
     }
-    update_working_directory(get_current_commit()?)?;
+    if actualizar_work_dir {
+        update_working_directory(get_current_commit()?)?;
+    }
     println!("pull successfull");
     Ok(())
+}
+
+pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
+   pullear(flags, true)
 }
 
 pub fn push(flags: Vec<String>) -> Result<(),GitrError> {

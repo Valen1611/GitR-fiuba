@@ -110,10 +110,10 @@ extern crate flate2;
     }
 
     fn main() {
-        let child = std::thread::spawn(move || {
+        //let child = std::thread::spawn(move || {
             // initialize_gui();
-            server::server_init("repo_remoto", "localhost:9418")
-        });
+        //    server::server_init("repo_remoto", "localhost:9418")
+        //});
 
         print_bienvenida();
 
@@ -154,10 +154,10 @@ extern crate flate2;
             
     
         }
-        match child.join(){
-            Ok(_) => (),
-            Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
-        }
+        // match child.join(){
+            // Ok(_) => (),
+            // Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
+        // }
     
 }
 /*

@@ -92,7 +92,6 @@ impl Tree{
         let hashed_file2 = command_utils::sha1hashing2(data.clone());
 
         let hashed_file_str = hashed_file2.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        //println!("HASHED FILE: {:?}", hashed_file_str);
 
         let mut format_data = String::new();
         let init = format!("tree {}\0", entries.len());
@@ -167,7 +166,7 @@ impl Tree{
     
     pub fn get_all_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> Result<(),GitrError> {
         // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
-        if let Ok(tree_str) = file_manager::read_object(&tree_id) {//, r_path.clone()){
+        if let Ok(tree_str) = file_manager::read_object_w_path(&tree_id, r_path.clone()) {
             let tree_objects = match Tree::get_objects_id_from_string(tree_str){
                 Ok(ids) => {ids},
                 _ => return Err(GitrError::InvalidTreeError)
