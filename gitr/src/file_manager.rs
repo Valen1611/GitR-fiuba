@@ -1,8 +1,8 @@
 use std::collections::HashMap;
-use std::error::Error;
+
 use std::fs::{File, OpenOptions, ReadDir};
 use std::io::{prelude::*, Bytes};
-use std::{fs, hash};
+use std::{fs};
 use std::path::Path;
 use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
@@ -123,7 +123,7 @@ pub fn add_new_files_from_merge(origin_hashmap: HashMap<String, String>, branch_
         println!("origin hashmap: {:?}", origin_hashmap);
         println!("branch hashmap: {:?}", branch_hashmap);
         if !origin_hashmap.contains_key(path){
-            file_manager::add_to_index(&path, &hash)?;
+            file_manager::add_to_index(path, hash)?;
             if let Some(parent) = std::path::Path::new(&path).parent() {
                 match fs::create_dir_all(parent){
                     Ok(_) => (),
@@ -354,7 +354,6 @@ fn deflate_file(path: String) -> Result<Bytes<ZlibDecoder<File>>, GitrError> {
         Err(_) => return Err(GitrError::FileReadError(path.to_string())),
     };
     let decoder = ZlibDecoder::new(file);
-   // let mut buffer = String::new();
 
     let bytes = decoder.bytes();
     Ok(bytes)
@@ -507,7 +506,7 @@ pub fn update_client_refs(hash_n_refs: Vec<(String,String)>, r_path: String) -> 
         if r.clone() == "HEAD" {
             continue;
         }
-        let path_ref = path.clone() + &r.replace("\\", "/");
+        let path_ref = path.clone() + &r.replace('\\', "/");
         if let Ok(()) = file_manager::write_file(path_ref.clone(), h) {
             continue;
         }
@@ -601,15 +600,14 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
     };
     for entry in raw_data.split('\n') {
         let object = entry.split(' ').collect::<Vec<&str>>()[0];
-        if object == "100644"{ //blob  
+        if object == "100644"{
             let path_completo = path.clone() + "/" + &parse_blob_path(entry.to_string().clone());
             let hash = parse_blob_hash(entry.to_string().clone());
             create_blob(path_completo, hash)?;
-        } else { //tree
+        } else { 
             let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
             let new_path = _new_path_hash.split('\0').collect::<Vec<&str>>()[0]; 
             let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
-            //println!("{}/{}", folder_path.clone(), new_path);
             create_tree(path.clone() + "/" + new_path, hash.to_string())?;
         }
     }
@@ -864,10 +862,10 @@ fn iterate_over_dirs_for_getting_objects(dir_reader: ReadDir, objects: &mut Vec<
 
 pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
     let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
-    let mut archivo = match File::open(&format!("{}/{}",dir_path,id.split_at(2).1)) {
+    let mut archivo = match File::open(format!("{}/{}",dir_path,id.split_at(2).1)) {
         Ok(archivo) => archivo,
         Err(_) => return Err(GitrError::FileReadError(dir_path)),
-    }; // si no existe tira error
+    };
     let mut contenido: Vec<u8>= Vec::new();
     if let Err(_) = archivo.read_to_end(&mut contenido) {
         return Err(GitrError::FileReadError(dir_path));
@@ -877,15 +875,15 @@ pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
 }
 pub fn get_object_bytes(id: String, r_path: String) -> Result<Vec<u8>,GitrError> {
     let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
-    let mut archivo = match File::open(&format!("{}/{}",dir_path,id.split_at(2).1)) {
+    let mut archivo = match File::open(format!("{}/{}",dir_path,id.split_at(2).1)) {
         Ok(archivo) => archivo,
         Err(_) => return Err(GitrError::FileReadError(dir_path)),
-    }; // si no existe tira error
+    };
     let mut contenido: Vec<u8>= Vec::new();
     if let Err(_) = archivo.read_to_end(&mut contenido) {
         return Err(GitrError::FileReadError(dir_path));
     }
-    Ok(decode(&contenido)?)
+    decode(&contenido)
 }
 
 pub fn decode(input: &[u8]) -> Result<Vec<u8>, GitrError> {

@@ -21,8 +21,6 @@ fn existe_config() -> bool{
 fn build_ui(application: &gtk::Application)->Option<String>{
     let glade_src = include_str!("gui_test.glade");
     let builder = Builder::from_string(glade_src);
-   
-    //====Builders para componentes====
     let window:Window = builder.object("main_window")?;
     let repo_selector:FileChooserButton = builder.object("repo_selector")?;
     let clone_button: Button = builder.object("clone_button")?;
@@ -42,10 +40,7 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let login_button: Button = builder.object("login_button")?;
     let mail_entry: Entry = builder.object("mail_entry")?;
     let user_entry: Entry = builder.object("user_entry")?;
-    //====Chequeos login====
-     
-    //====Conexiones de señales====
-    let connect_button_clone = connect_button.clone();
+    let _connect_button_clone = connect_button.clone();
     let login_dialog_clone = login_dialog.clone();
     connect_button.connect_clicked(move|_|{
         login_dialog_clone.show();
@@ -82,7 +77,6 @@ fn build_ui(application: &gtk::Application)->Option<String>{
 
     let branch_selector_clon = branch_selector.clone();
     branch_selector_clon.clone().connect_changed(move|_|{
-        //buffer.set_text("mames que anda asi nomas");
         let branch = match branch_selector_clon.clone().active_text(){
             Some(branch) => branch,
             None => return,
@@ -124,11 +118,9 @@ fn build_ui(application: &gtk::Application)->Option<String>{
      });
 
     window.set_application(Some(application));
-    //login_dialog.set_application(Some(application));
     window.set_title("test");
      
     window.show_all();
-    //let login_dialog_clone = login_dialog.clone();
     if !existe_config() {
         login_warning.show();
     }

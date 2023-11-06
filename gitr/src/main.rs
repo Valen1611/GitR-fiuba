@@ -51,7 +51,6 @@ fn setup_config_file(){
      let name = command_utils::get_current_username();
      let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
      file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
-     return;
  }
 
 pub fn existe_config() -> bool{
@@ -69,7 +68,6 @@ fn print_bienvenida() {
 fn main() {
     let child = std::thread::spawn(move || {
         initialize_gui();
-        //server::server_init("repo_remoto", "localhost:9418")
     });
 
     print_bienvenida();
@@ -81,7 +79,6 @@ fn main() {
 
     loop {
 
-        // Cuando tengamos la interfaz se deberia actualizar este mismo input supongo
         let input = match get_input() {
             Ok(input) => input,
             Err(e) => {
@@ -93,12 +90,6 @@ fn main() {
         if input == "q\n" {
             return;
         }
-        // match child.join(){
-            // Ok(_) => (),
-            // Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
-        // }
-    
-
         let argv: Vec<String> = commands::handler::parse_input(input);
         
         // argv = ["command", "flag1", "flag2", ...]
