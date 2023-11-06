@@ -34,7 +34,7 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
         "checkout" => commands::checkout(flags)?,
         "log" => commands::log(flags)?,
         "clone" => commands::clone(flags)?,
-        "fetch" => commands::fetch(flags),
+        "fetch" => commands::fetch(flags)?,
         "merge" => commands::merge(flags)?,
         "remote" =>commands::remote(flags),
         "pull" => commands::pull(flags)?,

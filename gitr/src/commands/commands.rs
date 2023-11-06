@@ -188,7 +188,7 @@ pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
 
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     init(vec![flags[1].clone()])?;
-    pull(vec![])?;
+    pullear(vec![],true)?;
     Ok(())
 }
 
@@ -250,8 +250,8 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
 }
 
 
-pub fn fetch(_flags: Vec<String>) {
-    println!("fetch");
+pub fn fetch(flags: Vec<String>) -> Result<(), GitrError>{
+    pullear(flags, false)
 }
 
 pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
@@ -287,7 +287,7 @@ pub fn remote(_flags: Vec<String>) {
     println!("remote");
 }
 
-pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
+fn pullear (flags: Vec<String>, actualizar_work_dir: bool) -> Result<(), GitrError> {
     if !flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "pull <no-args>".to_string()));
     }
@@ -376,10 +376,15 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
             Tree(tree) => tree.save()?,
         }
     }
-    
-    update_working_directory(get_current_commit()?)?;
+    if actualizar_work_dir {
+        update_working_directory(get_current_commit()?)?;
+    }
     println!("pull successfull");
     Ok(())
+}
+
+pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
+   pullear(flags, true)
 }
 
 pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
