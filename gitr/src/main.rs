@@ -1,8 +1,9 @@
-use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager};
+use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager, server};
 
 use std::{io::{Write, self}, fs};
 extern crate flate2;
-use gitr::gui::gui_from_glade::initialize_gui;
+
+// use gitr::gui::gui_from_glade::initialize_gui;
 
 
 
@@ -109,9 +110,10 @@ use gitr::gui::gui_from_glade::initialize_gui;
     }
 
     fn main() {
-        let child = std::thread::spawn(move || {
-            initialize_gui();
-        });
+        //let child = std::thread::spawn(move || {
+            // initialize_gui();
+        //    server::server_init("repo_remoto", "localhost:9418")
+        //});
 
         print_bienvenida();
 
@@ -152,10 +154,10 @@ use gitr::gui::gui_from_glade::initialize_gui;
             
     
         }
-        match child.join(){
-            Ok(_) => (),
-            Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
-        }
+        // match child.join(){
+            // Ok(_) => (),
+            // Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
+        // }
     
 }
 /*
