@@ -49,7 +49,7 @@ fn setup_config_file(){
     }
         println!("El email es valido, ya puede comenzar a usar Gitr");
      let name = command_utils::get_current_username();
-     let config_file_data = format!("[user]\n\temail = {}\tname = {}\n", email_recibido, name);
+     let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
      file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
      return;
  }
