@@ -10413,3 +10413,25 @@
 {"type": "Action","timestamp": "05-11-2023 02:46:01","message": "calling ls-files with flags: ["--stage"]"}
 {"type": "FileOperation","timestamp": "05-11-2023 02:46:01","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "05-11-2023 02:46:01","message": "reading data from: aaaaa/gitr/index"}
+{"type": "Action","timestamp": "06-11-2023 01:38:15","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:38:15","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 01:38:33","message": "calling c with flags: ["-p", "78fc7cb4e76abceb0a58a6a85da114b64b3731fd"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:38:33","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 01:38:40","message": "calling c with flags: ["-t", "78fc7cb4e76abceb0a58a6a85da114b64b3731fd"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:38:40","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 01:38:45","message": "calling c with flags: ["-s", "78fc7cb4e76abceb0a58a6a85da114b64b3731fd"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:38:45","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 01:38:55","message": "calling c with flags: ["-p", "b6bd29dddaed903bd59201f9f5744ae406d4b40c"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:38:55","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 01:38:59","message": "calling c with flags: ["-s", "b6bd29dddaed903bd59201f9f5744ae406d4b40c"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:38:59","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 01:39:02","message": "calling c with flags: ["-t", "b6bd29dddaed903bd59201f9f5744ae406d4b40c"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:39:02","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 02:09:59","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:09:59","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 02:10:13","message": "calling c with flags: ["-p", "78fc7cb4e76abceb0a58a6a85da114b64b3731fd"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:10:13","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 02:10:19","message": "calling c with flags: ["-s", "78fc7cb4e76abceb0a58a6a85da114b64b3731fd"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:10:19","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 02:10:23","message": "calling c with flags: ["-t", "78fc7cb4e76abceb0a58a6a85da114b64b3731fd"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:10:23","message": "reading data from: .head_repo"}
