@@ -1,7 +1,7 @@
 pub mod commands;
 pub mod git_transport;
 pub mod objects;
-// pub mod gui;
+pub mod gui;
 pub mod diff;
 
 

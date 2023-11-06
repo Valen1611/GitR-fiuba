@@ -3333,6 +3333,7 @@
 {"type": "Action","timestamp": "05-11-2023 02:46:01","message": "calling ls-files with flags: ["--stage"]"}
 {"type": "FileOperation","timestamp": "05-11-2023 02:46:01","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "05-11-2023 02:46:01","message": "reading data from: aaaaa/gitr/index"}
+<<<<<<< HEAD
 {"type": "Action","timestamp": "06-11-2023 01:38:15","message": "calling cr with flags: []"}
 {"type": "FileOperation","timestamp": "06-11-2023 01:38:15","message": "reading data from: .head_repo"}
 {"type": "Action","timestamp": "06-11-2023 01:38:33","message": "calling c with flags: ["-p", "78fc7cb4e76abceb0a58a6a85da114b64b3731fd"]"}
@@ -3567,3 +3568,43 @@
 {"type": "FileOperation","timestamp": "06-11-2023 03:18:10","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "06-11-2023 03:18:10","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "06-11-2023 03:18:10","message": "reading data from: .head_repo"}
+=======
+{"type": "FileOperation","timestamp": "06-11-2023 01:57:25","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:57:25","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:57:25","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:57:25","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:57:25","message": "writing data to: aaaaa/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:46","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:47","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:49","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:50","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:50","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:50","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:50","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:51","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:51","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:52","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:52","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:59:53","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:12:14","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:15:24","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:53:22","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:57:57","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:58:33","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:59:40","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 02:59:40","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "06-11-2023 03:01:00","message": "calling init with flags: ["repo"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "creating dir: repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "creating dir: repo/gitr"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "creating dir: repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "creating dir: repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "creating dir: repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "creating dir: repo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "creating dir: repo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "writing data to: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:00","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:07","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:01:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:10:42","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 03:10:42","message": "reading data from: .head_repo"}
+>>>>>>> gui_arreglado
