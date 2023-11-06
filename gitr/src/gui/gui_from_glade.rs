@@ -30,6 +30,12 @@ fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
     let commit_dialog: Dialog = builder.object("commit_dialog")?;
     let commit_confirm: Button = builder.object("confirm_commit_button")?;
     let commit_message: Entry = builder.object("commit_message")?;
+    //====Chequeos login====
+    if existe_config(){
+        pedir_mail_al_usuario();
+    }
+    
+    
     //====Conexiones de señales====
     
     let commit_clone = commit.clone();
