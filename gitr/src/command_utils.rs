@@ -1074,6 +1074,36 @@ pub fn get_untracked_notstaged_files()->Result<(Vec<String>, Vec<String>, bool),
     Ok((not_staged, untracked_files, hayindex))
 }
 
+
+pub fn get_current_commit_hashmap() -> Result<HashMap<String, String>, GitrError> {
+      let mut tree_hashmap = HashMap::new();
+      let mut haycommitshechos = true;
+      let current_commit = match file_manager::get_current_commit() {
+          Ok(commit) => commit,
+          Err(_) => {
+              haycommitshechos = false;
+              String::new()
+          }
+      };
+      
+      if haycommitshechos {
+        let repo = file_manager::get_current_repo()?;
+        let tree = file_manager::get_main_tree(current_commit)?;
+        let tree_data = file_manager::read_object(&tree)?;
+        let tree_entries = match tree_data.split_once('\0') {
+            Some((_tree_type, tree_entries)) => tree_entries,
+            None => "",
+        };
+        for entry in tree_entries.split('\n') {
+            let attributes = entry.split(' ').collect::<Vec<&str>>()[1];
+            let _file_path= attributes.split('\0').collect::<Vec<&str>>()[0].to_string();
+            let file_path = format!("{}/{}", repo, _file_path);
+            let file_hash = attributes.split('\0').collect::<Vec<&str>>()[1].to_string();
+            tree_hashmap.insert(file_path, file_hash);
+        }
+      }
+      Ok(tree_hashmap)
+}
 pub fn get_tobe_commited_files(not_staged: &Vec<String>)->Result<Vec<String>, GitrError>{
     let working_dir_hashmap = get_working_dir_hashmap()?;
     let (index_hashmap, _) = get_index_hashmap()?;
