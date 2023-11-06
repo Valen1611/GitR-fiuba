@@ -1,3 +1,5 @@
+use std::fs;
+
 use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBoxText};
 
 use gtk::{Builder,Window, Button, FileChooserButton};
@@ -10,6 +12,10 @@ fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
     for branch in branches{
         branch_selector.append_text(&branch);
     }
+}
+
+fn existe_config() -> bool{
+    fs::metadata("gitrconfig").is_ok()
 }
 
  fn build_ui(application: &gtk::Application)->Option<String>{
@@ -30,14 +36,27 @@ fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
     let commit_dialog: Dialog = builder.object("commit_dialog")?;
     let commit_confirm: Button = builder.object("confirm_commit_button")?;
     let commit_message: Entry = builder.object("commit_message")?;
+    let login_dialog: Dialog = builder.object("login_dialog")?;
+    let login_button: Button = builder.object("login_button")?;
+    let mail_entry: Entry = builder.object("mail_entry")?;
+    let user_entry: Entry = builder.object("user_entry")?;
+
     //====Chequeos login====
-    if existe_config(){
-        pedir_mail_al_usuario();
+    if !existe_config(){
+        login_dialog.show();
     }
     
     
     //====Conexiones de señales====
-    
+    let login_button_clone = login_button.clone();
+    login_button_clone.connect_clicked(move|_|{
+        let mail = mail_entry.text();
+        let name = user_entry.text();
+        let config_file_data = format!("[user]\n\temail = {}\tname = {}\n", mail, name);
+        file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
+        login_dialog.hide(); 
+    }); 
+
     let commit_clone = commit.clone();
     let commit_dialog_clone = commit_dialog.clone();
     commit_clone.connect_clicked(move|_|{

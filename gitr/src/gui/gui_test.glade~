@@ -118,7 +118,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="commit_message">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="placeholder-text" translatable="yes">commit message</property>
@@ -144,7 +144,7 @@
     <property name="type-hint">dialog</property>
     <property name="accept-focus">False</property>
     <child internal-child="vbox">
-      <object class="GtkBox">
+      <object class="GtkBox" id="login_dialo">
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
@@ -156,7 +156,7 @@
               <placeholder/>
             </child>
             <child>
-              <object class="GtkButton">
+              <object class="GtkButton" id="login_butto">
                 <property name="label" translatable="yes">Log in</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -193,7 +193,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="user_entry">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="placeholder-text" translatable="yes">username</property>
@@ -205,7 +205,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="mail_entry">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="placeholder-text" translatable="yes">email</property>
