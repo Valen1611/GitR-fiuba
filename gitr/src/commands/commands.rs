@@ -187,54 +187,8 @@ pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
 }
 
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
-    let address = flags[0].clone();
-    let nombre_repo = flags[1].clone();
-
-    let _ = init(vec![nombre_repo.clone()]);
-
-    let mut socket = clone_connect_to_server(address)?;
-    // println!("clone():Servidor conectado.");
-    clone_send_git_upload_pack(&mut socket)?;
-    // println!("clone():Envié upload-pack");
-    let ref_disc = clone_read_reference_discovery(&mut socket)?;
-    let references = ref_discovery::discover_references(ref_disc)?;
-
-    let repo = file_manager::get_current_repo()?;
-    
-    for reference in &references[1..]{
-        let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); //ref path
-        if references[0].0 == reference.0{
-            file_manager::update_head(&reference.1.clone())?; //actualizo el head
-        }
-        let into_hash = reference.0.clone(); //hash a escribir en el archivo
-        file_manager::write_file(path_str, into_hash)?; //escribo el hash en el archivo
-    }
-
-    // println!("clone():Referencias ={:?}=", references);
-    let want_message = ref_discovery::assemble_want_message(&references,Vec::new())?;
-    // println!("clone():want {:?}", want_message);
-
-    write_socket(&mut socket, want_message.as_bytes())?;
-
-    let mut buffer = [0;1024];
-    match socket.read(&mut buffer){
-        Ok(a)=>a,
-        Err(e)=>return Err(GitrError::SocketError("clone".into(), e.to_string()))
-    };
-    
-    print!("clone(): recepeción de packfile:");
-    read_socket(&mut socket, &mut buffer)?;
-
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
-
-    for object in pack_file_struct.objects.iter(){
-        match object{
-            Blob(blob) => blob.save()?,
-            Commit(commit) => commit.save()?,
-            Tree(tree) => tree.save()?,
-        }
-    }
-    update_working_directory(get_current_commit()?)?;
+    init(vec![flags[1].clone()])?;
+    pull(vec![])?;
     Ok(())
 }
 
