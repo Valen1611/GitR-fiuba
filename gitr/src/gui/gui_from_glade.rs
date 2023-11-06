@@ -53,7 +53,7 @@ fn build_ui(application: &gtk::Application)->Option<String>{
 
     let login_dialog_clone = login_dialog.clone();
     let login_button_clone = login_button.clone();
-    login_button.connect_clicked(move|_|{
+    login_button_clone.connect_clicked(move|_|{
         println!("Login button clicked");
         let mail = mail_entry.text();
         let name = user_entry.text();
