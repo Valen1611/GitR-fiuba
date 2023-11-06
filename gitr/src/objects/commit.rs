@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use chrono::Utc;
 
-use crate::file_manager::{self};
+use crate::file_manager::{self, get_object};
 use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing, get_user_mail_from_config};
 
@@ -28,11 +28,10 @@ impl Commit{
         if parent != "None" {
             format_data.push_str(&format!("parent {}\n", parent));
         }
-        parent = "".to_string();
         format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config()?, Utc::now().timestamp()));
         format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config()?, Utc::now().timestamp()));
-        format_data.push('\n');
-        let message = message.replace('\"', "");
+        format_data.push_str("\n");
+        let message = message.replace("\"", "");
         format_data.push_str(&format!("{}\n", message));
         let size = format_data.as_bytes().len();
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
@@ -52,7 +51,7 @@ impl Commit{
         }
         format_data.push_str(&format!("author {}\n", author)); //Utc::now().timestamp()
         format_data.push_str(&format!("committer {}", committer));
-        format_data.push('\n');
+        format_data.push_str("\n");
         format_data.push_str(&format!("{}\n", message));
         let size = format_data.as_bytes().len();      
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
@@ -82,7 +81,7 @@ impl Commit{
     pub fn new_commit_from_string(data: String)->Result<Commit,GitrError>{
         let (mut parent, mut tree, mut author, mut committer, mut message) = ("","None","None","None","None");
         for line in data.lines() {
-            let elems = line.split(' ').collect::<Vec<&str>>();
+            let elems = line.split(" ").collect::<Vec<&str>>();
             match elems[0] {
                 "tree" => tree = elems[1],
                 "parent" => parent = elems[1],
@@ -96,11 +95,12 @@ impl Commit{
     }
 
     pub fn new_commit_from_data(data: String) -> Result<Commit, GitrError>{
-       let commit_string = data.split('\0').collect::<Vec<&str>>()[1].to_string();
-       Self::new_commit_from_string(commit_string)
+       let commit_string = data.split("\0").collect::<Vec<&str>>()[1].to_string();
+       Ok(Self::new_commit_from_string(commit_string)?)
     }
 
     pub fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> Result<Vec<String>,GitrError> {
+        // Voy metiendo en el objects todo lo que no haya que mandarle denuevo al cliente
         let mut object_ids: HashSet<String> = HashSet::new();
         for obj_id in client_objects.clone() {
             object_ids.insert(obj_id.clone());
@@ -122,7 +122,7 @@ impl Commit{
         for obj in client_objects{
             object_ids.remove(&obj);
         } 
-        Ok(Vec::from_iter(object_ids))
+        Ok(Vec::from_iter(object_ids.into_iter()))
     
         
     }
@@ -143,18 +143,49 @@ impl Commit{
                 _ => {return Err(GitrError::InvalidCommitError)}
             }
         }
-        Ok(Vec::from_iter(parents))
+        Ok(Vec::from_iter(parents.into_iter()))
     }
 
     fn get_parents_rec(id: String, receivers_commits: &HashSet<String>,r_path: String, parents: &mut Vec<String>) -> Result<(), GitrError>{
-        if receivers_commits.contains(&id) || id == "None" || id.is_empty(){
+        if receivers_commits.contains(&id) || id == "None" || id == ""{
             return Ok(());
         }
         parents.push(id.clone());
         match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
             Ok(commit) => {Self::get_parents_rec(commit.parent, receivers_commits, r_path, parents)
             },
-            _ => {Err(GitrError::InvalidCommitError)}
+            _ => {return Err(GitrError::InvalidCommitError)}
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+
+    use crate::objects::commit::Commit;
+    #[test]
+    fn test01_new_commit_from_string() {
+
+        let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string()).unwrap();
+        let commit_string = format!("tree {}\nparent {}\nauthor {} {} {}\ncommitter {}\n\nmessage", commit.tree, commit.parent, commit.author, "timestamp", "Buenos Aires +3", commit.committer);
+        let commit_from_string = Commit::new_commit_from_string(commit_string).unwrap();
+        assert_eq!(commit_from_string.tree, commit.tree);
+        assert_eq!(commit_from_string.parent, commit.parent);
+        assert_eq!(commit_from_string.author, commit.author);
+        assert_eq!(commit_from_string.committer, commit.committer);
+        assert_eq!(commit_from_string.message, commit.message);
+    }
+
+    #[test]
+    fn new_commit_from_data() {
+        let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string()).unwrap();
+        let commit_string = format!("commit <lenght>\0tree {}\nparent {}\nauthor {} {} {}\ncommitter {}\n\nmessage", commit.tree, commit.parent, commit.author, "timestamp", "Buenos Aires +3", commit.committer);
+        let commit_from_string = Commit::new_commit_from_data(commit_string).unwrap();
+        assert_eq!(commit_from_string.tree, commit.tree);
+        assert_eq!(commit_from_string.parent, commit.parent);
+        assert_eq!(commit_from_string.author, commit.author);
+        assert_eq!(commit_from_string.committer, commit.committer);
+        assert_eq!(commit_from_string.message, commit.message);
     }
 }
