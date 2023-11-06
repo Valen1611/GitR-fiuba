@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::gitr_errors::GitrError;
 use crate::{file_manager, command_utils};
 use super::blob::TreeEntry;
@@ -62,7 +64,6 @@ impl Tree{
                 TreeEntry::Tree(tree) => {
                     let hash = tree.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
-                    println!("path: {:?}", path);
                     //let path_no_repo = path.split_once('/').unwrap().1;
 
                     let obj_entry = [
@@ -109,16 +110,13 @@ impl Tree{
     }
 
     pub fn new_from_packfile(raw_data: &[u8])->  Result<Self, GitrError>{
-        println!("new_from_packfile(): raw_data: {:?}", raw_data);
         let header_len = raw_data.len();
-        println!("new_from_packfile(): header_len: {:?}", header_len);
         let tree_raw_file = vec![
             b"tree ",
             header_len.to_string().as_bytes(),
             b"\0",
             raw_data,
         ].concat();
-        println!("new_from_packfile(): read_tree_file output {:?}", file_manager::read_tree_file(tree_raw_file.clone())?);
 
         let compressed_data = command_utils::flate2compress2(tree_raw_file.clone())?;
         let hash = command_utils::sha1hashing2(tree_raw_file.clone());
@@ -136,22 +134,54 @@ impl Tree{
     pub fn get_hash(&self) -> String{
         self.hash.clone()
     }
+    
+    pub fn get_data(&self) -> Vec<u8>{
+        self.data.clone()
+    }
 
     pub fn get_objects_id_from_string(data: String) -> Result<Vec<String>, GitrError> {
-        // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
+        // tree <content length><NUL><file mode> <filename><NUL><item sha>\n<file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
+        
         if data.split_at(4).0 != "tree"{
             return Err(GitrError::InvalidTreeError);
         }
-        let mut elems =  data.split('\0').collect::<Vec<&str>>(); 
-        elems = elems[2..].to_vec();
+        
         let mut objects_id = Vec::new();
-        for elem in elems {
-            let elem_hash = elem.split_at(20);
-            objects_id.push(elem_hash.0.to_string());
+        
+        let raw_data = match data.split_once('\0') {
+            Some((_, raw_data)) => raw_data,
+            None => {
+                println!("Error: invalid object type");
+                return Err(GitrError::InvalidTreeError)
+            }
+        };
+        for entry in raw_data.split('\n'){
+            let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
+            let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];
+            objects_id.push(hash.to_string());
         }
         Ok(objects_id)
-
     }
+            
+          
+    
+    pub fn get_all_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> Result<(),GitrError> {
+        // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
+        if let Ok(tree_str) = file_manager::read_object(&tree_id) {//, r_path.clone()){
+            let tree_objects = match Tree::get_objects_id_from_string(tree_str){
+                Ok(ids) => {ids},
+                _ => return Err(GitrError::InvalidTreeError)
+            };
+            for obj_id in tree_objects {
+                object_ids.insert(obj_id.clone());
+                let _ = Self::get_all_tree_objects(obj_id.clone(), r_path.clone(),object_ids); 
+            }
+
+            return Ok(())
+        }
+        Err(GitrError::InvalidTreeError)
+    }
+    
 }
 
 

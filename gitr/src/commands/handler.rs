@@ -7,6 +7,11 @@ pub fn parse_input(input: String) -> Vec<String> {
 
 /// ["command", "flag1", "flag2", ...]
 pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
+
+    if argv.is_empty() {
+        return Ok(())
+    }
+
     let command = argv[0].clone();
 
     let flags = argv[1..].to_vec();
@@ -30,10 +35,10 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
         "log" => commands::log(flags)?,
         "clone" => commands::clone(flags)?,
         "fetch" => commands::fetch(flags),
-        "merge" => commands::merge(flags),
+        "merge" => commands::merge(flags)?,
         "remote" =>commands::remote(flags),
         "pull" => commands::pull(flags)?,
-        "push" => commands::push(flags),
+        "push" => commands::push(flags)?,
         "branch" =>commands::branch(flags)?,
         "ls-files" => commands::ls_files(flags)?,
 

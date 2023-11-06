@@ -1,5 +1,4 @@
 use std::error::Error;
-use std::f32::consts::E;
 use std::fs::{File, OpenOptions};
 use std::io::{prelude::*, Bytes};
 use std::fs;
@@ -32,7 +31,27 @@ pub fn read_file(path: String) -> Result<String, GitrError> {
     }
 }
 
-
+//receives a path an returns all directories that arent gitr
+pub fn visit_dirs(dir: &Path) -> Vec<String> {
+    let mut files = Vec::new();
+    if let Ok(entries) = fs::read_dir(dir) {
+        for entry in entries.flatten() {
+          
+                let path = entry.path();
+                if path.is_dir() {
+                    if path.ends_with("gitr") {
+                        continue;
+                    }
+                    let mut subfiles = visit_dirs(&path);
+                    files.append(&mut subfiles);
+                } else if let Some(path_str) = path.to_str() {
+                    files.push(path_str.to_string());
+                }
+            
+        }
+    }
+    files
+}
 
 // Writes a file with the given text
 pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
@@ -82,7 +101,7 @@ pub fn create_directory(path: &String)->Result<(), GitrError>{
             Err(GitrError::AlreadyInitialized)}
     }
 }
-
+//delete all files without gitr
 pub fn delete_all_files()-> Result<(), GitrError>{  
     let repo = get_current_repo()?;
     match fs::remove_file(repo.clone() + "/gitr/index"){
@@ -92,25 +111,17 @@ pub fn delete_all_files()-> Result<(), GitrError>{
     let path = Path::new(&repo);
     if let Ok(entries) = fs::read_dir(path) {
         for entry in entries.flatten() {
-                if entry.file_name() != "gitr" {
-                    println!("Deleting {:?}", entry.path());
-                    
+                if entry.file_name() != "gitr" && entry.file_name() != ".git" {
                     if entry.path().is_file() {
                         match fs::remove_file(entry.path()) {
                             Ok(_) => continue,
                             Err(_) => return Err(GitrError::FileWriteError(entry.path().display().to_string())),
                         };
                     }
-
-
                     match fs::remove_dir_all(entry.path()) {
                         Ok(_) => (),
                         Err(_) => return Err(GitrError::FileWriteError(entry.path().display().to_string())),
                     };
-
-                    
-
-
                 }
         }
     }
@@ -142,17 +153,16 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
     let mut buffer = Vec::new();
     match decoder.read_to_end(&mut buffer){
         Ok(_) => Ok(buffer.clone()),
-        Err(_) => Err(GitrError::FileReadError(path.to_string())),
+        Err(_) => { println!("error");
+            Err(GitrError::FileReadError(path.to_string()))}
     }
 }
 
-
+//reads and object and returns raw data
 pub fn read_object(object: &String)->Result<String, GitrError>{
     let path = parse_object_hash(object)?;
     let bytes = deflate_file(path.clone())?;
-
     let mut object_data: Vec<u8> = Vec::new();
-
     for byte in bytes {
         let byte = match byte {
             Ok(byte) => byte,
@@ -160,10 +170,7 @@ pub fn read_object(object: &String)->Result<String, GitrError>{
         };
         object_data.push(byte);
     }
-
     let first_byte = object_data[0];
-
-
     let mut object_data_str = String::new();
     for byte in object_data.clone() {
         if byte == 0 {
@@ -171,9 +178,6 @@ pub fn read_object(object: &String)->Result<String, GitrError>{
         }
         object_data_str.push(byte as char);
     }
-
-
-
     if first_byte as char == 't' {
         let tree_data = match read_tree_file(object_data) {
             Ok(data) => data,
@@ -182,7 +186,6 @@ pub fn read_object(object: &String)->Result<String, GitrError>{
         
         return Ok(tree_data);
     }
-
     if first_byte as char == 'b' || first_byte as char == 'c' {
         let mut buffer = String::new();
         for byte in object_data {
@@ -340,7 +343,9 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/refs"))?;
         create_directory(&(name.clone() + "/gitr/refs/heads"))?;
         create_directory(&(name.clone() + "/gitr/refs/remotes"))?;
+        create_directory(&(name.clone() + "/gitr/refs/remotes/daemon"))?;
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
+
     Ok(())
 }
 
@@ -353,9 +358,10 @@ pub fn read_index() -> Result<String, GitrError>{
     let repo = get_current_repo()?;
     let path = repo + "/gitr/index";
     let data = read_compressed_file(&path);
+    
     let data = match data{
         Ok(data) => data,
-        Err(_) => return Err(GitrError::FileReadError(path)),
+        Err(_) => {return Err(GitrError::FileReadError(path))}
     };
     let data = String::from_utf8(data);
     let data = match data{
@@ -364,6 +370,7 @@ pub fn read_index() -> Result<String, GitrError>{
     };
     Ok(data)
 }
+
 
 pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
     let mut index;
@@ -466,8 +473,11 @@ pub fn delete_branch(branch:String, moving: bool)-> Result<(), GitrError>{
     Ok(())
 }
 
-pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), Box<dyn Error>> {
-    fs::rename(old_branch, new_branch)?;
+pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), GitrError>{
+    match fs::rename(old_branch, new_branch.clone()){
+        Ok(_) => (),
+        Err(_) => return Err(GitrError::FileCreationError(new_branch))
+    }
     Ok(())
 }   
 
@@ -493,12 +503,8 @@ pub fn get_commit(branch:String)->Result<String, GitrError>{
 }
 
 pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
-
     file_manager::create_directory(&path)?;
-
     let tree_raw_data = read_object(&hash)?;
-
-
     let raw_data = match tree_raw_data.split_once('\0') {
         Some((_, raw_data)) => raw_data,
         None => {
@@ -506,7 +512,6 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
             return Ok(())
         }
     };
-    
     for entry in raw_data.split('\n') {
         let object = entry.split(' ').collect::<Vec<&str>>()[0];
         if object == "100644"{ //blob
@@ -664,6 +669,7 @@ pub fn update_current_repo(dir_name: &String) -> Result<(), GitrError> {
     Ok(())
 }
 
+/// Devuelve vector con los ids de los commits en los heads activos
 pub fn get_heads_ids() -> Result<Vec<String>, GitrError> {
     let mut branches: Vec<String> = Vec::new();
     let repo = get_current_repo()?;
@@ -779,4 +785,39 @@ pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
 
     }
     Ok(objects)
+}
+
+pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
+    let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
+    let mut archivo = match File::open(&format!("{}/{}",dir_path,id.split_at(2).1)) {
+        Ok(archivo) => archivo,
+        Err(_) => return Err(GitrError::FileReadError(dir_path)),
+    }; // si no existe tira error
+    let mut contenido: Vec<u8>= Vec::new();
+    if let Err(_) = archivo.read_to_end(&mut contenido) {
+        return Err(GitrError::FileReadError(dir_path));
+    }
+    let descomprimido = String::from_utf8_lossy(&decode(&contenido)?).to_string();
+    Ok(descomprimido)
+}
+pub fn get_object_bytes(id: String, r_path: String) -> Result<Vec<u8>,GitrError> {
+    let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
+    let mut archivo = match File::open(&format!("{}/{}",dir_path,id.split_at(2).1)) {
+        Ok(archivo) => archivo,
+        Err(_) => return Err(GitrError::FileReadError(dir_path)),
+    }; // si no existe tira error
+    let mut contenido: Vec<u8>= Vec::new();
+    if let Err(_) = archivo.read_to_end(&mut contenido) {
+        return Err(GitrError::FileReadError(dir_path));
+    }
+    Ok(decode(&contenido)?)
+}
+
+pub fn decode(input: &[u8]) -> Result<Vec<u8>, GitrError> {
+    let mut decoder = ZlibDecoder::new(input);
+    let mut decoded_data = Vec::new();
+    if let Err(_) = decoder.read_to_end(&mut decoded_data) {
+        return Err(GitrError::CompressionError);
+    }
+    Ok(decoded_data)
 }
