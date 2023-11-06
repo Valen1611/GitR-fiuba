@@ -18,9 +18,9 @@ fn existe_config() -> bool{
     fs::metadata("gitrconfig").is_ok()
 }
 
- fn build_ui(application: &gtk::Application)->Option<String>{
-     let glade_src = include_str!("gui_test.glade");
-     let builder = Builder::from_string(glade_src);
+fn build_ui(application: &gtk::Application)->Option<String>{
+    let glade_src = include_str!("gui_test.glade");
+    let builder = Builder::from_string(glade_src);
    
     //====Builders para componentes====
     let window:Window = builder.object("main_window")?;
@@ -36,31 +36,38 @@ fn existe_config() -> bool{
     let commit_dialog: Dialog = builder.object("commit_dialog")?;
     let commit_confirm: Button = builder.object("confirm_commit_button")?;
     let commit_message: Entry = builder.object("commit_message")?;
-    let login_dialog: Dialog = builder.object("login_dialog")?;
+    let login_dialog: Window = builder.object("login_dialog")?;
+    let login_warning: Dialog = builder.object("login_warning")?;
+    let connect_button: Button = builder.object("connect_button")?;
     let login_button: Button = builder.object("login_button")?;
     let mail_entry: Entry = builder.object("mail_entry")?;
     let user_entry: Entry = builder.object("user_entry")?;
-
     //====Chequeos login====
-    if !existe_config(){
-        login_dialog.show();
-    }
-    
-    
+     
     //====Conexiones de señales====
+    let connect_button_clone = connect_button.clone();
+    let login_dialog_clone = login_dialog.clone();
+    connect_button.connect_clicked(move|_|{
+        login_dialog_clone.show();
+    });
+
+    let login_dialog_clone = login_dialog.clone();
     let login_button_clone = login_button.clone();
-    login_button_clone.connect_clicked(move|_|{
+    login_button.connect_clicked(move|_|{
+        println!("Login button clicked");
         let mail = mail_entry.text();
         let name = user_entry.text();
         let config_file_data = format!("[user]\n\temail = {}\tname = {}\n", mail, name);
         file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
-        login_dialog.hide(); 
-    }); 
+        login_dialog_clone.hide(); 
+    });
+
 
     let commit_clone = commit.clone();
     let commit_dialog_clone = commit_dialog.clone();
     commit_clone.connect_clicked(move|_|{
-        commit_dialog_clone.show();  
+        println!("Commit button clicked");
+        commit_dialog_clone.show();
     }); 
 
     let commit_confirm_clone=commit_confirm.clone();
@@ -103,10 +110,10 @@ fn existe_config() -> bool{
         update_branches(&branch_selector_clon.clone(),repo_branches);
     });
 
-     let clone_dialog_ = clone_dialog.clone();
-     clone_button.connect_clicked(move|_| {
-         clone_dialog_.show();
-     });
+    let clone_dialog_ = clone_dialog.clone();
+    clone_button.connect_clicked(move|_| {
+        clone_dialog_.show();
+    });
 
      let clone_dialog_ = clone_dialog.clone();
      clone_accept_button.connect_clicked(move|_| {
@@ -116,13 +123,16 @@ fn existe_config() -> bool{
         commands::clone(vec![url.to_string(),"repo_clonado".to_string()]).unwrap();
      });
 
-    
-
-     window.set_application(Some(application));
-     window.set_title("test");
-
-     window.show_all();
-     Some("Ok".to_string())
+    window.set_application(Some(application));
+    //login_dialog.set_application(Some(application));
+    window.set_title("test");
+     
+    window.show_all();
+    //let login_dialog_clone = login_dialog.clone();
+    if !existe_config() {
+        login_warning.show();
+    }
+    Some("Ok".to_string())
  }
 
 pub fn initialize_gui(){
@@ -134,5 +144,4 @@ pub fn initialize_gui(){
         build_ui(app);
     });
     app.run();
-
 }
