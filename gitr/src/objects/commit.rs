@@ -109,6 +109,7 @@ impl Commit{
         }
         let mut commits: Vec<Commit> = Vec::new();
         for id in commits_id {
+            
             object_ids.insert(id.clone());
             match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
                 Ok(commit) => {commits.push(commit)},
