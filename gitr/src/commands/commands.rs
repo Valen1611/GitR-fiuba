@@ -1,7 +1,8 @@
 use std::collections::HashMap;
+use std::fs::File;
 use std::hash::Hash;
 use std::path::Path;
-use crate::file_manager::{get_head, get_main_tree, get_branches, get_object};
+use crate::file_manager::{get_head, get_main_tree, get_branches, get_object, get_current_repo};
 use crate::command_utils::{*, self};
 use std::net::TcpStream;
 use std::io::prelude::*;
@@ -283,8 +284,14 @@ pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
     Ok(())
 }
 
-pub fn remote(_flags: Vec<String>) {
-    println!("remote");
+pub fn remote(flags: Vec<String>) -> Result<(), GitrError> {
+    if flags.len() == 0 {
+        let remote = file_manager::read_file(get_current_repo()? + "/gitr/remote")?;
+        println!("remote: {}",remote);
+    } else {
+        file_manager::write_file(get_current_repo()? + "/gitr/remote", flags[0].clone())?;
+    }
+    Ok(())
 }
 
 fn pullear (flags: Vec<String>, actualizar_work_dir: bool) -> Result<(), GitrError> {

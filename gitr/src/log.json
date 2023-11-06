@@ -9467,3 +9467,21 @@
 {"type": "FileOperation","timestamp": "06-11-2023 00:48:28","message": "writing data to: fecheado/pusheado.rs"}
 {"type": "FileOperation","timestamp": "06-11-2023 00:48:28","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "06-11-2023 00:48:28","message": "writing data to: fecheado/gitr/HEAD"}
+{"type": "Action","timestamp": "06-11-2023 01:12:33","message": "calling remote with flags: []"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:12:33","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:12:33","message": "reading data from: fecheado/gitr/remote"}
+{"type": "Action","timestamp": "06-11-2023 01:12:45","message": "calling remote with flags: []"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:12:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:12:45","message": "reading data from: fecheado/gitr/remote"}
+{"type": "Action","timestamp": "06-11-2023 01:12:51","message": "calling remote with flags: ["loca"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:12:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:12:51","message": "writing data to: fecheado/gitr/remote"}
+{"type": "Action","timestamp": "06-11-2023 01:12:53","message": "calling remote with flags: []"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:12:53","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:12:53","message": "reading data from: fecheado/gitr/remote"}
+{"type": "Action","timestamp": "06-11-2023 01:13:05","message": "calling remote with flags: ["localhost:9418"]"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:13:05","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:13:05","message": "writing data to: fecheado/gitr/remote"}
+{"type": "Action","timestamp": "06-11-2023 01:13:07","message": "calling remote with flags: []"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:13:07","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "06-11-2023 01:13:07","message": "reading data from: fecheado/gitr/remote"}
