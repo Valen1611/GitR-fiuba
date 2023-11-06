@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::HashMap, net::
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, objects::git_object::GitObject, diff::{Diff, self}, git_transport::{ref_discovery, pack_file::PackFile}};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::{Diff}};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -93,7 +93,7 @@ pub fn get_object_properties(flags:Vec<String>)->Result<(String, String, String,
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
-    return Ok((object_hash.to_string(), res_output.clone(), size.to_string(), object_type.to_string()));
+    Ok((object_hash.to_string(), res_output.clone(), size.to_string(), object_type.to_string()))
 }
 
 
@@ -325,7 +325,7 @@ pub fn branch_delete_flag(branch:String)-> Result<(),GitrError>{
         return Err(GitrError::BranchNonExistsError(branch))
     }
     file_manager::delete_branch(branch, false)?;
-    return Ok(())
+    Ok(())
 }
 
 /// branch -m flag function
@@ -347,7 +347,7 @@ pub fn branch_move_flag(branch_origin:String, branch_destination:String)->Result
         let ref_correct = format!("refs/heads/{}", branch_destination);
         file_manager::update_head(&ref_correct)?;
     }   
-    return Ok(())
+    Ok(())
 }
 
 /// branch <newbranch> flag function
@@ -398,7 +398,7 @@ pub fn print_commit_confirmation(message:String)->Result<(), GitrError>{
 pub fn commit_existing() -> Result<(), GitrError>{
     let repo = file_manager::get_current_repo()?;
     let head = file_manager::get_head()?;
-    let branch_name = head.split("/").collect::<Vec<&str>>()[2];
+    let branch_name = head.split('/').collect::<Vec<&str>>()[2];
     if fs::metadata(repo.clone() + "/gitr/" + &head).is_err(){
         return Err(GitrError::NoCommitExisting(branch_name.to_string()))
     }
@@ -427,18 +427,10 @@ pub fn get_blobs_from_commit(commit_hash: String)->Result<(),GitrError> {
     let path_and_hash_hashmap = get_commit_hashmap(commit_hash)?;
     
     println!("hashmap: {:?}", path_and_hash_hashmap);
-    // let mut files_raw_data = Vec::new();
-
-    // for blob in blobs.clone() {
-    //     let blob_data = file_manager::read_object(&blob)?;
-    //     files_raw_data.push(blob_data);
-    // }
     
     Ok(())
 }
 
-/// Toma el path de un archivo y los diffs que hay que aplicarle. (No detecta conflicts)
-/// Crea el archivo con los cambios aplicados.
 fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     let string_archivo = file_manager::read_file(path.clone())?;
     let mut archivo_reconstruido = vec![];
@@ -446,25 +438,20 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     println!("diff:+ {:?}", diff.lineas_agregadas);
     println!("diff:- {:?}", diff.lineas_eliminadas);
     for (i,line) in string_archivo.lines().enumerate(){
-        //println!("");
-        //println!("");
-        //println!("Base[{}]: {}", i, line);
         let tiene_add = diff.has_add_diff(i);
-        if diff.has_delete_diff(i){ //sí y la linea se tiene que agregar
-           // print!(". Hay dif de delete. ");
+        if diff.has_delete_diff(i){
             if tiene_add.0{
                 print!(". Hay dif de add. Pusheo: {}",tiene_add.1.clone());
-                archivo_reconstruido.push(tiene_add.1.clone()+"\n"); //luego el agregado
+                archivo_reconstruido.push(tiene_add.1.clone()+"\n"); 
             }
-           // print!(". No hay diff de add.");
             continue;
         }
-        else if tiene_add.0 { //sí y se elimina, no la pusheo porque la tengo que borrar, la salteo
+        else if tiene_add.0 { 
             print!(". No hay dif de delete. Sí hay de add. Agrego: [{},{}]",line.to_string().clone(),tiene_add.1.clone());
-            archivo_reconstruido.push(line.to_string()+"\n"); //primero el base
-            archivo_reconstruido.push(tiene_add.1.clone()+"\n"); //luego el agregado
+            archivo_reconstruido.push(line.to_string()+"\n");
+            archivo_reconstruido.push(tiene_add.1.clone()+"\n");
         } else {
-            archivo_reconstruido.push(line.to_string()+"\n"); //primero el base
+            archivo_reconstruido.push(line.to_string()+"\n"); 
         }
     }
 
@@ -507,10 +494,9 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
         }
 
         if origin[i].0 == new[j].0{
-            if origin[i].1 == false { //es linea de eliminar, no es conflict
-                //println!("pusheando origin: {:?}", origin[i]);
+            if !origin[i].1 { 
                 diff_final.lineas.push(origin[i].clone());
-                diff_final.lineas_eliminadas.push((origin[i].0.clone(), origin[i].2.clone()));
+                diff_final.lineas_eliminadas.push((origin[i].0, origin[i].2.clone()));
                 
                 if i != max_i {
                     i+=1;
@@ -521,12 +507,7 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
                 }
                 continue;
             }
-
-            //conflict
-            //println!("conflict: {:?}{:?}", origin[i], new[j]);
-            let pos_original = origin[i].0.clone();
-            //origin conflicts
-
+            let pos_original = origin[i].0;
             let mut origin_conflicts = Vec::new();
             
             origin_conflicts.push(origin[i].2.clone()+"\n");
@@ -539,17 +520,12 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
                 if k >= max_i{
                     break;
                 }
-                if max_i - 2 > k { // me aseguro que puedoe ver +2 adelante
-                    if origin[k].0 + 1 != origin[k+1].0 { // si el sig no es consec me voy
-                        //i=k; //dejo i aca para que skpee el conflict que ya meti
+                if max_i - 2 > k { 
+                    if origin[k].0 + 1 != origin[k+1].0 { 
                         break;
                     }
-                    if origin[k].0 + 1 == origin[k+1].0 &&
-                    origin[k+1].1 == false {
-                        if origin[k].0 + 1 == origin[k+2].0 &&
-                        origin[k+2].1 == true {
-                            origin_conflicts.push(origin[k+2].2.clone()+"\n");
-                        }
+                    if origin[k].0 + 1 == origin[k+1].0 && !origin[k+1].1 && origin[k].0 + 1 == origin[k+2].0 && origin[k+2].1 {
+                        origin_conflicts.push(origin[k+2].2.clone()+"\n");
                     }
                 }
 
@@ -575,21 +551,14 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
                 if k >= max_j{
                     break;
                 }
-                if max_j - 2 > k { // me aseguro que puedoe ver +2 adelante
-                    if new[k].0 + 1 != new[k+1].0 { // si el sig no es consec me voy
-                        //j=k; //dejo i aca para que skpee el conflict que ya meti
+                if max_j - 2 > k { 
+                    if new[k].0 + 1 != new[k+1].0 { 
                         break;
                     }
                     
-                    if new[k].0 + 1 == new[k+1].0 &&
-                    new[k+1].1 == false {
-                        if new[k].0 + 1 == new[k+2].0 &&
-                        new[k+2].1 == true {
-                            new_conflicts.push(new[k+2].2.clone()+"\n");
-                            
-                        }
+                    if new[k].0 + 1 == new[k+1].0 && !new[k+1].1 && new[k].0 + 1 == new[k+2].0 && new[k+2].1 {
+                        new_conflicts.push(new[k+2].2.clone()+"\n");
                         
-                       
                     }
 
 
@@ -618,14 +587,12 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
                 j+=1;
             }
 
-            let conflict = vec![
-                ">>>>>>>\n",
+            let conflict = [">>>>>>>\n",
                 origin_conflicts.concat().as_str(),
                 "========\n",
                 new_conflicts.concat().as_str(),
                
-                "<<<<<<<",
-            ].concat();
+                "<<<<<<<"].concat();
 
             diff_final.lineas_agregadas.push((pos_original, conflict.clone()));
 
@@ -633,31 +600,27 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
 
 
         }
-        else{
-            if origin[i].0 < new[j].0{
-                //println!("pusheando origin: {:?}", origin[i]);
-                diff_final.lineas.push(origin[i].clone());
-                if origin[i].1 == false {
-                    diff_final.lineas_eliminadas.push((origin[i].0.clone(), origin[i].2.clone()));
-                } else {
-                    diff_final.lineas_agregadas.push((origin[i].0.clone(), origin[i].2.clone()));
-                }
-                if i < max_i {
-                    i+=1;
-                }
+        else if origin[i].0 < new[j].0{
+            diff_final.lineas.push(origin[i].clone());
+            if !origin[i].1 {
+                diff_final.lineas_eliminadas.push((origin[i].0, origin[i].2.clone()));
+            } else {
+                diff_final.lineas_agregadas.push((origin[i].0, origin[i].2.clone()));
             }
-            else{
-                //println!("pusheando new: {:?}", new[j]);
-                diff_final.lineas.push(new[j].clone());
-                if new[j].1 == false {
-                    diff_final.lineas_eliminadas.push((new[j].0.clone(), new[j].2.clone()));
-                } else {
-                    diff_final.lineas_agregadas.push((new[j].0.clone(), new[j].2.clone()));
-                }
-                if j < max_j {
-                    j+=1;
-                }
-            } 
+            if i < max_i {
+                i+=1;
+            }
+        }
+        else{
+            diff_final.lineas.push(new[j].clone());
+            if !new[j].1 {
+                diff_final.lineas_eliminadas.push((new[j].0, new[j].2.clone()));
+            } else {
+                diff_final.lineas_agregadas.push((new[j].0, new[j].2.clone()));
+            }
+            if j < max_j {
+                j+=1;
+            }
         }
        
     }
@@ -665,10 +628,6 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     for (i, accion, linea) in diff_final.lineas.clone(){
         println!("linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
     }
-
-    //println!("diff_final: {:?}", diff_final.lineas);
-
-
     println!();
     println!("final+: {:?}", diff_final.lineas_agregadas);
     println!();
@@ -686,16 +645,6 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
     file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone())?;
     origin_hashmap = get_commit_hashmap(origin_commit.clone())?;
     let base_hashmap = get_commit_hashmap(base_commit.clone())?;
-
-    //IDEA: Agarrar todos los archivos y carpetas de branch y crearlos en el working dir.
-    /*
-    base_file_data: "hola\ncambios en otra"
-    origin_file_data: "hola y chau en master\n"
-    branch_file_data: "hola\n"
-    
-     */
-    
-
     for (path, origin_file_hash) in origin_hashmap.iter(){
 
         let origin_file_data =file_manager::read_file(path.clone())?; 
@@ -707,8 +656,6 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
 
             
             if origin_file_hash == &branch_file_hash{
-                // base     origin     branch    result
-                //          aaa        aaa       aaa
                 continue;
             }
             
@@ -716,37 +663,15 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
             let base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone())?;
 
             if &base_file_hash == origin_file_hash {
-                // base     origin     branch    result
-                // aaa      aaa        aax       aaxa
-
-
-
-                //me quedo con branch
-                //saco el diff entre branch y base
-
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
                 aplicar_difs(path.clone(), diff_base_branch)?;
                 continue;
             }
             
-            if base_file_hash == branch_file_hash {
-                // base     origin     branch    result
-                // aaa      aax        aaa       aax
-
-                //me quedo con origin porque en branch no hubo cambios nuevos ahi                
+            if base_file_hash == branch_file_hash {              
                 continue;
            
             }
-
-            // aca se modifico el mismo archivo en ambas ramas (origin y branch)
-            // con respecto a base
-            
-            //      base     origin     branch    result
-            //      aaa      aax        aaz       
-
-            // si los indices de los diffs, coinciden, hay conflicts
-            // si no coinciden, solamente se mergean los cambios
-            
             println!("aca si deberia caer");
             println!("base_file_data: {:?}", base_file_data);
             println!("origin_file_data: {:?}", origin_file_data);
@@ -754,90 +679,13 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
 
             let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
             let diff_base_branch = Diff::new(base_file_data, branch_file_data);
-
-
-            // no necesriamente hay conflicts
-            // aca necesitamos una funcion que compare los diffs
-            // y si devuelve un Diff, lo aplicamos y listo
-            // si devuelve un DiffConflict... tambien lo aplicamos y listo
-            // pero con su logica de conflictos
             let union_diffs = comparar_diffs(diff_base_origin, diff_base_branch)?;
             aplicar_difs(path.clone(), union_diffs)?;
-            // match union_diffs {
-            //     /*
-            //     hacer eso de match Diff
-            //     o match DiffConclit como se hace con los GitObjects
-                
-            //      */
-            // }
-
-            
-
-
-            /*
-            (1, hola, chau)
-            (2,---,agregar algo)
-            (3, chau, )
-            4 ---
-            
-
-            
-             */
-            /*
-             <<<<<<<<,
-            generar_incoming() = Vec[string],
-             ==========,
-            generar_actual() = Vec[String],
-             >>>>>,
-             .concat()
-             */
-
-            
-            /*
-
-            
-            conflit
-
-
-
-            */
-
         }
         else{
             continue;
         }
     }
-
-    //algoritmo merge git
-    //1)diff origin vs base
-    //2)diff branch vs base
-        //2bis) si branch tiene archivos nuevos le hago add.
-    //3) aplicar los diffs a los archivos en base
-    //4) merge commit
-
-/*
-hashmap: 
-{"nuevito/otra": "5e8cf4544ba6d6bafa636e0b38bdc2277da8bef1", 
-"nuevito/hola": "13fd0cb913ab1725abab00937407c4e046314228", 
-"nuevito/otra/ola": "6fcf9a84b35d93e984047e3c7e8418289ec09f19"}
-*/
-    /*
-    base    origin  branch      result
-    
-    aaa     aaa     aax         aax                     diff={}U{-a(3) +x(3)}
-    bbb     bbx     bbb         bbx                     diff={-b(3) +x(3)}U{}
-    ccc     ccx     ccz         ver diferencias         diff={-c(3) +x(3)}U{-c(3) +z(3)} ---> conflict y tenes que elegir
-            DDD     
-    
-
-    O--N--O--M
-   \      /
-    X--M-/
-     */
-
-
-
-    
     Ok(())
 }
 
@@ -849,13 +697,10 @@ hashmap:
  **************************/
 
  pub fn get_working_dir_hashmap() -> Result<HashMap<String, String>, GitrError>{
-    // working dir
     let mut working_dir_hashmap = HashMap::new();
-    //busco el working dir
     let repo = file_manager::get_current_repo()?;
     let path = Path::new(repo.as_str());
     let files= visit_dirs(path);
-    //cargo el diccionario
     for file_path in files {
         let file_data = file_manager::read_file(file_path.clone())?;
         
@@ -912,8 +757,6 @@ pub fn status_print_untracked(untracked_files: &Vec<String>, hayindex: bool) {
                 Some((_path, file)) => file.to_string(),
                 None => file,
             };
-            
-
             println!("\t\x1b[31m{}\x1b[0m", file_name);
         }
 
@@ -936,20 +779,15 @@ pub fn status_print_current_branch() -> Result<(), GitrError> {
 
 
 pub fn get_index_hashmap() -> Result<(HashMap<String, String>, bool), GitrError> {
-    // index
     let mut index_hashmap = HashMap::new();
-    //busco el index
     let mut hayindex = true;
     let index_data = match file_manager::read_index() {
         Ok(data) => data,
         Err(_) => {
-            //let message = format!("\nNo commits yet\n\nnothing to commit (create/copy files and use \"git add\" to track)");
-            //println!("{}", message);
             hayindex = false;
             String::new()
         }
     };
-    // cargo el diccionario
     if hayindex {
         for index_entry in index_data.split('\n') {
             let attributes = index_entry.split(' ').collect::<Vec<&str>>();
@@ -961,24 +799,21 @@ pub fn get_index_hashmap() -> Result<(HashMap<String, String>, bool), GitrError>
     Ok((index_hashmap, hayindex))
 }
 
-pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, mut tree_hashmap: &mut HashMap<String, String>) -> Result<(), GitrError>{
+pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_hashmap: &mut HashMap<String, String>) -> Result<(), GitrError>{
     let tree_data = file_manager::read_object(&hash_of_tree_to_read)?;
 
     let tree_entries = match tree_data.split_once('\0') {
         Some((_tree_type, tree_entries)) => tree_entries,
         None => "",
     };
-    // cargo el diccionario
     for entry in tree_entries.split('\n') {
         if entry.split(' ').collect::<Vec<&str>>()[0] == "40000"{
             let attributes = entry.split(' ').collect::<Vec<&str>>()[1];
             let relative_file_path= attributes.split('\0').collect::<Vec<&str>>()[0].to_string();
             let file_path = format!("{}/{}", file_path, relative_file_path);
             let file_hash = attributes.split('\0').collect::<Vec<&str>>()[1].to_string();
-            get_subtrees_data(file_hash, file_path, &mut tree_hashmap)?;
+            get_subtrees_data(file_hash, file_path, tree_hashmap)?;
         }
-
-
         if entry.split(' ').collect::<Vec<&str>>()[0] == "40000"{
             continue;
         }
@@ -995,16 +830,13 @@ pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, mut tr
 }
 
 
-/// only blobs
 pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, GitrError> {
-      // current commit
       let mut tree_hashmap = HashMap::new();
     let current_commit = get_current_commit()?;
     if current_commit == commit{
         let (index_hashmap, _) = get_index_hashmap()?;
         return Ok(index_hashmap);
     }
-      //busco el commit
       if !commit.is_empty() {
         
         let repo = file_manager::get_current_repo()?;
@@ -1013,9 +845,7 @@ pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, Git
         let tree_entries = match tree_data.split_once('\0') {
             Some((_tree_type, tree_entries)) => tree_entries,
             None => "",
-        };
-          // cargo el diccionario
-          
+        };          
         for entry in tree_entries.split('\n') {
             if entry.split(' ').collect::<Vec<&str>>()[0] == "40000"{
                 let attributes = entry.split(' ').collect::<Vec<&str>>()[1];
@@ -1056,10 +886,8 @@ pub fn get_untracked_notstaged_files()->Result<(Vec<String>, Vec<String>, bool),
         }
         if current_commit_hashmap.contains_key(path.clone().as_str()){
             if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
-                if &hash != commit_hash {
-                    if !index_hashmap.contains_key(&path) {
-                        not_staged.push(path.clone( ));
-                    }
+                if &hash != commit_hash && !index_hashmap.contains_key(&path) {
+                    not_staged.push(path.clone( ));
                 }
             };
         }
@@ -1113,11 +941,9 @@ pub fn get_tobe_commited_files(not_staged: &Vec<String>)->Result<Vec<String>, Gi
         if !current_commit_hashmap.contains_key(path.as_str()) {
             to_be_commited.push(path);
         }
-        else {
-            if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
-                if hash != *commit_hash  && !not_staged.contains(&path){ 
-                    to_be_commited.push(path);
-                }
+        else if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
+            if hash != *commit_hash  && !not_staged.contains(&path){ 
+                to_be_commited.push(path);
             }
         }
     }
@@ -1225,7 +1051,7 @@ pub fn rm_from_index(file_to_delete: &str)->Result<bool, GitrError>{
  **************************
  **************************/
 
-pub fn write_reference_from_cloning(references: Vec<(String, String)>, ref_disc:String)-> Result<(), GitrError>{
+pub fn write_reference_from_cloning(references: Vec<(String, String)>, _ref_disc:String)-> Result<(), GitrError>{
     let repo = file_manager::get_current_repo()?;
     for reference in &references[1..]{
         let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); //ref path
@@ -1247,11 +1073,6 @@ pub fn clone_connect_to_server(address: String)->Result<TcpStream,GitrError>{
 }
 
 pub fn clone_send_git_upload_pack(socket: &mut TcpStream)->Result<usize, GitrError>{
-    // let msj = format!("git-upload-pack /{}\0host={}\0",file_manager::get_current_repo()?, file_manager::get_remote()?);
-    // let msj = format!("{:04x}{}", msj.len() + 4, msj);    
-    // match socket.write(msj.as_bytes()){ //51 to hexa = 
-    //     Ok(bytes) => Ok(bytes),
-    //     Err(e) => Err(GitrError::ConnectionError),
     match socket.write("0031git-upload-pack /mi-repo\0host=localhost:9418\0".as_bytes()){ //51 to hexa = 
         Ok(bytes) => Ok(bytes),
         Err(e) => Err(GitrError::SocketError("clone_send_git_upload_pack()".to_string(), e.to_string())),
@@ -1292,60 +1113,3 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
     Ok(())
 }
 
-#[cfg(test)]
-// Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
-mod tests_clone{
-    use crate::git_transport::ref_discovery::{self, assemble_want_message};
-
-    use super::*;
-    
-    #[test]
-    fn test00_clone_connects_to_daemon_correctly(){
-        assert!(clone_connect_to_server("localhost:9418".to_string()).is_ok());
-    }
-
-    #[test]
-    fn test01_clone_send_git_upload_pack_to_daemon_correctly(){
-        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
-        assert_eq!(clone_send_git_upload_pack(&mut socket).unwrap(),49); //0x31 = 49
-    }
-    
-    #[test]
-    fn test02_clone_receive_daemon_reference_discovery_correctly(){
-        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
-        clone_send_git_upload_pack(&mut socket).unwrap();
-        assert_eq!(clone_read_reference_discovery(&mut socket).unwrap(),"0103cf6335a864bda2ee027ea7083a72d10e32921b15 HEAD\0multi_ack thin-pack side-band side-band-64k ofs-delta shallow deepen-since deepen-not deepen-relative no-progress include-tag multi_ack_detailed symref=HEAD:refs/heads/main object-format=sha1 agent=git/2.34.1\n003dcf6335a864bda2ee027ea7083a72d10e32921b15 refs/heads/main\n");
-    }
-
-    #[test]	
-    fn test03_clone_gets_reference_vector_correctly(){
-        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
-        clone_send_git_upload_pack(&mut socket).unwrap();
-        let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
-        assert_eq!(ref_discovery::discover_references(ref_disc).unwrap(), 
-        [("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "HEAD".to_string()), 
-        ("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "refs/heads/main".to_string())]);
-    }
-    
-    #[test]
-    fn test04_clone_sends_wants_correctly(){
-        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
-        clone_send_git_upload_pack(&mut socket).unwrap();
-        let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
-        let references = ref_discovery::discover_references(ref_disc).unwrap();
-        socket.write(assemble_want_message(&references,vec![]).unwrap().as_bytes()).unwrap();
-    }
-}
-
-#[cfg(test)]
-mod tests_merge{
-    use super::*;
-    use crate::commands::*;
-    
-    #[test]
-    fn test00_three_way_merge(){
-        let commit_master = "ad43f12629f80764e4d5217537a12de193c48f15".to_string();
-        let commit_branch = "3b7ddd0af8f07fd7c3b08bda494c1d9f1929fa3d".to_string();
-        commands::merge(vec!["c1231533842cda7bf87bda8410cc688e8876134a".to_string()]).unwrap();
-    }
-}
