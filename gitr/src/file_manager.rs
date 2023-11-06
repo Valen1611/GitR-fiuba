@@ -1,5 +1,6 @@
+use std::collections::HashMap;
 use std::error::Error;
-use std::fs::{File, OpenOptions};
+use std::fs::{File, OpenOptions, ReadDir};
 use std::io::{prelude::*, Bytes};
 use std::{fs, hash};
 use std::path::Path;
@@ -57,13 +58,10 @@ pub fn visit_dirs(dir: &Path) -> Vec<String> {
 pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
     let log_msg = format!("writing data to: {}", path);
     logger::log_file_operation(log_msg)?;
-
-
     let mut archivo = match File::create(&path) {
         Ok(archivo) => archivo,
         Err(_) => return Err(GitrError::FileCreationError(path)),
     };
-
     match archivo.write_all(text.as_bytes()) {
         Ok(_) => Ok(()),
         Err(_) => Err(GitrError::FileWriteError(path)),
@@ -71,8 +69,6 @@ pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
 }
 
 pub fn append_to_file(path: String, text: String) -> Result<(), GitrError> {
-    // let log_msg = format!("appending data to: {}", path);
-    // logger::log_file_operation(log_msg)?;
     let mut file = match OpenOptions::new()
         .write(true)
         .append(true)
@@ -92,9 +88,6 @@ pub fn append_to_file(path: String, text: String) -> Result<(), GitrError> {
 pub fn create_directory(path: &String)->Result<(), GitrError>{
     let log_msg = format!("creating dir: {}", path);
     logger::log_file_operation(log_msg)?; 
-
-    println!("creating dir: {}", path);
-
     match fs::create_dir(path){
         Ok(_) => Ok(()),
         Err(_) => {
@@ -124,6 +117,27 @@ pub fn delete_all_files()-> Result<(), GitrError>{
     }
     Ok(())
 }
+
+pub fn add_new_files_from_merge(origin_hashmap: HashMap<String, String>, branch_hashmap: HashMap<String, String>) ->Result<(), GitrError>{
+    for (path, hash) in branch_hashmap.iter(){
+        println!("path: {}", path);
+        println!("origin hashmap: {:?}", origin_hashmap);
+        println!("branch hashmap: {:?}", branch_hashmap);
+        if !origin_hashmap.contains_key(path){
+            file_manager::add_to_index(&path, &hash)?;
+            if let Some(parent) = std::path::Path::new(&path).parent() {
+                match fs::create_dir_all(parent){
+                    Ok(_) => (),
+                    Err(_) => return Err(GitrError::FileWriteError(parent.display().to_string())),
+                };
+            };
+                let raw_data = read_file_data_from_blob_hash(hash.to_string())?;
+                write_file(path.to_string(), raw_data)?;    
+        }
+    }
+        Ok(())
+    }
+
 
 
 pub fn add_new_files_from_merge(origin_hashmap: HashMap<String, String>, branch_hashmap: HashMap<String, String>) ->Result<(), GitrError>{
@@ -179,6 +193,58 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 pub fn read_object(object: &String)->Result<String, GitrError>{
     let path = parse_object_hash(object)?;
     let bytes = deflate_file(path.clone())?;
+    let object_data: Vec<u8> = get_object_data_with_bytes(bytes)?;
+    let first_byte = object_data[0];
+    if first_byte as char == 't' {
+        let tree_data = match read_tree_file(object_data) {
+            Ok(data) => data,
+            Err(_) => return Err(GitrError::FileReadError(path)),
+        };
+        return Ok(tree_data);
+    }
+    if first_byte as char == 'b' || first_byte as char == 'c' {
+        let mut buffer = String::new();
+        for byte in object_data {
+            buffer.push(byte as char);
+        }
+        return Ok(buffer);
+    }
+    Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
+}
+
+
+fn get_object_data_with_bytes(bytes: Bytes<ZlibDecoder<File>>)->Result< Vec<u8>, GitrError>{
+    let mut object_data: Vec<u8> = Vec::new();
+    for byte in bytes {
+        let byte = match byte {
+            Ok(byte) => byte,
+            Err(_) => return Err(GitrError::CompressionError),
+        };
+        object_data.push(byte);
+    }
+    Ok(object_data)
+}
+
+pub fn read_file_data_from_blob_hash(hash: String) -> Result<String, GitrError>{
+    let object_raw_data = read_object(&hash)?;
+    let (header, raw_data) = match object_raw_data.split_once('\0') {
+        Some((header, raw_data)) => (header, raw_data),
+        None => {
+            println!("Error: invalid object type");
+            return Err(GitrError::FileReadError(hash));
+        }
+    };
+
+    if !header.starts_with("blob") {
+        println!("Error: invalid object type");
+        return Err(GitrError::FileReadError(hash));
+    }
+
+    Ok(raw_data.to_string())
+}
+pub fn read_object_w_path(object: &String,path: String)->Result<String, GitrError>{
+    let path = parse_object_hash_w_path(object, path)?;
+    let bytes = deflate_file(path.clone())?;
     let mut object_data: Vec<u8> = Vec::new();
     for byte in bytes {
         let byte = match byte {
@@ -213,6 +279,7 @@ pub fn read_object(object: &String)->Result<String, GitrError>{
 
 
     Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
+
 }
 
 
@@ -232,7 +299,7 @@ pub fn read_file_data_from_blob_hash(hash: String) -> Result<String, GitrError>{
     }
 
     Ok(raw_data.to_string())
-
+}
 pub fn read_object_w_path(object: &String,path: String)->Result<String, GitrError>{
     let path = parse_object_hash_w_path(object, path)?;
     let bytes = deflate_file(path.clone())?;
@@ -284,25 +351,25 @@ pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
         header_buffer.push(byte as char);
         data_starting_index += 1;
     }
+    let entries_buffer = get_entries_buffer_for_readtree(data, data_starting_index);
+    Ok(header_buffer + "\0" + &entries_buffer)
+}
 
+fn get_entries_buffer_for_readtree(data: Vec<u8>, data_starting_index: usize) -> String {
     let mut entries_buffer = String::new();
     let mut convert_to_hexa = false;
     let mut hexa_iters = 0;
-
     for byte in data[data_starting_index..].iter() {
-
         if hexa_iters == 20 {
             convert_to_hexa = false;
             hexa_iters = 0;
             entries_buffer.push('\n');
         }
-
         if *byte == 0 && !convert_to_hexa{
             entries_buffer.push('\0');
             convert_to_hexa = true;
             continue;
         }
-
         if convert_to_hexa {
             hexa_iters+=1;
             entries_buffer.push_str(&format!("{:02x}", byte));
@@ -310,17 +377,9 @@ pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
         else {
             entries_buffer.push(*byte as char);
         }
-
-
-       // buffer.push(*byte as char);
     }
-
-
-    // 08deed466789dfea8937d0bdda2f6e81a615f25a
-    Ok(header_buffer + "\0" + &entries_buffer)
+    entries_buffer
 }
-
-
 // ***writing***
 
 /// A diferencia de write_file, esta funcion recibe un vector de bytes
@@ -473,7 +532,6 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
     let repo = get_current_repo()?;
     let new_blob = format!("100644 {} 0 {}", hash, path);
     let dir = repo + "/gitr/index";
-    
     if fs::metadata(dir.clone()).is_err(){
         let _ = write_file(dir.clone(), String::from(""));
         index = new_blob;
@@ -490,7 +548,6 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
                 overwrited = true;
                 break;
             }
-
         }
         if !overwrited{
             index = index + "\n" + &new_blob;
@@ -499,7 +556,6 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
     let compressed_index = flate2compress(index)?;
     write_compressed_data(dir.as_str(), compressed_index.as_slice())?;
     Ok(())
-
 }
 
 
@@ -623,13 +679,10 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
     };
     for entry in raw_data.split('\n') {
         let object = entry.split(' ').collect::<Vec<&str>>()[0];
-        if object == "100644"{ //blob
-           
+        if object == "100644"{ //blob  
             let path_completo = path.clone() + "/" + &parse_blob_path(entry.to_string().clone());
             let hash = parse_blob_hash(entry.to_string().clone());
-
             create_blob(path_completo, hash)?;
-
         } else { //tree
             let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
             let new_path = _new_path_hash.split('\0').collect::<Vec<&str>>()[0]; 
@@ -638,7 +691,6 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
             create_tree(path.clone() + "/" + new_path, hash.to_string())?;
         }
     }
-
     Ok(())
 }
 
@@ -655,17 +707,10 @@ fn parse_blob_path(blob_entry: String) -> String {
     new_path.to_string()
 }
 
-
-// archivo
-// repo/carpeta/archivo
-
 pub fn create_blob(path: String, hash: String) -> Result<(), GitrError> {
-
     let new_blob = read_object(&(hash.to_string()))?;
-    
     let new_blob_only_data = new_blob.split('\0').collect::<Vec<&str>>()[1];
     add_to_index(&path, &hash)?;
-
     write_file(path.to_string(), new_blob_only_data.to_string())?;
     Ok(())
 }
@@ -674,7 +719,6 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
     delete_all_files()?;
     let main_tree = get_main_tree(commit)?;
     let tree = read_object(&main_tree)?;
-
     let raw_data = match tree.split_once('\0') {
         Some((_, raw_data)) => raw_data,
         None => {
@@ -682,9 +726,7 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
             return Ok(())
         }
     };
-
     let repo = get_current_repo()? + "/";
-
     for entry in raw_data.split('\n'){
         let object: &str = entry.split(' ').collect::<Vec<&str>>()[0];
         if object == "40000"{
@@ -827,7 +869,6 @@ pub fn commit_log(quantity: String)-> Result<String, GitrError>{
         }
         current_commit = parent;
     }
-
     Ok(res.to_string())
 }
 
@@ -858,11 +899,16 @@ pub fn remove_file(path: String)-> Result<(), GitrError> {
 pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
     let mut objects: Vec<String> = Vec::new();
     let repo = get_current_repo()?;
-    let dir = repo + "/gitr/objects";
+    let dir: String = repo + "/gitr/objects";
     let dir_reader = match fs::read_dir(dir.clone()) {
         Ok(l) => l,
         Err(_) => return Err(GitrError::FileReadError(dir)),
     };
+    iterate_over_dirs_for_getting_objects(dir_reader, &mut objects, dir)?;
+    Ok(objects)
+}
+
+fn iterate_over_dirs_for_getting_objects(dir_reader: ReadDir, objects: &mut Vec<String>, dir: String)-> Result<(),GitrError> {
     for carpeta_rs in dir_reader {
         let carpeta = match carpeta_rs {
             Ok(path) => path,
@@ -890,9 +936,8 @@ pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
             let object = dir_name.to_string() + file_name;
             objects.push(object);
         }
-
     }
-    Ok(objects)
+    Ok(())
 }
 
 pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
