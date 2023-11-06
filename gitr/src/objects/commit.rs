@@ -45,7 +45,6 @@ impl Commit{
     pub fn new_from_packfile(tree: String, mut parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
         let header = "commit ";
-        
         let tree_format = format!("tree {}\n", tree);
         format_data.push_str(&tree_format);
         if parent != "None" {
@@ -56,12 +55,8 @@ impl Commit{
         format_data.push_str(&format!("committer {}", committer));
         format_data.push_str("\n");
         format_data.push_str(&format!("{}\n", message));
-
-        let size = format_data.as_bytes().len();
-
-        
+        let size = format_data.as_bytes().len();      
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
-
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
@@ -114,18 +109,18 @@ impl Commit{
         }
         let mut commits: Vec<Commit> = Vec::new();
         for id in commits_id {
+            
             object_ids.insert(id.clone());
             match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
                 Ok(commit) => {commits.push(commit)},
                 _ => {return Err(GitrError::InvalidCommitError)}
             }
-        } // Ahora tengo los Commits como objeto en el vector commits
+        } 
         for commit in commits {
             object_ids.insert(commit.get_tree());
 
             Tree::get_all_tree_objects(commit.get_tree(), r_path.clone(), &mut object_ids)?;
         }
-        // Sacamos los que ya tiene el cliente
         for obj in client_objects{
             object_ids.remove(&obj);
         } 
@@ -143,7 +138,7 @@ impl Commit{
         for id in commits_ids {
             if rcv_commits.contains(&id) {
                 continue;
-            } // Si el cliente ya tiene el commit, no lo agrego a los parents
+            } 
             parents.push(id.clone());
             match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
                 Ok(commit) => {Self::get_parents_rec(commit.parent, &rcv_commits,r_path.clone(),&mut parents)?},
@@ -156,7 +151,7 @@ impl Commit{
     fn get_parents_rec(id: String, receivers_commits: &HashSet<String>,r_path: String, parents: &mut Vec<String>) -> Result<(), GitrError>{
         if receivers_commits.contains(&id) || id == "None" || id == ""{
             return Ok(());
-        } // Si el cliente ya tiene el commit, no lo agrego a los parents
+        }
         parents.push(id.clone());
         match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
             Ok(commit) => {Self::get_parents_rec(commit.parent, receivers_commits, r_path, parents)
@@ -196,14 +191,3 @@ mod tests {
         assert_eq!(commit_from_string.message, commit.message);
     }
 }
-
-
-
-/*
-tree 4a2fe10e5e62c3d2b3a738d78df708f5b08af7af
-parent 6e7c471ac3d96bf69e5a81b57a477401a6a4a6ea
-author valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
-committer valen1611 <vschneider@fi.uba.ar> 1698605542 -0300
-
-pre commit ahora si
-*/

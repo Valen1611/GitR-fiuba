@@ -1,0 +1,97 @@
+base(i)
+0. Hola
+1. Como
+2. Estas
+3. Gianni 
+4. ?
+5. Bien
+6. Y
+7. Vos
+8. Juanma
+9. ?
+
+origin(i)
+0. Que tal 
+1. Como
+2. Estas
+3. Valen ❗
+4. !     ❗
+5. Bien
+6. Y
+7. Vos
+8. Bruno ❗
+❗
+
+new(i)
+0. Hola
+1. Como
+2. Estas
+3. Agus ❗
+4. Bien
+5. Y
+6. Vos
+7. Deymonnaz ❗
+8. !!!! ❗
+
+
+Output deseado
+0. Que tal
+1. Como
+2. Estas
+3. >>>>>>>>>
+4. Valen
+5. =======
+6. Agus
+7. <<<<<<<<<
+8. ?
+9. Bien
+10. Y
+11. Vos
+12. >>>>>>>>
+13. Bruno
+14. =======
+15. Deymonnaz
+16. <<<<<<<<<
+17. ?
+
+
+
+i=0
+Vec nuevo:
+
+
+
+
+corrimiento = 0
+
+0. -A
+2. -C
+1. +H
+1. +OTRA
+5. +C
+
+
+new
+0. B
+1. H
+2. D
+3. E
+4. F
+5. C
+6. K
+
+
+
+
+
+
+
+
+base bkp
+0. A
+1. B
+2. C
+3. D
+4. E
+5. F
+6. K

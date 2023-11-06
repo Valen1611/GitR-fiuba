@@ -16,3 +16,12 @@ serial_test = "*"
 to-binary = "0.4.0"
 gtk = "0.18.1"
 
+[[bin]]
+
+name = "server"
+path = "src/main_server.rs"
+
+[[bin]]
+
+name = "client"
+path = "src/main.rs"
