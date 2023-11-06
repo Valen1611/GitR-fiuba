@@ -108,6 +108,16 @@ pub fn commit(flags: Vec<String>)-> Result<(), GitrError>{
     if flags[0] != "-m" || flags.len() < 2 {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m <commit_message>".to_string()))
     }
+    let index_path = file_manager::get_current_repo()?.to_string() + "/gitr/index";
+    if !Path::new(&index_path).exists() {
+        return Ok(status(flags)?);
+    }
+    let (not_staged, _, _) = get_untracked_notstaged_files()?;
+    let to_be_commited = get_tobe_commited_files(&not_staged)?;
+    if to_be_commited.is_empty() {
+        println!("nothing to commit, working tree clean");
+        return Ok(())
+    }
     if flags[1].starts_with('\"'){
         let message = &flags[1..];
         let message = message.join(" ");
@@ -121,15 +131,14 @@ pub fn commit(flags: Vec<String>)-> Result<(), GitrError>{
 
 // Switch branches or restore working tree files
 pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
-    if flags.len() != 1 {
+    if flags.len() == 0 || flags.len() > 2 || (flags.len() == 2 && flags[0] != "-b"){
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "checkout <branch>".to_string()));
     }
-    if !branch_exists(flags[0].clone()){
-        return Err(GitrError::BranchNonExistsError(flags[0].clone()));
-    }
-    let current_commit = file_manager::get_commit(flags[0].clone())?;
+    commit_existing()?;
+    let branch_to_checkout = get_branch_to_checkout(flags.clone())?;
+    let current_commit = file_manager::get_commit(branch_to_checkout.clone())?;
     file_manager::update_working_directory(current_commit)?;
-    let path_head = format!("refs/heads/{}", flags[0]);
+    let path_head = format!("refs/heads/{}", branch_to_checkout);
     file_manager::update_head(&path_head)?;
     
     Ok(())
@@ -138,6 +147,7 @@ pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
 //Show commit logs
 pub fn log(flags: Vec<String>)->Result<(), GitrError> {
     // log 
+    commit_existing()?;
     if flags.is_empty() {
        let log_res = commit_log("-1".to_string())?;
        print!("{}", log_res);
@@ -189,44 +199,22 @@ pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     let address = flags[0].clone();
     let nombre_repo = flags[1].clone();
-
     let _ = init(vec![nombre_repo.clone()]);
-
     let mut socket = clone_connect_to_server(address)?;
-    // println!("clone():Servidor conectado.");
     clone_send_git_upload_pack(&mut socket)?;
-    // println!("clone():Envié upload-pack");
     let ref_disc = clone_read_reference_discovery(&mut socket)?;
-    let references = ref_discovery::discover_references(ref_disc)?;
-
-    let repo = file_manager::get_current_repo()?;
-    
-    for reference in &references[1..]{
-        let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); //ref path
-        if references[0].0 == reference.0{
-            file_manager::update_head(&reference.1.clone())?; //actualizo el head
-        }
-        let into_hash = reference.0.clone(); //hash a escribir en el archivo
-        file_manager::write_file(path_str, into_hash)?; //escribo el hash en el archivo
-    }
-
-    // println!("clone():Referencias ={:?}=", references);
+    let references = ref_discovery::discover_references(ref_disc.clone())?;
+    write_reference_from_cloning(references.clone(), ref_disc)?;
     let want_message = ref_discovery::assemble_want_message(&references,Vec::new())?;
-    // println!("clone():want {:?}", want_message);
-
     write_socket(&mut socket, want_message.as_bytes())?;
-
     let mut buffer = [0;1024];
     match socket.read(&mut buffer){
         Ok(a)=>a,
         Err(e)=>return Err(GitrError::SocketError("clone".into(), e.to_string()))
     };
-    
-    print!("clone(): recepeción de packfile:");
+    print!("clone(): recepción de packfile:");
     read_socket(&mut socket, &mut buffer)?;
-
     let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
-
     for object in pack_file_struct.objects.iter(){
         match object{
             Blob(blob) => blob.save()?,
@@ -241,52 +229,9 @@ pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
 // Show the working tree status
 pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
     command_utils::status_print_current_branch()?;
-    let working_dir_hashmap = get_working_dir_hashmap()?;
-    let (index_hashmap, hayindex) = get_index_hashmap()?;
-    let current_commit_hashmap = get_current_commit_hashmap()?;
-
-    let mut to_be_commited = Vec::new();
-    let mut not_staged = Vec::new();
-    let mut untracked_files = Vec::new();
-
-    // compare to working dir
-    for (path, hash) in working_dir_hashmap.clone().into_iter() {
-        if !index_hashmap.contains_key(path.as_str()) && !current_commit_hashmap.contains_key(path.as_str()) {
-            untracked_files.push(path.clone());
-        }
-        if current_commit_hashmap.contains_key(path.clone().as_str()){
-            if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
-                if &hash != commit_hash {
-                    if !index_hashmap.contains_key(&path) {
-                        not_staged.push(path.clone( ));
-                    }
-                }
-            };
-        }
-        if index_hashmap.contains_key(path.as_str()){
-            if let Some(index_hash) = index_hashmap.get(path.as_str()) {
-                if &hash != index_hash {
-                    not_staged.push(path);
-                }
-            };
-        }
-    }
-    // compare to index
-    for (path, hash) in index_hashmap.clone().into_iter() {
-        if !current_commit_hashmap.contains_key(path.as_str()) {
-            to_be_commited.push(path);
-        }
-        else {
-            if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
-                if hash != *commit_hash  &&
-                !not_staged.contains(&path)
-                {
-                    to_be_commited.push(path);
-                }
-            }
-        }
-    }
-    status_print_to_be_comited(&to_be_commited);
+    let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files()?;
+    let to_be_commited = get_tobe_commited_files(&not_staged)?;
+    status_print_to_be_comited(&to_be_commited)?;
     status_print_not_staged(&not_staged);
     status_print_untracked(&untracked_files, hayindex);
     if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
