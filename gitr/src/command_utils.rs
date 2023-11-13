@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::HashMap, net::
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::{Diff}};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -641,7 +641,7 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
 pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String) -> Result<(), GitrError> {
 
     let branch_hashmap = get_commit_hashmap(branch_commit.clone())?;
-    let mut origin_hashmap: HashMap<String, String> = get_commit_hashmap(origin_commit.clone())?;
+    let mut origin_hashmap = get_commit_hashmap(origin_commit.clone())?;
     file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone())?;
     origin_hashmap = get_commit_hashmap(origin_commit.clone())?;
     let base_hashmap = get_commit_hashmap(base_commit.clone())?;
@@ -1113,3 +1113,48 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
     Ok(())
 }
 
+
+#[cfg(test)]
+// Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
+mod tests{
+    use crate::git_transport::ref_discovery::{self, assemble_want_message};
+
+    use super::*;
+    
+    #[test]
+    fn test00_clone_connects_to_daemon_correctly(){
+        assert!(clone_connect_to_server("localhost:9418".to_string()).is_ok());
+    }
+
+    #[test]
+    fn test01_clone_send_git_upload_pack_to_daemon_correctly(){
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        assert_eq!(clone_send_git_upload_pack(&mut socket).unwrap(),49); //0x31 = 49
+    }
+    
+    #[test]
+    fn test02_clone_receive_daemon_reference_discovery_correctly(){ //test viejo ya no corre
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        clone_send_git_upload_pack(&mut socket).unwrap();
+        assert_eq!(clone_read_reference_discovery(&mut socket).unwrap(),"0103cf6335a864bda2ee027ea7083a72d10e32921b15 HEAD\0multi_ack thin-pack side-band side-band-64k ofs-delta shallow deepen-since deepen-not deepen-relative no-progress include-tag multi_ack_detailed symref=HEAD:refs/heads/main object-format=sha1 agent=git/2.34.1\n003dcf6335a864bda2ee027ea7083a72d10e32921b15 refs/heads/main\n");
+    }
+
+    #[test]	
+    fn test03_clone_gets_reference_vector_correctly(){ //test viejo ya no corre
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        clone_send_git_upload_pack(&mut socket).unwrap();
+        let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
+        assert_eq!(ref_discovery::discover_references(ref_disc).unwrap(), 
+        [("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "HEAD".to_string()), 
+        ("cf6335a864bda2ee027ea7083a72d10e32921b15".to_string(), "refs/heads/main".to_string())]);
+    }
+    
+    #[test]
+    fn test04_clone_sends_wants_correctly(){
+        let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+        clone_send_git_upload_pack(&mut socket).unwrap();
+        let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
+        let references = ref_discovery::discover_references(ref_disc).unwrap();
+        socket.write(assemble_want_message(&references,vec![]).unwrap().as_bytes()).unwrap();
+    }
+}

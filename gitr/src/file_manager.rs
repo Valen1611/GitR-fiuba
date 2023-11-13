@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use std::fs::{File, OpenOptions, ReadDir};
 use std::io::{prelude::*, Bytes};
-use std::{fs};
+use std::fs;
 use std::path::Path;
 use crate::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
@@ -31,7 +31,7 @@ pub fn read_file(path: String) -> Result<String, GitrError> {
     }
 }
 
-//receives a path an returns all directories that arent gitr
+//receives a path of a repo and returns a vector of paths with all files outside gitr (only paths to files, not dirs)
 pub fn visit_dirs(dir: &Path) -> Vec<String> {
     let mut files = Vec::new();
     if let Ok(entries) = fs::read_dir(dir) {
@@ -67,6 +67,7 @@ pub fn write_file(path: String, text: String) -> Result<(), GitrError> {
     }
 }
 
+//Append text to a file (used in logger)
 pub fn append_to_file(path: String, text: String) -> Result<(), GitrError> {
     let mut file = match OpenOptions::new()
         .write(true)
@@ -93,6 +94,8 @@ pub fn create_directory(path: &String)->Result<(), GitrError>{
             Err(GitrError::AlreadyInitialized)}
     }
 }
+
+
 //delete all files without gitr
 pub fn delete_all_files()-> Result<(), GitrError>{  
     let repo = get_current_repo()?;
@@ -117,11 +120,9 @@ pub fn delete_all_files()-> Result<(), GitrError>{
     Ok(())
 }
 
+//updates index and adds files from three-way merge that don't have conflicts
 pub fn add_new_files_from_merge(origin_hashmap: HashMap<String, String>, branch_hashmap: HashMap<String, String>) ->Result<(), GitrError>{
     for (path, hash) in branch_hashmap.iter(){
-        println!("path: {}", path);
-        println!("origin hashmap: {:?}", origin_hashmap);
-        println!("branch hashmap: {:?}", branch_hashmap);
         if !origin_hashmap.contains_key(path){
             file_manager::add_to_index(path, hash)?;
             if let Some(parent) = std::path::Path::new(&path).parent() {
@@ -137,8 +138,6 @@ pub fn add_new_files_from_merge(origin_hashmap: HashMap<String, String>, branch_
         Ok(())
     }
 
-
-
 /***************************
  *************************** 
  *      GIT OBJECTS
@@ -150,6 +149,7 @@ pub fn add_new_files_from_merge(origin_hashmap: HashMap<String, String>, branch_
  */
 
 // ***reading***
+//receives a path to a compressed object and return its raw data in UTF8 format
 fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
     let log_msg = format!("reading data from: {}", path);
     logger::log_file_operation(log_msg)?;
@@ -189,7 +189,6 @@ pub fn read_object(object: &String)->Result<String, GitrError>{
     Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
 }
 
-
 fn get_object_data_with_bytes(bytes: Bytes<ZlibDecoder<File>>)->Result< Vec<u8>, GitrError>{
     let mut object_data: Vec<u8> = Vec::new();
     for byte in bytes {
@@ -219,7 +218,6 @@ pub fn read_file_data_from_blob_hash(hash: String) -> Result<String, GitrError>{
 
     Ok(raw_data.to_string())
 }
-
 
 pub fn read_object_w_path(object: &String,path: String)->Result<String, GitrError>{
     let path = parse_object_hash_w_path(object, path)?;
@@ -260,7 +258,6 @@ pub fn read_object_w_path(object: &String,path: String)->Result<String, GitrErro
     Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
 
 }
-
 
 pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
     let mut header_buffer = String::new();
@@ -433,20 +430,12 @@ pub fn get_current_repo() -> Result<String, GitrError>{
 pub fn read_index() -> Result<String, GitrError>{
     let repo = get_current_repo()?;
     let path = repo + "/gitr/index";
-    let data = read_compressed_file(&path);
-    
-    let data = match data{
-        Ok(data) => data,
-        Err(_) => {return Err(GitrError::FileReadError(path))}
-    };
-    let data = String::from_utf8(data);
-    let data = match data{
+    let data = match String::from_utf8(read_compressed_file(&path)?){
         Ok(data) => data,
         Err(_) => return Err(GitrError::FileReadError(path)),
     };
     Ok(data)
 }
-
 
 pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
     let mut index;
@@ -478,7 +467,6 @@ pub fn add_to_index(path: &String, hash: &String) -> Result<(), GitrError>{
     write_compressed_data(dir.as_str(), compressed_index.as_slice())?;
     Ok(())
 }
-
 
 pub fn get_head() ->  Result<String, GitrError>{
     let repo = get_current_repo()?;
@@ -580,7 +568,6 @@ pub fn get_current_commit()->Result<String, GitrError>{
     Ok(head)
 }
 
-
 pub fn get_commit(branch:String)->Result<String, GitrError>{
     let repo = get_current_repo()?;
     let path = format!("{}/gitr/refs/heads/{}",repo, branch);
@@ -613,7 +600,6 @@ pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
     }
     Ok(())
 }
-
 
 fn parse_blob_hash(blob_entry: String) -> String {
     let _new_path_hash = blob_entry.split(' ').collect::<Vec<&str>>()[1];
@@ -873,6 +859,7 @@ pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
     let descomprimido = String::from_utf8_lossy(&decode(&contenido)?).to_string();
     Ok(descomprimido)
 }
+
 pub fn get_object_bytes(id: String, r_path: String) -> Result<Vec<u8>,GitrError> {
     let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
     let mut archivo = match File::open(format!("{}/{}",dir_path,id.split_at(2).1)) {

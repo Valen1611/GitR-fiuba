@@ -257,7 +257,7 @@ pub fn remote(flags: Vec<String>) -> Result<(), GitrError> {
     Ok(())
 }
 
-fn pullear (flags: Vec<String>, actualizar_work_dir: bool) -> Result<(), GitrError> {
+fn pullear(flags: Vec<String>, actualizar_work_dir: bool) -> Result<(), GitrError> {
     if !flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "pull <no-args>".to_string()));
     }
@@ -458,4 +458,16 @@ pub fn print_current_repo() -> Result<(), GitrError> {
     Ok(())
 }
 
+#[cfg(test)]
+mod tests{
 
+    use super::*;
+    #[test]
+    fn test00_clone_from_daemon(){
+        let mut flags = vec![];
+        flags.push("localhost:9418".to_string());
+        flags.push("repo_clonado".to_string());
+        assert!(clone(flags).is_ok());
+    }
+
+}

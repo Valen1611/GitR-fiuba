@@ -7,6 +7,7 @@ pub struct Diff{
 }
 #[derive(Clone)]
 #[derive(Debug)]
+
 struct Celda{
     valor: usize,
     es_match: bool,
