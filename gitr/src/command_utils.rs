@@ -437,7 +437,47 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     println!("string_archivo: {:?}", string_archivo);
     println!("diff:+ {:?}", diff.lineas_agregadas);
     println!("diff:- {:?}", diff.lineas_eliminadas);
+
+    let mut j = 0; //con este indexo el diff
+    //let j = 0; //con este indexo el archivo
+    
     for (i,line) in string_archivo.lines().enumerate(){
+        if diff.lineas[j].0 == i{ //en la linea hay una operación
+            if !diff.lineas[j].1{ //es un delete
+                if j+1 == diff.lineas.len(){
+                    break;
+                }
+                if diff.lineas[j+1].1{//hay un add tambien
+                    archivo_reconstruido.push(diff.lineas[j+1].2.clone()+"\n"); //pusheo el add, ignorando lo que se borró
+                    j+=2;
+                }
+                else{ //solo delete, no pusheo
+                    j+=1;
+                }
+                continue
+            }
+            else{ //no hay delete, solo add
+                archivo_reconstruido.push(line.to_string()+"\n"); //pusheo la linea del base
+                archivo_reconstruido.push(diff.lineas[j].2.clone()+"\n"); //pusheo el add
+            }
+        }
+        else{ //si no hay operacion, pusheo la linea del base y sigo
+            archivo_reconstruido.push(line.to_string()+"\n");
+        }
+    }
+    /*let mut lineas_archivo = string_archivo.lines().collect::<Vec<&str>>();
+    loop{
+        let linea_actual = lineas_archivo[j];
+        if linea_actual.is_empty(){
+            break;
+        }
+        if diff.lineas[i].0 == j{ //hay operaciones en esa linea
+            if !diff.lineas[i].1{ //es un delete
+
+            }
+        }
+    }*/
+    /*for (i,line) in string_archivo.lines().enumerate(){
         let tiene_add = diff.has_add_diff(i);
         if diff.has_delete_diff(i){
             if tiene_add.0{
@@ -453,7 +493,7 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
         } else {
             archivo_reconstruido.push(line.to_string()+"\n"); 
         }
-    }
+    }*/
 
     let len_archivo = string_archivo.lines().count();
 
@@ -594,6 +634,7 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
                
                 "<<<<<<<"].concat();
 
+            diff_final.lineas.push((pos_original,true,conflict.clone()));
             diff_final.lineas_agregadas.push((pos_original, conflict.clone()));
 
             continue;
@@ -639,7 +680,6 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
 
 
 pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String) -> Result<(), GitrError> {
-
     let branch_hashmap = get_commit_hashmap(branch_commit.clone())?;
     let mut origin_hashmap = get_commit_hashmap(origin_commit.clone())?;
     file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone())?;
@@ -679,7 +719,8 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
 
             let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
             let diff_base_branch = Diff::new(base_file_data, branch_file_data);
-            let union_diffs = comparar_diffs(diff_base_origin, diff_base_branch)?;
+            let union_diffs = comparar_diffs(diff_base_origin, diff_base_branch)?; //une los diffs o da el conflict
+            println!("union_diffs: {:?}", union_diffs);
             aplicar_difs(path.clone(), union_diffs)?;
         }
         else{

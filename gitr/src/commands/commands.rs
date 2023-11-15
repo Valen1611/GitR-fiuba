@@ -222,12 +222,12 @@ pub fn fetch(flags: Vec<String>) -> Result<(), GitrError>{
     pullear(flags, false)
 }
 
-pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
-    if _flags.is_empty(){
-        return Err(GitrError::InvalidArgumentError(_flags.join(" "), "merge <branch-name>".to_string()))
+pub fn merge(flags: Vec<String>) -> Result<(), GitrError>{
+    if flags.is_empty(){
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "merge <branch-name>".to_string()))
     }
 
-    let branch_name = _flags[0].clone();
+    let branch_name = flags[0].clone();
     let origin_name = file_manager::get_head()?.split('/').collect::<Vec<&str>>()[2].to_string();
 
     let branch_commits = command_utils::branch_commits_list(branch_name.clone())?;
@@ -431,7 +431,6 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
     }
     Ok(())
 }
-
 
 pub fn list_repos() {
     println!("{:?}", file_manager::get_repos());

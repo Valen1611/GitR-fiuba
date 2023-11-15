@@ -1,13 +1,14 @@
 use std::cmp::max;
-
+#[derive(Clone)]
+#[derive(Debug)]
 pub struct Diff{
     pub lineas_eliminadas: Vec<(usize,String)>,
     pub lineas_agregadas: Vec<(usize,String)>,
     pub lineas: Vec<(usize,bool,String)>,
 }
+
 #[derive(Clone)]
 #[derive(Debug)]
-
 struct Celda{
     valor: usize,
     es_match: bool,
@@ -142,8 +143,11 @@ fn get_diff(matriz_coincidencias: Vec<Vec<Celda>>, len_columna: usize, len_fila:
        
 
     }
+    println!("Stack {:?}", stack);
     let base_numbers = stack.iter().map(|x| x.fila).collect::<Vec<usize>>();
     let new_numbers = stack.iter().map(|x| x.columna).collect::<Vec<usize>>();
+    println!("Base numbers {:?}", base_numbers);
+    println!("New numbers {:?}", new_numbers);
 
     let mut lineas_eliminadas = Vec::new();
     for i in 0..(len_columna+1) {
@@ -223,6 +227,7 @@ impl Diff{
             }
         } 
         lineas.sort_by(|a, b| a.0.cmp(&b.0)); //ordeno ascendente
+        println!("Lineas {:?}", lineas);
 
         for (i, line) in base_lines.iter().enumerate() {
             if indices_lineas_eliminadas.contains(&i) {
@@ -263,6 +268,7 @@ impl Diff{
         }
         linea
     }
+
 }
 
 #[cfg(test)]
