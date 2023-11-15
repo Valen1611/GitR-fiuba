@@ -267,7 +267,7 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool) -> Result<(), GitrErro
     let remote = file_manager::get_remote()?;
     let msj = format!("git-upload-pack /{}\0host={}\0","mi-repo", remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect(remote) {
+    let mut stream = match TcpStream::connect("localhost:9418") {
         Ok(socket) => socket,
         Err(e) => {
             println!("Error: {}", e);

@@ -3,7 +3,7 @@ use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager
 use std::{io::{Write, self}, fs};
 extern crate flate2;
 
-use gitr::gui::gui_from_glade::*;
+// use gitr::gui::gui_from_glade::*;
 
 fn get_input() -> Result<String, GitrError> {
         print!("\x1b[34mgitr: $ \x1b[0m");
@@ -66,9 +66,9 @@ fn print_bienvenida() {
 }
 
 fn main() {
-    let child = std::thread::spawn(move || {
-        initialize_gui();
-    });
+    // let child = std::thread::spawn(move || {
+    //     initialize_gui();
+    // });
 
     print_bienvenida();
 
@@ -107,9 +107,9 @@ fn main() {
         
 
     }
-    match child.join(){
-        Ok(_) => (),
-        Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
-    }
+    // match child.join(){
+    //     Ok(_) => (),
+    //     Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
+    // }
 
 }
