@@ -6475,3 +6475,711 @@ repo
 {"type": "FileOperation","timestamp": "13-11-2023 17:08:42","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "13-11-2023 17:08:42","message": "reading data from: repo_clonado/gitr/refs/heads/master"}
 {"type": "Error","timestamp": "13-11-2023 17:08:42","message": "No se pudo leer: repo_clonado/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "15-11-2023 00:03:45","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:03:45","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:04:51","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:04:51","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:05:24","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:05:24","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:05:52","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:05:52","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:06:32","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:06:32","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:07:08","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:08","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:07:24","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:24","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:07:39","message": "calling init with flags: ["repo_ls"]"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "creating dir: repo_ls"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "creating dir: repo_ls/gitr"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "creating dir: repo_ls/gitr/objects"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "creating dir: repo_ls/gitr/refs"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "creating dir: repo_ls/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "creating dir: repo_ls/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "creating dir: repo_ls/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "writing data to: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "writing data to: repo_ls/gitr/remote"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:07:39","message": "writing data to: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:08:06","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "writing object 91dd22d7c95c627cb19aaa0e1a21939fa8cdd5b9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "creating dir: repo_ls/gitr/objects/91"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "writing data to: repo_ls/gitr/objects/91/dd22d7c95c627cb19aaa0e1a21939fa8cdd5b9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "writing data to: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "writing data to: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "writing object b10b6a5a45f0710db16b34e9714da5042e92dae9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "creating dir: repo_ls/gitr/objects/b1"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "writing data to: repo_ls/gitr/objects/b1/0b6a5a45f0710db16b34e9714da5042e92dae9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:06","message": "writing data to: repo_ls/gitr/index"}
+{"type": "Action","timestamp": "15-11-2023 00:08:13","message": "calling commit with flags: ["-m", "\"hago", "commit\""]"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "15-11-2023 00:08:13","message": "No se pudo leer: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "15-11-2023 00:08:13","message": "No se pudo leer: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing object 6679511accedc85bdc1530e15c8e2942509a8f5d"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "creating dir: repo_ls/gitr/objects/66"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing data to: repo_ls/gitr/objects/66/79511accedc85bdc1530e15c8e2942509a8f5d"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing object 30ce488acd5af72ebf35e5656777aae017f45a27"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "creating dir: repo_ls/gitr/objects/30"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing data to: repo_ls/gitr/objects/30/ce488acd5af72ebf35e5656777aae017f45a27"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing object 30ce488acd5af72ebf35e5656777aae017f45a27"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing data to: repo_ls/gitr/objects/30/ce488acd5af72ebf35e5656777aae017f45a27"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing data to: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing object 664c2fdf004fea2073b6536feb7a26157cf5f3d4"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing data to: repo_ls/gitr/objects/66/4c2fdf004fea2073b6536feb7a26157cf5f3d4"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "writing data to: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:13","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "15-11-2023 00:08:18","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:08:18","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:09:52","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:09:52","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:14:23","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:14:23","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:15:36","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:15:36","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 00:15:45","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:15:45","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:15:45","message": "reading data from: repo_ls/gitr/index"}
+{"type": "Error","timestamp": "15-11-2023 00:15:45","message": "Argumentos invalidos.
+    Recibi: --stage
+    Uso: ls-files --stage
+"}
+{"type": "Action","timestamp": "15-11-2023 00:15:51","message": "calling ls-files with flags: ["--stage"]"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:15:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:15:51","message": "reading data from: repo_ls/gitr/index"}
+{"type": "Error","timestamp": "15-11-2023 00:15:51","message": "Argumentos invalidos.
+    Recibi: --stage
+    Uso: ls-files --stage
+"}
+{"type": "Action","timestamp": "15-11-2023 00:30:42","message": "calling git with flags: ["status"]"}
+{"type": "Error","timestamp": "15-11-2023 00:30:42","message": "Argumentos invalidos.
+    Recibi: invalid command: git
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "15-11-2023 00:30:44","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:30:44","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 00:32:49","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing object 91dd22d7c95c627cb19aaa0e1a21939fa8cdd5b9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/objects/91/dd22d7c95c627cb19aaa0e1a21939fa8cdd5b9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing object b10b6a5a45f0710db16b34e9714da5042e92dae9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/objects/b1/0b6a5a45f0710db16b34e9714da5042e92dae9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing object 91dd22d7c95c627cb19aaa0e1a21939fa8cdd5b9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/objects/91/dd22d7c95c627cb19aaa0e1a21939fa8cdd5b9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/gitr/index"}
+{"type": "Action","timestamp": "15-11-2023 00:32:49","message": "adding repo_ls/holaa to index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing object b10b6a5a45f0710db16b34e9714da5042e92dae9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/objects/b1/0b6a5a45f0710db16b34e9714da5042e92dae9"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/gitr/index"}
+{"type": "Action","timestamp": "15-11-2023 00:32:49","message": "adding repo_ls/carpetita/queonda to index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing object e56d58c6ad73665cfeae5869eae08f2a6614bf06"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "creating dir: repo_ls/gitr/objects/e5"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/objects/e5/6d58c6ad73665cfeae5869eae08f2a6614bf06"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:49","message": "writing data to: repo_ls/gitr/index"}
+{"type": "Action","timestamp": "15-11-2023 00:32:51","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:32:51","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 00:43:23","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:23","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 00:43:26","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:43:26","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 00:59:50","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 00:59:50","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:00:03","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:03","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:00:48","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:00:48","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:21:12","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:12","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:21:17","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:17","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:21:20","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:20","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 01:21:24","message": "calling ls-files with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:24","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 01:21:28","message": "calling ls-files with flags: ["--cached"]"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:21:28","message": "reading data from: .head_repo"}
+{"type": "Action","timestamp": "15-11-2023 01:24:49","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:49","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:24:54","message": "calling ls-files with flags: ["--deleted"]"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:54","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:24:58","message": "calling ls-files with flags: ["--modified"]"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:24:58","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:25:54","message": "calling ls-files with flags: ["--deleted"]"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/lalaaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/carpetita/y este?"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/lalaaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/carpetita/y este?"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:54","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:25:57","message": "calling ls-files with flags: ["--modified"]"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/lalaaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/carpetita/y este?"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/lalaaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/carpetita/y este?"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:25:57","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "Action","timestamp": "15-11-2023 01:26:00","message": "calling status with flags: []"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/lalaaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/y este?"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/lalaaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/y este?"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/gitr/index"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/lalaaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/y este?"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/holaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/lalaaa"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/queonda"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/holoo"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/y este?"}
+{"type": "FileOperation","timestamp": "15-11-2023 01:26:00","message": "reading data from: repo_ls/carpetita/yagira/aaa"}
