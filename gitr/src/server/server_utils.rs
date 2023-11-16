@@ -22,18 +22,16 @@ use crate::objects::commit::Commit;
 use crate::objects::git_object::GitObject;
 
 
-pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
-    let _ = create_dirs(r_path);
+pub fn server_init (s_addr: &str) -> std::io::Result<()>  {
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
 
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {                
-                let clon = r_path.to_string();
                 let builder = thread::Builder::new().name("cliente_random".to_string());
 
-                childs.push(builder.spawn(|| {handle_client(stream,clon)})?);
+                childs.push(builder.spawn(|| {handle_client(stream)})?);
             }
             Err(e) => {
                 eprintln!("Error al aceptar la conexión: {}", e);
@@ -49,7 +47,7 @@ pub fn server_init (r_path: &str, s_addr: &str) -> std::io::Result<()>  {
     Ok(())
 }
 
-fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
+fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
 
     let mut buffer = [0; 1024];
     let guardados_id: HashSet<String>;
@@ -68,6 +66,8 @@ fn handle_client(mut stream: TcpStream, r_path: String) -> std::io::Result<()> {
             return Ok(())}
         }
         let elems = split_n_validate_elems(&pkt_line)?;
+        let r_path = elems[2].to_string();
+        let _ = create_dirs(&r_path);
         // ########## REFERENCE DISCOVERY ##########
         (refs_string, guardados_id) = ref_discovery(&r_path)?;
         let _ = stream.write(refs_string.as_bytes())?;
@@ -116,17 +116,6 @@ fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<
     }
     Err(Error::new(std::io::ErrorKind::Other, "Error: no se pudo leer el stream"))
 }
-
-fn _is_commit(obj: String) -> bool {
-    let mut lines = obj.lines();
-    let first_line = lines.next().unwrap_or("");
-    if first_line == "tree" {
-        return true
-    }
-    false
-}
-
-
 
 fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> std::io::Result<()> {
     if ids.len() != content.len() {
@@ -391,6 +380,9 @@ fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
 }
+
+/// # Devuelve
+/// Una lista con los elementos de la linea de pkt-line: (comando, repo_local, repo_remoto)
 fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
     let line = pkt_line.split_at(4).1;
     let div1: Vec<&str> = line.split(' ').collect();
@@ -403,7 +395,7 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
     if (div1.len() == 2) || div2.len() == 3 {
         elems.push(div1[0]);
         elems.push(div2[0]);
-        elems.push(div2[1]);
+        elems.push(div2[1].strip_prefix("host=").unwrap_or(div2[1]));
         return Ok(elems)
 
     }

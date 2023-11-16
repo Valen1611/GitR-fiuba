@@ -209,6 +209,7 @@ pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
 
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
     init(vec![flags[1].clone()])?;
+    remote(vec![flags[0].clone()])?;
     pullear(vec![],true)?;
     Ok(())
 }
@@ -279,7 +280,7 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool) -> Result<(), GitrErro
     let remote = file_manager::get_remote()?;
     let msj = format!("git-upload-pack /{}\0host={}\0","mi-repo", remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect(remote) {
+    let mut stream = match TcpStream::connect("localhost:9418") {
         Ok(socket) => socket,
         Err(e) => {
             println!("Error: {}", e);
@@ -377,7 +378,7 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
     let remote = file_manager::get_remote()?;
     let msj = format!("git-receive-pack /{}\0host={}\0","mi-repo", remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect(remote) {
+    let mut stream = match TcpStream::connect("localhost:9418") {
         Ok(socket) => socket,
         Err(e) => {
             println!("Error: {}", e);
