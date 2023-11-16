@@ -143,11 +143,8 @@ fn get_diff(matriz_coincidencias: Vec<Vec<Celda>>, len_columna: usize, len_fila:
        
 
     }
-    println!("Stack {:?}", stack);
     let base_numbers = stack.iter().map(|x| x.fila).collect::<Vec<usize>>();
     let new_numbers = stack.iter().map(|x| x.columna).collect::<Vec<usize>>();
-    println!("Base numbers {:?}", base_numbers);
-    println!("New numbers {:?}", new_numbers);
 
     let mut lineas_eliminadas = Vec::new();
     for i in 0..(len_columna+1) {
@@ -229,6 +226,9 @@ impl Diff{
         lineas.sort_by(|a, b| a.0.cmp(&b.0)); //ordeno ascendente
         println!("Lineas {:?}", lineas);
 
+        
+
+        // solo sirven los prints, por ahora quedan porque me ayudan a debuggear
         for (i, line) in base_lines.iter().enumerate() {
             if indices_lineas_eliminadas.contains(&i) {
                 println!("{}. -{}",i, line);
@@ -241,7 +241,6 @@ impl Diff{
                 lineas_agregadas.push((i, line.to_string()));
             }
         }
-        
         
         Diff{
             lineas_eliminadas,
@@ -299,4 +298,14 @@ mod tests{
         
         let diff = Diff::new(base,new);
     }
+
+    #[test]
+    fn test03_diff_agregando_al_medio(){
+        let base = format!("hola\nsoy\nbase\n");
+
+        let new = format!("hola\nsoy\npepe\nbase\n");
+        
+        let diff = Diff::new(base,new);
+    }
+
 }

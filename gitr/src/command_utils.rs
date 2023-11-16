@@ -435,8 +435,9 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     let string_archivo = file_manager::read_file(path.clone())?;
     let mut archivo_reconstruido = vec![];
     println!("string_archivo: {:?}", string_archivo);
-    println!("diff:+ {:?}", diff.lineas_agregadas);
-    println!("diff:- {:?}", diff.lineas_eliminadas);
+    println!("diff a aplicar: {:?}", diff);
+   // println!("diff:+ {:?}", diff.lineas_agregadas);
+   // println!("diff:- {:?}", diff.lineas_eliminadas);
 
     let mut j = 0; //con este indexo el diff
     //let j = 0; //con este indexo el archivo
@@ -496,8 +497,9 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     }*/
 
     let len_archivo = string_archivo.lines().count();
-
+    // jasjaj
     for i in len_archivo..len_archivo+diff.lineas_agregadas.len() {    
+        println!("i: {}", i);
         let tiene_add = diff.has_add_diff(i);
         if tiene_add.0{
             print!(". Hay dif de add. Pusheo: {}",tiene_add.1.clone());
@@ -521,159 +523,183 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     println!("diff_base_origin: {:?}", diff_base_origin.lineas);
     println!("diff_base_branch: {:?}", diff_base_branch.lineas);
 
+    // BASE
+    // 0 hola
+    // 1 soy
+    // 2 pepe
+    // 3 base 
+
+    // ORIGIN
+    //2. - base
+    //2. + master
+
+    // NEW
+    //2. - base
+    //2. + pepe 
+    //3. + en new agrego linea
+
     let max_i = origin.len();
     let max_j = new.len();
-    println!("max_i: {}", max_i);
-    println!("max_j: {}", max_j);
+   // println!("max_i: {}", max_i);
+    //println!("max_j: {}", max_j);
 
-    loop {
-        println!("i: {}", i);
-        println!("j: {}", j);
-        if i >= max_i && j >= max_j {
-            break;
-        }
 
-        if origin[i].0 == new[j].0{
-            if !origin[i].1 { 
-                diff_final.lineas.push(origin[i].clone());
-                diff_final.lineas_eliminadas.push((origin[i].0, origin[i].2.clone()));
+
+
+
+    // loop {
+    //    // println!("i: {}", i);
+    //    // println!("j: {}", j);
+    //     if i >= max_i && j >= max_j { //condicion de corte
+    //         break;
+    //     }
+
+    //     let indice_origin = origin[i].0;
+    //     let indice_new = new[j].0;
+
+    //     if origin[i] == new[i] {
+    //         println!("iguales");
+    //         println!("origin[i]: {:?}", origin[i]);
+    //         println!("new[i]: {:?}", new[i]);
+    //     }
+
+    //     if indice_origin == indice_new{ //ambos diffs operan la misma linea (no se si es add o delete)
+    //         if !origin[i].1 { //si en la linea origin borra
+    //             // en este caso no es conflict, simplemente borro esa linea del original
+    //             diff_final.lineas.push(origin[i].clone());
+    //             //diff_final.lineas_eliminadas.push((origin[i].0, origin[i].2.clone()));
                 
-                if i != max_i {
-                    i+=1;
-                }
+    //             if i != max_i {
+    //                 i+=1;
+    //             }
                 
-                if j != max_j {
-                    j+=1;
-                }
-                continue;
-            }
-            let pos_original = origin[i].0;
-            let mut origin_conflicts = Vec::new();
+    //             if j != max_j {
+    //                 j+=1;
+    //             }
+    //             continue;
+    //         }
             
-            origin_conflicts.push(origin[i].2.clone()+"\n");
+    //         let pos_original = origin[i].0;
+    //         let mut origin_conflicts = Vec::new();
             
-            let mut k = i;
-            println!("i");
-            loop {
-                println!("k: {}", k);
-                println!("origin_conflicts: {:?}", origin_conflicts);
-                if k >= max_i{
-                    break;
-                }
-                if max_i - 2 > k { 
-                    if origin[k].0 + 1 != origin[k+1].0 { 
-                        break;
-                    }
-                    if origin[k].0 + 1 == origin[k+1].0 && !origin[k+1].1 && origin[k].0 + 1 == origin[k+2].0 && origin[k+2].1 {
-                        origin_conflicts.push(origin[k+2].2.clone()+"\n");
-                    }
-                }
+    //         origin_conflicts.push(origin[i].2.clone()+"\n");
+            
+    //         let mut k = i;
+    //         //println!("i");
+    //         loop {
+    //             //println!("k: {}", k);
+    //             //println!("origin_conflicts: {:?}", origin_conflicts);
+    //             if k >= max_i{
+    //                 break;
+    //             }
+    //             if max_i - 2 > k { 
+    //                 if origin[k].0 + 1 != origin[k+1].0 { 
+    //                     break;
+    //                 }
+    //                 if origin[k].0 + 1 == origin[k+1].0 && !origin[k+1].1 && origin[k].0 + 1 == origin[k+2].0 && origin[k+2].1 {
+    //                     origin_conflicts.push(origin[k+2].2.clone()+"\n");
+    //                 }
+    //             }
 
-                if k != max_i {
-                    k+=1;
-                }
-            }
+    //             if k != max_i {
+    //                 k+=1;
+    //             }
+    //         }
 
-            if k != max_i {
-                i=k;
-            }
-            else {
-                i=max_i-1;
-            }
+    //         if k != max_i {
+    //             i=k;
+    //         }
+    //         else {
+    //             i=max_i-1;
+    //         }
 
-            println!("j");
-            let mut new_conflicts = Vec::new();
-            new_conflicts.push(new[j].2.clone()+"\n");
-            let mut k = j;
-            loop {
-                println!("k: {}", k);
-                println!("origin_conflicts: {:?}", new_conflicts);
-                if k >= max_j{
-                    break;
-                }
-                if max_j - 2 > k { 
-                    if new[k].0 + 1 != new[k+1].0 { 
-                        break;
-                    }
+    //         //println!("j");
+    //         let mut new_conflicts = Vec::new();
+    //         new_conflicts.push(new[j].2.clone()+"\n");
+    //         let mut k = j;
+    //         loop {
+    //             //println!("k: {}", k);
+    //             //println!("new_conflicts: {:?}", new_conflicts);
+    //             if k >= max_j{
+    //                 break;
+    //             }
+    //             if max_j - 2 > k { 
+    //                 if new[k].0 + 1 != new[k+1].0 { 
+    //                     break;
+    //                 }
                     
-                    if new[k].0 + 1 == new[k+1].0 && !new[k+1].1 && new[k].0 + 1 == new[k+2].0 && new[k+2].1 {
-                        new_conflicts.push(new[k+2].2.clone()+"\n");
+    //                 if new[k].0 + 1 == new[k+1].0 && !new[k+1].1 && new[k].0 + 1 == new[k+2].0 && new[k+2].1 {
+    //                     new_conflicts.push(new[k+2].2.clone()+"\n");
                         
-                    }
+    //                 }
+    //             }
 
-
-
-
-                }
-
-                if k < max_j {
-                    k+=1;
-                }
-            }
-            println!("k: {}", k);
+    //             if k < max_j {
+    //                 k+=1;
+    //             }
+    //         }
+    //         //println!("k: {}", k);
             
-            if k != max_j {
-                j=k;
-            }
-            else {
-                j=max_j-1;
-            }
+    //         if k != max_j {
+    //             j=k;
+    //         }
+    //         else {
+    //             j=max_j-1;
+    //         }
 
-            if i < max_i {
-                i+=1;
-            }
+    //         if i < max_i {
+    //             i+=1;
+    //         }
             
-            if j < max_j {
-                j+=1;
-            }
+    //         if j < max_j {
+    //             j+=1;
+    //         }
 
-            let conflict = [">>>>>>>\n",
-                origin_conflicts.concat().as_str(),
-                "========\n",
-                new_conflicts.concat().as_str(),
+    //         let conflict = [">>>>>>>\n",
+    //             origin_conflicts.concat().as_str(),
+    //             "========\n",
+    //             new_conflicts.concat().as_str(),
                
-                "<<<<<<<"].concat();
+    //             "<<<<<<<"].concat();
 
-            diff_final.lineas.push((pos_original,true,conflict.clone()));
-            diff_final.lineas_agregadas.push((pos_original, conflict.clone()));
+    //         println!("conflict: {:?}", conflict);
 
-            continue;
+    //         diff_final.lineas.push((pos_original,true,conflict.clone()));
+    //         diff_final.lineas_agregadas.push((pos_original, conflict.clone()));
+
+    //         continue;
 
 
-        }
-        else if origin[i].0 < new[j].0{
-            diff_final.lineas.push(origin[i].clone());
-            if !origin[i].1 {
-                diff_final.lineas_eliminadas.push((origin[i].0, origin[i].2.clone()));
-            } else {
-                diff_final.lineas_agregadas.push((origin[i].0, origin[i].2.clone()));
-            }
-            if i < max_i {
-                i+=1;
-            }
-        }
-        else{
-            diff_final.lineas.push(new[j].clone());
-            if !new[j].1 {
-                diff_final.lineas_eliminadas.push((new[j].0, new[j].2.clone()));
-            } else {
-                diff_final.lineas_agregadas.push((new[j].0, new[j].2.clone()));
-            }
-            if j < max_j {
-                j+=1;
-            }
-        }
+    //     }
+    //     else if origin[i].0 < new[j].0{
+    //         diff_final.lineas.push(origin[i].clone());
+    //         if !origin[i].1 {
+    //             diff_final.lineas_eliminadas.push((origin[i].0, origin[i].2.clone()));
+    //         } else {
+    //             diff_final.lineas_agregadas.push((origin[i].0, origin[i].2.clone()));
+    //         }
+    //         if i < max_i {
+    //             i+=1;
+    //         }
+    //     }
+    //     else{
+    //         diff_final.lineas.push(new[j].clone());
+    //         if !new[j].1 {
+    //             diff_final.lineas_eliminadas.push((new[j].0, new[j].2.clone()));
+    //         } else {
+    //             diff_final.lineas_agregadas.push((new[j].0, new[j].2.clone()));
+    //         }
+    //         if j < max_j {
+    //             j+=1;
+    //         }
+    //     }
        
-    }
+    // }
     // print diff final
+    println!("diff final:");
     for (i, accion, linea) in diff_final.lineas.clone(){
         println!("linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
-    }
-    println!();
-    println!("final+: {:?}", diff_final.lineas_agregadas);
-    println!();
-    println!("final-: {:?}", diff_final.lineas_eliminadas);
-                                    
+    }        
 
     Ok(diff_final)
 }
@@ -712,7 +738,7 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
                 continue;
            
             }
-            println!("aca si deberia caer");
+    
             println!("base_file_data: {:?}", base_file_data);
             println!("origin_file_data: {:?}", origin_file_data);
             println!("branch_file_data: {:?}", branch_file_data);
@@ -720,7 +746,7 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
             let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
             let diff_base_branch = Diff::new(base_file_data, branch_file_data);
             let union_diffs = comparar_diffs(diff_base_origin, diff_base_branch)?; //une los diffs o da el conflict
-            println!("union_diffs: {:?}", union_diffs);
+            //println!("union_diffs: {:?}", union_diffs);
             aplicar_difs(path.clone(), union_diffs)?;
         }
         else{
