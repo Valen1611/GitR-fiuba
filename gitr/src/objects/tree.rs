@@ -109,8 +109,8 @@ impl Tree{
         Ok(tree)
     }
 
-    pub fn save(&self) -> Result<(), GitrError>{
-        file_manager::write_object(self.data.clone(), self.hash.clone())?;
+    pub fn save(&self,cliente: String) -> Result<(), GitrError>{
+        file_manager::write_object(self.data.clone(), self.hash.clone(),cliente)?;
         Ok(())
     }
     

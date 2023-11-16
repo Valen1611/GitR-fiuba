@@ -87,9 +87,9 @@ pub fn print_cat_file_command(data_requested:&str, object_hash: &str, object_typ
     Ok(())
 }
 /// returns object hash, output, size and type
-pub fn get_object_properties(flags:Vec<String>)->Result<(String, String, String, String), GitrError>{
+pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String, String, String, String), GitrError>{
     let object_hash = &flags[1];
-    let res_output = file_manager::read_object(object_hash)?;
+    let res_output = file_manager::read_object(object_hash,cliente)?;
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
@@ -137,12 +137,12 @@ pub fn print_commit_data(raw_data: &str){
  **************************/
 
 /// create a tree (and blobs inside it) for checkout function
-pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) -> Result<Tree, GitrError> {
+pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String,cliente: String) -> Result<Tree, GitrError> {
     let mut tree_entry: Vec<(String,TreeEntry)> = Vec::new();
     if let Some(objs) = tree_map.get(&current_dir) {
         for obj in objs {
                 if tree_map.contains_key(obj) {
-                    let new_tree = create_trees(tree_map.clone(), obj.to_string())?;
+                    let new_tree = create_trees(tree_map.clone(), obj.to_string(),cliente.clone())?;
                     tree_entry.push((obj.clone(), TreeEntry::Tree(new_tree)));
             } else {
                 let raw_data = file_manager::read_file(obj.clone())?;
@@ -152,48 +152,48 @@ pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String) 
         }
     };
     let tree = Tree::new(tree_entry)?;
-    tree.save()?;
+    tree.save(cliente)?;
     Ok(tree)
 }
 
 /// writes the main tree for a commit, then writes the commit and the branch if necessary
-pub fn get_tree_entries(message:String) -> Result<(), GitrError>{
-    let (tree_map, tree_order) = get_hashmap_for_checkout()?;
-    let final_tree = create_trees(tree_map, tree_order[0].clone())?;
-    final_tree.save()?;
-    write_new_commit_and_branch(final_tree, message)?;
+pub fn get_tree_entries(message:String,cliente: String) -> Result<(), GitrError>{
+    let (tree_map, tree_order) = get_hashmap_for_checkout(cliente.clone())?;
+    let final_tree = create_trees(tree_map, tree_order[0].clone(),cliente.clone())?;
+    final_tree.save(cliente.clone())?;
+    write_new_commit_and_branch(final_tree, message, cliente)?;
     Ok(())
 }
 /// write a new commit and the branch if necessary
-pub fn write_new_commit_and_branch(final_tree:Tree, message: String)->Result<(), GitrError>{
-    let head = file_manager::get_head()?;
-    let repo = file_manager::get_current_repo()?;
+pub fn write_new_commit_and_branch(final_tree:Tree, message: String,cliente: String)->Result<(), GitrError>{
+    let head = file_manager::get_head(cliente.clone())?;
+    let repo = file_manager::get_current_repo(cliente.clone())?;
     let path_complete = repo.clone()+"/gitr/"+head.as_str();
     if fs::metadata(path_complete.clone()).is_err(){
         let dir = repo + "/gitr/refs/heads/master";
         file_manager::write_file(path_complete, final_tree.get_hash())?;
         if !Path::new(&dir).exists(){
-            let current_commit = file_manager::get_current_commit()?;
+            let current_commit = file_manager::get_current_commit(cliente.clone())?;
             file_manager::write_file(dir.clone(), current_commit)?;
         }
         let commit = Commit::new(final_tree.get_hash(), "None".to_string(), get_current_username(), get_current_username(), message)?;
-        commit.save()?;
+        commit.save(cliente.clone())?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
         let dir = repo + "/gitr/" + &head;
-        let current_commit = file_manager::get_current_commit()?;
+        let current_commit = file_manager::get_current_commit(cliente.clone())?;
         let commit = Commit::new(final_tree.get_hash(), current_commit, get_current_username(), get_current_username(), message)?;
-        commit.save()?;
+        commit.save(cliente)?;
         file_manager::write_file(dir, commit.get_hash())?;
     } 
     Ok(())
 }
 
 /// returns a hashmap to create trees (using the index)
-pub fn get_hashmap_for_checkout()->Result<(HashMap<String, Vec<String>>,Vec<String>),GitrError>{
+pub fn get_hashmap_for_checkout(cliente: String)->Result<(HashMap<String, Vec<String>>,Vec<String>),GitrError>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); 
-    let index_files = read_index()?;
+    let index_files = read_index(cliente.clone())?;
     for file_info in index_files.split('\n') {
         ///// ojo aca
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
@@ -235,13 +235,13 @@ pub fn update_hashmap_tree_entry(tree_map:&mut  HashMap<String, Vec<String>>, pr
     }
 }
 
-pub fn get_branch_to_checkout(args_received: Vec<String>) -> Result<String, GitrError>{
+pub fn get_branch_to_checkout(args_received: Vec<String>,cliente: String) -> Result<String, GitrError>{
     let mut branch_to_checkout: String = args_received[0].clone();
     if args_received.len() == 2 && args_received[0] == "-b"{
         branch_to_checkout = args_received[1].clone();
-        branch_newbranch_flag(branch_to_checkout.clone())?;
+        branch_newbranch_flag(branch_to_checkout.clone(),cliente.clone())?;
     }
-    if !branch_exists(branch_to_checkout.clone()){
+    if !branch_exists(branch_to_checkout.clone(),cliente.clone()){
         return Err(GitrError::BranchNonExistsError(args_received[0].clone()));
     }
     Ok(branch_to_checkout)
@@ -285,9 +285,9 @@ pub fn get_user_mail_from_config() -> Result<String, GitrError>{
  *   LS-FILES FUNCTIONS
  **************************
  **************************/
-pub fn get_ls_files_cached() -> Result<String, GitrError>{
+pub fn get_ls_files_cached(cliente: String) -> Result<String, GitrError>{
     let mut string_res = String::new();
-    let index = match read_index(){
+    let index = match read_index(cliente.clone()){
         Ok(index) => index,
         Err(_) => return Ok(string_res),
     };
@@ -302,10 +302,10 @@ pub fn get_ls_files_cached() -> Result<String, GitrError>{
     Ok(string_res)
 }
 
-pub fn get_ls_files_deleted_modified(deleted: bool) -> Result<String, GitrError>{
+pub fn get_ls_files_deleted_modified(deleted: bool,cliente: String) -> Result<String, GitrError>{
     let mut res = String::new();
-    let (not_staged, _, _) = get_untracked_notstaged_files()?;
-    let files_not_staged = get_status_files_not_staged(&not_staged)?;
+    let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone())?;
+    let files_not_staged = get_status_files_not_staged(&not_staged,cliente.clone())?;
     for line in files_not_staged.lines() {
         if line.contains("deleted") && deleted{
             let line = line.replace("deleted:   ", "");
@@ -327,11 +327,11 @@ pub fn get_ls_files_deleted_modified(deleted: bool) -> Result<String, GitrError>
  **************************/
 
 /// print all the branches in repo
-pub fn print_branches()-> Result<(), GitrError>{
-    let head = file_manager::get_head()?;
+pub fn print_branches(cliente: String)-> Result<(), GitrError>{
+    let head = file_manager::get_head(cliente.clone())?;
     let head_vec = head.split('/').collect::<Vec<&str>>();
     let head = head_vec[head_vec.len()-1];
-    let branches = file_manager::get_branches()?;
+    let branches = file_manager::get_branches(cliente.clone())?;
         for branch in branches{
             if head == branch{
                 let index_branch = format!("* \x1b[92m{}\x1b[0m", branch);
@@ -344,8 +344,8 @@ pub fn print_branches()-> Result<(), GitrError>{
 }
 
 /// check if a branch exists
-pub fn branch_exists(branch: String) -> bool{
-    let branches = file_manager::get_branches();
+pub fn branch_exists(branch: String,cliente: String) -> bool{
+    let branches = file_manager::get_branches(cliente.clone());
     let branches = match branches{
         Ok(branches) => branches,
         Err(_) => return false,
@@ -359,54 +359,54 @@ pub fn branch_exists(branch: String) -> bool{
 }
 
 /// branch -d flag function
-pub fn branch_delete_flag(branch:String)-> Result<(),GitrError>{
-    if !branch_exists(branch.clone()){
+pub fn branch_delete_flag(branch:String,cliente: String)-> Result<(),GitrError>{
+    if !branch_exists(branch.clone(),cliente.clone()){
         return Err(GitrError::BranchNonExistsError(branch))
     }
-    file_manager::delete_branch(branch, false)?;
+    file_manager::delete_branch(branch, false,cliente.clone())?;
     Ok(())
 }
 
 /// branch -m flag function
-pub fn branch_move_flag(branch_origin:String, branch_destination:String)->Result<(),GitrError>{
-    if !branch_exists(branch_origin.clone()){
+pub fn branch_move_flag(branch_origin:String, branch_destination:String,cliente: String)->Result<(),GitrError>{
+    if !branch_exists(branch_origin.clone(),cliente.clone()){
         return Err(GitrError::BranchNonExistsError(branch_origin))
     }
-    if branch_exists(branch_destination.clone()){
+    if branch_exists(branch_destination.clone(),cliente.clone()){
         return Err(GitrError::BranchAlreadyExistsError(branch_destination))
     }
-    let repo = get_current_repo()?;
+    let repo = get_current_repo(cliente.clone())?;
     let old_path = format!("{}/gitr/refs/heads/{}", repo.clone(), branch_origin);
     let new_path = format!("{}/gitr/refs/heads/{}", repo.clone(), branch_destination);
     file_manager::move_branch(old_path.clone(), new_path.clone())?;
-    let head = get_head()?;
+    let head = get_head(cliente.clone())?;
     if branch_origin == head.split('/').collect::<Vec<&str>>()[2]{
         println!("{}", branch_origin);
         println!("{}", head.split('/').collect::<Vec<&str>>()[2]);
         let ref_correct = format!("refs/heads/{}", branch_destination);
-        file_manager::update_head(&ref_correct)?;
+        file_manager::update_head(&ref_correct,cliente.clone())?;
     }   
     Ok(())
 }
 
 /// branch <newbranch> flag function
-pub fn branch_newbranch_flag(branch:String) -> Result<(), GitrError>{
-    let repo = get_current_repo()?;
-    if branch_exists(branch.clone()){
+pub fn branch_newbranch_flag(branch:String,cliente: String) -> Result<(), GitrError>{
+    let repo = get_current_repo(cliente.clone())?;
+    if branch_exists(branch.clone(),cliente.clone()){
         return Err(GitrError::BranchAlreadyExistsError(branch))
     }
-    let current_commit = file_manager::get_current_commit()?;
+    let current_commit = file_manager::get_current_commit(cliente.clone())?;
     file_manager::write_file(format!("{}/gitr/refs/heads/{}", repo.clone(), branch), current_commit)?;
     Ok(())
     
 }
 
-pub fn branch_commits_list(branch_name: String)->Result<Vec<String>, GitrError>{
+pub fn branch_commits_list(branch_name: String,cliente: String)->Result<Vec<String>, GitrError>{
     let mut commits = Vec::new();
-    let mut commit = file_manager::get_commit(branch_name)?;
+    let mut commit = file_manager::get_commit(branch_name,cliente.clone())?;
     commits.push(commit.clone());
     loop {
-        let parent = file_manager::get_parent_commit(commit.clone())?;
+        let parent = file_manager::get_parent_commit(commit.clone(),cliente.clone())?;
 
         if parent == "None" {
             break;
@@ -423,20 +423,20 @@ pub fn branch_commits_list(branch_name: String)->Result<Vec<String>, GitrError>{
  **************************
  **************************/
 
-pub fn print_commit_confirmation(message:String)->Result<(), GitrError>{
-    let branch = get_head()?
+pub fn print_commit_confirmation(message:String,cliente: String)->Result<(), GitrError>{
+    let branch = get_head(cliente.clone())?
             .split('/')
             .collect::<Vec<&str>>()[2]
             .to_string();
-        let hash_recortado = &get_current_commit()?[0..7];
+        let hash_recortado = &get_current_commit(cliente.clone())?[0..7];
 
         println!("[{} {}] {}", branch, hash_recortado, message);
         Ok(())
 }
 /// check if a commit exist
-pub fn commit_existing() -> Result<(), GitrError>{
-    let repo = file_manager::get_current_repo()?;
-    let head = file_manager::get_head()?;
+pub fn commit_existing(cliente: String) -> Result<(), GitrError>{
+    let repo = file_manager::get_current_repo(cliente.clone())?;
+    let head = file_manager::get_head(cliente.clone())?;
     let branch_name = head.split('/').collect::<Vec<&str>>()[2];
     if fs::metadata(repo.clone() + "/gitr/" + &head).is_err(){
         return Err(GitrError::NoCommitExisting(branch_name.to_string()))
@@ -451,19 +451,19 @@ pub fn commit_existing() -> Result<(), GitrError>{
  **************************/
 
  
-pub fn fast_forward_merge(branch_name:String)->Result<(),GitrError> {
-    let commit: String = file_manager::get_commit(branch_name)?;
-    let head = get_head()?;
-    let repo = get_current_repo()?;
+pub fn fast_forward_merge(branch_name:String,cliente: String)->Result<(),GitrError> {
+    let commit: String = file_manager::get_commit(branch_name,cliente.clone())?;
+    let head = get_head(cliente.clone())?;
+    let repo = get_current_repo(cliente.clone())?;
     let path = format!("{}/gitr/{}", repo, head);
     file_manager::write_file(path, commit.clone())?;
-    update_working_directory(commit)?;
+    update_working_directory(commit,cliente.clone())?;
     Ok(())
 }
 
-pub fn get_blobs_from_commit(commit_hash: String)->Result<(),GitrError> {
+pub fn get_blobs_from_commit(commit_hash: String,cliente: String)->Result<(),GitrError> {
     //entro al commit
-    let path_and_hash_hashmap = get_commit_hashmap(commit_hash)?;
+    let path_and_hash_hashmap = get_commit_hashmap(commit_hash,cliente.clone())?;
     
     println!("hashmap: {:?}", path_and_hash_hashmap);
     
@@ -677,13 +677,13 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
 }
 
 
-pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String) -> Result<(), GitrError> {
+pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, cliente: String) -> Result<(), GitrError> {
 
-    let branch_hashmap = get_commit_hashmap(branch_commit.clone())?;
-    let mut origin_hashmap = get_commit_hashmap(origin_commit.clone())?;
-    file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone())?;
-    origin_hashmap = get_commit_hashmap(origin_commit.clone())?;
-    let base_hashmap = get_commit_hashmap(base_commit.clone())?;
+    let branch_hashmap = get_commit_hashmap(branch_commit.clone(),cliente.clone())?;
+    let mut origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
+    file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone(),cliente.clone())?;
+    origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
+    let base_hashmap = get_commit_hashmap(base_commit.clone(),cliente.clone())?;
     for (path, origin_file_hash) in origin_hashmap.iter(){
 
         let origin_file_data =file_manager::read_file(path.clone())?; 
@@ -691,7 +691,7 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
         
         if branch_hashmap.contains_key(&path.clone()){
             let branch_file_hash = branch_hashmap[path].clone(); //aax
-            let branch_file_data = file_manager::read_file_data_from_blob_hash(branch_file_hash.clone())?;
+            let branch_file_data = file_manager::read_file_data_from_blob_hash(branch_file_hash.clone(),cliente.clone())?;
 
             
             if origin_file_hash == &branch_file_hash{
@@ -699,7 +699,7 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
             }
             
             let base_file_hash = base_hashmap[path].clone(); // chequear que capaz puede no exisiir en base
-            let base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone())?;
+            let base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone(),cliente.clone())?;
 
             if &base_file_hash == origin_file_hash {
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
@@ -735,9 +735,9 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
  **************************
  **************************/
 
- pub fn get_working_dir_hashmap() -> Result<HashMap<String, String>, GitrError>{
+ pub fn get_working_dir_hashmap(cliente: String) -> Result<HashMap<String, String>, GitrError>{
     let mut working_dir_hashmap = HashMap::new();
-    let repo = file_manager::get_current_repo()?;
+    let repo = file_manager::get_current_repo(cliente.clone())?;
     let path = Path::new(repo.as_str());
     let files= visit_dirs(path);
     for file_path in files {
@@ -775,10 +775,10 @@ pub fn get_status_files_to_be_comited(to_be_commited: &Vec<String>)->Result<Stri
     Ok(res)
 }
 
-pub fn get_status_files_not_staged(not_staged: &Vec<String>)-> Result<String, GitrError>{
+pub fn get_status_files_not_staged(not_staged: &Vec<String>,cliente: String)-> Result<String, GitrError>{
     let mut res = String::new();
-    let (index,hayindex)= get_index_hashmap()?;
-    let working_dir_hashmap = get_working_dir_hashmap()?;
+    let (index,hayindex)= get_index_hashmap(cliente.clone())?;
+    let working_dir_hashmap = get_working_dir_hashmap(cliente.clone())?;
     if !not_staged.is_empty() {
         let header1 = format!("Changes not staged for commit:\n");
         let header2 = format!("  (use \"add <file>...\" to update what will be committed)\n");
@@ -828,21 +828,21 @@ pub fn get_status_files_untracked(untracked_files: &Vec<String>, hayindex: bool)
 }
 
 
-pub fn status_print_current_branch() -> Result<(), GitrError> {
-    let head = file_manager::get_head()?;
+pub fn status_print_current_branch(cliente: String) -> Result<(), GitrError> {
+    let head = file_manager::get_head(cliente.clone())?;
     let current_branch = head.split('/').collect::<Vec<&str>>()[2];
     println!("On branch {}", current_branch);
-    if commit_existing().is_err(){
+    if commit_existing(cliente).is_err(){
         println!("No commits yet");
     }
     Ok(())
 }
 
 
-pub fn get_index_hashmap() -> Result<(HashMap<String, String>, bool), GitrError> {
+pub fn get_index_hashmap(cliente: String) -> Result<(HashMap<String, String>, bool), GitrError> {
     let mut index_hashmap = HashMap::new();
     let mut hayindex = true;
-    let index_data = match file_manager::read_index() {
+    let index_data = match file_manager::read_index(cliente.clone()) {
         Ok(data) => data,
         Err(_) => {
             hayindex = false;
@@ -860,8 +860,8 @@ pub fn get_index_hashmap() -> Result<(HashMap<String, String>, bool), GitrError>
     Ok((index_hashmap, hayindex))
 }
 
-pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_hashmap: &mut HashMap<String, String>) -> Result<(), GitrError>{
-    let tree_data = file_manager::read_object(&hash_of_tree_to_read)?;
+pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_hashmap: &mut HashMap<String, String>,cliente: String) -> Result<(), GitrError>{
+    let tree_data = file_manager::read_object(&hash_of_tree_to_read,cliente.clone())?;
 
     let tree_entries = match tree_data.split_once('\0') {
         Some((_tree_type, tree_entries)) => tree_entries,
@@ -873,7 +873,7 @@ pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_h
             let relative_file_path= attributes.split('\0').collect::<Vec<&str>>()[0].to_string();
             let file_path = format!("{}/{}", file_path, relative_file_path);
             let file_hash = attributes.split('\0').collect::<Vec<&str>>()[1].to_string();
-            get_subtrees_data(file_hash, file_path, tree_hashmap)?;
+            get_subtrees_data(file_hash, file_path, tree_hashmap, cliente.clone())?;
         }
         if entry.split(' ').collect::<Vec<&str>>()[0] == "40000"{
             continue;
@@ -891,18 +891,18 @@ pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_h
 }
 
 
-pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, GitrError> {
+pub fn get_commit_hashmap(commit: String,cliente: String) -> Result<HashMap<String, String>, GitrError> {
       let mut tree_hashmap = HashMap::new();
-    let current_commit = get_current_commit()?;
+    let current_commit = get_current_commit(cliente.clone())?;
     if current_commit == commit{
-        let (index_hashmap, _) = get_index_hashmap()?;
+        let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
         return Ok(index_hashmap);
     }
       if !commit.is_empty() {
         
-        let repo = file_manager::get_current_repo()?;
-        let tree = file_manager::get_main_tree(commit)?;
-        let tree_data = file_manager::read_object(&tree)?;
+        let repo = file_manager::get_current_repo(cliente.clone())?;
+        let tree = file_manager::get_main_tree(commit,cliente.clone())?;
+        let tree_data = file_manager::read_object(&tree,cliente.clone())?;
         let tree_entries = match tree_data.split_once('\0') {
             Some((_tree_type, tree_entries)) => tree_entries,
             None => "",
@@ -913,7 +913,7 @@ pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, Git
                 let _file_path= attributes.split('\0').collect::<Vec<&str>>()[0].to_string();
                 let file_path = format!("{}/{}", repo, _file_path);
                 let file_hash = attributes.split('\0').collect::<Vec<&str>>()[1].to_string();
-                get_subtrees_data(file_hash, file_path, &mut tree_hashmap)?;
+                get_subtrees_data(file_hash, file_path, &mut tree_hashmap,cliente.clone())?;
             }
             
             if entry.split(' ').collect::<Vec<&str>>()[0] == "40000"{
@@ -935,10 +935,10 @@ pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, Git
 
 
 
-pub fn get_untracked_notstaged_files()->Result<(Vec<String>, Vec<String>, bool), GitrError>{
-    let working_dir_hashmap = get_working_dir_hashmap()?;
-    let (index_hashmap, hayindex) = get_index_hashmap()?;
-    let current_commit_hashmap = get_current_commit_hashmap()?;
+pub fn get_untracked_notstaged_files(cliente: String)->Result<(Vec<String>, Vec<String>, bool), GitrError>{
+    let working_dir_hashmap = get_working_dir_hashmap(cliente.clone())?;
+    let (index_hashmap, hayindex) = get_index_hashmap(cliente.clone())?;
+    let current_commit_hashmap = get_current_commit_hashmap(cliente.clone())?;
     let mut not_staged = Vec::new();
     let mut untracked_files = Vec::new();
     for (path, _) in index_hashmap.clone().into_iter() {
@@ -969,10 +969,10 @@ pub fn get_untracked_notstaged_files()->Result<(Vec<String>, Vec<String>, bool),
 }
 
 
-pub fn get_current_commit_hashmap() -> Result<HashMap<String, String>, GitrError> {
+pub fn get_current_commit_hashmap(cliente: String) -> Result<HashMap<String, String>, GitrError> {
       let mut tree_hashmap = HashMap::new();
       let mut haycommitshechos = true;
-      let current_commit = match file_manager::get_current_commit() {
+      let current_commit = match file_manager::get_current_commit(cliente.clone()) {
           Ok(commit) => commit,
           Err(_) => {
               haycommitshechos = false;
@@ -981,9 +981,9 @@ pub fn get_current_commit_hashmap() -> Result<HashMap<String, String>, GitrError
       };
       
       if haycommitshechos {
-        let repo = file_manager::get_current_repo()?;
-        let tree = file_manager::get_main_tree(current_commit)?;
-        let tree_data = file_manager::read_object(&tree)?;
+        let repo = file_manager::get_current_repo(cliente.clone())?;
+        let tree = file_manager::get_main_tree(current_commit,cliente.clone())?;
+        let tree_data = file_manager::read_object(&tree,cliente.clone())?;
         let tree_entries = match tree_data.split_once('\0') {
             Some((_tree_type, tree_entries)) => tree_entries,
             None => "",
@@ -998,10 +998,10 @@ pub fn get_current_commit_hashmap() -> Result<HashMap<String, String>, GitrError
       }
       Ok(tree_hashmap)
 }
-pub fn get_tobe_commited_files(not_staged: &Vec<String>)->Result<Vec<String>, GitrError>{
-    let working_dir_hashmap = get_working_dir_hashmap()?;
-    let (index_hashmap, _) = get_index_hashmap()?;
-    let current_commit_hashmap = get_current_commit_hashmap()?;
+pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result<Vec<String>, GitrError>{
+    let working_dir_hashmap = get_working_dir_hashmap(cliente.clone())?;
+    let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
+    let current_commit_hashmap = get_current_commit_hashmap(cliente.clone())?;
     let mut to_be_commited = Vec::new();
     for (path, hash) in index_hashmap.clone().into_iter() {
         if !current_commit_hashmap.contains_key(path.as_str()) {
@@ -1029,20 +1029,20 @@ pub fn get_tobe_commited_files(not_staged: &Vec<String>)->Result<Vec<String>, Gi
  **************************/
 
 
-pub fn save_and_add_blob_to_index(file_path: String) -> Result<(), GitrError> {
+pub fn save_and_add_blob_to_index(file_path: String,cliente: String) -> Result<(), GitrError> {
     let raw_data = file_manager::read_file(file_path.clone())?;
     let blob = Blob::new(raw_data)?;
-    blob.save()?;
+    blob.save(cliente.clone())?;
     let hash = blob.get_hash();
-    file_manager::add_to_index(&file_path, &hash)?;
+    file_manager::add_to_index(&file_path, &hash,cliente.clone())?;
     Ok(())
 }
 
-pub fn update_index_before_add() -> Result<(),GitrError>{
-    let repo = file_manager::get_current_repo()?;
+pub fn update_index_before_add(cliente: String) -> Result<(),GitrError>{
+    let repo = file_manager::get_current_repo(cliente.clone())?;
     let index_path = &(repo.clone() + "/gitr/index");
     if Path::new(index_path).is_file() {
-        let index_data = file_manager::read_index()?;
+        let index_data = file_manager::read_index(cliente.clone())?;
         let mut index_vector: Vec<&str> = Vec::new();
         if !index_data.is_empty() {
             index_vector = index_data.split('\n').collect::<Vec<&str>>();
@@ -1060,26 +1060,26 @@ pub fn update_index_before_add() -> Result<(),GitrError>{
         file_manager::remove_file(format!("{}/gitr/index", repo))?;
         for entry in index_vector {
             let path = entry.split(' ').collect::<Vec<&str>>()[3];
-            save_and_add_blob_to_index(path.to_string())?;
+            save_and_add_blob_to_index(path.to_string(),cliente.clone())?;
         }   
     }
     Ok(())
 }
 
 
-pub fn add_files_command(file_path:String)-> Result<(), GitrError>{
-    let repo = get_current_repo()?;
+pub fn add_files_command(file_path:String,cliente: String)-> Result<(), GitrError>{
+    let repo = get_current_repo(cliente.clone())?;
     if file_path == "."{
         let files = visit_dirs(std::path::Path::new(&repo));
         for file in files{
             if file.contains("gitr"){
                 continue
             }
-            save_and_add_blob_to_index(file.clone())?;
+            save_and_add_blob_to_index(file.clone(),cliente.clone())?;
         }
     }else{
         let full_file_path = repo + "/" + &file_path;
-        save_and_add_blob_to_index(full_file_path)?;
+        save_and_add_blob_to_index(full_file_path,cliente)?;
     }
     Ok(())
 }
@@ -1090,11 +1090,11 @@ pub fn add_files_command(file_path:String)-> Result<(), GitrError>{
  **************************
  **************************/
 
-pub fn rm_from_index(file_to_delete: &str)->Result<bool, GitrError>{
+pub fn rm_from_index(file_to_delete: &str,cliente: String)->Result<bool, GitrError>{
     let mut removed:bool = false;
-    let mut index = file_manager::read_index()?;
+    let mut index = file_manager::read_index(cliente.clone())?;
     index += "\n";
-    let current_repo = file_manager::get_current_repo()?;
+    let current_repo = file_manager::get_current_repo(cliente)?;
     let file_to_rm_path = format!("{}/{}", current_repo, file_to_delete);
     for line in index.lines(){
         let attributes = line.split(' ').collect::<Vec<&str>>();
@@ -1117,12 +1117,12 @@ pub fn rm_from_index(file_to_delete: &str)->Result<bool, GitrError>{
  **************************
  **************************/
 
-pub fn write_reference_from_cloning(references: Vec<(String, String)>, _ref_disc:String)-> Result<(), GitrError>{
-    let repo = file_manager::get_current_repo()?;
+pub fn write_reference_from_cloning(references: Vec<(String, String)>, _ref_disc:String,cliente: String)-> Result<(), GitrError>{
+    let repo = file_manager::get_current_repo(cliente.clone())?;
     for reference in &references[1..]{
         let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); //ref path
         if references[0].0 == reference.0{
-            file_manager::update_head(&reference.1.clone())?; //actualizo el head
+            file_manager::update_head(&reference.1.clone(),cliente.clone())?; //actualizo el head
         }
         let into_hash = reference.0.clone(); //hash a escribir en el archivo
         file_manager::write_file(path_str, into_hash)?; //escribo el hash en el archivo
@@ -1221,6 +1221,6 @@ mod tests{
         clone_send_git_upload_pack(&mut socket).unwrap();
         let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
         let references = ref_discovery::discover_references(ref_disc).unwrap();
-        socket.write(assemble_want_message(&references,vec![]).unwrap().as_bytes()).unwrap();
+        socket.write(assemble_want_message(&references,vec![],"Test".to_string()).unwrap().as_bytes()).unwrap();
     }
 }

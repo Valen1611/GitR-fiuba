@@ -61,8 +61,8 @@ impl Commit{
         Ok(Commit {data:compressed_file,hash: hashed_file_str, tree, parent, author, committer, message })
     }
 
-    pub fn save(&self) -> Result<(), GitrError>{
-        crate::file_manager::write_object(self.data.clone(), self.hash.clone())?;
+    pub fn save(&self,cliente: String) -> Result<(), GitrError>{
+        crate::file_manager::write_object(self.data.clone(), self.hash.clone(),cliente)?;
         Ok(())
     }
 

@@ -27,8 +27,8 @@ impl Blob{
             hash:hashed_file_str,
         })
     }
-    pub fn save(&self) -> Result<(),GitrError>{
-        file_manager::write_object(self.compressed_data.clone(), self.get_hash())?;
+    pub fn save(&self,cliente:String) -> Result<(),GitrError>{
+        file_manager::write_object(self.compressed_data.clone(), self.get_hash(),cliente)?;
         Ok(())
     }
 

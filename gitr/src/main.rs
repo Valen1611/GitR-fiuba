@@ -37,7 +37,7 @@ fn email_valido(email_recibido: String) -> bool {
         true
     }
 
-fn setup_config_file(){
+fn setup_config_file(client_path: String){
     let mut email_recibido = String::new();
 
     while !email_valido(email_recibido.clone()) {
@@ -47,14 +47,14 @@ fn setup_config_file(){
             Err(_) => "user@mail.com".to_string(),
         };
     }
-        println!("El email es valido, ya puede comenzar a usar Gitr");
-     let name = command_utils::get_current_username();
-     let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
-     file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
- }
+    println!("El email es valido, ya puede comenzar a usar Gitr");
+    let name = client_path.clone();
+    let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
+    file_manager::write_file(client_path + "/gitrconfig", config_file_data).unwrap();
+}
 
-pub fn existe_config() -> bool{
-    fs::metadata("gitrconfig").is_ok()
+pub fn existe_config(client_path: String) -> bool{
+    fs::metadata(client_path + "/gitrconfig").is_ok()
 }
 
 fn print_bienvenida() {
@@ -69,13 +69,17 @@ fn main() {
     // let child = std::thread::spawn(move || {
     //     initialize_gui();
     // });
-
+    let args = std::env::args().collect::<Vec<String>>();
+    if args.len() < 2 {
+        println!("Usage: cargo run --bin client <client_name>");
+        return;
+    }
+    let cliente = args[1].clone();
     print_bienvenida();
-
-    if !existe_config() {
-        setup_config_file();
+    let _ = file_manager::create_directory(&cliente);
+    if !existe_config(cliente.clone()) {
+        setup_config_file(cliente.clone());
     }        
-    
 
     loop {
 
@@ -93,7 +97,7 @@ fn main() {
         let argv: Vec<String> = commands::handler::parse_input(input);
         
         // argv = ["command", "flag1", "flag2", ...]
-        match commands::handler::command_handler(argv) {
+        match commands::handler::command_handler(argv,cliente.clone()) {
             Ok(_) => (),
             Err(e) => {
                 println!("{}", e);

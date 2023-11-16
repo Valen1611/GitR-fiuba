@@ -91,7 +91,7 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_i
     Ok((request,pkt_needed,pkt_ids))
 }
 
-pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:Vec<String>)->Result<String,GitrError>{
+pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:Vec<String>,cliente: String)->Result<String,GitrError>{
     let set = client_commits.clone().into_iter().collect::<HashSet<String>>();
     let mut want_message = String::new();
     for refer in references{
@@ -106,7 +106,7 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
         return Ok(want_message.to_string());
     }
     if !client_commits.len() == 0{
-        for have in file_manager::get_all_objects()? {
+        for have in file_manager::get_all_objects(cliente.clone())? {
             let have_line = format!("have {}\n",have);
             want_message.push_str(&format!("{:04X}{}\n",have_line.len()+4,have_line));
         }

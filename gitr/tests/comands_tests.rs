@@ -15,11 +15,11 @@ use serial_test::serial;
 fn test_init() {
     commands::init(vec!["test_init".to_string()]).unwrap();
     let directory_path = String::from("test_init/gitr/");
-    let last_repo = get_current_repo().unwrap();
+    let last_repo = get_current_repo(cliente).unwrap();
     assert!(Path::new(&(directory_path.clone() + "objects")).is_dir());
     assert!(Path::new(&(directory_path.clone() + "refs")).is_dir());
     assert!(Path::new(&(directory_path.clone() + "refs/heads")).is_dir());
-    let current_repo = get_current_repo().unwrap();
+    let current_repo = get_current_repo(cliente).unwrap();
     assert_eq!("test_init", current_repo);
     update_current_repo(&last_repo).unwrap();
     fs::remove_dir_all("test_init").unwrap();
@@ -29,7 +29,7 @@ fn test_init() {
 #[test]
 #[serial]
 fn test_init_exists() {
-    let last_repo = get_current_repo().unwrap();
+    let last_repo = get_current_repo(cliente).unwrap();
     commands::init(vec!["test_init_exists".to_string()]).unwrap();
     let res = commands::init(vec!["test_init_exists".to_string()]);
     let error = res.unwrap_err();
@@ -44,7 +44,7 @@ fn test_init_exists() {
 #[test]
 #[serial]
 fn test_add(){
-    let last_repo = get_current_repo().unwrap();
+    let last_repo = get_current_repo(cliente).unwrap();
     commands::init(vec!["test_add_blob".to_string()]).unwrap();
     let _ = write_file("test_add_blob/blob1".to_string(), "Hello, im blob 1".to_string());
     let _ = write_file("test_add_blob/blob2".to_string(), "Hello, im blob 2".to_string());
@@ -75,7 +75,7 @@ fn test_add(){
 #[test]
 #[serial]
 fn test_rm(){
-    let last_repo = get_current_repo().unwrap();
+    let last_repo = get_current_repo(cliente).unwrap();
     commands::init(vec!["test_rm_blob".to_string()]).unwrap();
     let _ = write_file("test_rm_blob/blob1".to_string(), "Hello, im blob 1".to_string());
     let _ = write_file("test_rm_blob/blob2".to_string(), "Hello, im blob 2".to_string());
@@ -111,7 +111,7 @@ fn test_rm(){
 #[test]
 #[serial]
 fn test_ls_files_returns_empty_after_init(){
-    let last_repo = get_current_repo().unwrap();
+    let last_repo = get_current_repo(cliente).unwrap();
     commands::init(vec!["test_ls_files_empty".to_string()]).unwrap();
     let res = command_utils::get_ls_files_cached().unwrap();
     assert!(res.is_empty());
@@ -122,7 +122,7 @@ fn test_ls_files_returns_empty_after_init(){
 #[test]
 #[serial]
 fn test_ls_files_stage_after_adding_files(){
-    let last_repo = get_current_repo().unwrap();
+    let last_repo = get_current_repo(cliente).unwrap();
     commands::init(vec!["test_ls_files_stage".to_string()]).unwrap();
     let _ = write_file("test_ls_files_stage/blob1".to_string(), "Hello, im blob 1".to_string());
     let _ = write_file("test_ls_files_stage/blob2".to_string(), "Hello, im blob 2".to_string());
