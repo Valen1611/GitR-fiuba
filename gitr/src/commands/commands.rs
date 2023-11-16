@@ -184,15 +184,27 @@ pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
 
 pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
     //ls-files --stage
-    if flags.len() != 1 {
-        return Err(GitrError::InvalidArgumentError(flags.join(" "),"ls-files --stage".to_string() ))
+    if flags.len() == 0 || flags[0] == "--cached" || flags[0] == "-c" {
+        let ls_files_res = get_ls_files_cached()?;
+        print!("{}", ls_files_res);
+        return Ok(())
     }
-
     if flags[0] == "--stage"{
         let res_output = file_manager::read_index()?;
         println!("{}", res_output);
+        return Ok(())
     }
-    Ok(())
+    if flags[0] == "--deleted"{
+        let res_output = get_ls_files_deleted_modified(true)?;
+        print!("{}", res_output);
+        return Ok(())
+    }
+    if flags[0] == "--modified"{
+        let res_output = get_ls_files_deleted_modified(false)?;
+        print!("{}", res_output);
+        return Ok(())
+    }
+    Err(GitrError::InvalidArgumentError(flags.join(" "),"ls-files --stage".to_string() ))
 }
 
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
@@ -208,10 +220,10 @@ pub fn status(_flags: Vec<String>) -> Result<(), GitrError>{
 
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files()?;
     let to_be_commited = get_tobe_commited_files(&not_staged)?;
-    status_print_to_be_comited(&to_be_commited)?;
+    print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
 
-    status_print_not_staged(&not_staged);
-    status_print_untracked(&untracked_files, hayindex);
+    print!("{}", get_status_files_not_staged(&not_staged)?);
+    print!("{}",get_status_files_untracked(&untracked_files, hayindex));
     if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
         println!("nothing to commit, working tree clean");
     }
