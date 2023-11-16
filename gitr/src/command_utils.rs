@@ -280,6 +280,45 @@ pub fn get_user_mail_from_config() -> Result<String, GitrError>{
 }
 
 
+/***************************
+ *************************** 
+ *   LS-FILES FUNCTIONS
+ **************************
+ **************************/
+pub fn get_ls_files_cached() -> Result<String, GitrError>{
+    let mut string_res = String::new();
+    let index = match read_index(){
+        Ok(index) => index,
+        Err(_) => return Ok(string_res),
+    };
+    for file_path in index.lines() {
+        let correct_path = match file_path.split_once("/") {
+            Some((_path, file)) => file,
+            None => file_path,
+        };
+        let line = correct_path.to_string() + "\n";
+        string_res.push_str(&line);
+    }
+    Ok(string_res)
+}
+
+pub fn get_ls_files_deleted_modified(deleted: bool) -> Result<String, GitrError>{
+    let mut res = String::new();
+    let (not_staged, _, _) = get_untracked_notstaged_files()?;
+    let files_not_staged = get_status_files_not_staged(&not_staged)?;
+    for line in files_not_staged.lines() {
+        if line.contains("deleted") && deleted{
+            let line = line.replace("deleted:   ", "");
+            res.push_str(&(line + "\n"));
+        }else if !deleted && (line.contains("modified") || line.contains("deleted")){
+            let mut line = line.replace("modified   ", "");
+            line = line.replace("deleted:   ", "");
+            res.push_str(&(line + "\n"));
+        }
+    }
+    Ok(res)
+}
+
 
 /***************************
  *************************** 
@@ -711,59 +750,81 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
     Ok(working_dir_hashmap)
 }
 
-pub fn status_print_to_be_comited(to_be_commited: &Vec<String>)->Result<(), GitrError>{
-    let working_dir_hashmap = get_working_dir_hashmap()?;
+pub fn get_status_files_to_be_comited(to_be_commited: &Vec<String>)->Result<String, GitrError>{
+    let mut res = String::new();
+    // let working_dir_hashmap = get_working_dir_hashmap()?;
     if !to_be_commited.is_empty() {
-        println!("Changes to be committed:");
-        println!("  (use \"rm <file>...\" to unstage)");
+        let header1 = format!("Changes to be committed:\n");
+        let header2 = format!("  (use \"rm <file>...\" to unstage)\n");
+        res.push_str(&header1);
+        res.push_str(&header2);
         for file in to_be_commited.clone() {
             let file_name = match file.split_once ('/'){
                 Some((_path, file)) => file.to_string(),
                 None => file.to_string(),
             };
-            if !working_dir_hashmap.contains_key(file.as_str()) {
-                println!("\t\x1b[31mdeleted:   {}\x1b[0m", file_name);
-            }else{
-                println!("\t\x1b[92mmodified   {}\x1b[0m", file_name);
-            }
+            // if !working_dir_hashmap.contains_key(file.as_str()) {
+                // let line = format!("\t\x1b[31mdeleted:   {}\x1b[0m\n", file_name);
+                // res.push_str(&line);
+            // }else{
+                let line = format!("\t\x1b[92mmodified   {}\x1b[0m\n", file_name);
+                res.push_str(&line);
+            // }
         }
     }
-    Ok(())
+    Ok(res)
 }
 
-pub fn status_print_not_staged(not_staged: &Vec<String>) {
+pub fn get_status_files_not_staged(not_staged: &Vec<String>)-> Result<String, GitrError>{
+    let mut res = String::new();
+    let (index,hayindex)= get_index_hashmap()?;
+    let working_dir_hashmap = get_working_dir_hashmap()?;
     if !not_staged.is_empty() {
-        println!("Changes not staged for commit:");
-        println!("  (use \"add <file>...\" to update what will be committed)");
-        println!("  (use \"rm <file>...\" to discard changes in working directory)");
-
+        let header1 = format!("Changes not staged for commit:\n");
+        let header2 = format!("  (use \"add <file>...\" to update what will be committed)\n");
+        let header3 = format!("  (use \"rm <file>...\" to discard changes in working directory)\n");
+        res.push_str(&header1);
+        res.push_str(&header2);
+        res.push_str(&header3);
         for file in not_staged.clone() {
-            let file_name = match file.split_once ('/'){
-                Some((_path, file)) => file.to_string(),
-                None => file,
+            let file_name = match file.clone().split_once ('/'){
+                Some((_path, file)) => file.clone().to_string(),
+                None => file.clone(),
             };
-            println!("\t\x1b[31mmodified:   {}\x1b[0m", file_name);
+            if hayindex && index.contains_key(&file) && !working_dir_hashmap.contains_key(file.as_str())  {
+                let line = format!("\t\x1b[31mdeleted:   {}\x1b[0m\n", file_name);
+                res.push_str(&line);
+             }else{
+                let line = format!("\t\x1b[92mmodified   {}\x1b[0m\n", file_name);
+                res.push_str(&line);
         }
     }
 }
+    Ok(res)
+}
 
-pub fn status_print_untracked(untracked_files: &Vec<String>, hayindex: bool) {
+pub fn get_status_files_untracked(untracked_files: &Vec<String>, hayindex: bool)-> String {
+    let mut res = String::new();
     if !untracked_files.is_empty() {
-        println!("Untracked files:");
-        println!("  (use \"add <file>...\" to include in what will be committed)");
-
+        let header1 = format!("Untracked files:\n");
+        let header2 = format!("  (use \"add <file>...\" to include in what will be committed)\n");
+        res.push_str(&header1);
+        res.push_str(&header2);
         for file in untracked_files.clone() {
             let file_name = match file.split_once ('/'){
                 Some((_path, file)) => file.to_string(),
                 None => file,
             };
-            println!("\t\x1b[31m{}\x1b[0m", file_name);
+            let output = format!("\t\x1b[31m{}\x1b[0m\n", file_name);
+            res.push_str(&output)
         }
 
         if !hayindex {
-            println!("nothing added to commit but untracked files present (use \"add\" to track)");
+            let nothing_output = format!("nothing added to commit but untracked files present (use \"add\" to track)\n");
+            res.push_str(&nothing_output);
         }
     }
+    res
 }
 
 
@@ -880,6 +941,11 @@ pub fn get_untracked_notstaged_files()->Result<(Vec<String>, Vec<String>, bool),
     let current_commit_hashmap = get_current_commit_hashmap()?;
     let mut not_staged = Vec::new();
     let mut untracked_files = Vec::new();
+    for (path, _) in index_hashmap.clone().into_iter() {
+        if !working_dir_hashmap.contains_key(path.as_str()) {
+            not_staged.push(path.clone());
+        }
+    }
     for (path, hash) in working_dir_hashmap.clone().into_iter() {
         if !index_hashmap.contains_key(path.as_str()) && !current_commit_hashmap.contains_key(path.as_str()) {
             untracked_files.push(path.clone());
@@ -947,11 +1013,11 @@ pub fn get_tobe_commited_files(not_staged: &Vec<String>)->Result<Vec<String>, Gi
             }
         }
     }
-    for (path, _) in current_commit_hashmap.clone().into_iter() {
-        if !working_dir_hashmap.contains_key(path.as_str()) {
-            to_be_commited.push(path);
-        }
-    }
+    // for (path, _) in current_commit_hashmap.clone().into_iter() {
+    //     if !working_dir_hashmap.contains_key(path.as_str()) {
+    //         to_be_commited.push(path);
+    //     }
+    // }
     Ok(to_be_commited)
 }
 
