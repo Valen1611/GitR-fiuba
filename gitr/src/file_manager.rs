@@ -332,8 +332,8 @@ pub fn write_object(data:Vec<u8>, hashed_name: String, cliente: String) -> Resul
 
     let folder_name = hashed_name[0..2].to_string();
     let file_name = hashed_name[2..].to_string();
-    let repo = get_current_repo(cliente)?;
-    let dir = repo + "/gitr/objects/";
+    let repo = get_current_repo(cliente.clone())?;
+    let dir = cliente.clone() + "/" + &repo + "/gitr/objects/";
     let folder_dir = dir.clone() + &folder_name;
 
     if fs::metadata(&folder_dir).is_err() {
@@ -428,8 +428,8 @@ pub fn get_current_repo(cliente: String) -> Result<String, GitrError>{
 }
 
 pub fn read_index(cliente: String) -> Result<String, GitrError>{
-    let repo = get_current_repo(cliente)?;
-    let path = repo + "/gitr/index";
+    let repo = get_current_repo(cliente.clone())?;
+    let path = cliente.clone()+"/"+&repo + "/gitr/index";
     let data = match String::from_utf8(read_compressed_file(&path)?){
         Ok(data) => data,
         Err(_) => return Err(GitrError::FileReadError(path)),
@@ -441,7 +441,7 @@ pub fn add_to_index(path: &String, hash: &String,cliente: String) -> Result<(), 
     let mut index;
     let repo = get_current_repo(cliente.clone())?;
     let new_blob = format!("100644 {} 0 {}", hash, path);
-    let dir = repo + "/gitr/index";
+    let dir = cliente.clone() +"/" + &repo + "/gitr/index";
     if fs::metadata(dir.clone()).is_err(){
         let _ = write_file(dir.clone(), String::from(""));
         index = new_blob;

@@ -1040,7 +1040,7 @@ pub fn save_and_add_blob_to_index(file_path: String,cliente: String) -> Result<(
 
 pub fn update_index_before_add(cliente: String) -> Result<(),GitrError>{
     let repo = file_manager::get_current_repo(cliente.clone())?;
-    let index_path = &(repo.clone() + "/gitr/index");
+    let index_path = &(cliente.clone()+ "/" + &repo.clone() + "/gitr/index");
     if Path::new(index_path).is_file() {
         let index_data = file_manager::read_index(cliente.clone())?;
         let mut index_vector: Vec<&str> = Vec::new();
@@ -1057,7 +1057,7 @@ pub fn update_index_before_add(cliente: String) -> Result<(),GitrError>{
             }
             i += 1;
         };
-        file_manager::remove_file(format!("{}/gitr/index", repo))?;
+        file_manager::remove_file(index_path.to_string())?;
         for entry in index_vector {
             let path = entry.split(' ').collect::<Vec<&str>>()[3];
             save_and_add_blob_to_index(path.to_string(),cliente.clone())?;
@@ -1070,7 +1070,7 @@ pub fn update_index_before_add(cliente: String) -> Result<(),GitrError>{
 pub fn add_files_command(file_path:String,cliente: String)-> Result<(), GitrError>{
     let repo = get_current_repo(cliente.clone())?;
     if file_path == "."{
-        let files = visit_dirs(std::path::Path::new(&repo));
+        let files = visit_dirs(std::path::Path::new(&(cliente.clone()+"/"+&repo)));
         for file in files{
             if file.contains("gitr"){
                 continue
@@ -1078,7 +1078,7 @@ pub fn add_files_command(file_path:String,cliente: String)-> Result<(), GitrErro
             save_and_add_blob_to_index(file.clone(),cliente.clone())?;
         }
     }else{
-        let full_file_path = repo + "/" + &file_path;
+        let full_file_path = cliente.clone() + "/" + &repo + "/" + &file_path;
         save_and_add_blob_to_index(full_file_path,cliente)?;
     }
     Ok(())
