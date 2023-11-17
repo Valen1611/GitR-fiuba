@@ -113,6 +113,7 @@ pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
     }
     let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone())?;
     let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    println!("to be commited: {to_be_commited:?}");
     if to_be_commited.is_empty() {
         println!("nothing to commit, working tree clean");
         return Ok(())
