@@ -176,13 +176,13 @@ pub fn write_new_commit_and_branch(final_tree:Tree, message: String,cliente: Str
             let current_commit = file_manager::get_current_commit(cliente.clone())?;
             file_manager::write_file(dir.clone(), current_commit)?;
         }
-        let commit = Commit::new(final_tree.get_hash(), "None".to_string(), get_current_username(), get_current_username(), message)?;
+        let commit = Commit::new(final_tree.get_hash(), "None".to_string(), cliente.clone(), cliente.clone(), message)?;
         commit.save(cliente.clone())?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit(cliente.clone())?;
-        let commit = Commit::new(final_tree.get_hash(), current_commit, get_current_username(), get_current_username(), message)?;
+        let commit = Commit::new(final_tree.get_hash(), current_commit, cliente.clone(), cliente.clone(), message)?;
         commit.save(cliente)?;
         file_manager::write_file(dir, commit.get_hash())?;
     } 

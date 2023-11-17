@@ -124,6 +124,7 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     for _i in 0..num_objects {
         match parse_git_object(&buffer[12+index..]) {
             Ok((object_type, _length, object_content,cursor)) => {
+                println!("recibe: {object_content:?}");
                 let (decodeado, leidos) = decode(object_content).unwrap();
                 objects.push(git_valid_object_from_packfile(object_type, &decodeado[..])?);
                 index += leidos as usize + cursor;
