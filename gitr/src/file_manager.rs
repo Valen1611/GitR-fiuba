@@ -50,7 +50,6 @@ pub fn visit_dirs(dir: &Path) -> Vec<String> {
             
         }
     }
-    println!("{:?}", files);
     files
 }
 
@@ -578,7 +577,6 @@ pub fn get_commit(branch:String,cliente: String)->Result<String, GitrError>{
 
 pub fn create_tree(path: String, hash: String,cliente: String) -> Result<(), GitrError> {
     file_manager::create_directory(&path)?;
-    println!("creating tree {}", path);
     let tree_raw_data = read_object(&hash,cliente.clone())?;
     let raw_data = match tree_raw_data.split_once('\0') {
         Some((_, raw_data)) => raw_data,
@@ -610,7 +608,6 @@ fn parse_blob_hash(blob_entry: String) -> String {
 }
 
 fn parse_blob_path(blob_entry: String) -> String {
-    println!("blob entry: {blob_entry:?}");
     let _new_path_hash = blob_entry.split(' ').collect::<Vec<&str>>()[1];
     let new_path = _new_path_hash.split('\0').collect::<Vec<&str>>()[0];
     new_path.to_string()
@@ -639,7 +636,6 @@ pub fn update_working_directory(commit: String,cliente: String)-> Result<(), Git
     for entry in raw_data.split('\n'){
         let object: &str = entry.split(' ').collect::<Vec<&str>>()[0];
         if object == "40000"{
-            print!("entry: {entry:?}");
             let _new_path_hash = entry.split(' ').collect::<Vec<&str>>()[1];
             let new_path = repo.clone() + _new_path_hash.split('\0').collect::<Vec<&str>>()[0];
             let hash = _new_path_hash.split('\0').collect::<Vec<&str>>()[1];

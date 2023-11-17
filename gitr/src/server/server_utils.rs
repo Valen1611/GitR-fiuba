@@ -121,16 +121,12 @@ fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> s
     if ids.len() != content.len() {
         return Err(Error::new(std::io::ErrorKind::Other, "Error: no coinciden los ids con los contenidos"))
     }
-    println!("check1");
     let mut i = 0;
     for id in ids {
-        println!("check2");
         let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
         let _ = fs::create_dir(dir_path.clone()); 
         let mut archivo = File::create(&format!("{}/{}",dir_path,id.split_at(2).1))?;
-        println!("check3");
         archivo.write_all(&content[i])?;
-        println!("check4");
         i += 1;
     }
     Ok(())
@@ -204,7 +200,6 @@ fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, V
     let mut hashes: Vec<String> = Vec::new();
     let mut contents: Vec<Vec<u8>> = Vec::new();
     for object in pk_file.objects.iter(){
-        println!("objeto: {object:?}\n");
         match object{
             GitObject::Blob(blob) => {
                 hashes.push(blob.get_hash());
@@ -374,7 +369,6 @@ fn _capacidades() -> String {
 }
 
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
-    println!("{pkt_line:?}");
     if !pkt_line.is_empty() && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" || pkt_line == "0000" || pkt_line == "0009done\n" || pkt_line == "00000009done" || pkt_line == "00000009done\n" ) {
         return Ok(())
     }

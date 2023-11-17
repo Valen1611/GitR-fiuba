@@ -159,7 +159,6 @@ pub fn create_trees(tree_map:HashMap<String, Vec<String>>, current_dir: String,c
 /// writes the main tree for a commit, then writes the commit and the branch if necessary
 pub fn get_tree_entries(message:String,cliente: String) -> Result<(), GitrError>{
     let (tree_map, tree_order) = get_hashmap_for_checkout(cliente.clone())?;
-    println!("treemap: {tree_map:?}");
     let final_tree = create_trees(tree_map, tree_order[0].clone(),cliente.clone())?;
     final_tree.save(cliente.clone())?;
     write_new_commit_and_branch(final_tree, message, cliente)?;
