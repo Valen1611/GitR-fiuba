@@ -205,13 +205,13 @@ pub fn get_hashmap_for_checkout(cliente: String)->Result<(HashMap<String, Vec<St
                 if dir == last_element {
                     update_hashmap_tree_entry(&mut tree_map, splitted_file_path[i-1], file_path.to_string());
                 }else {
-                        if !tree_map.contains_key(dir as &str) {
-                            tree_map.insert(dir.to_string(), vec![]);
-                            tree_order.push(dir.to_string());
-                        }
-                        if i == 0 {
-                            continue;
-                        }
+                    if !tree_map.contains_key(dir as &str) && (dir != &cliente) {
+                        tree_map.insert(dir.to_string(), vec![]);
+                        tree_order.push(dir.to_string());
+                    }
+                    if i == 0 {
+                        continue;
+                    }
                     update_hashmap_tree_entry(&mut tree_map, splitted_file_path[i-1], dir.to_string());
                 }
             }

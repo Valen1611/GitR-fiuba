@@ -610,6 +610,7 @@ fn parse_blob_hash(blob_entry: String) -> String {
 }
 
 fn parse_blob_path(blob_entry: String) -> String {
+    println!("blob entry: {blob_entry:?}");
     let _new_path_hash = blob_entry.split(' ').collect::<Vec<&str>>()[1];
     let new_path = _new_path_hash.split('\0').collect::<Vec<&str>>()[0];
     new_path.to_string()
