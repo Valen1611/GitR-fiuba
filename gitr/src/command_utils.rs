@@ -1,4 +1,4 @@
-use std::{io::{Write, Read}, fs::{self}, path::Path, collections::HashMap, net::TcpStream};
+use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, HashSet}, net::TcpStream};
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
@@ -432,16 +432,20 @@ pub fn get_blobs_from_commit(commit_hash: String)->Result<(),GitrError> {
 }
 
 fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
+    println!("=============PRINTS DE APLICAR_DIFFS=============");
     let string_archivo = file_manager::read_file(path.clone())?;
     let mut archivo_reconstruido = vec![];
-    println!("string_archivo: {:?}", string_archivo);
-    println!("diff a aplicar: {:?}", diff);
+    //println!("string_archivo: {:?}", string_archivo);
+    //println!("diff a aplicar: {:?}", diff);
    // println!("diff:+ {:?}", diff.lineas_agregadas);
    // println!("diff:- {:?}", diff.lineas_eliminadas);
 
+
+
+
     let mut j = 0; //con este indexo el diff
     //let j = 0; //con este indexo el archivo
-    
+    let mut final_archivo = 0;
     for (i,line) in string_archivo.lines().enumerate(){
         if diff.lineas[j].0 == i{ //en la linea hay una operación
             if !diff.lineas[j].1{ //es un delete
@@ -496,24 +500,129 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
         }
     }*/
 
-    let len_archivo = string_archivo.lines().count();
-    // jasjaj
-    for i in len_archivo..len_archivo+diff.lineas_agregadas.len() {    
-        println!("i: {}", i);
-        let tiene_add = diff.has_add_diff(i);
-        if tiene_add.0{
-            print!(". Hay dif de add. Pusheo: {}",tiene_add.1.clone());
-            archivo_reconstruido.push(tiene_add.1.clone()+"\n"); //luego el agregado
-        }
+    
+    for i in j..diff.lineas.len() { //agrego los diffs que me faltaron antes
+        archivo_reconstruido.push(diff.lineas[j].2.clone()+"\n");
     }
+
 
 
     println!("archivo_reconstruido: {:?}", archivo_reconstruido);
     file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
+    println!("=======================================");
+    println!("");
     Ok(())
 }
 
+
 fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff, GitrError> {
+    println!("=============PRINTS DE COMPARAR_DIFFS=============");
+
+    let mut diff_final = Diff::new("".to_string(), "".to_string());
+    
+    let origin = diff_base_origin.lineas.clone();
+    let new = diff_base_branch.lineas.clone();
+
+    println!("diff_base_origin: {:?}", diff_base_origin.lineas);
+    println!("diff_base_branch: {:?}", diff_base_branch.lineas);
+
+
+
+    let mut joined_diffs = origin;
+    joined_diffs.extend(new);
+    let set: HashSet<_> = joined_diffs.clone().into_iter().collect(); 
+    let mut result: Vec<_> = set.into_iter().collect();
+    result.sort();
+
+
+    let mut map: HashMap<usize, Vec<String>> = HashMap::new();
+    for (index, flag, string) in result.clone() {
+        if flag {
+            map.entry(index).or_insert_with(Vec::new).push(string);
+        }
+     }
+     /*
+     RESULT:
+        2.-"base"
+        2.+"master"
+        2.+"new"
+        3.+"en new agrego una linea nueva"
+
+     dic:
+        2: ["master", "new"]
+        3: ["en new agrego una linea nueva"]
+      */
+
+
+
+     // print map
+    for (index, string) in map.clone() {
+        println!("{}: {:?}", index, string);
+    }
+
+    let mut res_final = Vec::new();
+    let mut conflict_abierto = false;
+
+    let mut origin_conflicts = Vec::new();
+    let mut new_conflicts = Vec::new();
+
+    let mut indices_ya_visitados = HashSet::new();
+
+    for (index, flag, string) in result.clone() {
+
+        if indices_ya_visitados.contains(&index) {
+            continue;
+        }
+
+        if !flag {
+            res_final.push((index, flag, string));
+            continue;
+        }
+
+        let lineas = map.get(&index).unwrap(); //entra al diccionario y se trae una linea o varias si hay conflict
+        if lineas.len() == 1 {
+            res_final.push((index, flag, lineas[0].clone()));
+            continue;
+        }
+        
+        origin_conflicts.push(lineas[0].clone()+"\n");
+        new_conflicts.push(lineas[1].clone()+"\n");
+
+        let conflict = [
+            "<<<<<<< HEAD\n",
+            origin_conflicts.concat().as_str(),
+            "========\n",
+            new_conflicts.concat().as_str(),
+            
+            ">>>>>>> BRANCH"
+        ].concat();
+
+        res_final.push((index, flag, conflict));
+
+        indices_ya_visitados.insert(index);
+
+    }
+
+
+
+    diff_final.lineas = res_final.clone();    
+
+
+    println!("**********************************");
+    println!("* diff final: {:?}", diff_final.lineas);
+    // for (i, accion, linea) in diff_final.lineas.clone(){
+    //     println!("* linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
+    // }        
+    println!("**********************************");
+
+    println!("=======================================");
+    println!("");
+    Ok(diff_final)
+}
+
+
+fn comparar_diff_viejo(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff, GitrError> {
+    println!("=============PRINTS DE COMPARAR_DIFFS=============");
     let (mut i, mut j) = (0,0);
     let mut diff_final = Diff::new("".to_string(), "".to_string());
     
@@ -538,14 +647,103 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     //2. + pepe 
     //3. + en new agrego linea
 
-    let max_i = origin.len();
-    let max_j = new.len();
+    let max_i = origin.len() - 1;
+    let max_j = new.len() - 1;
+    println!("max_i: {}", max_i);
+    println!("max_j: {}", max_j);
+    let conflict_abierto = false;
    // println!("max_i: {}", max_i);
     //println!("max_j: {}", max_j);
+    println!("+++++ BEGIN LOOP +++++");
+    loop {
+        println!("i: {}", i);
+        println!("j: {}", j);
+        if i > max_i && j > max_j { //condicion de corte
+             break;
+        }
+
+        if origin[i] == new[j] {
+            // eliminan o agregan la misma linea, pusheo 
+            diff_final.lineas.push(origin[i].clone());
+            if i <= max_i {
+                i+=1;
+            }
+            if j <= max_j {
+                j+=1;
+            }
+            continue;
+        }
+
+
+        if origin[i].0 == new[j].0 && // ambas operan la misma linea
+            origin[i].1 && new[j].1 { // ambos son de agregar
+                // si caigo aca es porque agregan sobre la misma linea
+                // cosas distintas, aca hay CONFLICT
+
+                let pos_original = origin[i].0;
+                let mut origin_conflicts = Vec::new();
+                let mut new_conflicts = Vec::new();
+
+
+                origin_conflicts.push(origin[i].2.clone()+"\n");
+                new_conflicts.push(new[j].2.clone()+"\n");
+
+
+                let conflict = [
+                ">>>>>>>\n",
+                origin_conflicts.concat().as_str(),
+                "========\n",
+                new_conflicts.concat().as_str(),
+                "<<<<<<<"
+                ].concat();
+
+                println!("conflict: {:?}", conflict);
+
+                diff_final.lineas.push((pos_original, true, conflict.clone()));
+
+                // if conflict_abierto {
+                //     // aca es porque ya existe un conflict que tiene
+                //     // lineas guardadas
+                //     continue;
+                // }// y como lo cierro??
+
+                if i <= max_i {
+                    i+=1;
+                }
+                if j <= max_j {
+                    j+=1;
+                }
+                continue;
+
+        }
 
 
 
 
+
+        // if i == max_i {
+        //     println!("i llego al max");
+        //     // si llegue aca es porque ya no hay mas lineas en origin
+        //     // entonces pusheo las lineas que quedan en new
+        //     diff_final.lineas.push(new[j].clone());
+        //     if j != max_j {
+        //         j+=1;
+        //     }
+        //     continue;
+        // }
+        // if j == max_j {
+        //     println!("j llego al max");
+        //     // si llegue aca es porque ya no hay mas lineas en new
+        //     // entonces pusheo las lineas que quedan en origin
+        //     diff_final.lineas.push(origin[i].clone());
+        //     if i != max_i {
+        //         i+=1;
+        //     }
+        //     continue;
+        // }
+    }
+
+    println!("+++++ END LOOP +++++");
 
     // loop {
     //    // println!("i: {}", i);
@@ -696,11 +894,16 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
        
     // }
     // print diff final
-    println!("diff final:");
+    println!("**********************************");
+    println!("* diff final:");
     for (i, accion, linea) in diff_final.lineas.clone(){
-        println!("linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
+        println!("* linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
     }        
+    println!("**********************************");
 
+
+    println!("====================================================");
+    println!("");
     Ok(diff_final)
 }
 

@@ -1,7 +1,8 @@
 hola
 soy
->>>>>>>
+<<<<<<< HEAD
 master
 ========
 new
-<<<<<<<
+>>>>>>> BRANCH
+en new agrego una linea nueva
