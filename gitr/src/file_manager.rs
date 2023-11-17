@@ -333,7 +333,7 @@ pub fn write_object(data:Vec<u8>, hashed_name: String, cliente: String) -> Resul
     let folder_name = hashed_name[0..2].to_string();
     let file_name = hashed_name[2..].to_string();
     let repo = get_current_repo(cliente.clone())?;
-    let dir = cliente.clone() + "/" + &repo + "/gitr/objects/";
+    let dir = repo + "/gitr/objects/";
     let folder_dir = dir.clone() + &folder_name;
 
     if fs::metadata(&folder_dir).is_err() {
@@ -423,13 +423,13 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
 }
 
 pub fn get_current_repo(cliente: String) -> Result<String, GitrError>{
-    let current_repo = read_file(cliente + "/.head_repo")?;
-    Ok(current_repo)
+    let current_repo = read_file(cliente.clone() + "/.head_repo")?;
+    Ok(cliente +"/"+ &current_repo)
 }
 
 pub fn read_index(cliente: String) -> Result<String, GitrError>{
     let repo = get_current_repo(cliente.clone())?;
-    let path = cliente.clone()+"/"+&repo + "/gitr/index";
+    let path = repo + "/gitr/index";
     let data = match String::from_utf8(read_compressed_file(&path)?){
         Ok(data) => data,
         Err(_) => return Err(GitrError::FileReadError(path)),
@@ -441,7 +441,7 @@ pub fn add_to_index(path: &String, hash: &String,cliente: String) -> Result<(), 
     let mut index;
     let repo = get_current_repo(cliente.clone())?;
     let new_blob = format!("100644 {} 0 {}", hash, path);
-    let dir = cliente.clone() +"/" + &repo + "/gitr/index";
+    let dir = repo + "/gitr/index";
     if fs::metadata(dir.clone()).is_err(){
         let _ = write_file(dir.clone(), String::from(""));
         index = new_blob;
@@ -470,7 +470,7 @@ pub fn add_to_index(path: &String, hash: &String,cliente: String) -> Result<(), 
 
 pub fn get_head(cliente: String) ->  Result<String, GitrError>{
     let repo = get_current_repo(cliente.clone())?;
-    let path = cliente.clone() +"/"+ &repo + "/gitr/HEAD";
+    let path = repo + "/gitr/HEAD";
     if fs::metadata(path.clone()).is_err(){
         write_file(path.clone(), String::from("ref: refs/heads/master"))?;
         return Ok("None".to_string())
@@ -483,7 +483,7 @@ pub fn get_head(cliente: String) ->  Result<String, GitrError>{
 
 pub fn update_head(head: &String,cliente: String) -> Result<(), GitrError>{
     let repo = get_current_repo(cliente.clone())?;
-    let path = cliente.clone() + "/"+ &repo + "/gitr/HEAD";
+    let path = repo + "/gitr/HEAD";
     write_file(path, format!("ref: {}", head))?;
     Ok(())
 }
@@ -506,7 +506,7 @@ pub fn update_client_refs(hash_n_refs: Vec<(String,String)>, r_path: String) -> 
 pub fn get_branches(cliente: String)-> Result<Vec<String>, GitrError>{
     let mut branches: Vec<String> = Vec::new();
     let repo = get_current_repo(cliente.clone())?;
-    let dir = cliente.clone() +"/" + &repo + "/gitr/refs/heads";
+    let dir = repo + "/gitr/refs/heads";
     let paths = match fs::read_dir(dir.clone()) {
         Ok(paths) => paths,
         Err(_) => return Err(GitrError::FileReadError(dir)),
@@ -789,7 +789,8 @@ pub fn get_repos(cliente: String) -> Vec<String> {
                 continue;
             }
             if entry.file_type().unwrap().is_dir() {
-                repos.push(entry.path().display().to_string()[2..].to_string());
+                let p = entry.path().display().to_string().split("/").collect::<Vec<&str>>()[2].to_string();
+                repos.push(p.to_string());
             }
         }
     }
