@@ -563,16 +563,31 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     let mut res_final = Vec::new();
     let mut conflict_abierto = false;
 
-    let mut origin_conflicts = Vec::new();
-    let mut new_conflicts = Vec::new();
+    let mut origin_conflicts: Vec<String> = Vec::new();
+    let mut new_conflicts: Vec<String> = Vec::new();
 
     let mut indices_ya_visitados = HashSet::new();
+    let mut indice_inicio_conflict = 0;
 
     for (index, flag, string) in result.clone() {
+        //println!("index, flag, str: {} {} {}", index, flag, string);
+        /*
+        con algo que es asi
+        2 lineas conflict
+        1 linea ok en ambos
+        2 lineas conflict
 
+        funciona el diff pero se escribe todo doble.
+    
+        
+         */
+
+        
+        
         if indices_ya_visitados.contains(&index) {
             continue;
         }
+   
 
         if !flag {
             res_final.push((index, flag, string));
@@ -585,26 +600,39 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
             continue;
         }
         
+        // si caigo aca es porque hay conflict
+        
+        if !indices_ya_visitados.contains(&(index-1)) {
+            indice_inicio_conflict = index;
+        }
+        
         origin_conflicts.push(lineas[0].clone()+"\n");
         new_conflicts.push(lineas[1].clone()+"\n");
-
-        let conflict = [
-            "<<<<<<< HEAD\n",
-            origin_conflicts.concat().as_str(),
-            "========\n",
-            new_conflicts.concat().as_str(),
-            
-            ">>>>>>> BRANCH"
-        ].concat();
-
-        res_final.push((index, flag, conflict));
-
         indices_ya_visitados.insert(index);
+
+
+
+        if indices_ya_visitados.contains(&(index-1)) //probablemente esto ande mal con 3 lineas de conflict
+        {  
+
+            let conflict = [
+                "<<<<<<< HEAD\n",
+                origin_conflicts.concat().as_str(),
+                "========\n",
+                new_conflicts.concat().as_str(),
+                ">>>>>>> BRANCH"
+                ].concat();
+                
+                res_final.push((indice_inicio_conflict, flag, conflict));
+                
+                origin_conflicts = Vec::new();
+                new_conflicts = Vec::new();
+        }
 
     }
 
 
-
+    res_final.sort();
     diff_final.lineas = res_final.clone();    
 
 
