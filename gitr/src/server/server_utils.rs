@@ -11,13 +11,12 @@ use std::net::{TcpListener, TcpStream};
 use std::str::from_utf8;
 
 use std::thread;
-use flate2::Compression;
-use flate2::write::ZlibEncoder;
 use crate::file_manager;
 use crate::git_transport::pack_file::PackFile;
 use crate::git_transport::pack_file::create_packfile;
 use crate::git_transport::pack_file::prepare_contents;
 
+use crate::git_transport::ref_discovery;
 use crate::objects::commit::Commit;
 use crate::objects::git_object::GitObject;
 
@@ -69,7 +68,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         let r_path = elems[2].to_string();
         let _ = create_dirs(&r_path);
         // ########## REFERENCE DISCOVERY ##########
-        (refs_string, guardados_id) = ref_discovery(&r_path)?;
+        (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
         let _ = stream.write(refs_string.as_bytes())?;
         // ########## ELECCION DE COMANDO ##########
         match elems[0] {
@@ -306,61 +305,6 @@ fn wants_n_haves(requests: String, mut wants: Vec<String>, mut haves: Vec<String
     Ok((wants,haves))
 }
 
-fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
-    let mut contenido_total = String::new();
-    let mut guardados: HashSet<String> = HashSet::new();
-    let ruta = format!("{}/HEAD",r_path);
-    let mut cont = String::new();
-    let archivo = fs::File::open(ruta)?;
-    BufReader::new(archivo).read_line(&mut cont)?;
-    
-    let c =r_path.to_string() +"/"+ cont.split_at(5).1;
-    
-    let mut contenido = "".to_string();
-    if let Ok(f) = fs::File::open(c){
-        BufReader::new(f).read_line(&mut contenido)?;
-        guardados.insert(contenido.clone());
-        let longitud = contenido.len() + 10;
-        let longitud_hex = format!("{:04x}", longitud);
-        contenido_total.push_str(&longitud_hex);
-        contenido_total.push_str(&contenido);
-        contenido_total.push_str(&(" ".to_string() + "HEAD"));
-        contenido_total.push('\n');
-    }
-
-    
-    let refs_path = format!("{}/refs",r_path);
-    ref_discovery_dir(&(refs_path.clone() + "/heads"),r_path, &mut contenido_total,&mut guardados)?;
-    ref_discovery_dir(&(refs_path + "/tags"),r_path, &mut contenido_total,&mut guardados)?;
-    
-    contenido_total.push_str("0000");
-    
-    Ok((contenido_total,guardados))
-}
-    
-fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut String, guardados: &mut HashSet<String>) -> std::io::Result<()> {
-    for elem in fs::read_dir(dir_path)? {
-        let elem = elem?;
-        let ruta = elem.path();
-        if ruta.is_file() {
-            let mut contenido = String::new();
-            let archivo = fs::File::open(&ruta)?;
-            BufReader::new(archivo).read_line(&mut contenido)?;
-            guardados.insert(contenido.clone());
-            let path_str = ruta.to_str().unwrap_or("ERROR").strip_prefix(&format!("{}/",original_path)).unwrap_or("ERROR2");
-            let path_str = &path_str.replace('/', "\\");
-            let longitud = contenido.len() + path_str.len() + 6;
-            let longitud_hex = format!("{:04x}", longitud);
-            contenido_total.push_str(&longitud_hex);
-            contenido_total.push_str(&contenido);
-            contenido_total.push_str(&(" ".to_string() + path_str));
-            contenido_total.push('\n');
-
-        } 
-    }
-    Ok(())
-}
-
 fn _capacidades() -> String {
     "capacidades-del-server ok_ok ...".to_string()
 }
@@ -409,11 +353,5 @@ fn write_file(path: String, text: String) -> std::io::Result<()> {
     let mut archivo = File::create(path)?;
     archivo.write_all(text.as_bytes())?;
     Ok(())
-}
-
-fn code(input: &[u8]) -> Result<Vec<u8>, std::io::Error> {
-    let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
-    encoder.write_all(input)?;
-    encoder.finish()
 }
 

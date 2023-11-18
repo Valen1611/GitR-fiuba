@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, io::{BufReader, BufRead}, fs};
 use crate::{gitr_errors::{GitrError, self}, file_manager};
 
 pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
@@ -115,4 +115,57 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
     }
     want_message.push_str("0009done\n");
     Ok(want_message)
+}
+
+pub fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
+    let mut contenido_total = String::new();
+    let mut guardados: HashSet<String> = HashSet::new();
+    let ruta = format!("{}/HEAD",r_path);
+    let mut cont = String::new();
+    let archivo = fs::File::open(ruta)?;
+    BufReader::new(archivo).read_line(&mut cont)?;
+    
+    let c =r_path.to_string() +"/"+ cont.split_at(5).1;
+    let mut contenido = "".to_string();
+    if let Ok(f) = fs::File::open(c){
+        BufReader::new(f).read_line(&mut contenido)?;
+        guardados.insert(contenido.clone());
+        let longitud = contenido.len() + 10;
+        let longitud_hex = format!("{:04x}", longitud);
+        contenido_total.push_str(&longitud_hex);
+        contenido_total.push_str(&contenido);
+        contenido_total.push_str(&(" ".to_string() + "HEAD"));
+        contenido_total.push('\n');
+    }
+
+    let refs_path = format!("{}/refs",r_path);
+    ref_discovery_dir(&(refs_path.clone() + "/heads"),r_path, &mut contenido_total,&mut guardados)?;
+    ref_discovery_dir(&(refs_path + "/tags"),r_path, &mut contenido_total,&mut guardados)?;
+    
+    contenido_total.push_str("0000");
+    
+    Ok((contenido_total,guardados))
+}
+    
+fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut String, guardados: &mut HashSet<String>) -> std::io::Result<()> {
+    for elem in fs::read_dir(dir_path)? {
+        let elem = elem?;
+        let ruta = elem.path();
+        if ruta.is_file() {
+            let mut contenido = String::new();
+            let archivo = fs::File::open(&ruta)?;
+            BufReader::new(archivo).read_line(&mut contenido)?;
+            guardados.insert(contenido.clone());
+            let path_str = ruta.to_str().unwrap_or("ERROR").strip_prefix(&format!("{}/",original_path)).unwrap_or("ERROR2");
+            let path_str = &path_str.replace('/', "\\");
+            let longitud = contenido.len() + path_str.len() + 6;
+            let longitud_hex = format!("{:04x}", longitud);
+            contenido_total.push_str(&longitud_hex);
+            contenido_total.push_str(&contenido);
+            contenido_total.push_str(&(" ".to_string() + path_str));
+            contenido_total.push('\n');
+
+        } 
+    }
+    Ok(())
 }

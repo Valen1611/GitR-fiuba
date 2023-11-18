@@ -11211,3 +11211,283 @@
 {"type": "FileOperation","timestamp": "17-11-2023 22:51:46","message": "writing data to: Juanma/mucho_clone/gitr/index"}
 {"type": "FileOperation","timestamp": "17-11-2023 22:51:46","message": "writing data to: Juanma/mucho_clone/gitr/index"}
 {"type": "FileOperation","timestamp": "17-11-2023 22:51:46","message": "writing data to: Juanma/mucho_clone/crap/archivo"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:25:56","message": "creating dir: Juanma"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:29:42","message": "creating dir: Juanma"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:29:53","message": "writing data to: Juanma/gitrconfig"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:03","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 12:30:37","message": "calling init with flags: ["buenas"]"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "creating dir: Juanma/buenas"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "creating dir: Juanma/buenas/gitr"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "creating dir: Juanma/buenas/gitr/objects"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "creating dir: Juanma/buenas/gitr/refs"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "creating dir: Juanma/buenas/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "creating dir: Juanma/buenas/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "creating dir: Juanma/buenas/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "writing data to: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "writing data to: Juanma/buenas/gitr/remote"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:37","message": "writing data to: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:30:47","message": "creating dir: Juanma"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:31:54","message": "creating dir: Juanma"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:44:47","message": "creating dir: Juanma"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:55:33","message": "creating dir: Juanma"}
+{"type": "FileOperation","timestamp": "18-11-2023 12:57:20","message": "creating dir: Juanma"}
+{"type": "FileOperation","timestamp": "18-11-2023 14:44:14","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 14:44:22","message": "calling show-ref with flags: []"}
+{"type": "Action","timestamp": "18-11-2023 14:46:40","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:20:22","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:20:25","message": "calling s with flags: []"}
+{"type": "Error","timestamp": "18-11-2023 16:20:25","message": "Argumentos invalidos.
+    Recibi: invalid command: s
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "18-11-2023 16:20:32","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:20:32","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:22:01","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:22:03","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:22:03","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:23:00","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:23:01","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:23:01","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:23:27","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:23:28","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:23:28","message": "reading data from: Juanma/.head_repo"}
+{"type": "Action","timestamp": "18-11-2023 16:26:49","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "writing object 0f9282d7e71e0f8cb748bfe00e52d7ed13dad036"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "creating dir: Juanma/buenas/gitr/objects/0f"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "writing data to: Juanma/buenas/gitr/objects/0f/9282d7e71e0f8cb748bfe00e52d7ed13dad036"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "writing data to: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:49","message": "writing data to: Juanma/buenas/gitr/index"}
+{"type": "Action","timestamp": "18-11-2023 16:26:55","message": "calling commit with flags: ["-m", "\"holaas\""]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "18-11-2023 16:26:55","message": "No se pudo leer: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "18-11-2023 16:26:55","message": "No se pudo leer: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "writing object 718fab9f84b50ee25c561d9b5a03d18f3ca60d64"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "creating dir: Juanma/buenas/gitr/objects/71"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "writing data to: Juanma/buenas/gitr/objects/71/8fab9f84b50ee25c561d9b5a03d18f3ca60d64"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "writing object 718fab9f84b50ee25c561d9b5a03d18f3ca60d64"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "writing data to: Juanma/buenas/gitr/objects/71/8fab9f84b50ee25c561d9b5a03d18f3ca60d64"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "writing data to: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "writing object ee5b3c991d736b14fc024e9072649f9df9253c9c"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "creating dir: Juanma/buenas/gitr/objects/ee"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "writing data to: Juanma/buenas/gitr/objects/ee/5b3c991d736b14fc024e9072649f9df9253c9c"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "writing data to: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:26:55","message": "reading data from: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "18-11-2023 16:27:03","message": "calling branch with flags: ["rama"]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "reading data from: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:03","message": "writing data to: Juanma/buenas/gitr/refs/heads/rama"}
+{"type": "Action","timestamp": "18-11-2023 16:27:06","message": "calling branch with flags: ["ramita"]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "reading data from: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:06","message": "writing data to: Juanma/buenas/gitr/refs/heads/ramita"}
+{"type": "Action","timestamp": "18-11-2023 16:27:10","message": "calling branch with flags: ["ramarda"]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "reading data from: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:10","message": "writing data to: Juanma/buenas/gitr/refs/heads/ramarda"}
+{"type": "Action","timestamp": "18-11-2023 16:27:19","message": "calling checkout with flags: ["-b", "ramasa"]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/buenas/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "writing data to: Juanma/buenas/gitr/refs/heads/ramasa"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/buenas/gitr/refs/heads/ramasa"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "writing data to: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "writing data to: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "writing data to: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:19","message": "writing data to: Juanma/buenas/gitr/HEAD"}
+{"type": "Action","timestamp": "18-11-2023 16:27:37","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing object 0f9282d7e71e0f8cb748bfe00e52d7ed13dad036"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing data to: Juanma/buenas/gitr/objects/0f/9282d7e71e0f8cb748bfe00e52d7ed13dad036"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing data to: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing data to: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing object 0f9282d7e71e0f8cb748bfe00e52d7ed13dad036"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing data to: Juanma/buenas/gitr/objects/0f/9282d7e71e0f8cb748bfe00e52d7ed13dad036"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "Action","timestamp": "18-11-2023 16:27:37","message": "adding Juanma/buenas/hola to index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing data to: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/buenas/carp/lololol"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing object 51acaa0c9672c9496f1f20116f56141da3449a29"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "creating dir: Juanma/buenas/gitr/objects/51"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing data to: Juanma/buenas/gitr/objects/51/acaa0c9672c9496f1f20116f56141da3449a29"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:37","message": "writing data to: Juanma/buenas/gitr/index"}
+{"type": "Action","timestamp": "18-11-2023 16:27:45","message": "calling commit with flags: ["-m", "\"ramasa\""]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/carp/lololol"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/refs/heads/ramasa"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/carp/lololol"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/refs/heads/ramasa"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/index"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/hola"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/carp/lololol"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing object 5cc4ae0b9bdae2b34b17c8339f7cdbbb1d564dd5"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "creating dir: Juanma/buenas/gitr/objects/5c"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing data to: Juanma/buenas/gitr/objects/5c/c4ae0b9bdae2b34b17c8339f7cdbbb1d564dd5"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing object afc5806e435dfe94956e2140de112841f155d5ff"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "creating dir: Juanma/buenas/gitr/objects/af"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing data to: Juanma/buenas/gitr/objects/af/c5806e435dfe94956e2140de112841f155d5ff"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing object afc5806e435dfe94956e2140de112841f155d5ff"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing data to: Juanma/buenas/gitr/objects/af/c5806e435dfe94956e2140de112841f155d5ff"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/refs/heads/ramasa"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing object 11131d967953a8ea39e732840a5afedb62801800"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "creating dir: Juanma/buenas/gitr/objects/11"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing data to: Juanma/buenas/gitr/objects/11/131d967953a8ea39e732840a5afedb62801800"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "writing data to: Juanma/buenas/gitr/refs/heads/ramasa"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:45","message": "reading data from: Juanma/buenas/gitr/refs/heads/ramasa"}
+{"type": "Action","timestamp": "18-11-2023 16:27:49","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:27:49","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:28:51","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:28:52","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:28:52","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:29:26","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:29:27","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:29:27","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:31:25","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:31:26","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:31:26","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:35:41","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:35:42","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:35:42","message": "reading data from: Juanma/.head_repo"}
+{"type": "Action","timestamp": "18-11-2023 16:35:52","message": "calling show-ref with flags: ["--head"]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:35:52","message": "reading data from: Juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:38:31","message": "creating dir: Juanma"}
+{"type": "Action","timestamp": "18-11-2023 16:38:34","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:38:34","message": "reading data from: Juanma/.head_repo"}
+{"type": "Action","timestamp": "18-11-2023 16:38:40","message": "calling show-ref with flags: ["--head"]"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:38:40","message": "reading data from: Juanma/.head_repo"}
+{"type": "Action","timestamp": "18-11-2023 16:38:45","message": "calling show-ref with flags: ["s"]"}
+{"type": "Error","timestamp": "18-11-2023 16:38:45","message": "Argumentos invalidos.
+    Recibi: s
+    Uso: show-ref [--head]
+"}
+{"type": "Action","timestamp": "18-11-2023 16:38:50","message": "calling show-ref with flags: ["a"]"}
+{"type": "Error","timestamp": "18-11-2023 16:38:50","message": "Argumentos invalidos.
+    Recibi: a
+    Uso: show-ref [--head]
+"}
+{"type": "Action","timestamp": "18-11-2023 16:38:55","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "18-11-2023 16:38:55","message": "reading data from: Juanma/.head_repo"}

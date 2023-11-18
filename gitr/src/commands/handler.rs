@@ -41,6 +41,7 @@ pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError
         "push" => commands::push(flags,client)?,
         "branch" =>commands::branch(flags,client)?,
         "ls-files" => commands::ls_files(flags,client)?,
+        "show-ref" => commands::show_ref(flags,client)?,
 
         "q" => return Ok(()),
         "l" => logger::log(flags)?,

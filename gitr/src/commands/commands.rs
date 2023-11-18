@@ -451,6 +451,32 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     Ok(())
 }
 
+pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
+    if flags.len() > 1 || (flags.len() == 1 && flags[0] != "--head" ){
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "show-ref [--head]".to_string()));
+    }
+    let refs = match ref_discovery::ref_discovery(&(get_current_repo(cliente.clone())? + "/gitr")) {
+        Ok(refs) => refs.0,
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        }
+    };
+    let refs = refs.strip_suffix("0000").unwrap_or(&refs);
+    if flags.contains(&"--head".to_string()) {
+        println!("{}",refs);
+        return Ok(());
+    }
+    let mut first = true;
+    for line in refs.lines() {
+        if first {
+            first = false;
+            continue;
+        }
+        println!("{}", line);
+    }
+    Ok(())
+}
 
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));
