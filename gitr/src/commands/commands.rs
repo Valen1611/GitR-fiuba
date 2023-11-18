@@ -121,6 +121,9 @@ pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
     if flags[1].starts_with('\"'){
         let message = &flags[1..];
         let message = message.join(" ");
+        if !message.chars().any(|c| c!= ' ' && c != '\"'){
+            return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
+        }
         get_tree_entries(message.to_string(),cliente.clone())?;
         print_commit_confirmation(message,cliente.clone())?;
         Ok(())
@@ -344,13 +347,15 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
         
     }
     // ########## PACKFILE ##########
-    let n = match stream.read(&mut buffer) { // Leo el packfile
+    let mut buffer = Vec::new();
+    let n = match stream.read_to_end(&mut buffer) { // Leo el packfile
         Err(e) => {
             println!("Error: {}", e);
             return Ok(())
         },
         Ok(n) => n
     };
+    println!("se leyo: {n}");
     let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
     for object in pack_file_struct.objects.iter(){
         match object{

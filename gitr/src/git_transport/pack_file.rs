@@ -118,13 +118,13 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
         Err(_e) => return Err(gitr_errors::GitrError::PackFileError("read_pack_file".to_string(),"no se pudo obtener la # objetos".to_string()))
     };
     let num_objects = u32::from_be_bytes(num_objects);
+    println!("deberian entrar {num_objects} objetos");
     let mut objects = vec![];
 
     let mut index: usize = 0;
     for _i in 0..num_objects {
         match parse_git_object(&buffer[12+index..]) {
             Ok((object_type, _length, object_content,cursor)) => {
-                println!("recibe: {object_content:?}");
                 let (decodeado, leidos) = decode(object_content).unwrap();
                 objects.push(git_valid_object_from_packfile(object_type, &decodeado[..])?);
                 index += leidos as usize + cursor;

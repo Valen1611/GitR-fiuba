@@ -52,7 +52,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
     let mut buffer = [0; 1024];
     let guardados_id: HashSet<String>;
     let refs_string :String;
-    
+
     if let Ok(n) = stream.read(&mut buffer) {
         if n == 0 {
             return Ok(());
@@ -71,7 +71,6 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         // ########## REFERENCE DISCOVERY ##########
         (refs_string, guardados_id) = ref_discovery(&r_path)?;
         let _ = stream.write(refs_string.as_bytes())?;
-
         // ########## ELECCION DE COMANDO ##########
         match elems[0] {
             "git-upload-pack" => {gitr_upload_pack(&mut stream, guardados_id, r_path)?;}, // Mandar al cliente
@@ -95,12 +94,10 @@ fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_pat
 }
 
 fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<()> {
-    
     // ##########  REFERENCE UPDATE ##########
-    let mut buffer = [0; 1024];
+    let mut buffer = [0;1024];
     
     if let Ok(n) = stream.read(&mut buffer) {
-
         let (old,new, names ) = get_changes(&buffer[..n])?;
         if old.is_empty() { //el cliente esta al dia
             return Ok(());
@@ -134,14 +131,14 @@ fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> s
 
 fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<String>, r_path: String) -> std::io::Result<()> {
     let mut contents: Vec<Vec<u8>> = vec![];
-    let wants_id = Commit::get_objects_from_commits(wants_id.clone(), haves_id, r_path.clone()).unwrap_or(vec![]);
+    let all_commits = Commit::get_parents(wants_id.clone(), haves_id.clone(), r_path.clone()).unwrap_or(wants_id);
+    let wants_id = Commit::get_objects_from_commits(all_commits.clone(), haves_id, r_path.clone()).unwrap_or(vec![]);
     for id in wants_id.clone() {
         match file_manager::get_object_bytes(id, r_path.clone()){
             Ok(obj) => contents.push(obj),
             Err(_) => return Err(Error::new(std::io::ErrorKind::InvalidInput, "Error: no se pudo obtener el objeto"))
         }
     }
-
     if let Ok(pack) = pack_data_bruno(contents) {
         let _ = stream.write(&pack)?;
     } else {
@@ -190,8 +187,8 @@ fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>) -
 }
 
 fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, Vec<Vec<u8>>)> {
-    let mut buffer: [u8;1024] = [0; 1024];
-    let _ = stream.read(&mut buffer)?;
+    let mut buffer = Vec::new();
+    let _ = stream.read_to_end(&mut buffer)?;
     let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer);
     let pk_file = match pack_file_struct {
         Ok(pack_file) => {pack_file},
@@ -249,8 +246,9 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
 }
 
 fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<String>)> {
-
-    let changes = from_utf8(buffer).unwrap_or("");
+    
+    let changes = String::from_utf8_lossy(buffer);//.unwrap_or("Error");
+    println!("changes: {changes:?}");
     let mut old: Vec<String> = vec![];
     let mut new: Vec<String> = vec![];
     let mut names: Vec<String> = vec![];
@@ -281,7 +279,6 @@ fn pack_data_bruno(contents: Vec<Vec<u8>>) -> std::io::Result<Vec<u8>> {
 
 fn wants_n_haves(requests: String, mut wants: Vec<String>, mut haves: Vec<String>) -> std::io::Result<(Vec<String>,Vec<String>)> {
     let mut nuls_cont = 0;
-
     for line in requests.lines() {
         is_valid_pkt_line(&(line.to_string()+"\n"))?;
         let elems: Vec<&str> = line.split_at(4).1.split(' ').collect(); // [want/have, obj-id]
