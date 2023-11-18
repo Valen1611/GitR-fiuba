@@ -514,6 +514,18 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     Ok(())
 }
 
+fn armar_conflict(origin_conflicts: &mut Vec<String>, new_conflicts: &mut Vec<String>) -> String { //armo el conflict y vacío los vectores para "reiniciarlos"
+    let conflict = [
+        "<<<<<<< HEAD\n",
+        origin_conflicts.concat().as_str(),
+        "========\n",
+        new_conflicts.concat().as_str(),
+        ">>>>>>> BRANCH"
+        ].concat();
+    origin_conflicts.clear();
+    new_conflicts.clear();
+    conflict
+}
 
 fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff, GitrError> {
     println!("=============PRINTS DE COMPARAR_DIFFS=============");
@@ -526,13 +538,32 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     println!("diff_base_origin: {:?}", diff_base_origin.lineas);
     println!("diff_base_branch: {:?}", diff_base_branch.lineas);
 
-
-
     let mut joined_diffs = origin;
     joined_diffs.extend(new);
-    let set: HashSet<_> = joined_diffs.clone().into_iter().collect(); 
-    let mut result: Vec<_> = set.into_iter().collect();
-    result.sort();
+    println!("joined_diffs: {:?}", joined_diffs);
+    //joined_diffs.dedup(); ++ESTO YA NO SIRVE PORQUE CON EL DEDUP() DEL FINAL YA SACO LOS REPETIDOS++
+    //let set: HashSet<_> = joined_diffs.clone().into_iter().collect(); 
+    //println!("set: {:?}", set);
+    //let mut result: Vec<_> = set.into_iter().collect();
+    let mut result = joined_diffs.clone();
+
+    result.sort_by(|a,b|{
+        let cmp_first = a.0.cmp(&b.0);
+        let cmp_second = a.1.cmp(&b.1);
+
+        if cmp_first == std::cmp::Ordering::Equal  && cmp_second == std::cmp::Ordering::Equal{
+            std::cmp::Ordering::Equal
+        } else if cmp_first == std::cmp::Ordering::Equal {
+            cmp_second
+        }
+        else{
+            cmp_first.then(cmp_second)
+        }
+    });
+    println!("result after sort: {:?}", result);
+    result.dedup();
+    println!("result after dedup: {:?}", result);
+
 
 
     let mut map: HashMap<usize, Vec<String>> = HashMap::new();
@@ -555,7 +586,7 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
 
 
 
-     // print map
+     // print map, false, "hola"), (0, true, "<<<<<<< HEAD\norigin1\n========\nnew1\n>>>>>>> BRANCH"), (1, false, "como"), (1, true, "<<<<<<< HEAD\norigin2\n========\nnew2\n>>>>>>> BRANCH")]
     for (index, string) in map.clone() {
         println!("{}: {:?}", index, string);
     }
@@ -568,8 +599,10 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
 
     let mut indices_ya_visitados = HashSet::new();
     let mut indice_inicio_conflict = 0;
+    let mut indice_actual_conflict = 0;
 
-    for (index, flag, string) in result.clone() {
+    println!("result: {:?}", result);
+    for (index, flag, string) in result.clone() { //este bucle agarra un vecto con los diffs sin repetir y ordenados por linea. Idealmente no deberia haber mas de 2 add por linea.
         //println!("index, flag, str: {} {} {}", index, flag, string);
         /*
         con algo que es asi
@@ -582,56 +615,53 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
         
          */
 
-        
-        
         if indices_ya_visitados.contains(&index) {
             continue;
         }
-   
 
-        if !flag {
+        if !flag { //si es delete, pusheo porque no van a haber conflicts de delete.
+            //if conflict_abierto{ //si habia un conflict y lo corto, lo pusheo.
+                //res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
+                //conflict_abierto = false; //cierro el conflict si estaba abierto y no hay mas lineas conflictuadas
+            //}
             res_final.push((index, flag, string));
             continue;
         }
 
         let lineas = map.get(&index).unwrap(); //entra al diccionario y se trae una linea o varias si hay conflict
-        if lineas.len() == 1 {
+        println!("lineas: {:?}", lineas);
+        if lineas.len() == 1 { //si cuando me traigo las lineas, traigo una sola, es porque no hay dos operaciones de add en la misma linea.
+            if conflict_abierto{ //si habia un conflict y lo corto, lo pusheo.
+                res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
+                conflict_abierto = false; //cierro el conflict si estaba abierto y no hay mas lineas conflictuadas
+            }
             res_final.push((index, flag, lineas[0].clone()));
             continue;
         }
         
-        // si caigo aca es porque hay conflict
-        
-        if !indices_ya_visitados.contains(&(index-1)) {
-            indice_inicio_conflict = index;
+        //para este punto hay un conflict
+        if indices_ya_visitados.contains(&index){ //si caí en un indice que ya pasé, sigo de largo
+            continue;
         }
-        
+        //hay un conflict nuevo acá
+        //tengo que "abrir el conflict"
+        println!("indice inicio:{}, indice actual: {}",indice_inicio_conflict,indice_actual_conflict);
+        if !conflict_abierto{
+            println!("abro el conflict");
+            conflict_abierto = true;
+            indice_inicio_conflict = index;
+            indice_actual_conflict = index;
+            
+        }
+        if index - indice_inicio_conflict == 1{ //significa que las lineas que siguen son parte del conflict anterior y debe pushearse todo junto
+            indice_actual_conflict = index;
+        }
         origin_conflicts.push(lineas[0].clone()+"\n");
         new_conflicts.push(lineas[1].clone()+"\n");
         indices_ya_visitados.insert(index);
-
-
-
-        if indices_ya_visitados.contains(&(index-1)) //probablemente esto ande mal con 3 lineas de conflict
-        {  
-
-            let conflict = [
-                "<<<<<<< HEAD\n",
-                origin_conflicts.concat().as_str(),
-                "========\n",
-                new_conflicts.concat().as_str(),
-                ">>>>>>> BRANCH"
-                ].concat();
-                
-                res_final.push((indice_inicio_conflict, flag, conflict));
-                
-                origin_conflicts = Vec::new();
-                new_conflicts = Vec::new();
-        }
-
     }
 
-
+    res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
     res_final.sort();
     diff_final.lineas = res_final.clone();    
 
@@ -1454,5 +1484,147 @@ mod tests{
         let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
         let references = ref_discovery::discover_references(ref_disc).unwrap();
         socket.write(assemble_want_message(&references,vec![]).unwrap().as_bytes()).unwrap();
+    }
+
+    #[test]
+    fn test05_diffs_sin_conflicts_se_unen(){
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_origin = "hola\nque\ntal\n".to_string();
+        let str_new = "hola\nque\ntal\nbien\ny\nvos\n".to_string();
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
+        let lineas_esperadas = vec![
+            (1,false,"como".to_string()),
+            (1,true,"que".to_string()),
+            (2,false, "estas".to_string()),
+            (2,true, "tal".to_string()),
+            (3,true, "bien".to_string()),
+            (4,true, "y".to_string()),
+            (5,true, "vos".to_string())
+        ];
+        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+    }
+    //tests posibles
+    // conflict de una linea (3 casos: en la primera, en la ultima y al medio)
+    // varios conflict de una linea (se tienen que ver las cosas en el medio)
+    // conflict de varias lineas (3 casos: en la primera, en la ultima y al medio)
+    // varios conflict de varias lineas (se tienen que ver las cosas en el medio (contemplar un conflict de 5 lineas y otro de 3 x ejemplo))
+    //conflict del medio dejando una sola linea arriba, una sola linea abajo, varias arriba, varias abajo
+    #[test]
+    fn test06_diffs_con_1_conflict_en_primera_linea(){
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_origin = "buenas\ncomo\nestas\n".to_string();
+        let str_new = "nihao\ncomo\nestas\n".to_string();
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
+        let lineas_esperadas = vec![
+            (0,false,"hola".to_string()),
+            (0,true,"<<<<<<< HEAD\nbuenas\n========\nnihao\n>>>>>>> BRANCH".to_string()),
+        ];
+        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+    }
+
+    #[test]
+    fn test07_diffs_con_1_conflict_en_la_ultima_linea(){
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_origin = "hola\ncomo\nandas\n".to_string();
+        let str_new = "hola\ncomo\ntas\n".to_string();
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
+        let lineas_esperadas = vec![
+            (2,false,"estas".to_string()),
+            (2,true,"<<<<<<< HEAD\nandas\n========\ntas\n>>>>>>> BRANCH".to_string()),
+        ];
+        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+    }
+
+    #[test]
+    fn test08_diffs_con_1_conflict_en_3_lineas(){
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_origin = "hola\nromo\nestas\n".to_string();
+        let str_new = "hola\nfomo\nestas\n".to_string();
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
+        let lineas_esperadas = vec![
+            (1,false,"como".to_string()),
+            (1,true,"<<<<<<< HEAD\nromo\n========\nfomo\n>>>>>>> BRANCH".to_string()),
+        ];
+        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+    }
+
+    #[test]
+    fn test09_conflicts_en_archivo_de_una_sola_linea(){
+        let str_base = "hola\n".to_string();
+        let str_origin = "origin\n".to_string();
+        let str_new = "new\n".to_string();
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
+        let lineas_esperadas = vec![
+            (0,false,"hola".to_string()),
+            (0,true,"<<<<<<< HEAD\norigin\n========\nnew\n>>>>>>> BRANCH".to_string()),
+        ];
+        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+    }
+
+    #[test]
+    fn test10_conflicts_en_todas_las_lineas_de_archivo_de_dos_lineas(){
+        let str_base = "hola\ncomo\n".to_string();
+        let str_origin = "origin1\norigin2\n".to_string();
+        let str_new = "new1\nnew2\n".to_string();
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
+        let lineas_esperadas = vec![
+            (0,false,"hola".to_string()),
+            (0,true,"<<<<<<< HEAD\norigin1\norigin2\n========\nnew1\nnew2\n>>>>>>> BRANCH".to_string()),
+            (1,false,"como".to_string()),
+        ];
+        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+    }
+
+    #[test]
+    fn test11_conflicts_en_todas_las_lineas_de_archivo_de_cinco_lineas(){
+        let str_base = "hola\ncomo\nestas\npepe\ngrillo".to_string();
+        let str_origin = "origin1\norigin2\norigin3\norigin4\norigin5".to_string();
+        let str_new = "new1\nnew2\nnew3\nnew4\nnew5\n".to_string();
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
+        let lineas_esperadas = vec![
+            (0,false,"hola".to_string()),
+            (0,true,"<<<<<<< HEAD\norigin1\norigin2\norigin3\norigin4\norigin5\n========\nnew1\nnew2\nnew3\nnew4\nnew5\n>>>>>>> BRANCH".to_string()),
+            (1,false,"como".to_string()),
+            (2,false,"estas".to_string()),
+            (3,false,"pepe".to_string()),
+            (4,false,"grillo".to_string()),
+        ];
+        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+    }
+
+    #[test]
+    fn test12_conflicts_con_diffs_de_distinto_tamanio(){
+        let str_base = "hola\n".to_string();
+        let str_origin = "hola\norigin1\n".to_string();
+        let str_new = "hola\ncomo\nnew3\n".to_string();
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
+        let lineas_esperadas = vec![
+            (1,true,"<<<<<<< HEAD\norigin1\n========\ncomo\nnew3\n>>>>>>> BRANCH".to_string()),
+        ];
+        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
     }
 }
