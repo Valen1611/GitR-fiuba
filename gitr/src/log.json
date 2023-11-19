@@ -1,0 +1,20 @@
+{"type": "Action","timestamp": "19-11-2023 13:52:24","message": "calling init with flags: ["repo"]"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "creating dir: repo"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "creating dir: repo/gitr"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "creating dir: repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "creating dir: repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "creating dir: repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "creating dir: repo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "creating dir: repo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "writing data to: repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "writing data to: repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:52:24","message": "writing data to: .head_repo"}
+{"type": "FileOperation","timestamp": "19-11-2023 13:55:31","message": "reading data from: gitrignore"}
+{"type": "Error","timestamp": "19-11-2023 13:55:31","message": "No se pudo leer: gitrignore"}
+{"type": "FileOperation","timestamp": "19-11-2023 14:01:26","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "19-11-2023 14:01:26","message": "reading data from: repo/gitrgitrignore"}
+{"type": "Error","timestamp": "19-11-2023 14:01:26","message": "No se pudo leer: repo/gitrgitrignore"}
+{"type": "FileOperation","timestamp": "19-11-2023 14:01:39","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "19-11-2023 14:01:39","message": "reading data from: repo/gitr/gitrignore"}
+{"type": "FileOperation","timestamp": "19-11-2023 14:02:13","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "19-11-2023 14:02:13","message": "reading data from: repo/gitr/gitrignore"}
