@@ -288,6 +288,17 @@ mod tests{
         let base = "A\nB\nC\nD\nE\nF\nK".to_string();
         let new = "B\nH\nD\nE\nF\nC\nK".to_string();
         let diff = Diff::new(base,new);
+        let lineas_esperadas = vec![
+            (0,false,"A".to_string()),
+            (1,true,"H".to_string()),
+            (2,false,"C".to_string()),
+            (3,false,"D".to_string()),
+            (4,false,"E".to_string()),
+            (5,false,"F".to_string()),
+            (6,true,"K".to_string())
+        ];
+
+       // assert!(diff.lineas, lineas_esperadas);
     }
 
     #[test]

@@ -1462,8 +1462,7 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
 #[cfg(test)]
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
 mod tests{
-    use crate::git_transport::ref_discovery::{self, assemble_want_message};
-
+   
     use super::*;
     
     // #[test]
@@ -1681,6 +1680,9 @@ mod tests{
         let lineas_esperadas = vec![
             (1,true,"<<<<<<< HEAD\ncomo\norigin\n========\nnew\n>>>>>>> BRANCH".to_string()),
         ];
+
+        assert_eq!(diff_final.lineas,lineas_esperadas);
+
     }
 
     #[test]
@@ -1697,6 +1699,58 @@ mod tests{
             (4,true,"<<<<<<< HEAD\nori1\nori2\nori3\n========\nnew1\nnew2\n>>>>>>> BRANCH".to_string()),
             (6,true,"<<<<<<< HEAD\nori4\n========\nnew3\n>>>>>>> BRANCH".to_string()),
         ];
+
+        assert_eq!(diff_final.lineas,lineas_esperadas);
     }
+
+
+    #[test]
+    fn test14_conflicts_de_distinto_tamanio_y_mismo_con_lineas_de_ambos_lados() {
+        let str_base = "hola\ncomo\nestas\n?\nbien\ny\nvos".to_string();
+        let str_origin = "ori0\ncomo\nestas\n?\nori1\nori2\nori3\nbien\ny\nori4".to_string();
+        let str_new = "hola\ncomo\nestas\n?\nnew1\nnew2\nnew3\ny\nnew4".to_string();
+
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
+        let lineas_esperadas = vec![
+            (0, false, "hola".to_string()),
+            (0, true, "ori0".to_string()),
+            (4, true, "<<<<<<< HEAD\nori1\nori2\nori3\nbien\ny\nori4\n=======\nnew1\nnew2\nnew3\ny\nnew4\n>>>>>>> BRANCH".to_string()),
+        ];
+
+        assert_eq!(diff_final.lineas,lineas_esperadas);
+    }
+
+    #[test]
+    fn test15_conflicts_varios_con_lineas_de_ambos_lugares_en_el_medio() {
+        //linea de origin
+        //lineas en comun
+        //conflict mas lineas en origin
+        //linea en el medio de new
+        //conflict mas lineas en new
+        //ult linea en comun
+
+        let str_base = "hola\ncomo\nestas\n?\nbien\ny\nvos".to_string();
+        let str_origin = "ori0\ncomo\nestas\n?\nori1\nori2\nori3\nbien\ny\nori4\nchau".to_string();
+        let str_new = "hola\ncomo\nestas\n?\nnew1\nbien\nnew3\ny\nnew4\nnew5\nchau".to_string();
+
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
+        let lineas_esperadas = vec![
+            (0, false, "hola".to_string()),
+            (0, true, "ori0".to_string()),
+            (4, true, "<<<<<<< HEAD\n\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH".to_string()),
+            (6, true, "new3".to_string()),
+            (8, true, "<<<<<<< HEAD\nori4\nvos\n=======\nnew4\nnew5\n>>>>>>> new".to_string()),
+            
+        ];
+
+        assert_eq!(diff_final.lineas,lineas_esperadas);
+    }
+
 
 }
