@@ -168,62 +168,8 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 }
 
 //receives the hash of an object and returns its raw data in a String. Return in full format, header included.
-pub fn read_object(object: &String)->Result<String, GitrError>{
-    let path = parse_object_hash(object)?;
-    let bytes = deflate_file(path.clone())?;
-    let object_data: Vec<u8> = get_object_data_with_bytes(bytes)?;
-    let first_byte = object_data[0];
-    if first_byte as char == 't' {
-        let tree_data = match read_tree_file(object_data) {
-            Ok(data) => data,
-            Err(_) => return Err(GitrError::FileReadError(path)),
-        };
-        return Ok(tree_data);
-    }
-    if first_byte as char == 'b' || first_byte as char == 'c' {
-        let mut buffer = String::new();
-        for byte in object_data {
-            buffer.push(byte as char);
-        }
-        return Ok(buffer);
-    }
-    Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
-}
-
-// auxiliar function of read_object().
-fn get_object_data_with_bytes(bytes: Bytes<ZlibDecoder<File>>)->Result< Vec<u8>, GitrError>{
-    let mut object_data: Vec<u8> = Vec::new();
-    for byte in bytes {
-        let byte = match byte {
-            Ok(byte) => byte,
-            Err(_) => return Err(GitrError::CompressionError),
-        };
-        object_data.push(byte);
-    }
-    Ok(object_data)
-}
-
-// receives an blob hash and returns its raw data without header. Calls read_object() and parses. Error if not a blob.
-pub fn read_file_data_from_blob_hash(hash: String) -> Result<String, GitrError>{
-    let object_raw_data = read_object(&hash)?;
-    let (header, raw_data) = match object_raw_data.split_once('\0') {
-        Some((header, raw_data)) => (header, raw_data),
-        None => {
-            println!("Error: invalid object type");
-            return Err(GitrError::FileReadError(hash));
-        }
-    };
-
-    if !header.starts_with("blob") {
-        return Err(GitrError::FileReadError(hash));
-    }
-
-    Ok(raw_data.to_string())
-}
-
-//Juanma complete please. TURBINA
-pub fn read_object_w_path(object: &String,path: String)->Result<String, GitrError>{
-    let path = parse_object_hash_w_path(object, path)?;
+pub fn read_object(object: &String,path: String, add_gitr: bool)->Result<String, GitrError>{
+    let path = parse_object_hash(object, path, add_gitr)?;
     let bytes = deflate_file(path.clone())?;
     let mut object_data: Vec<u8> = Vec::new();
     for byte in bytes {
@@ -256,11 +202,42 @@ pub fn read_object_w_path(object: &String,path: String)->Result<String, GitrErro
         }
         return Ok(buffer);
     }
-
-
     Err(GitrError::FileReadError("No se pudo leer el objeto, bytes invalidos".to_string()))
 
 }
+
+// auxiliar function of read_object().
+fn get_object_data_with_bytes(bytes: Bytes<ZlibDecoder<File>>)->Result< Vec<u8>, GitrError>{
+    let mut object_data: Vec<u8> = Vec::new();
+    for byte in bytes {
+        let byte = match byte {
+            Ok(byte) => byte,
+            Err(_) => return Err(GitrError::CompressionError),
+        };
+        object_data.push(byte);
+    }
+    Ok(object_data)
+}
+
+// receives an blob hash and returns its raw data without header. Calls read_object() and parses. Error if not a blob.
+pub fn read_file_data_from_blob_hash(hash: String) -> Result<String, GitrError>{
+    let object_raw_data = read_object(&hash, file_manager::get_current_repo()?, true)?;
+    let (header, raw_data) = match object_raw_data.split_once('\0') {
+        Some((header, raw_data)) => (header, raw_data),
+        None => {
+            println!("Error: invalid object type");
+            return Err(GitrError::FileReadError(hash));
+        }
+    };
+
+    if !header.starts_with("blob") {
+        return Err(GitrError::FileReadError(hash));
+    }
+
+    Ok(raw_data.to_string())
+}
+
+
 
 //auxiliar for read_object(). Receives raw data and returns a String with readable data.
 pub fn read_tree_file(data: Vec<u8>) -> Result<String, GitrError>{
@@ -363,39 +340,21 @@ fn deflate_file(path: String) -> Result<Bytes<ZlibDecoder<File>>, GitrError> {
     Ok(bytes)
 }
 
-// Preguntar a Valen
-fn parse_object_hash(object: &String) -> Result<String, GitrError>{
+// Le das un hash de objeto, se fija si existe y te devuelve el path completo de ese object
+//podríamos recibir el path aca así es una funcion sola
+//además la funcion _w_path no necesita el gitr y el del cliente si
+fn parse_object_hash(object: &String, path: String, add_gitr: bool) -> Result<String, GitrError>{
     if object.len() < 3{
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
     let folder_name = object[0..2].to_string();
     let file_name = object[2..].to_string();
 
-    let repo = get_current_repo()?;
-    let dir = repo + "/gitr/objects/";
-    
-    let folder_dir = dir.clone() + &folder_name;
-    let path = dir + &folder_name +  "/" + &file_name;
-    if fs::metadata(folder_dir).is_err(){
-        return Err(GitrError::ObjectNotFound(object.clone()));
+    let mut repo = path;
+    if add_gitr {
+        repo = repo + "/gitr";
     }
-    if fs::metadata(&path).is_err(){
-        return Err(GitrError::ObjectNotFound(object.clone()));
-    }
-    Ok(path)
-}
-
-// Preguntar Juanma
-fn parse_object_hash_w_path(object: &String, path: String) -> Result<String, GitrError>{
-    if object.len() < 3{
-        return Err(GitrError::ObjectNotFound(object.clone()));
-    }
-    let folder_name = object[0..2].to_string();
-    let file_name = object[2..].to_string();
-
-    let repo = path;
-    let dir = repo + "/objects/";
-    
+    let dir = repo + "/objects/";  
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name +  "/" + &file_name;
     if fs::metadata(folder_dir).is_err(){
@@ -499,7 +458,7 @@ pub fn update_head(head: &String) -> Result<(), GitrError>{
     Ok(())
 }
 
-//Juanma 
+// recibe el vector de los hashes de las referencias que sacas del ref discovery, y actualiza el gitr en base a eso
 pub fn update_client_refs(hash_n_refs: Vec<(String,String)>, r_path: String) -> Result<(),GitrError> {
     let path = r_path + "/gitr/";
     for (h,r) in hash_n_refs {
@@ -594,7 +553,7 @@ pub fn get_commit(branch:String)->Result<String, GitrError>{
 //receives a path and a hash and creates a tree
 pub fn create_tree(path: String, hash: String) -> Result<(), GitrError> {
     file_manager::create_directory(&path)?;
-    let tree_raw_data = read_object(&hash)?;
+    let tree_raw_data = read_object(&hash, file_manager::get_current_repo()?, true)?;
     let raw_data = match tree_raw_data.split_once('\0') {
         Some((_, raw_data)) => raw_data,
         None => {
@@ -631,7 +590,7 @@ fn parse_blob_path(blob_entry: String) -> String {
 }
 //receives a path and a hash and creates a blob
 pub fn create_blob(path: String, hash: String) -> Result<(), GitrError> {
-    let new_blob = read_object(&(hash.to_string()))?;
+    let new_blob = read_object(&(hash.to_string()), file_manager::get_current_repo()?, true)?;
     let new_blob_only_data = new_blob.split('\0').collect::<Vec<&str>>()[1];
     add_to_index(&path, &hash)?;
     write_file(path.to_string(), new_blob_only_data.to_string())?;
@@ -642,7 +601,7 @@ pub fn create_blob(path: String, hash: String) -> Result<(), GitrError> {
 pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
     delete_all_files()?;
     let main_tree = get_main_tree(commit)?;
-    let tree = read_object(&main_tree)?;
+    let tree = read_object(&main_tree, file_manager::get_current_repo()?, true)?;
     let raw_data = match tree.split_once('\0') {
         Some((_, raw_data)) => raw_data,
         None => {
@@ -670,7 +629,7 @@ pub fn update_working_directory(commit: String)-> Result<(), GitrError>{
 
 //receives a commit and returns its main tree hash
 pub fn get_main_tree(commit:String)->Result<String, GitrError>{
-    let commit = read_object(&commit)?;
+    let commit = read_object(&commit, file_manager::get_current_repo()?, true)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     let tree_base = commit[0].split('\0').collect::<Vec<&str>>()[1];
     let tree_hash_str = tree_base.split(' ').collect::<Vec<&str>>()[1];
@@ -679,7 +638,7 @@ pub fn get_main_tree(commit:String)->Result<String, GitrError>{
 
 //receives a commit and returns its parent commit hash
 pub fn get_parent_commit(commit: String)->Result<String, GitrError>{
-    let commit = read_object(&commit)?;
+    let commit = read_object(&commit, file_manager::get_current_repo()?, true)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
         return Ok("None".to_string());
@@ -690,7 +649,7 @@ pub fn get_parent_commit(commit: String)->Result<String, GitrError>{
 
 //receives a commit and returns its author
 pub fn get_commit_author(commit: String)->Result<String, GitrError>{
-    let commit = read_object(&commit)?;
+    let commit = read_object(&commit, file_manager::get_current_repo()?, true)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     let mut idx = 2;
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
@@ -702,7 +661,7 @@ pub fn get_commit_author(commit: String)->Result<String, GitrError>{
 
 //receives a commit and returns its date
 pub fn get_commit_date(commit: String)->Result<String, GitrError>{
-    let commit = read_object(&commit)?;
+    let commit = read_object(&commit, file_manager::get_current_repo()?, true)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     let mut idx = 2;
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
@@ -732,7 +691,7 @@ pub fn get_commit_date(commit: String)->Result<String, GitrError>{
 
 //receives a commit and returns its message
 pub fn get_commit_message(commit: String)->Result<String, GitrError>{
-    let commit = read_object(&commit)?;
+    let commit = read_object(&commit, file_manager::get_current_repo()?, true)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     let mut idx = 5;
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
@@ -830,8 +789,8 @@ pub fn remove_file(path: String)-> Result<(), GitrError> {
     }
 }
 
-//Juanma complete please. TURBINA repetida?
-pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
+//Devuelve un Vector de todos los hashes de los objetos del repo
+pub fn get_all_objects_hashes() -> Result<Vec<String>,GitrError> {
     let mut objects: Vec<String> = Vec::new();
     let repo = get_current_repo()?;
     let dir: String = repo + "/gitr/objects";
@@ -839,12 +798,12 @@ pub fn get_all_objects() -> Result<Vec<String>,GitrError> {
         Ok(l) => l,
         Err(_) => return Err(GitrError::FileReadError(dir)),
     };
-    iterate_over_dirs_for_getting_objects(dir_reader, &mut objects, dir)?;
+    iterate_over_dirs_for_getting_objects_hashes(dir_reader, &mut objects, dir)?;
     Ok(objects)
 }
 
-//Juanma complete please. TURBINA repetida?
-fn iterate_over_dirs_for_getting_objects(dir_reader: ReadDir, objects: &mut Vec<String>, dir: String)-> Result<(),GitrError> {
+//Función auxiliar de get_all_objects_hashes
+fn iterate_over_dirs_for_getting_objects_hashes(dir_reader: ReadDir, objects: &mut Vec<String>, dir: String)-> Result<(),GitrError> {
     for carpeta_rs in dir_reader {
         let carpeta = match carpeta_rs {
             Ok(path) => path,

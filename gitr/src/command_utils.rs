@@ -89,7 +89,7 @@ pub fn print_cat_file_command(data_requested:&str, object_hash: &str, object_typ
 /// returns object hash, output, size and type
 pub fn get_object_properties(flags:Vec<String>)->Result<(String, String, String, String), GitrError>{
     let object_hash = &flags[1];
-    let res_output = file_manager::read_object(object_hash)?;
+    let res_output = file_manager::read_object(object_hash, file_manager::get_current_repo()?, true)?;
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
@@ -1203,7 +1203,7 @@ pub fn get_index_hashmap() -> Result<(HashMap<String, String>, bool), GitrError>
 }
 
 pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_hashmap: &mut HashMap<String, String>) -> Result<(), GitrError>{
-    let tree_data = file_manager::read_object(&hash_of_tree_to_read)?;
+    let tree_data = file_manager::read_object(&hash_of_tree_to_read, file_manager::get_current_repo()?, true)?;
 
     let tree_entries = match tree_data.split_once('\0') {
         Some((_tree_type, tree_entries)) => tree_entries,
@@ -1244,7 +1244,7 @@ pub fn get_commit_hashmap(commit: String) -> Result<HashMap<String, String>, Git
         
         let repo = file_manager::get_current_repo()?;
         let tree = file_manager::get_main_tree(commit)?;
-        let tree_data = file_manager::read_object(&tree)?;
+        let tree_data = file_manager::read_object(&tree, file_manager::get_current_repo()?, true)?;
         let tree_entries = match tree_data.split_once('\0') {
             Some((_tree_type, tree_entries)) => tree_entries,
             None => "",
@@ -1320,7 +1320,7 @@ pub fn get_current_commit_hashmap() -> Result<HashMap<String, String>, GitrError
       if haycommitshechos {
         let repo = file_manager::get_current_repo()?;
         let tree = file_manager::get_main_tree(current_commit)?;
-        let tree_data = file_manager::read_object(&tree)?;
+        let tree_data = file_manager::read_object(&tree, file_manager::get_current_repo()?, true)?;
         let tree_entries = match tree_data.split_once('\0') {
             Some((_tree_type, tree_entries)) => tree_entries,
             None => "",

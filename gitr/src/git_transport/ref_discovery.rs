@@ -106,7 +106,7 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
         return Ok(want_message.to_string());
     }
     if !client_commits.len() == 0{
-        for have in file_manager::get_all_objects()? {
+        for have in file_manager::get_all_objects_hashes()? {
             let have_line = format!("have {}\n",have);
             want_message.push_str(&format!("{:04X}{}\n",have_line.len()+4,have_line));
         }
