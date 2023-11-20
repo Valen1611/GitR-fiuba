@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use chrono::Utc;
 
-use crate::file_manager::{self, get_object};
+use crate::file_manager::{self};
 use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing, get_user_mail_from_config};
 
@@ -20,7 +20,7 @@ pub struct Commit{
 }
 
 impl Commit{
-    pub fn new(tree: String, mut parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
+    pub fn new(tree: String, parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
         let header = "commit ";
         let tree_format = format!("tree {}\n", tree);
@@ -41,7 +41,7 @@ impl Commit{
         Ok(Commit {data:compressed_file,hash: hashed_file_str, tree, parent, author, committer, message })
     }
 
-    pub fn new_from_packfile(tree: String, mut parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
+    pub fn new_from_packfile(tree: String, parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
         let header = "commit ";
         let tree_format = format!("tree {}\n", tree);

@@ -148,7 +148,7 @@ impl Tree{
           
     
     pub fn get_all_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> Result<(),GitrError> {
-        if let Ok(tree_str) = file_manager::read_object_w_path(&tree_id, r_path.clone()) {
+        if let Ok(tree_str) = file_manager::read_object(&tree_id, r_path.clone(), false) {
             let tree_objects = match Tree::get_objects_id_from_string(tree_str){
                 Ok(ids) => {ids},
                 _ => return Err(GitrError::InvalidTreeError)

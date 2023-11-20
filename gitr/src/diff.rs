@@ -1,13 +1,14 @@
 use std::cmp::max;
-
+#[derive(Clone)]
+#[derive(Debug)]
 pub struct Diff{
     pub lineas_eliminadas: Vec<(usize,String)>,
     pub lineas_agregadas: Vec<(usize,String)>,
     pub lineas: Vec<(usize,bool,String)>,
 }
+
 #[derive(Clone)]
 #[derive(Debug)]
-
 struct Celda{
     valor: usize,
     es_match: bool,
@@ -223,7 +224,11 @@ impl Diff{
             }
         } 
         lineas.sort_by(|a, b| a.0.cmp(&b.0)); //ordeno ascendente
+        println!("Lineas {:?}", lineas);
 
+        
+
+        // solo sirven los prints, por ahora quedan porque me ayudan a debuggear
         for (i, line) in base_lines.iter().enumerate() {
             if indices_lineas_eliminadas.contains(&i) {
                 println!("{}. -{}",i, line);
@@ -236,7 +241,6 @@ impl Diff{
                 lineas_agregadas.push((i, line.to_string()));
             }
         }
-        
         
         Diff{
             lineas_eliminadas,
@@ -263,6 +267,7 @@ impl Diff{
         }
         linea
     }
+
 }
 
 #[cfg(test)]
@@ -283,6 +288,17 @@ mod tests{
         let base = "A\nB\nC\nD\nE\nF\nK".to_string();
         let new = "B\nH\nD\nE\nF\nC\nK".to_string();
         let diff = Diff::new(base,new);
+        let lineas_esperadas = vec![
+            (0,false,"A".to_string()),
+            (1,true,"H".to_string()),
+            (2,false,"C".to_string()),
+            (3,false,"D".to_string()),
+            (4,false,"E".to_string()),
+            (5,false,"F".to_string()),
+            (6,true,"K".to_string())
+        ];
+
+       // assert!(diff.lineas, lineas_esperadas);
     }
 
     #[test]
@@ -293,4 +309,14 @@ mod tests{
         
         let diff = Diff::new(base,new);
     }
+
+    #[test]
+    fn test03_diff_agregando_al_medio(){
+        let base = format!("hola\nsoy\nbase\n");
+
+        let new = format!("hola\nsoy\npepe\nbase\n");
+        
+        let diff = Diff::new(base,new);
+    }
+
 }
