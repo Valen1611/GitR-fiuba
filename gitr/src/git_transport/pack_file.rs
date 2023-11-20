@@ -118,6 +118,7 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
         Err(_e) => return Err(gitr_errors::GitrError::PackFileError("read_pack_file".to_string(),"no se pudo obtener la # objetos".to_string()))
     };
     let num_objects = u32::from_be_bytes(num_objects);
+    println!("deberian entrar {num_objects} objetos");
     let mut objects = vec![];
 
     let mut index: usize = 0;

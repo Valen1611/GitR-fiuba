@@ -61,8 +61,8 @@ impl Commit{
         Ok(Commit {data:compressed_file,hash: hashed_file_str, tree, parent, author, committer, message })
     }
 
-    pub fn save(&self) -> Result<(), GitrError>{
-        crate::file_manager::write_object(self.data.clone(), self.hash.clone())?;
+    pub fn save(&self,cliente: String) -> Result<(), GitrError>{
+        crate::file_manager::write_object(self.data.clone(), self.hash.clone(),cliente)?;
         Ok(())
     }
 
@@ -114,7 +114,9 @@ impl Commit{
                 _ => {return Err(GitrError::InvalidCommitError)}
             }
         } 
+        println!("commits len {}",commits.len());
         for commit in commits {
+            println!("===commit: {}\n",String::from_utf8_lossy(&file_manager::decode(&commit.get_data()).unwrap()));
             object_ids.insert(commit.get_tree());
 
             Tree::get_all_tree_objects(commit.get_tree(), r_path.clone(), &mut object_ids)?;
