@@ -435,7 +435,7 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     }
     if pkt_needed {
         let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|t.0.clone()).collect(),repo + "/gitr")?;
-        let repo = file_manager::get_current_repo(cliente)? + "/gitr";
+        let repo = file_manager::get_current_repo(cliente.clone())? + "/gitr";
         let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
         let mut contents: Vec<Vec<u8>> = Vec::new();
         for id in ids {

@@ -89,7 +89,7 @@ pub fn print_cat_file_command(data_requested:&str, object_hash: &str, object_typ
 /// returns object hash, output, size and type
 pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String, String, String, String), GitrError>{
     let object_hash = &flags[1];
-    let res_output = file_manager::read_object(object_hash, file_manager::get_current_repo(cliente.clone())?, true,cliente.clone())?;
+    let res_output = file_manager::read_object(object_hash,file_manager::get_current_repo(cliente.clone())?, true)?;
     let object_type = res_output.split(' ').collect::<Vec<&str>>()[0];
     let _size = res_output.split(' ').collect::<Vec<&str>>()[1];
     let size = _size.split('\0').collect::<Vec<&str>>()[0];
@@ -1266,7 +1266,7 @@ pub fn get_index_hashmap(cliente: String) -> Result<(HashMap<String, String>, bo
 }
 
 pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_hashmap: &mut HashMap<String, String>,cliente: String) -> Result<(), GitrError>{
-    let tree_data = file_manager::read_object(&hash_of_tree_to_read, file_manager::get_current_repo(cliente.clone())?, true, cliente.clone())?;
+    let tree_data = file_manager::read_object(&hash_of_tree_to_read, file_manager::get_current_repo(cliente.clone())?, true)?;
 
     let tree_entries = match tree_data.split_once('\0') {
         Some((_tree_type, tree_entries)) => tree_entries,
@@ -1306,7 +1306,7 @@ pub fn get_commit_hashmap(commit: String,cliente: String) -> Result<HashMap<Stri
       if !commit.is_empty() {
         let repo = file_manager::get_current_repo(cliente.clone())?;
         let tree = file_manager::get_main_tree(commit,cliente.clone())?;
-        let tree_data = file_manager::read_object(&tree,repo, true, cliente.clone())?;
+        let tree_data = file_manager::read_object(&tree,repo.clone(), true)?;
         let tree_entries = match tree_data.split_once('\0') {
             Some((_tree_type, tree_entries)) => tree_entries,
             None => "",
@@ -1388,7 +1388,7 @@ pub fn get_current_commit_hashmap(cliente: String) -> Result<HashMap<String, Str
 
         let repo = file_manager::get_current_repo(cliente.clone())?;
         let tree = file_manager::get_main_tree(current_commit,cliente.clone())?;
-        let tree_data = file_manager::read_object(&tree,repo, true, cliente.clone())?;
+        let tree_data = file_manager::read_object(&tree,repo.clone(), true)?;
         let tree_entries = match tree_data.split_once('\0') {
             Some((_tree_type, tree_entries)) => tree_entries,
             None => "",
@@ -1589,6 +1589,8 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
 mod diffs_tests{
    
+    use crate::git_transport::ref_discovery::{self, assemble_want_message};
+
     use super::*;
     
     // #[test]
