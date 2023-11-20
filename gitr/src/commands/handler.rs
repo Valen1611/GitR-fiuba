@@ -6,7 +6,7 @@ pub fn parse_input(input: String) -> Vec<String> {
 }
 
 /// ["command", "flag1", "flag2", ...]
-pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
+pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError> {
 
     if argv.is_empty() {
         return Ok(())
@@ -24,30 +24,31 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
     };
     
     match command.as_str() {
-        "hash-object" | "h" => commands::hash_object(flags)?, //"h" para testear mas rapido mientras la implementamos
-        "cat-file" | "c" => commands::cat_file(flags)?,
-        "init" => commands::init(flags)?,
-        "status" => commands::status(flags)?,
-        "add" => commands::add(flags)?,
-        "rm" => commands::rm(flags)?,
-        "commit" => commands::commit(flags)?,
-        "checkout" => commands::checkout(flags)?,
-        "log" => commands::log(flags)?,
-        "clone" => commands::clone(flags)?,
-        "fetch" => commands::fetch(flags)?,
-        "merge" => commands::merge(flags)?,
-        "remote" =>commands::remote(flags)?,
-        "pull" => commands::pull(flags)?,
-        "push" => commands::push(flags)?,
-        "branch" =>commands::branch(flags)?,
-        "ls-files" => commands::ls_files(flags)?,
+        "hash-object" | "h" => commands::hash_object(flags,client)?, //"h" para testear mas rapido mientras la implementamos
+        "cat-file" | "c" => commands::cat_file(flags,client)?,
+        "init" => commands::init(flags,client)?,
+        "status" => commands::status(flags,client)?,
+        "add" => commands::add(flags,client)?,
+        "rm" => commands::rm(flags,client)?,
+        "commit" => commands::commit(flags,client)?,
+        "checkout" => commands::checkout(flags,client)?,
+        "log" => commands::log(flags,client)?,
+        "clone" => commands::clone(flags,client)?,
+        "fetch" => commands::fetch(flags,client)?,
+        "merge" => commands::merge(flags,client)?,
+        "remote" =>commands::remote(flags,client)?,
+        "pull" => commands::pull(flags,client)?,
+        "push" => commands::push(flags,client)?,
+        "branch" =>commands::branch(flags,client)?,
+        "ls-files" => commands::ls_files(flags,client)?,
+        "show-ref" => commands::show_ref(flags,client)?,
 
         "q" => return Ok(()),
         "l" => logger::log(flags)?,
 
-        "list-repos" | "lr" => commands::list_repos(),
-        "go-to-repo" | "gtr" => commands::go_to_repo(flags)?,
-        "cur-repo" | "cr" => commands::print_current_repo()?,
+        "list-repos" | "lr" => commands::list_repos(client),
+        "go-to-repo" | "gtr" => commands::go_to_repo(flags,client)?,
+        "cur-repo" | "cr" => commands::print_current_repo(client)?,
         _ => {
             let message = format!("invalid command: {}", command);
             return Err(GitrError::InvalidArgumentError(message, "usage: gitr <command> [<args>]".to_string()));
