@@ -18,3 +18,7 @@
 {"type": "FileOperation","timestamp": "19-11-2023 14:01:39","message": "reading data from: repo/gitr/gitrignore"}
 {"type": "FileOperation","timestamp": "19-11-2023 14:02:13","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "19-11-2023 14:02:13","message": "reading data from: repo/gitr/gitrignore"}
+{"type": "FileOperation","timestamp": "21-11-2023 20:39:31","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "21-11-2023 20:39:31","message": "reading data from: repo/gitr/gitrignore"}
+{"type": "FileOperation","timestamp": "21-11-2023 20:39:32","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "21-11-2023 20:39:32","message": "reading data from: repo/gitr/gitrignore"}

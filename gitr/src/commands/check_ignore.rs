@@ -30,6 +30,12 @@ mod tests{
 
     #[test]
     fn test00_check_ignore_encuentra_gitignore(){
+        let gitignore = file_manager::read_file(armar_path("gitrignore".to_string()).unwrap());
+        assert!(gitignore.is_ok());
+    }
+
+    #[test]
+    fn test01_check_ignore_lee_correctamente_una_linea(){
         let paths = vec!["/target".to_string()];
         let vec_match = vec![
             "/target".to_string()
