@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, Hash
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::git_object::GitObject};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -1583,6 +1583,120 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
     println!("String recibido de tamaño {}: {:?}", bytes_read, received_data);
     Ok(())
 }
+
+
+/***************************
+ *************************** 
+ *    PULL FUNCTIONS
+ **************************
+ **************************/
+
+pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
+    let repo = file_manager::get_current_repo(cliente.clone())?;
+    let remote = file_manager::get_remote(cliente.clone())?;
+    let msj = format!("{} /{}\0host={}\0",orden,repo, remote);
+    let msj = format!("{:04x}{}", msj.len() + 4, msj);
+    let mut stream = match TcpStream::connect("localhost:9418") {
+        Ok(s) => s,
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    match stream.write(msj.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    Ok(stream)
+}
+
+pub fn protocol_reference_discovery(stream: &mut TcpStream) -> Result<Vec<(String,String)>,GitrError> {
+    let mut buffer = [0;1024];
+    let mut ref_disc = String::new();
+    loop {
+        match stream.read(&mut buffer) {
+            Ok(n) => {
+                if n == 0 {
+                    return Err(GitrError::ConnectionError);
+                }
+                let bytes = &buffer[..n];
+                let s = String::from_utf8_lossy(bytes);
+                ref_disc.push_str(&s);
+                if s.ends_with("0000") {
+                    break;
+                }
+            },
+            Err(e) => {
+                println!("Error: {}", e);
+                return Err(GitrError::ConnectionError);
+            }
+        }
+    }
+    let hash_n_references = ref_discovery::discover_references(ref_disc)?;
+    Ok(hash_n_references)
+}
+
+pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: &mut TcpStream,cliente: String) -> Result<(),GitrError> {
+    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids(cliente.clone())?,cliente.clone())?;
+    file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
+    match stream.write(want_message.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    if want_message == "0000" {
+        println!("cliente al día");
+        return Ok(())
+    }
+    let mut buffer = [0;1024];
+    match stream.read(&mut buffer) { // Leo si huvo error
+        Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
+            println!("Error: {}", String::from_utf8_lossy(&buffer));
+            return Ok(())
+        }},
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+        
+    }
+    Ok(())
+}
+
+pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: String) -> Result<(),GitrError> {
+    let mut buffer = Vec::new();
+    let n = match stream.read_to_end(&mut buffer) { // Leo el packfile
+        Err(e) => {
+            println!("Error: {}", e);
+            return Ok(())
+        },
+        Ok(n) => n
+    };
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
+    for object in pack_file_struct.objects.iter(){
+        match object{
+            GitObject::Blob(blob) => blob.save(cliente.clone())?,
+            GitObject::Commit(commit) => commit.save(cliente.clone())?,
+            GitObject::Tree(tree) => tree.save(cliente.clone())?,
+        }
+    }
+    if actualizar_work_dir {
+        update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
+    }
+    println!("pull successfull");
+    Ok(())
+}
+
+/***************************
+ *************************** 
+ *    PUSH FUNCTIONS
+ **************************
+ **************************/
 
 
 #[cfg(test)]

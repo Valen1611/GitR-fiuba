@@ -280,95 +280,16 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     }
 
     // ########## HANDSHAKE ##########
-    let _repo = file_manager::get_current_repo(cliente.clone())?;
-    let remote = file_manager::get_remote(cliente.clone())?;
-    let msj = format!("git-upload-pack /{}\0host={}\0","mi-repo", remote);
-    let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect("localhost:9418") {
-        Ok(socket) => socket,
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
-    match stream.write(msj.as_bytes()) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
+    let mut stream = handshake("git-upload-pack".to_string(), cliente.clone())?;
     
     //  ########## REFERENCE DISCOVERY ##########
-    let mut buffer = [0;1024];
-    let mut ref_disc = String::new();
-    loop {
-        match stream.read(&mut buffer) {
-            Ok(n) => {
-                if n == 0 {
-                    return Ok(());
-                }
-                let bytes = &buffer[..n];
-                let s = String::from_utf8_lossy(bytes);
-                ref_disc.push_str(&s);
-                if s.ends_with("0000") {
-                    break;
-                }
-            },
-            Err(e) => {
-                println!("Error: {}", e);
-                return Ok(())
-            }
-        }
-    }
-    let hash_n_references = ref_discovery::discover_references(ref_disc)?;
-    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids(cliente.clone())?,cliente.clone())?;
-    file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
-    match stream.write(want_message.as_bytes()) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
-    if want_message == "0000" {
-        println!("cliente al día");
-        return Ok(())
-    }
-    match stream.read(&mut buffer) { // Leo si huvo error
-        Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
-            println!("Error: {}", String::from_utf8_lossy(&buffer));
-            return Ok(())
-        }},
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-        
-    }
+    let hash_n_references = protocol_reference_discovery(&mut stream)?;
+   
+    // ########## WANTS N HAVES ##########
+    protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
+
     // ########## PACKFILE ##########
-    let mut buffer = Vec::new();
-    let n = match stream.read_to_end(&mut buffer) { // Leo el packfile
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        },
-        Ok(n) => n
-    };
-    println!("se leyo: {n}");
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
-    for object in pack_file_struct.objects.iter(){
-        match object{
-            Blob(blob) => blob.save(cliente.clone())?,
-            Commit(commit) => commit.save(cliente.clone())?,
-            Tree(tree) => tree.save(cliente.clone())?,
-        }
-    }
-    if actualizar_work_dir {
-        update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
-    }
-    println!("pull successfull");
-    Ok(())
+    pull_packfile(&mut stream, actualizar_work_dir, cliente)
 }
 
 pub fn pull(flags: Vec<String>,cliente: String) -> Result<(), GitrError> {
@@ -380,47 +301,11 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "push <no-args>".to_string()));
     }
     // ########## HANDSHAKE ##########
-    let repo = file_manager::get_current_repo(cliente.clone())?;
-    let remote = file_manager::get_remote(cliente.clone())?;
-    let msj = format!("git-receive-pack /{}\0host={}\0","mi-repo", remote);
-    let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect("localhost:9418") {
-        Ok(socket) => socket,
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
-    match stream.write(msj.as_bytes()) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
+    let mut stream = handshake("git-receive-pack".to_string(), cliente.clone())?;
+
     //  ########## REFERENCE DISCOVERY ##########
-    let mut buffer = [0;1024];
-    let mut ref_disc = String::new();
-    loop {
-        match stream.read(&mut buffer) {
-            Ok(n) => {
-                if n == 0 {
-                    return Ok(());
-                }
-                let bytes = &buffer[..n];
-                let s = String::from_utf8_lossy(bytes);
-                ref_disc.push_str(&s);
-                if s.ends_with("0000") {
-                    break;
-                }
-            },
-            Err(e) => {
-                println!("Error: {}", e);
-                return Ok(())
-            }
-        }
-    }
-    let hash_n_references = ref_discovery::discover_references(ref_disc)?;
+    let hash_n_references = protocol_reference_discovery(&mut stream)?;
+
     // ########## REFERENCE UPDATE REQUEST ##########
     let ids_propios = file_manager::get_heads_ids(cliente.clone())?; // esta sacando de gitr/refs/heads
     let refs_propios = get_branches(cliente.clone())?; // tambien de gitr/refs/heads
@@ -433,9 +318,11 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         println!("client up to date");
         return Ok(())
     }
+
+    // ########## PACKFILE ##########
     if pkt_needed {
-        let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|t.0.clone()).collect(),repo + "/gitr")?;
         let repo = file_manager::get_current_repo(cliente.clone())? + "/gitr";
+        let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|(*t).0.clone()).collect(),repo.clone() + "/gitr")?;
         let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
         let mut contents: Vec<Vec<u8>> = Vec::new();
         for id in ids {
