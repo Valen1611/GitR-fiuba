@@ -972,3 +972,7 @@
 {"type": "FileOperation","timestamp": "21-11-2023 20:54:34","message": "reading data from: client/.head_repo"}
 {"type": "FileOperation","timestamp": "21-11-2023 20:54:34","message": "reading data from: client/repo/hola"}
 {"type": "FileOperation","timestamp": "21-11-2023 20:54:34","message": "writing data to: client/repo/hola_mergeado"}
+{"type": "FileOperation","timestamp": "21-11-2023 23:24:03","message": "creating dir: client"}
+{"type": "FileOperation","timestamp": "21-11-2023 23:24:21","message": "creating dir: client"}
+{"type": "FileOperation","timestamp": "21-11-2023 23:29:21","message": "creating dir: kalsdjkasas"}
+{"type": "FileOperation","timestamp": "21-11-2023 23:29:36","message": "creating dir: client"}

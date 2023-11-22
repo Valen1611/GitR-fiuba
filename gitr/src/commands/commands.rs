@@ -75,7 +75,7 @@ pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
 
 
 //Add file contents to the index
-pub fn add(flags: Vec<String>,cliente: String)-> Result<(), GitrError> {
+pub fn add(flags: Vec<String>, cliente: String)-> Result<(), GitrError> {
     // add <file-name>
     // add .
     if flags.len() != 1 {
@@ -257,7 +257,7 @@ pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
                 command_utils::fast_forward_merge(branch_name,cliente.clone())?;
                 break;
             }
-            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(),cliente.clone())?;
+            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), branch_name, cliente.clone())?;
             break;
         }
     }

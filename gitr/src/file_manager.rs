@@ -423,7 +423,7 @@ pub fn add_to_index(path: &String, hash: &String,cliente: String) -> Result<(), 
     Ok(())
 }
 
-//returns the path of the head branch
+///returns the path of the head branch
 pub fn get_head(cliente: String) ->  Result<String, GitrError>{
     let repo = get_current_repo(cliente.clone())?;
     let path = repo + "/gitr/HEAD";

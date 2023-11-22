@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, Hash
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff, commands::commands};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -576,7 +576,7 @@ fn armar_conflict(origin_conflicts: &mut Vec<String>, new_conflicts: &mut Vec<St
     let conflict = [
         "<<<<<<< HEAD\n",
         origin_conflicts.concat().as_str(),
-        "========\n",
+        "=======\n",
         new_conflicts.concat().as_str(),
         ">>>>>>> BRANCH"
         ].concat();
@@ -593,8 +593,8 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     let origin = diff_base_origin.lineas.clone();
     let new = diff_base_branch.lineas.clone();
 
-    println!("diff_base_origin: {:?}", diff_base_origin.lineas);
-    println!("diff_base_branch: {:?}", diff_base_branch.lineas);
+    //println!("diff_base_origin: {:?}", diff_base_origin.lineas);
+    //println!("diff_base_branch: {:?}", diff_base_branch.lineas);
 
     let mut origin_tagged: Vec<(usize, bool, String, &str)> = Vec::new();
     let mut new_tagged = Vec::new();
@@ -728,6 +728,7 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
         if lineas.len() == 1 { //si cuando me traigo las lineas, traigo una sola, es porque no hay dos operaciones de add en la misma linea.
             println!("\tif lineas.len() == 1");
             if conflict_abierto { //si habia un conflict y lo corto, lo pusheo.
+                
                 if index - indice_actual_conflict == 1 {
                     println!("\t\tif conflict_abierto");
                     let tag = lineas[0].1.clone();
@@ -737,12 +738,20 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
                     } else {
                         new_conflicts.push(lineas[0].0.clone()+"\n");
                     }
+                    indice_actual_conflict = index;
                     //println!("\t\tpusheo: {} {} {}", indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts));
                     println!("");
-                    res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
-                    conflict_abierto = false;
                     continue;
+                    
                 } //cierro el conflict si estaba abierto y no hay mas lineas conflictuadas
+                    else {
+
+                        res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
+                        conflict_abierto = false;
+                        res_final.push((index, flag, lineas[0].0.clone()));
+                        continue;
+
+                    }
             }
             println!("\tpusheo: {} {} {}", index, flag, lineas[0].0.clone());
             res_final.push((index, flag, lineas[0].0.clone()));
@@ -1080,7 +1089,7 @@ fn comparar_diff_viejo(diff_base_origin: Diff, diff_base_branch: Diff) -> Result
 }
 
 
-pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, cliente: String) -> Result<(), GitrError> {
+pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, branch_name: String, cliente: String) -> Result<(), GitrError> {
 
     let branch_hashmap = get_commit_hashmap(branch_commit.clone(),cliente.clone())?;
     let mut origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
@@ -1088,15 +1097,12 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
     origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
     let base_hashmap = get_commit_hashmap(base_commit.clone(),cliente.clone())?;
     for (path, origin_file_hash) in origin_hashmap.iter(){
-
         let origin_file_data =file_manager::read_file(path.clone())?; 
-        
         
         if branch_hashmap.contains_key(&path.clone()){
             let branch_file_hash = branch_hashmap[path].clone(); //aax
             let branch_file_data = file_manager::read_file_data_from_blob_hash(branch_file_hash.clone(),cliente.clone())?;
 
-            
             if origin_file_hash == &branch_file_hash{
                 continue;
             }
@@ -1129,6 +1135,12 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
             continue;
         }
     }
+
+    commands::add(vec![".".to_string()], cliente.clone())?;
+    let commit_message = format!("Merge branch '{}'", branch_name);
+    commands::commit(vec!["-m".to_string(), commit_message], cliente.clone())?;
+    // aca crearse otro commit especial para poder tener 2 padre,s pero no tocar la funcion commit original
+
     Ok(())
 }
 
@@ -1668,7 +1680,7 @@ mod diffs_tests{
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
         let lineas_esperadas = vec![
             (0,false,"hola".to_string()),
-            (0,true,"<<<<<<< HEAD\nbuenas\n========\nnihao\n>>>>>>> BRANCH".to_string()),
+            (0,true,"<<<<<<< HEAD\nbuenas\n=======\nnihao\n>>>>>>> BRANCH".to_string()),
         ];
         println!("\x1b[mtest06_diffs_con_1_conflict_en_primera_linea OK\x1b[0m");
         assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
@@ -1685,7 +1697,7 @@ mod diffs_tests{
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
         let lineas_esperadas = vec![
             (2,false,"estas".to_string()),
-            (2,true,"<<<<<<< HEAD\nandas\n========\ntas\n>>>>>>> BRANCH".to_string()),
+            (2,true,"<<<<<<< HEAD\nandas\n=======\ntas\n>>>>>>> BRANCH".to_string()),
         ];
         assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
         println!("\x1b[test07_diffs_con_1_conflict_en_la_ultima_linea OK\x1b[0m");
@@ -1703,7 +1715,7 @@ mod diffs_tests{
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
         let lineas_esperadas = vec![
             (1,false,"como".to_string()),
-            (1,true,"<<<<<<< HEAD\nromo\n========\nfomo\n>>>>>>> BRANCH".to_string()),
+            (1,true,"<<<<<<< HEAD\nromo\n=======\nfomo\n>>>>>>> BRANCH".to_string()),
         ];
         assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
         println!("\x1b[test08_diffs_con_1_conflict_en_3_lineas OK\x1b[0m");
@@ -1721,7 +1733,7 @@ mod diffs_tests{
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
         let lineas_esperadas = vec![
             (0,false,"hola".to_string()),
-            (0,true,"<<<<<<< HEAD\norigin\n========\nnew\n>>>>>>> BRANCH".to_string()),
+            (0,true,"<<<<<<< HEAD\norigin\n=======\nnew\n>>>>>>> BRANCH".to_string()),
         ];
         assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
         println!("\x1b[test09_conflicts_en_archivo_de_una_sola_linea OK\x1b[0m");
@@ -1746,7 +1758,7 @@ mod diffs_tests{
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
         let lineas_esperadas = vec![
             (0,false,"hola".to_string()),
-            (0,true,"<<<<<<< HEAD\norigin1\norigin2\n========\nnew1\nnew2\n>>>>>>> BRANCH".to_string()),
+            (0,true,"<<<<<<< HEAD\norigin1\norigin2\n=======\nnew1\nnew2\n>>>>>>> BRANCH".to_string()),
             (1,false,"como".to_string()),
         ];
         assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
@@ -1765,7 +1777,7 @@ mod diffs_tests{
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch);
         let lineas_esperadas = vec![
             (0,false,"hola".to_string()),
-            (0,true,"<<<<<<< HEAD\norigin1\norigin2\norigin3\norigin4\norigin5\n========\nnew1\nnew2\nnew3\nnew4\nnew5\n>>>>>>> BRANCH".to_string()),
+            (0,true,"<<<<<<< HEAD\norigin1\norigin2\norigin3\norigin4\norigin5\n=======\nnew1\nnew2\nnew3\nnew4\nnew5\n>>>>>>> BRANCH".to_string()),
             (1,false,"como".to_string()),
             (2,false,"estas".to_string()),
             (3,false,"pepe".to_string()),
@@ -1785,7 +1797,7 @@ mod diffs_tests{
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let lineas_esperadas = vec![
-            (1,true,"<<<<<<< HEAD\norigin1\n========\ncomo\nnew3\n>>>>>>> BRANCH".to_string()),
+            (1,true,"<<<<<<< HEAD\norigin1\n=======\ncomo\nnew3\n>>>>>>> BRANCH".to_string()),
         ];
 
       
@@ -1811,7 +1823,7 @@ mod diffs_tests{
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let lineas_esperadas = vec![
-            (1,true,"<<<<<<< HEAD\ncomo\norigin\n========\nnew\n>>>>>>> BRANCH".to_string()),
+            (1,true,"<<<<<<< HEAD\ncomo\norigin\n=======\nnew\n>>>>>>> BRANCH".to_string()),
         ];
 
         assert_eq!(diff_final.lineas,lineas_esperadas);
@@ -1833,8 +1845,8 @@ mod diffs_tests{
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let lineas_esperadas = vec![
-            (2,true,"<<<<<<< HEAD\nori1\nori2\nori3\n========\nnew1\n>>>>>>> BRANCH".to_string()),
-            (4,true,"<<<<<<< HEAD\nori4\n========\nnew2\nnew3\n>>>>>>> BRANCH".to_string()),
+            (2,true,"<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH".to_string()),
+            (4,true,"<<<<<<< HEAD\nori4\n=======\nnew2\nnew3\n>>>>>>> BRANCH".to_string()),
             (5,true ,"iguales".to_string()),
             (7,true,"<<<<<<< HEAD\nori5\n=======\nnew4\n>>>>>>> BRANCH".to_string()),
             (8,true ,"iguales para cerrar".to_string()),
@@ -1904,7 +1916,7 @@ mod aplicar_diffs_tests {
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
-        let archivo_esperado = vec!["<<<<<<< HEAD\norigin1\n========\nnew1\n>>>>>>> BRANCH\n", "como\n", "estas\n"];
+        let archivo_esperado = vec!["<<<<<<< HEAD\norigin1\n=======\nnew1\n>>>>>>> BRANCH\n", "como\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
@@ -1920,7 +1932,7 @@ mod aplicar_diffs_tests {
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
-        let archivo_esperado = vec!["hola\n", "<<<<<<< HEAD\norigin1\n========\nnew1\n>>>>>>> BRANCH\n", "estas\n"];
+        let archivo_esperado = vec!["hola\n", "<<<<<<< HEAD\norigin1\n=======\nnew1\n>>>>>>> BRANCH\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
@@ -1936,7 +1948,7 @@ mod aplicar_diffs_tests {
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
-        let archivo_esperado = vec!["hola\n", "como\n", "<<<<<<< HEAD\norigin1\n========\nnew1\n>>>>>>> BRANCH\n"];
+        let archivo_esperado = vec!["hola\n", "como\n", "<<<<<<< HEAD\norigin1\n=======\nnew1\n>>>>>>> BRANCH\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
@@ -1952,7 +1964,7 @@ mod aplicar_diffs_tests {
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
-        let archivo_esperado = vec!["<<<<<<< HEAD\norigin1\norigin2\n========\nnew1\nnew2\n>>>>>>> BRANCH\n", "como\n", "estas\n"];
+        let archivo_esperado = vec!["<<<<<<< HEAD\norigin1\norigin2\n=======\nnew1\nnew2\n>>>>>>> BRANCH\n", "como\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
@@ -1968,7 +1980,7 @@ mod aplicar_diffs_tests {
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
-        let archivo_esperado = vec!["hola\n", "<<<<<<< HEAD\norigin1\norigin2\n========\nnew1\nnew2\n>>>>>>> BRANCH\n", "estas\n"];
+        let archivo_esperado = vec!["hola\n", "<<<<<<< HEAD\norigin1\norigin2\n=======\nnew1\nnew2\n>>>>>>> BRANCH\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
@@ -1984,7 +1996,7 @@ mod aplicar_diffs_tests {
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
-        let archivo_esperado = vec!["hola\n", "como\n", "<<<<<<< HEAD\norigin1\norigin2\n========\nnew1\nnew2\n>>>>>>> BRANCH\n"];
+        let archivo_esperado = vec!["hola\n", "como\n", "<<<<<<< HEAD\norigin1\norigin2\n=======\nnew1\nnew2\n>>>>>>> BRANCH\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
@@ -2001,13 +2013,15 @@ mod aplicar_diffs_tests {
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
         let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
-        let archivo_esperado = vec![];
+        let archivo_esperado = vec!["hola\n",
+        "como\n",
+        "<<<<<<< HEAD\nor1\nori2\nori3\nestas\nori4\niguales\nori5\n=======\nnew1\nestas\nnew2\nnew3\niguales\nnew4\n>>>>>>> new\n",
+        "iguales para cerrar\n",
+        ];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
 
 
        }
-
-
 
 }
