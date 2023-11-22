@@ -512,8 +512,9 @@ fn _aplicar_diffs(string_archivo: String, diff: Diff) -> Result<Vec<String>, Git
                     continue
                 }
                 else{ //no hay delete, solo add
-                    archivo_reconstruido.push(line.to_string()+"\n"); //pusheo la linea del base
                     archivo_reconstruido.push(diff.lineas[j].2.clone()+"\n"); //pusheo el add
+                    archivo_reconstruido.push(line.to_string()+"\n"); //pusheo la linea del base
+                    j+=1;
                 }
             }
             else{ //si no hay operacion, pusheo la linea del base y sigo
@@ -585,24 +586,61 @@ fn armar_conflict(origin_conflicts: &mut Vec<String>, new_conflicts: &mut Vec<St
     conflict
 }
 
+fn juntar_consecutivos(diff: Diff)->Diff{
+    let mut diff_juntado = Diff::new("".to_string(), "".to_string());
+    let mut lineas = diff.lineas.clone();
+    let mut acumulador_lineas = Vec::new();
+    let mut ultimo_indice_acumulado = 0;    
+
+    
+    for (i, accion, linea) in lineas.clone(){
+
+        if !accion{
+            diff_juntado.lineas.push((i, accion, linea));
+            continue;
+        }
+
+        if i - ultimo_indice_acumulado == 1 ||i==0{ //viene consecutivo
+            acumulador_lineas.push(linea+"\n");
+            ultimo_indice_acumulado += 1;
+            continue;
+        }
+        
+
+        diff_juntado.lineas.push((i-acumulador_lineas.len(), true, acumulador_lineas.concat()));
+        acumulador_lineas.clear();
+    } 
+    
+    
+    diff_juntado
+}
+
 fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff, GitrError> {
     println!("=============PRINTS DE COMPARAR_DIFFS=============");
 
     let mut diff_final = Diff::new("".to_string(), "".to_string());
     
-    let origin = diff_base_origin.lineas.clone();
-    let new = diff_base_branch.lineas.clone();
+    let origin = diff_base_origin.clone();
+    let new = diff_base_branch.clone();
 
     //println!("diff_base_origin: {:?}", diff_base_origin.lineas);
     //println!("diff_base_branch: {:?}", diff_base_branch.lineas);
 
+    let origin_consec = juntar_consecutivos(diff_base_origin).lineas;
+    let new_consec = juntar_consecutivos(diff_base_branch).lineas;
+
+
+    
+
+
+
     let mut origin_tagged: Vec<(usize, bool, String, &str)> = Vec::new();
     let mut new_tagged = Vec::new();
 
-    for (i, accion, linea) in origin.clone() {
+    for (i, accion, linea) in origin_consec.clone() {
         origin_tagged.push((i, accion, linea, "origin"));
     }
-    for (i, accion, linea) in new.clone() {
+    for (i, accion, linea) in new_consec.clone() {
         new_tagged.push((i, accion, linea, "new"));
     }
 
@@ -652,9 +690,9 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
             cmp_first.then(cmp_second)
         }
     });
-    println!("result after sort: {:?}", result);
+    println!("==result after sort: {:?}", result);
     //result.dedup();
-    println!("result after dedup: {:?}", result);
+    //println!("result after dedup: {:?}", result);
 
 
 
@@ -683,121 +721,130 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
         println!("{}: {:?}", index, string);
     }
 
-    let mut res_final = Vec::new();
-    let mut conflict_abierto = false;
 
-    let mut origin_conflicts: Vec<String> = Vec::new();
-    let mut new_conflicts: Vec<String> = Vec::new();
 
-    let mut indices_ya_visitados = HashSet::new();
-    let mut indice_inicio_conflict = 0;
-    let mut indice_actual_conflict = 0;
 
-    //println!("result: {:?}", result);
-    for (index, flag, string, _) in result.clone() { //este bucle agarra un vecto con los diffs sin repetir y ordenados por linea. Idealmente no deberia haber mas de 2 add por linea.
-        println!("index, flag, str: {} {} {}", index, flag, string);
-        /*
-        con algo que es asi
-        2 lineas conflict
-        1 linea ok en ambos
-        2 lineas conflict
 
-        funciona el diff pero se escribe todo doble.
+
+
+
+    // // DESCARTAR !!!!!!!!!!!!!!!!!
+    // let mut res_final = Vec::new();
+    // let mut conflict_abierto = false;
+
+    // let mut origin_conflicts: Vec<String> = Vec::new();
+    // let mut new_conflicts: Vec<String> = Vec::new();
+
+    // let mut indices_ya_visitados = HashSet::new();
+    // let mut indice_inicio_conflict = 0;
+    // let mut indice_actual_conflict = 0;
+
+    // //println!("result: {:?}", result);
+    // for (index, flag, string, _) in result.clone() { //este bucle agarra un vecto con los diffs sin repetir y ordenados por linea. Idealmente no deberia haber mas de 2 add por linea.
+    //     println!("index: {}, flag: {}, str: {}", index, flag, string);
+    //     /*
+    //     con algo que es asi
+    //     2 lineas conflict
+    //     1 linea ok en ambos
+    //     2 lineas conflict
+
+    //     funciona el diff pero se escribe todo doble.
     
         
-         */
+    //      */
 
-        if indices_ya_visitados.contains(&index) {
-            continue;
-        }
+    //     if indices_ya_visitados.contains(&index) {
+    //         continue;
+    //     }
 
-        if !flag { //si es delete, pusheo porque no van a haber conflicts de delete.
-            //if conflict_abierto{ //si habia un conflict y lo corto, lo pusheo.
-                //res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
-                //conflict_abierto = false; //cierro el conflict si estaba abierto y no hay mas lineas conflictuadas
-            //}
-            println!("\t if !flag:");
-            println!("\tpusheo: {} {} {}", index, flag, string);
-            println!("");
-            res_final.push((index, flag, string));
-            continue;
-        }
+    //     if !flag { //si es delete, pusheo porque no van a haber conflicts de delete.
+    //         //if conflict_abierto{ //si habia un conflict y lo corto, lo pusheo.
+    //             //res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
+    //             //conflict_abierto = false; //cierro el conflict si estaba abierto y no hay mas lineas conflictuadas
+    //         //}
+    //         println!("\t if !flag:");
+    //         println!("\tpusheo: {} {} {}", index, flag, string);
+    //         println!("");
+    //         res_final.push((index, flag, string));
+    //         continue;
+    //     }
 
-        let lineas  = map.get(&index).unwrap(); //entra al diccionario y se trae una linea o varias si hay conflict
-        println!("lineas: {:?}", lineas);
-        if lineas.len() == 1 { //si cuando me traigo las lineas, traigo una sola, es porque no hay dos operaciones de add en la misma linea.
-            println!("\tif lineas.len() == 1");
-            if conflict_abierto { //si habia un conflict y lo corto, lo pusheo.
+    //     let lineas  = map.get(&index).unwrap(); //entra al diccionario y se trae una linea o varias si hay conflict
+    //     println!("lineas: {:?}", lineas);
+    //     if lineas.len() == 1 { //si cuando me traigo las lineas, traigo una sola, es porque no hay dos operaciones de add en la misma linea.
+    //         println!("\tif lineas.len() == 1");
+    //         if conflict_abierto { //si habia un conflict y lo corto, lo pusheo.
                 
-                if index - indice_actual_conflict == 1 {
-                    println!("\t\tif conflict_abierto");
-                    let tag = lineas[0].1.clone();
+    //             if index - indice_actual_conflict == 1 {
+    //                 println!("\t\tif conflict_abierto");
+    //                 let tag = lineas[0].1.clone();
 
-                    if tag == "origin" {
-                        origin_conflicts.push(lineas[0].0.clone()+"\n");
-                    } else {
-                        new_conflicts.push(lineas[0].0.clone()+"\n");
-                    }
-                    indice_actual_conflict = index;
-                    //println!("\t\tpusheo: {} {} {}", indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts));
-                    println!("");
-                    continue;
+    //                 if tag == "origin" {
+    //                     origin_conflicts.push(lineas[0].0.clone()+"\n");
+    //                 } else {
+    //                     new_conflicts.push(lineas[0].0.clone()+"\n");
+    //                 }
+    //                 indice_actual_conflict = index;
+    //                 //println!("\t\tpusheo: {} {} {}", indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts));
+    //                 println!("");
+    //                 continue;
                     
-                } //cierro el conflict si estaba abierto y no hay mas lineas conflictuadas
-                    else {
+    //             } //cierro el conflict si estaba abierto y no hay mas lineas conflictuadas
+    //                 else {
 
-                        res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
-                        conflict_abierto = false;
-                        res_final.push((index, flag, lineas[0].0.clone()));
-                        continue;
+    //                     res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
+    //                     conflict_abierto = false;
+    //                     res_final.push((index, flag, lineas[0].0.clone()));
+    //                     continue;
 
-                    }
-            }
-            println!("\tpusheo: {} {} {}", index, flag, lineas[0].0.clone());
-            res_final.push((index, flag, lineas[0].0.clone()));
-            continue;
-        }
+    //                 }
+    //         }
+    //         println!("\tpusheo: {} {} {}", index, flag, lineas[0].0.clone());
+    //         res_final.push((index, flag, lineas[0].0.clone()));
+    //         continue;
+    //     }
         
-        //para este punto hay un conflict
-        if indices_ya_visitados.contains(&index){ //si caí en un indice que ya pasé, sigo de largo
-            println!("\tif indices_ya_visitados.contains(&{index})");
-            continue;
-        }
-        //hay un conflict nuevo acá
-        //tengo que "abrir el conflict"
-        println!("indice inicio:{}, indice actual: {}",indice_inicio_conflict,indice_actual_conflict);
-        if !conflict_abierto{
-            println!("abro el conflict");
-            conflict_abierto = true;
-            indice_inicio_conflict = index;
-            indice_actual_conflict = index;
+    //     //para este punto hay un conflict
+    //     if indices_ya_visitados.contains(&index){ //si caí en un indice que ya pasé, sigo de largo
+    //         println!("\tif indices_ya_visitados.contains(&{index})");
+    //         continue;
+    //     }
+    //     //hay un conflict nuevo acá
+    //     //tengo que "abrir el conflict"
+    //     println!("indice inicio:{}, indice actual: {}",indice_inicio_conflict,indice_actual_conflict);
+    //     if !conflict_abierto{
+    //         println!("abro el conflict");
+    //         conflict_abierto = true;
+    //         indice_inicio_conflict = index;
+    //         indice_actual_conflict = index;
             
-        }
-        if index - indice_inicio_conflict == 1{ //significa que las lineas que siguen son parte del conflict anterior y debe pushearse todo junto
-            indice_actual_conflict = index;
-        }
-        origin_conflicts.push(lineas[0].0.clone()+"\n");
-        new_conflicts.push(lineas[1].0.clone()+"\n");
-        indices_ya_visitados.insert(index);
-    }
+    //     }
+    //     if index - indice_inicio_conflict == 1{ //significa que las lineas que siguen son parte del conflict anterior y debe pushearse todo junto
+    //         indice_actual_conflict = index;
+    //     }
+    //     println!("pusheo a origin y new");
+    //     origin_conflicts.push(lineas[0].0.clone()+"\n");
+    //     new_conflicts.push(lineas[1].0.clone()+"\n");
+    //     indices_ya_visitados.insert(index);
+    // }
 
-    if origin_conflicts.len() > 0 && new_conflicts.len() > 0 {
-        res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
-    }
-    //res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
-    res_final.sort();
-    diff_final.lineas = res_final.clone();    
+    // if origin_conflicts.len() > 0 && new_conflicts.len() > 0 {
+    //     res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
+    // }
+    // //res_final.push((indice_inicio_conflict, true, armar_conflict(&mut origin_conflicts, &mut new_conflicts)));
+    // res_final.sort();
+    // diff_final.lineas = res_final.clone();    
 
 
-    println!("**********************************");
-    println!("* diff final: {:?}", diff_final.lineas);
-    // for (i, accion, linea) in diff_final.lineas.clone(){
-    //     println!("* linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
-    // }        
-    println!("**********************************");
+    // println!("**********************************");
+    // println!("* diff final: {:?}", diff_final.lineas);
+    // // for (i, accion, linea) in diff_final.lineas.clone(){
+    // //     println!("* linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
+    // // }        
+    // println!("**********************************");
 
-    println!("=======================================");
-    println!("");
+    // println!("=======================================");
+    // println!("");
     Ok(diff_final)
 }
 
@@ -1839,7 +1886,6 @@ mod diffs_tests{
         let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\nori4\niguales\nori5\niguales para cerrar".to_string(); 
         let str_new = "hola\ncomo\nnew1\nestas\nnew2\nnew3\niguales\nnew4\niguales para cerrar".to_string();
 
-
         let diff_base_origin = Diff::new(str_base.clone(), str_origin);
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
@@ -1852,14 +1898,27 @@ mod diffs_tests{
             (8,true ,"iguales para cerrar".to_string()),
             (7,true ,"iguales para cerrar".to_string()),
         ];
-
         assert_eq!(diff_final.lineas,lineas_esperadas);
+    }
+       
+    
+    #[test]
+    fn test15_comparar_diffs_distinto_largo_simple() {
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\n".to_string(); 
+        let str_new = "hola\ncomo\nnew1\nestas\n".to_string();
 
 
-       }
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
+        let diff_esperado = vec![
+            (2,true,"<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH".to_string()),
+        ];
 
-
+        assert_eq!(diff_final.lineas, diff_esperado);
+    }
 
 }
 
@@ -2002,7 +2061,7 @@ mod aplicar_diffs_tests {
     }
 
     #[test]
-    fn test24_aplicar_conflicts_con_diffs_varios_largos_en_distintos_lugares() {
+    fn test24_aplicar_conflicts_con_diffs_varios_largos_en_distintos_lugares() { //Lo esperado es sacado de replicar el conflict en git real
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\nori4\niguales\nori5\niguales para cerrar".to_string(); 
         let str_new = "hola\ncomo\nnew1\nestas\nnew2\nnew3\niguales\nnew4\niguales para cerrar".to_string();
@@ -2015,7 +2074,11 @@ mod aplicar_diffs_tests {
         let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
         let archivo_esperado = vec!["hola\n",
         "como\n",
-        "<<<<<<< HEAD\nor1\nori2\nori3\nestas\nori4\niguales\nori5\n=======\nnew1\nestas\nnew2\nnew3\niguales\nnew4\n>>>>>>> new\n",
+        "<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH\n",
+        "estas\n",
+        "<<<<<<< HEAD\nori4\n=======\nnew2\nnew3\n>>>>>>> BRANCH\n",
+        "iguales\n",
+        "<<<<<<< HEAD\nori5\n=======\nnew4\n>>>>>>> BRANCH\n",
         "iguales para cerrar\n",
         ];
 
@@ -2024,4 +2087,136 @@ mod aplicar_diffs_tests {
 
        }
 
+
+    #[test]
+    fn test25_aplicar_conflicts_con_diffs_varios_largos_en_distintos_lugares() { //Lo esperado es sacado de replicar el conflict en git real
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\n".to_string(); 
+        let str_new = "hola\ncomo\nnew1\nestas\n".to_string();
+
+
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let archivo_esperado = vec!["hola\n",
+            "como\n",
+            "<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH\n",
+            "estas\n",
+        ];
+
+        assert_eq!(_archivo_reconstruido, archivo_esperado);
+    }
+
+    #[test]
+    fn test26_aplicar_diff_agregando_una_linea_al_medio() {
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_new = "hola\ncomo\nnew1\nestas\n".to_string();
+
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_base_branch).unwrap();
+        let archivo_esperado = vec!["hola\n","como\n", "new1\n", "estas\n"];
+
+        assert_eq!(_archivo_reconstruido, archivo_esperado);
+    }  
+
 }
+
+
+
+
+//0 hola
+//1 como
+//2 +origin1\norigin2\norigin3
+//3 estas
+//4 +ori4
+//5 iguales
+//6 +ori5
+//7 iguales para cerrar
+
+
+//0 hola
+//1 como
+//2 +new1
+//3 estas
+//4 +new2\nnew3
+//5 iguales
+//6 +new4
+//7 iguales para cerrar
+
+
+
+
+/*
+    base:
+    hola
+    como
+    estas
+    base
+    linea base
+    linea base
+
+
+    origin:
+    hola
+    como
+    ori1
+    estas
+    ori2
+    ori3
+    ori4
+    linea base
+    linea base
+    ori5
+
+    new:
+    hola
+    como
+    new1
+    estas
+    new2
+    linea base
+    linea base
+
+    diff base new:
+    2. +new1
+    3. -base
+    4. +new2
+    
+
+    diff base origin:
+    2. +ori1
+    3. -base
+    4. +ori2
+    5. +ori3
+    6. +ori4
+    9. +ori5
+
+
+    Archivo salida:
+    hola
+    como
+    2+ >>>HEAD
+    ori1
+    ===
+    new1
+    <<<<
+    estas
+    4+>>>HEAD
+    ori2
+    ori3
+    ori4
+    ======
+    new2
+    <<<<new
+    linea base
+    linea base
+    5+ori5
+
+
+    res posible 1:
+    2. +ori1\nori2\nori3\nori4
+    4. -base
+
+*/
