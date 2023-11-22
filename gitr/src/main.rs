@@ -107,9 +107,6 @@ fn main() {
                 };
             }
         };
-
-        
-
     }
     match child.join(){
         Ok(_) => (),

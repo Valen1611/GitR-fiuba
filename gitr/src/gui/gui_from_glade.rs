@@ -42,12 +42,17 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let login_button: Button = builder.object("login_button")?;
     let mail_entry: Entry = builder.object("mail_entry")?;
     let user_entry: Entry = builder.object("user_entry")?;
-    //====Chequeos login====
-     
+    let push_button: Button = builder.object("push_button")?;
+    let pull_button: Button = builder.object("pull_button")?;
+    let fetch_button: Button = builder.object("fetch_button")?;
+    
+    
     //====Conexiones de señales====
+    
+    //====LOGIN====
     let connect_button_clone = connect_button.clone();
     let login_dialog_clone = login_dialog.clone();
-    connect_button.connect_clicked(move|_|{
+    connect_button_clone.connect_clicked(move|_|{
         login_dialog_clone.show();
     });
 
@@ -62,7 +67,7 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         login_dialog_clone.hide(); 
     });
 
-
+    //====COMMIT====
     let commit_clone = commit.clone();
     let commit_dialog_clone = commit_dialog.clone();
     commit_clone.connect_clicked(move|_|{
@@ -80,9 +85,9 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         commands::commit(cm_msg).unwrap();
     });
 
+    //====BRANCH====
     let branch_selector_clon = branch_selector.clone();
     branch_selector_clon.clone().connect_changed(move|_|{
-        //buffer.set_text("mames que anda asi nomas");
         let branch = match branch_selector_clon.clone().active_text(){
             Some(branch) => branch,
             None => return,
@@ -110,25 +115,41 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         update_branches(&branch_selector_clon.clone(),repo_branches);
     });
 
+    //====CLONE====
     let clone_dialog_ = clone_dialog.clone();
     clone_button.connect_clicked(move|_| {
         clone_dialog_.show();
     });
 
-     let clone_dialog_ = clone_dialog.clone();
-     clone_accept_button.connect_clicked(move|_| {
+    let clone_dialog_ = clone_dialog.clone();
+    clone_accept_button.connect_clicked(move|_| {
         let url = clone_url.text();
         println!("Clonando repo: {:?}", url);
         clone_dialog_.hide();
         commands::clone(vec![url.to_string(),"repo_clonado".to_string()]).unwrap();
-     });
+        //Aca habria que setear el repo actual al recien
+    });
+
+    //====PUSH====
+    let clone_push = push_button.clone();
+    clone_push.connect_clicked(move|_|{
+        println!("Push button clicked");
+    });
+    //====PULL====
+    let clone_pull = pull_button.clone();
+    clone_pull.connect_clicked(move|_|{
+        println!("Pull button clicked");
+    });
+    //====FETCH====
+    let clone_fetch = fetch_button.clone();
+    clone_fetch.connect_clicked(move|_|{
+        println!("Fetch button clicked");
+    });
 
     window.set_application(Some(application));
-    //login_dialog.set_application(Some(application));
     window.set_title("test");
      
     window.show_all();
-    //let login_dialog_clone = login_dialog.clone();
     if !existe_config() {
         login_warning.show();
     }

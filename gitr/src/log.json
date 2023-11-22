@@ -10451,3 +10451,12 @@
 {"type": "FileOperation","timestamp": "06-11-2023 03:01:07","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "06-11-2023 03:10:42","message": "writing data to: .head_repo"}
 {"type": "FileOperation","timestamp": "06-11-2023 03:10:42","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "creating dir: repo_clonado"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "creating dir: repo_clonado/gitr"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "creating dir: repo_clonado/gitr/objects"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "creating dir: repo_clonado/gitr/refs"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "creating dir: repo_clonado/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "creating dir: repo_clonado/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "creating dir: repo_clonado/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "writing data to: repo_clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "21-11-2023 21:22:36","message": "writing data to: .head_repo"}
