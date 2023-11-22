@@ -836,15 +836,15 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     // diff_final.lineas = res_final.clone();    
 
 
-    // println!("**********************************");
-    // println!("* diff final: {:?}", diff_final.lineas);
-    // // for (i, accion, linea) in diff_final.lineas.clone(){
-    // //     println!("* linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
-    // // }        
-    // println!("**********************************");
+    println!("**********************************");
+    println!("* diff final: {:?}", diff_final.lineas);
+    // for (i, accion, linea) in diff_final.lineas.clone(){
+    //     println!("* linea: {}.{}{:?}", i, if accion {"+"} else {"-"}, linea);
+    // }        
+    println!("**********************************");
 
-    // println!("=======================================");
-    // println!("");
+    println!("=======================================");
+    println!("");
     Ok(diff_final)
 }
 
