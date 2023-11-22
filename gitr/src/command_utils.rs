@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, Hash
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::git_object::GitObject};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_branches}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::git_object::GitObject};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -1698,6 +1698,37 @@ pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: 
  **************************
  **************************/
 
+pub fn reference_update_request(stream: &mut TcpStream,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(bool,Vec<String>),GitrError> {
+    let ids_propios = file_manager::get_heads_ids(cliente.clone())?; // esta sacando de gitr/refs/heads
+    let refs_propios = get_branches(cliente.clone())?; // tambien de gitr/refs/heads
+    let (ref_upd,pkt_needed,pkt_ids) = ref_discovery::reference_update_request(hash_n_references.clone(),ids_propios,refs_propios)?;
+    if let Err(e) = stream.write(ref_upd.as_bytes()) {
+        println!("Error: {}", e);
+        return Err(GitrError::ConnectionError);
+    };
+    if ref_upd == "0000" {
+        println!("client up to date");
+        return Ok((false,Vec::new()))
+    }
+    Ok((pkt_needed,pkt_ids))
+}
+
+pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(),GitrError> {
+    let repo = file_manager::get_current_repo(cliente.clone())? + "/gitr";
+    let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|(*t).0.clone()).collect(),repo.clone())?;
+    let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
+    let mut contents: Vec<Vec<u8>> = Vec::new();
+    for id in ids {
+        contents.push(file_manager::get_object_bytes(id, repo.clone())?)
+    }
+    let cont: Vec<(String, String, Vec<u8>)> = crate::git_transport::pack_file::prepare_contents(contents.clone());
+    let pk = crate::git_transport::pack_file::create_packfile(cont.clone())?;
+    if let Err(e) = stream.write(&pk) { // Mando el Packfile
+        println!("Error: {}", e);
+        return Err(GitrError::ConnectionError);
+    };
+    Ok(())
+}
 
 #[cfg(test)]
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.

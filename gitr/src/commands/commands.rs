@@ -307,33 +307,10 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
 
     // ########## REFERENCE UPDATE REQUEST ##########
-    let ids_propios = file_manager::get_heads_ids(cliente.clone())?; // esta sacando de gitr/refs/heads
-    let refs_propios = get_branches(cliente.clone())?; // tambien de gitr/refs/heads
-    let (ref_upd,pkt_needed,pkt_ids) = ref_discovery::reference_update_request(hash_n_references.clone(),ids_propios,refs_propios)?;
-    if let Err(e) = stream.write(ref_upd.as_bytes()) {
-        println!("Error: {}", e);
-        return Ok(())
-    };
-    if ref_upd == "0000" {
-        println!("client up to date");
-        return Ok(())
-    }
-
+    let (pkt_needed, pkt_ids) = reference_update_request(&mut stream,hash_n_references.clone(), cliente.clone())?;
     // ########## PACKFILE ##########
     if pkt_needed {
-        let repo = file_manager::get_current_repo(cliente.clone())? + "/gitr";
-        let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|(*t).0.clone()).collect(),repo.clone() + "/gitr")?;
-        let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
-        let mut contents: Vec<Vec<u8>> = Vec::new();
-        for id in ids {
-            contents.push(file_manager::get_object_bytes(id, repo.clone())?)
-        }
-        let cont: Vec<(String, String, Vec<u8>)> = git_transport::pack_file::prepare_contents(contents.clone());
-        let pk = create_packfile(cont.clone())?;
-        if let Err(e) = stream.write(&pk) { // Mando el Packfile
-            println!("Error: {}", e);
-            return Ok(())
-        };
+        push_packfile(&mut stream, pkt_ids, hash_n_references, cliente)?;
     }
     Ok(())
 }
