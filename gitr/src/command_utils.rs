@@ -1725,6 +1725,7 @@ mod diffs_tests{
         ];
         assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
         println!("\x1b[test09_conflicts_en_archivo_de_una_sola_linea OK\x1b[0m");
+    }
 
     fn test04_clone_sends_wants_correctly(){
         let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
@@ -1771,7 +1772,6 @@ mod diffs_tests{
             (4,false,"grillo".to_string()),
         ];
         assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
-        println!("\x1b[test11_conflicts_en_todas_las_lineas_de_archivo_de_cinco_lineas OK\x1b[0m");
 
     }
 
@@ -1799,7 +1799,6 @@ mod diffs_tests{
         //println!("diff_final: {:?}", diff_final.unwrap().lineas);
         assert_eq!(diff_final.lineas,lineas_esperadas);
 
-        println!("\x1b[test12_conflicts_con_diffs_de_distinto_tamanio OK\x1b[0m");
 
     }
     #[test]
@@ -1990,5 +1989,25 @@ mod aplicar_diffs_tests {
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
 
-}
+    #[test]
+    fn test24_aplicar_conflicts_con_diffs_varios_largos_en_distintos_lugares() {
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\nori4\niguales\nori5\niguales para cerrar".to_string(); 
+        let str_new = "hola\ncomo\nnew1\nestas\nnew2\nnew3\niguales\nnew4\niguales para cerrar".to_string();
+
+
+        let diff_base_origin = Diff::new(str_base.clone(), str_origin);
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+
+        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let archivo_esperado = vec![];
+
+        assert_eq!(_archivo_reconstruido, archivo_esperado);
+
+
+       }
+
+
+
 }
