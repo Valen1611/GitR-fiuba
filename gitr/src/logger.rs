@@ -7,7 +7,6 @@ enum EntryType {
     Error,
     Action,
     FileOperation,
-    //ServerConection,
 }
 
 
@@ -69,9 +68,7 @@ pub fn log (flags: Vec<String>) -> Result<(), GitrError>{
         Err(_) => return Err(GitrError::InvalidArgumentError(flags[0].clone(), "log <n>".to_string())),
     };
 
-    //let log = file_manager::read_file("src/log.json".to_string())?;
     let log = file_manager::read_file("src/log.json".to_string())?;
-    //esto se emprolija cuando al abrir se abre un json object y se filtra por tipo
     for line in log.lines().rev().take(n){
         let msg = line.split("message\": ").collect::<Vec<&str>>()[1];
         if line.contains("Error") {

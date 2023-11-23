@@ -1,17 +1,16 @@
-use std::collections::HashMap;
-use std::hash::Hash;
+
+
+
 use std::path::Path;
-use crate::file_manager::{get_head, get_main_tree, get_branches, get_object};
+use crate::file_manager::{get_branches, get_current_repo};
 use crate::command_utils::{*, self};
 use std::net::TcpStream;
 use std::io::prelude::*;
-use std::{fs, hash};
-use std::ops::IndexMut;
 use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
 use crate::objects::git_object::GitObject::*;
-use crate::{objects::blob::Blob,objects::commit::Commit, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
-use crate::git_transport::pack_file::{read_pack_file, create_packfile};
-use crate::{command_utils::*, commands, git_transport};
+use crate::{objects::blob::Blob, objects::commit::Commit, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
+use crate::git_transport::pack_file::{create_packfile};
+use crate::{git_transport};
 use crate::git_transport::ref_discovery;
 
 /***************************
@@ -110,7 +109,7 @@ pub fn commit(flags: Vec<String>)-> Result<(), GitrError>{
     }
     let index_path = file_manager::get_current_repo()?.to_string() + "/gitr/index";
     if !Path::new(&index_path).exists() {
-        return Ok(status(flags)?);
+        return status(flags);
     }
     let (not_staged, _, _) = get_untracked_notstaged_files()?;
     let to_be_commited = get_tobe_commited_files(&not_staged)?;
@@ -123,15 +122,15 @@ pub fn commit(flags: Vec<String>)-> Result<(), GitrError>{
         let message = message.join(" ");
         get_tree_entries(message.to_string())?;
         print_commit_confirmation(message)?;
-        return Ok(())
+        Ok(())
     } else {
-        return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
+        Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
     }
 }
 
 // Switch branches or restore working tree files
 pub fn checkout(flags: Vec<String>)->Result<(), GitrError> {
-    if flags.len() == 0 || flags.len() > 2 || (flags.len() == 2 && flags[0] != "-b"){
+    if flags.is_empty() || flags.len() > 2 || (flags.len() == 2 && flags[0] != "-b"){
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "checkout <branch>".to_string()));
     }
     commit_existing()?;
@@ -185,55 +184,46 @@ pub fn branch(flags: Vec<String>)->Result<(), GitrError>{
 
 pub fn ls_files(flags: Vec<String>) -> Result<(), GitrError>{
     //ls-files --stage
-    if flags.len() != 1 {
-        return Err(GitrError::InvalidArgumentError(flags.join(" "),"ls-files --stage".to_string() ))
+    if flags.len() == 0 || flags[0] == "--cached" || flags[0] == "-c" {
+        let ls_files_res = get_ls_files_cached()?;
+        print!("{}", ls_files_res);
+        return Ok(())
     }
-
     if flags[0] == "--stage"{
         let res_output = file_manager::read_index()?;
         println!("{}", res_output);
+        return Ok(())
     }
-    Ok(())
+    if flags[0] == "--deleted"{
+        let res_output = get_ls_files_deleted_modified(true)?;
+        print!("{}", res_output);
+        return Ok(())
+    }
+    if flags[0] == "--modified"{
+        let res_output = get_ls_files_deleted_modified(false)?;
+        print!("{}", res_output);
+        return Ok(())
+    }
+    Err(GitrError::InvalidArgumentError(flags.join(" "),"ls-files --stage".to_string() ))
 }
 
 pub fn clone(flags: Vec<String>)->Result<(),GitrError>{
-    let address = flags[0].clone();
-    let nombre_repo = flags[1].clone();
-    let _ = init(vec![nombre_repo.clone()]);
-    let mut socket = clone_connect_to_server(address)?;
-    clone_send_git_upload_pack(&mut socket)?;
-    let ref_disc = clone_read_reference_discovery(&mut socket)?;
-    let references = ref_discovery::discover_references(ref_disc.clone())?;
-    write_reference_from_cloning(references.clone(), ref_disc)?;
-    let want_message = ref_discovery::assemble_want_message(&references,Vec::new())?;
-    write_socket(&mut socket, want_message.as_bytes())?;
-    let mut buffer = [0;1024];
-    match socket.read(&mut buffer){
-        Ok(a)=>a,
-        Err(e)=>return Err(GitrError::SocketError("clone".into(), e.to_string()))
-    };
-    print!("clone(): recepción de packfile:");
-    read_socket(&mut socket, &mut buffer)?;
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
-    for object in pack_file_struct.objects.iter(){
-        match object{
-            Blob(blob) => blob.save()?,
-            Commit(commit) => commit.save()?,
-            Tree(tree) => tree.save()?,
-        }
-    }
-    update_working_directory(get_current_commit()?)?;
+    init(vec![flags[1].clone()])?;
+    remote(vec![flags[0].clone()])?;
+    pullear(vec![],true)?;
     Ok(())
 }
 
 // Show the working tree status
-pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
+pub fn status(_flags: Vec<String>) -> Result<(), GitrError>{
     command_utils::status_print_current_branch()?;
+
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files()?;
     let to_be_commited = get_tobe_commited_files(&not_staged)?;
-    status_print_to_be_comited(&to_be_commited)?;
-    status_print_not_staged(&not_staged);
-    status_print_untracked(&untracked_files, hayindex);
+    print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
+
+    print!("{}", get_status_files_not_staged(&not_staged)?);
+    print!("{}",get_status_files_untracked(&untracked_files, hayindex));
     if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
         println!("nothing to commit, working tree clean");
     }
@@ -241,12 +231,12 @@ pub fn status(flags: Vec<String>) -> Result<(), GitrError>{
 }
 
 
-pub fn fetch(_flags: Vec<String>) {
-    println!("fetch");
+pub fn fetch(flags: Vec<String>) -> Result<(), GitrError>{
+    pullear(flags, false)
 }
 
 pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
-    if _flags.len() == 0{
+    if _flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(_flags.join(" "), "merge <branch-name>".to_string()))
     }
 
@@ -255,41 +245,42 @@ pub fn merge(_flags: Vec<String>) -> Result<(), GitrError>{
 
     let branch_commits = command_utils::branch_commits_list(branch_name.clone())?;
     let origin_commits = command_utils::branch_commits_list(origin_name)?;
-
     for commit in branch_commits.clone() {
         if origin_commits.contains(&commit) {
-            if commit == origin_commits[origin_commits.len() -1]{
-                // fast-forward merge (caso facil)
- 
-                println!("Updating {}..{}" ,&origin_commits[origin_commits.len() -1][..7], &branch_commits[branch_commits.len() -1][..7]);
+            if commit == origin_commits[0] {
+                println!("Updating {}..{}" ,&origin_commits[0][..7], &branch_commits[0][..7]);
                 println!("Fast-forward");
-
                 command_utils::fast_forward_merge(branch_name)?;
                 break;
             }
-            // three way merge (caso dificil)
-            //command_utils::three_way_merge();
+            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone())?;
+            break;
         }
     }
     Ok(())
 }
 
-pub fn remote(_flags: Vec<String>) {
-    println!("remote");
+pub fn remote(flags: Vec<String>) -> Result<(), GitrError> {
+    if flags.is_empty() {
+        let remote = file_manager::read_file(get_current_repo()? + "/gitr/remote")?;
+        println!("remote: {}",remote);
+    } else {
+        file_manager::write_file(get_current_repo()? + "/gitr/remote", flags[0].clone())?;
+    }
+    Ok(())
 }
 
-pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
+fn pullear(flags: Vec<String>, actualizar_work_dir: bool) -> Result<(), GitrError> {
     if !flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "pull <no-args>".to_string()));
     }
-    // "003agit-upload-pack /schacon/gitbook.git\0host=example.com\0"
 
     // ########## HANDSHAKE ##########
-    let repo = file_manager::get_current_repo()?;
+    let _repo = file_manager::get_current_repo()?;
     let remote = file_manager::get_remote()?;
     let msj = format!("git-upload-pack /{}\0host={}\0","mi-repo", remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect(remote) {
+    let mut stream = match TcpStream::connect("localhost:9418") {
         Ok(socket) => socket,
         Err(e) => {
             println!("Error: {}", e);
@@ -310,10 +301,13 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
     loop {
         match stream.read(&mut buffer) {
             Ok(n) => {
+                if n == 0 {
+                    return Ok(());
+                }
                 let bytes = &buffer[..n];
                 let s = String::from_utf8_lossy(bytes);
                 ref_disc.push_str(&s);
-                if n < 1024 {
+                if s.ends_with("0000") {
                     break;
                 }
             },
@@ -324,9 +318,8 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         }
     }
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
-
     let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids()?)?;
-    
+    file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo()?)?;
     match stream.write(want_message.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -350,14 +343,14 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
         
     }
     // ########## PACKFILE ##########
-    match stream.read(&mut buffer) { // Leo el packfile
+    let n = match stream.read(&mut buffer) { // Leo el packfile
         Err(e) => {
             println!("Error: {}", e);
             return Ok(())
         },
-        _ => ()
-    }
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer)?;
+        Ok(n) => n
+    };
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
     for object in pack_file_struct.objects.iter(){
         match object{
             Blob(blob) => blob.save()?,
@@ -365,9 +358,15 @@ pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
             Tree(tree) => tree.save()?,
         }
     }
-    update_working_directory(get_current_commit()?)?;
+    if actualizar_work_dir {
+        update_working_directory(get_current_commit()?)?;
+    }
     println!("pull successfull");
     Ok(())
+}
+
+pub fn pull(flags: Vec<String>) -> Result<(), GitrError> {
+   pullear(flags, true)
 }
 
 pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
@@ -379,7 +378,7 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
     let remote = file_manager::get_remote()?;
     let msj = format!("git-receive-pack /{}\0host={}\0","mi-repo", remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect(remote) {
+    let mut stream = match TcpStream::connect("localhost:9418") {
         Ok(socket) => socket,
         Err(e) => {
             println!("Error: {}", e);
@@ -442,23 +441,7 @@ pub fn push(flags: Vec<String>) -> Result<(),GitrError> {
             println!("Error: {}", e);
             return Ok(())
         };
-        // if let Err(e) = stream.write("0000".as_bytes()) { // Mando el Packfile
-        //     println!("Error: {}", e);
-        //     return Ok(())
-        // };
     }
-    // match stream.read(&mut buffer) {
-    //     Ok(n) => {
-    //         let bytes = &buffer[..n];
-    //         let s = String::from_utf8_lossy(bytes);
-    //         println!("read:::{}",s);        
-    //     },
-    //     Err(e) => {
-    //         println!("Error: {}", e);
-    //         return Ok(())
-    //     }
-    // }
-
     Ok(())
 }
 
@@ -471,10 +454,8 @@ pub fn go_to_repo(flags: Vec<String>) -> Result<(), GitrError>{
     if flags.len() != 1 {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "go-to-repo <repo>".to_string()));   
     }
-
     let new_repo = flags[0].clone();
     let existing_repos = file_manager::get_repos();
-
     if existing_repos.contains(&new_repo) {
         file_manager::update_current_repo(&new_repo)?;
     }
@@ -487,7 +468,6 @@ pub fn go_to_repo(flags: Vec<String>) -> Result<(), GitrError>{
 pub fn print_current_repo() -> Result<(), GitrError> {
     let repo = file_manager::get_current_repo()?;
     println!("working on repo: {}", repo);
-
     Ok(())
 }
 
@@ -499,6 +479,7 @@ mod tests{
     fn test00_clone_from_daemon(){
         let mut flags = vec![];
         flags.push("localhost:9418".to_string());
+        flags.push("repo_clonado".to_string());
         assert!(clone(flags).is_ok());
     }
 

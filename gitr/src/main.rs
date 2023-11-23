@@ -1,9 +1,9 @@
-use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager, server};
+use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager};
 
 use std::{io::{Write, self}, fs};
 extern crate flate2;
 
-use gitr::gui::gui_from_glade::*;
+// use gitr::gui::gui_from_glade::*;
 
 fn get_input() -> Result<String, GitrError> {
         print!("\x1b[34mgitr: $ \x1b[0m");
@@ -49,9 +49,8 @@ fn setup_config_file(){
     }
         println!("El email es valido, ya puede comenzar a usar Gitr");
      let name = command_utils::get_current_username();
-     let config_file_data = format!("[user]\n\temail = {}\tname = {}\n", email_recibido, name);
+     let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
      file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
-     return;
  }
 
 pub fn existe_config() -> bool{
@@ -67,21 +66,19 @@ fn print_bienvenida() {
 }
 
 fn main() {
-    let child = std::thread::spawn(move || {
-        initialize_gui();
-        //server::server_init("repo_remoto", "localhost:9418")
-    });
+    // let child = std::thread::spawn(move || {
+    //     initialize_gui();
+    // });
 
     print_bienvenida();
 
     if !existe_config() {
         setup_config_file();
-    }
+    }        
     
 
     loop {
 
-        // Cuando tengamos la interfaz se deberia actualizar este mismo input supongo
         let input = match get_input() {
             Ok(input) => input,
             Err(e) => {
@@ -93,7 +90,6 @@ fn main() {
         if input == "q\n" {
             return;
         }
-
         let argv: Vec<String> = commands::handler::parse_input(input);
         
         // argv = ["command", "flag1", "flag2", ...]
@@ -108,27 +104,9 @@ fn main() {
             }
         };
     }
-    match child.join(){
-        Ok(_) => (),
-        Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
-    }
+    // match child.join(){
+    //     Ok(_) => (),
+    //     Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
+    // }
 
 }
-/*
-
-
-
-status (git man page) ✶✶✶
-
-checkout (git man page) ✶✶✶✶✶
-
-log (git man page)  ✶✶
-
-clone (git man page)
-fetch (git man page)
-merge (git man page)
-remote (git man page)
-pull (git man page)
-push (git man page)
-
-*/

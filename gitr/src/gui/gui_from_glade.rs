@@ -56,17 +56,6 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         login_dialog_clone.show();
     });
 
-    let login_dialog_clone = login_dialog.clone();
-    let login_button_clone = login_button.clone();
-    login_button_clone.connect_clicked(move|_|{
-        println!("Login button clicked");
-        let mail = mail_entry.text();
-        let name = user_entry.text();
-        let config_file_data = format!("[user]\n\temail = {}\tname = {}\n", mail, name);
-        file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
-        login_dialog_clone.hide(); 
-    });
-
     //====COMMIT====
     let commit_clone = commit.clone();
     let commit_dialog_clone = commit_dialog.clone();

@@ -17,9 +17,6 @@ pub struct Blob{
 }
 
 impl Blob{
-    /// Pre: raw_data es el string que conteine el codigo
-    /// 
-    /// Post: Devuelve un Blob con el codigo comprimido y el hash
     pub fn new(raw_data: String) -> Result<Self, GitrError>{
         let format_data = format!("blob {}\0{}", raw_data.as_bytes().len(), raw_data);
         let compressed_data = flate2compress(format_data.clone())?;

@@ -34,9 +34,9 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
         "checkout" => commands::checkout(flags)?,
         "log" => commands::log(flags)?,
         "clone" => commands::clone(flags)?,
-        "fetch" => commands::fetch(flags),
+        "fetch" => commands::fetch(flags)?,
         "merge" => commands::merge(flags)?,
-        "remote" =>commands::remote(flags),
+        "remote" =>commands::remote(flags)?,
         "pull" => commands::pull(flags)?,
         "push" => commands::push(flags)?,
         "branch" =>commands::branch(flags)?,
@@ -57,31 +57,3 @@ pub fn command_handler(argv: Vec<String>) -> Result<(), GitrError> {
     Ok(())
 
 }
-
-// Para comandos para cosas del server, se podria hacer otra funcion
-
-
-
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-
-//     #[test]
-//     fn handler_funciona_input_correcto() {
-//         let argv = vec![
-//             "log".to_string(),
-//             "main.rs".to_string(),
-//         ];
-//         assert!(command_handler(argv).is_ok());
-//     }
-
-//     #[test]
-//     fn handler_error_comando_incorrecto() {
-//         let argv = vec![
-//             "comando_no_existe".to_string(),
-//             "main.rs".to_string(),
-//         ];
-//         assert!(command_handler(argv).is_err());
-//     }
-// }

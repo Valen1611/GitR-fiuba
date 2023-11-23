@@ -1,7 +1,4 @@
-// La idea de este módulo es manejar el primer contacto con el servidor y la búsqueda de referencias para armar el directorio.
-
 use std::collections::HashSet;
-
 use crate::{gitr_errors::{GitrError, self}, file_manager};
 
 pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
@@ -45,12 +42,11 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     references.push((head_hash,"HEAD".to_string()));
     
     for refs in &iter_refs[1..]{
-        if *refs == "" || *refs == "0000"{
+        if refs.is_empty() || *refs == "0000"{
             break;
         }
         references.push(extract_hash_and_ref(refs));
     }
-    // println!("Pares hash - ref{:?}", references);
     Ok(references)
 }
 
@@ -118,6 +114,5 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
         want_message.push_str("0000");
     }
     want_message.push_str("0009done\n");
-    // println!("assemble_want_message(): {:?}", want_message);
     Ok(want_message)
 }

@@ -23,12 +23,6 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
             Ok(byte) => byte,
             Err(_) => return Err(GitrError::FileReadError(path.clone())),
         };
-
-        // let compressed_byte = match command_utils::flate2compress2(vec![byte]) {
-        //     Ok(byte) => byte,
-        //     Err(_) => return Err(GitrError::CompressionError),
-        // };
-
         formated_hash.push(byte);
     }
     Ok(formated_hash)
@@ -64,7 +58,6 @@ impl Tree{
                 TreeEntry::Tree(tree) => {
                     let hash = tree.get_hash();
                     let formated_hash = get_formated_hash(hash, path)?;
-                    //let path_no_repo = path.split_once('/').unwrap().1;
 
                     let obj_entry = [
                         b"40000 ",
@@ -92,18 +85,10 @@ impl Tree{
         let hashed_file2 = command_utils::sha1hashing2(data.clone());
 
         let hashed_file_str = hashed_file2.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        //println!("HASHED FILE: {:?}", hashed_file_str);
 
         let mut format_data = String::new();
         let init = format!("tree {}\0", entries.len());
         format_data.push_str(&init);
-
-
-        //format_data = format_data.trim_end().to_string();
-        //let compressed_file = flate2compress(data.clone())?;
-
-
-        //let hashed_file = sha1hashing(data.clone());
         Ok(Tree {entries, data: compressed_file2, hash: hashed_file_str })
 
         
@@ -111,12 +96,10 @@ impl Tree{
 
     pub fn new_from_packfile(raw_data: &[u8])->  Result<Self, GitrError>{
         let header_len = raw_data.len();
-        let tree_raw_file = vec![
-            b"tree ",
+        let tree_raw_file = [b"tree ",
             header_len.to_string().as_bytes(),
             b"\0",
-            raw_data,
-        ].concat();
+            raw_data].concat();
 
         let compressed_data = command_utils::flate2compress2(tree_raw_file.clone())?;
         let hash = command_utils::sha1hashing2(tree_raw_file.clone());
@@ -140,7 +123,6 @@ impl Tree{
     }
 
     pub fn get_objects_id_from_string(data: String) -> Result<Vec<String>, GitrError> {
-        // tree <content length><NUL><file mode> <filename><NUL><item sha>\n<file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
         
         if data.split_at(4).0 != "tree"{
             return Err(GitrError::InvalidTreeError);
@@ -166,8 +148,7 @@ impl Tree{
           
     
     pub fn get_all_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> Result<(),GitrError> {
-        // tree <content length><NUL><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha><file mode> <filename><NUL><item sha>...
-        if let Ok(tree_str) = file_manager::read_object(&tree_id) {//, r_path.clone()){
+        if let Ok(tree_str) = file_manager::read_object_w_path(&tree_id, r_path.clone()) {
             let tree_objects = match Tree::get_objects_id_from_string(tree_str){
                 Ok(ids) => {ids},
                 _ => return Err(GitrError::InvalidTreeError)
@@ -183,20 +164,3 @@ impl Tree{
     }
     
 }
-
-
-//#[cfg(test)]
-//mod tests {
-//    use crate::objects::blob::Blob;
-//    use super::*;
-//
-//    #[test]
-//    fn tree_creation_test(){
-//        let blob = Blob::new("hola".to_string()).unwrap();
-//        blob.save().unwrap();
-//        let hash = blob.get_hash();
-//        let tree = Tree::new(vec![("hola.txt".to_string(), TreeEntry::Blob(blob))]).unwrap();
-//        tree.save().unwrap();
-//    }
-// 
-//}
