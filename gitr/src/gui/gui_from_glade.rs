@@ -133,16 +133,22 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     //====PUSH====
     let clone_push = push_button.clone();
     clone_push.connect_clicked(move|_|{
+        let flags = vec![String::from("")];
+        commands::push(flags).unwrap();
         println!("Push button clicked");
     });
     //====PULL====
     let clone_pull = pull_button.clone();
     clone_pull.connect_clicked(move|_|{
+        let flags = vec![String::from("")];
+        commands::pull(flags).unwrap();
         println!("Pull button clicked");
     });
     //====FETCH====
     let clone_fetch = fetch_button.clone();
     clone_fetch.connect_clicked(move|_|{
+        let flags = vec![String::from("")];
+        commands::fetch(flags);
         println!("Fetch button clicked");
     });
 
