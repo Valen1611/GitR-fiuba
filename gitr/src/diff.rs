@@ -5,6 +5,7 @@ pub struct Diff{
     pub lineas_eliminadas: Vec<(usize,String)>,
     pub lineas_agregadas: Vec<(usize,String)>,
     pub lineas: Vec<(usize,bool,String)>,
+    pub lineas_extra: usize,
 }
 
 #[derive(Clone)]
@@ -22,6 +23,7 @@ fn empty_diff()->Diff{
         lineas_eliminadas: vec![],
         lineas_agregadas: vec![],
         lineas: vec![],
+        lineas_extra: 0,
     }
 }
 
@@ -246,6 +248,7 @@ impl Diff{
             lineas_eliminadas,
             lineas_agregadas,
             lineas,
+            lineas_extra: 0,
         }
     }
 

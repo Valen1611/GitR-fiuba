@@ -554,10 +554,16 @@ fn _aplicar_diffs(string_archivo: String, diff: Diff) -> Result<Vec<String>, Git
             archivo_reconstruido.push(line.to_string()+"\n"); 
         }
     }*/
+ 
+    
+    
+    
 
     
     for i in j..diff.lineas.len() { //agrego los diffs que me faltaron antes
-        archivo_reconstruido.push(diff.lineas[j].2.clone()+"\n");
+        println!("estos me faltaron antes");
+        println!("diff.lineas[i].2: {}", diff.lineas[i].2.clone());
+        archivo_reconstruido.push(diff.lineas[i].2.clone()+"\n");
     }
     Ok(archivo_reconstruido)
 }
@@ -577,7 +583,8 @@ fn armar_conflict(origin_conflicts: &mut Vec<String>, new_conflicts: &mut Vec<St
     let conflict = [
         "<<<<<<< HEAD\n",
         origin_conflicts.concat().as_str(),
-        "=======\n",
+        "\n",
+        "\n=======\n",
         new_conflicts.concat().as_str(),
         ">>>>>>> BRANCH"
         ].concat();
@@ -586,32 +593,87 @@ fn armar_conflict(origin_conflicts: &mut Vec<String>, new_conflicts: &mut Vec<St
     conflict
 }
 
+fn armar_conflict2(origin_conflicts: String, new_conflicts: String) -> String { //armo el conflict y vacío los vectores para "reiniciarlos"
+    let conflict = [
+        "<<<<<<< HEAD\n",
+        origin_conflicts.as_str(),
+        "\n=======\n",
+        new_conflicts.as_str(),
+        "\n>>>>>>> BRANCH"
+        ].concat();
+    conflict
+}
+
 fn juntar_consecutivos(diff: Diff)->Diff{
+    println!("=============PRINTS DE JUNTAR_CONSECUTIVOS=============");
     let mut diff_juntado = Diff::new("".to_string(), "".to_string());
     let mut lineas = diff.lineas.clone();
-    let mut acumulador_lineas = Vec::new();
+    //let mut acumulador_lineas = Vec::new();
     let mut ultimo_indice_acumulado = 0;    
 
-    
-    for (i, accion, linea) in lineas.clone(){
-
-        if !accion{
-            diff_juntado.lineas.push((i, accion, linea));
-            continue;
-        }
-
-        if i - ultimo_indice_acumulado == 1 ||i==0{ //viene consecutivo
-            acumulador_lineas.push(linea+"\n");
-            ultimo_indice_acumulado += 1;
+    let mut input = diff.lineas.clone();
+    let mut output = Vec::new();
+    let mut corrimiento = 1;
+    let mut corrimiento_total = 0;
+    for (i, (index, accion, s)) in input.iter().enumerate() {
+        println!("i: {}, index: {}, accion: {}, s: {}", i, index, accion, s);
+        if !accion {
+            output.push((*index, *accion, s.to_string()));
             continue;
         }
         
+        if i == 0 {
+            output.push((*index, *accion, s.to_string()));
+        } else {
+            if let Some((prev_num, _, prev_str)) = output.last_mut() {
+                println!("prev_num: {}, index: {}", prev_num, index);
+                if *prev_num + corrimiento == *index {
+                    println!("prev_str: {}", prev_str);
+                    println!("s: {}", s);
+                    prev_str.push_str(("\n".to_string()+s.as_str()).as_str());
+                    corrimiento += 1;
+                    corrimiento_total += 1;
 
-        diff_juntado.lineas.push((i-acumulador_lineas.len(), true, acumulador_lineas.concat()));
-        acumulador_lineas.clear();
-    } 
+                } else {
+                    output.push((*index, *accion, s.to_string()));
+                    corrimiento = 1;
+                }
+            }
+        }
+    }
     
+    // for (i, accion, linea) in lineas.clone(){
+    //     println!("i: {}, accion: {}, linea: {}", i, accion, linea);
+    //     if !accion{
+    //         diff_juntado.lineas.push((i, accion, linea));
+    //         continue;
+    //     }
+
+    //     if i - ultimo_indice_acumulado == 1 || i==0{ //viene consecutivo
+    //         acumulador_lineas.push(linea+"\n");
+    //         ultimo_indice_acumulado += 1;
+    //         continue;
+    //     }
+        
+
+    //     diff_juntado.lineas.push((i-acumulador_lineas.len(), true, acumulador_lineas.concat()));
+    //     //acumulador_lineas.clear();
+    // } 
+    // println!("acumulador_lineas.len() {}", acumulador_lineas.len());
     
+    // if output.len() > 0 {
+    //     let index = if lineas[lineas.len()-1].0 == 0 {0} else {lineas[lineas.len()-1].0-acumulador_lineas.len()};
+
+    //     output.push((index, true, acumulador_lineas.concat()));
+    // }
+    
+    println!("=======================================");
+    diff_juntado.lineas = output
+        .into_iter()
+        .map(|(index, accion, s)| (index, accion, s))
+        .collect();
+    diff_juntado.lineas_extra = corrimiento_total;
+    println!("diff_juntado: {:?}", diff_juntado);
     diff_juntado
 }
 
@@ -623,14 +685,21 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     let origin = diff_base_origin.clone();
     let new = diff_base_branch.clone();
 
-    //println!("diff_base_origin: {:?}", diff_base_origin.lineas);
-    //println!("diff_base_branch: {:?}", diff_base_branch.lineas);
+    println!("diff_base_origin: {:?}", diff_base_origin.lineas);
+    println!("diff_base_branch: {:?}", diff_base_branch.lineas);
 
     let origin_consec = juntar_consecutivos(diff_base_origin).lineas;
     let new_consec = juntar_consecutivos(diff_base_branch).lineas;
 
-
+    println!("origin {:?}", origin);
+    println!("new {:?}", new);
     
+    println!("origin_consec: {:?}", origin_consec);
+    println!("new_consec: {:?}", new_consec);
+
+
+
+
 
 
 
@@ -721,11 +790,43 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
         println!("{}: {:?}", index, string);
     }
 
+    // print blue
 
+    println!("\x1b[34m");
+    println!("RESULT: {:?}", result);
+    println!("\x1b[0m");
 
+    let mut indices_ya_visitados = HashSet::new();
+    
+    for (index, flag, string, _) in result.clone() {
+        println!("index: {}, flag: {}, str: \"{}\"", index, flag, string);
 
+        if indices_ya_visitados.contains(&index) {
+            continue;
+        }
 
+        if !flag { //si es delete, pusheo porque no van a haber conflicts de delete.
+            println!("DELETE pusheo: {} {} {}", index, flag, string);
+            diff_final.lineas.push((index, flag, string));
+            continue;
+        }
 
+        let lineas  = map.get(&index).unwrap(); //entra al diccionario y se trae una linea o varias si hay conflict
+        println!("lineas: {:?}", lineas);
+        if lineas.len() == 1 { //si cuando me traigo las lineas, traigo una sola, es porque no hay dos operaciones de add en la misma linea.
+            println!("pusheo: {} {} {}", index, flag, lineas[0].0.clone());
+            diff_final.lineas.push((index, flag, lineas[0].0.clone()));
+            indices_ya_visitados.insert(index);
+            continue;
+        }
+
+        //para este punto hay un conflict
+
+        let conflict = armar_conflict2(lineas[0].0.clone(), lineas[1].0.clone());
+        println!("pusheo: {} {} {}", index, flag, conflict);
+        diff_final.lineas.push((index, flag, conflict));
+        indices_ya_visitados.insert(index);
+    }
 
 
     // // DESCARTAR !!!!!!!!!!!!!!!!!
@@ -738,6 +839,10 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     // let mut indices_ya_visitados = HashSet::new();
     // let mut indice_inicio_conflict = 0;
     // let mut indice_actual_conflict = 0;
+
+    // let mut res_final = Vec::new();
+    // let mut conflict_abierto = false;
+
 
     // //println!("result: {:?}", result);
     // for (index, flag, string, _) in result.clone() { //este bucle agarra un vecto con los diffs sin repetir y ordenados por linea. Idealmente no deberia haber mas de 2 add por linea.
@@ -2082,8 +2187,11 @@ mod aplicar_diffs_tests {
         "iguales para cerrar\n",
         ];
 
-        assert_eq!(_archivo_reconstruido, archivo_esperado);
-
+        //assert_eq!(_archivo_reconstruido, archivo_esperado);
+        // assert line by line
+        for i in 0..archivo_esperado.len(){
+            assert_eq!(_archivo_reconstruido[i], archivo_esperado[i]);
+        }
 
        }
 
@@ -2124,7 +2232,65 @@ mod aplicar_diffs_tests {
 }
 
 
+#[cfg(test)]
+mod juntar_consecutivos_tests {
+    
+        use super::*;
+    
+        #[test]
+        fn test27_juntar_consecutivos() {
+            let str_base = "hola\ncomo\nestas\n".to_string();
+            let str_new = "hola\ncomo\nnew1\nnew2\nestas\n".to_string();
+    
+            let diff_base_branch = Diff::new(str_base.clone(), str_new);
+            let diff_sin_consec = juntar_consecutivos(diff_base_branch);
+            
+            let diff_esperado = vec![
+                (2,true,"new1\nnew2".to_string()),
+            ];
 
+            assert_eq!(diff_sin_consec.lineas, diff_esperado);
+
+
+        } 
+        #[test]
+        fn test28_juntar_consecutivos_mezclados() {
+            let str_base = "hola\ncomo\nestas\n".to_string();
+            let str_new = "hola\ncomo\nnew1\nnew2\nestas\nnew3\nnew4\n".to_string();
+    
+            let diff_base_branch = Diff::new(str_base.clone(), str_new);
+            let diff_sin_consec = juntar_consecutivos(diff_base_branch);
+            
+            let diff_esperado = vec![
+                (2,true,"new1\nnew2".to_string()),
+                (5,true,"new3\nnew4".to_string()),
+            ];
+
+            assert_eq!(diff_sin_consec.lineas, diff_esperado);
+
+
+        }
+
+        #[test]
+        fn test28_juntar_consecutivos_de_3() {
+            let str_base = "hola\ncomo\nestas\n".to_string();
+            let str_new = "hola\ncomo\nnew1\nnew2\nnew3\nnew4\nestas\nnew5\n".to_string();
+    
+            let diff_base_branch = Diff::new(str_base.clone(), str_new);
+            let diff_sin_consec = juntar_consecutivos(diff_base_branch);
+            
+            let diff_esperado = vec![
+                (2,true,"new1\nnew2\nnew3\nnew4".to_string()),
+                (7,true,"new5".to_string()),
+            ];
+
+            assert_eq!(diff_sin_consec.lineas, diff_esperado);
+
+
+        }  
+    
+    
+}
 
 //0 hola
 //1 como
