@@ -2,7 +2,7 @@
 
 
 use std::path::Path;
-use crate::file_manager::{get_branches, get_current_repo};
+use crate::file_manager::{get_branches, get_current_repo, delete_tag};
 use crate::command_utils::{*, self};
 use std::net::TcpStream;
 use std::io::prelude::*;
@@ -236,15 +236,23 @@ pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 
 pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l"){
-        println!("{}",get_tags_str(cliente)?);
+        println!("{}",get_tags_str(cliente.clone())?);
         return Ok(());
     }
     if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
-        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente)?;
+        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente.clone())?;
+        return Ok(())
     }
-    
-    //create_lightweight_tag(flags[0].clone(),cliente.clone())?;
-    Ok(())
+    if flags.len() == 1 && flags[0] != "-l" {
+        create_lightweight_tag(flags[0].clone(), cliente.clone())?;
+        return Ok(())
+    }
+    if flags.len() == 2 && flags[0] == "-d" {
+        let res = delete_tag(flags[1].clone(), cliente)?;
+        println!("{}", res);
+        return Ok(())
+    }
+    Err(GitrError::InvalidArgumentError(flags.join(" "),"tag [-l] [-a <tag-name> -m <tag-message>] <tag-name>".to_string() ))
 }
 
 

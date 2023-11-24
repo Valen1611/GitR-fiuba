@@ -513,6 +513,23 @@ pub fn get_tags(cliente: String)-> Result<Vec<String>, GitrError>{
     Ok(branches)
 }
 
+pub fn delete_tag(tag:String,cliente: String)-> Result<String, GitrError>{
+    let repo = get_current_repo(cliente.clone())?;
+    let path = format!("{}/gitr/refs/tags/{}", repo, tag);
+    let hash = match read_file(path.clone()){
+        Ok(hash) => hash,
+        Err(_) => return Err(GitrError::TagNonExistsError(tag))
+    };
+    match fs::remove_file(path){
+        Ok(_) => (),
+        Err(_) => return Err(GitrError::TagNonExistsError(tag))
+    };
+    let hash_first_seven = &hash[0..7];
+    let res = format!("Deleted tag '{}' (was {})", tag, hash_first_seven);
+    Ok(res)
+}
+
+
 //delete a branch in folder refs/heads
 pub fn delete_branch(branch:String, moving: bool,cliente: String)-> Result<(), GitrError>{
     let repo = get_current_repo(cliente.clone())?;
