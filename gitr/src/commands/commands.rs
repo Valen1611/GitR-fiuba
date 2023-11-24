@@ -225,7 +225,7 @@ pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
     let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
     print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
-
+    
     print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
     print!("{}",get_status_files_untracked(&untracked_files, hayindex));
     if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
@@ -233,6 +233,29 @@ pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     }
     Ok(())
 }
+
+pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
+    if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l"){
+        println!("{}",get_tags_str(cliente)?);
+        return Ok(());
+    }
+    if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
+        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente)?;
+    }
+    
+    //create_lightweight_tag(flags[0].clone(),cliente.clone())?;
+    Ok(())
+}
+
+
+
+// eec3e4fb8763aaad03bbb9079b9d891c6a80d110
+// object eb3935c7c33a0944f3446cde3975569a5c65b73b
+// type commit
+// tag algo
+// tagger Gianni <gianniboccazzi@gmail.com> 1700846856 -0300
+
+// este es el mensaje
 
 
 pub fn fetch(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{

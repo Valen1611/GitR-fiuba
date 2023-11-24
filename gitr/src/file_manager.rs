@@ -169,7 +169,7 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 
 //reads and object and returns raw data
 pub fn read_object(object: &String,path: String, add_gitr: bool)->Result<String, GitrError>{
-    let path = parse_object_hash(object,path, add_gitr)?;
+    let path = parse_object_hash(object, path, add_gitr)?;
     let bytes = deflate_file(path.clone())?;
     let object_data: Vec<u8> = get_object_data_with_bytes(bytes)?;
     let first_byte = object_data[0];
@@ -466,6 +466,31 @@ pub fn get_branches(cliente: String)-> Result<Vec<String>, GitrError>{
     let mut branches: Vec<String> = Vec::new();
     let repo = get_current_repo(cliente.clone())?;
     let dir = repo + "/gitr/refs/heads";
+    let paths = match fs::read_dir(dir.clone()) {
+        Ok(paths) => paths,
+        Err(_) => return Err(GitrError::FileReadError(dir)),
+    };
+    for path in paths {
+        let path = match path {
+            Ok(path) => path,
+            Err(_) => return Err(GitrError::FileReadError(dir)),
+        };
+        let path = path.path();
+        let path = path.to_str();
+        let path = match path{
+            Some(path) => path,
+            None => return Err(GitrError::FileReadError(dir)),
+        };
+        let path = path.split('/').collect::<Vec<&str>>();
+        let path = path[path.len()-1];
+        branches.push(path.to_string());
+    }
+    Ok(branches)
+}
+pub fn get_tags(cliente: String)-> Result<Vec<String>, GitrError>{
+    let mut branches: Vec<String> = Vec::new();
+    let repo = get_current_repo(cliente.clone())?;
+    let dir = repo + "/gitr/refs/tags";
     let paths = match fs::read_dir(dir.clone()) {
         Ok(paths) => paths,
         Err(_) => return Err(GitrError::FileReadError(dir)),

@@ -3,7 +3,7 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_branches}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::git_object::GitObject};
-use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
+use crate::{objects::{blob::{TreeEntry, Blob}, tag::Tag, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
 /***************************
@@ -81,6 +81,7 @@ pub fn print_cat_file_command(data_requested:&str, object_hash: &str, object_typ
             "blob" => print_blob_data(raw_data),
             "tree" => print_tree_data(raw_data),
             "commit" => print_commit_data(raw_data),
+            "tag" => print_tag_data(raw_data),
             _ => println!("Error: invalid object type"),
         }
     }
@@ -129,6 +130,9 @@ pub fn print_commit_data(raw_data: &str){
     println!("{}", raw_data);
 }
 
+pub fn print_tag_data(raw_data: &str){
+    println!("{}", raw_data);
+}
 
 /***************************
  *************************** 
@@ -1516,6 +1520,46 @@ pub fn rm_from_index(file_to_delete: &str,cliente: String)->Result<bool, GitrErr
     Ok(removed)
 }
 
+/***************************
+ *************************** 
+ *    TAG FUNCTIONS
+ **************************
+ **************************/
+
+pub fn create_lightweight_tag(tag_name: String, cliente: String) -> Result<(), GitrError>{
+    let current_commit = get_current_commit(cliente.clone())?;
+    let tag_path = get_current_repo(cliente.clone())? + "/gitr/refs/tags/" + &tag_name;
+    if Path::new(&tag_path).exists() {
+        println!("Error: tag '{}' already exists", tag_name);
+        return Ok(())
+    }
+    file_manager::write_file(tag_path, current_commit)?;
+    Ok(())
+}
+//"gianni/nuevo/gitr/refs/tags/nuevo/.head_repo"
+pub fn create_annotated_tag(tag_name: String, tag_message: String, cliente: String) -> Result<(), GitrError>{
+    let current_commit = get_current_commit(cliente.clone())?;
+    let tag_path = get_current_repo(cliente.clone())? + "/gitr/refs/tags/" + &tag_name;
+    println!("tag_path: {}", tag_path);
+    if Path::new(&tag_path).exists() {
+        println!("Error: tag '{}' already exists", tag_name);
+        return Ok(())
+    }
+    /*tag_name: String,  tag_message: String, commit_hash: String */
+    let tag = Tag::new(tag_name, tag_message, current_commit)?;
+    tag.save(cliente.clone())?;
+    file_manager::write_file(tag_path, tag.get_hash())?;
+    Ok(())
+}
+
+pub fn get_tags_str(cliente: String) -> Result<String,GitrError>{
+    let tags = file_manager::get_tags(cliente)?;
+    let mut tag_str = String::new(); 
+    for t in tags {
+        tag_str.push_str(&(t+"\n"))
+    }
+    Ok(tag_str.strip_suffix("\n").unwrap_or("").to_string())
+}
 /***************************
  *************************** 
  *    CLONE FUNCTIONS
