@@ -565,6 +565,9 @@ fn _aplicar_diffs(string_archivo: String, diff: Diff) -> Result<Vec<String>, Git
         println!("diff.lineas[i].2: {}", diff.lineas[i].2.clone());
         archivo_reconstruido.push(diff.lineas[i].2.clone()+"\n");
     }
+
+    println!("archivo_reconstruido: {:?}", archivo_reconstruido);
+
     Ok(archivo_reconstruido)
 }
 
@@ -797,26 +800,38 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
     println!("\x1b[0m");
 
     let mut indices_ya_visitados = HashSet::new();
-    
+    let limite_archivo = 2;
+
+
+    let mut iter_count = 0;
     for (index, flag, string, _) in result.clone() {
         println!("index: {}, flag: {}, str: \"{}\"", index, flag, string);
 
+        if index > limite_archivo {
+            break;
+        }
+
         if indices_ya_visitados.contains(&index) {
+            iter_count += 1;
             continue;
         }
 
         if !flag { //si es delete, pusheo porque no van a haber conflicts de delete.
             println!("DELETE pusheo: {} {} {}", index, flag, string);
             diff_final.lineas.push((index, flag, string));
+            iter_count += 1;
             continue;
         }
 
         let lineas  = map.get(&index).unwrap(); //entra al diccionario y se trae una linea o varias si hay conflict
         println!("lineas: {:?}", lineas);
+
+
         if lineas.len() == 1 { //si cuando me traigo las lineas, traigo una sola, es porque no hay dos operaciones de add en la misma linea.
             println!("pusheo: {} {} {}", index, flag, lineas[0].0.clone());
             diff_final.lineas.push((index, flag, lineas[0].0.clone()));
             indices_ya_visitados.insert(index);
+            
             continue;
         }
 
@@ -826,7 +841,42 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff) -> Result<Diff
         println!("pusheo: {} {} {}", index, flag, conflict);
         diff_final.lineas.push((index, flag, conflict));
         indices_ya_visitados.insert(index);
+        iter_count += 1;
     }
+    println!("itercount: {}", iter_count);
+    println!("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    if result[iter_count] == result[result.len()-1] {
+        /*
+        esta fallando aca
+        lo que quiero ver es si tengo una sola linea de diff por fuera del archivo
+        (y en ese saco solamente la pusheo y listo)
+
+        o si tengo 2 lineas, y en ese caso tengo que armar el conflict y pushear
+
+        solo puedo tener esos 2 casos en este punto
+        
+         */
+
+
+    println!("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
+        println!("pusheo: {} {} {}", result[iter_count].0, result[iter_count].1, result[iter_count].2);
+        diff_final.lineas.push((result[iter_count].0, result[iter_count].1, result[iter_count].2.clone()));
+    } else {
+    println!("CCCCCCCCCCCCCCCCCCCCCCCCCCC");
+
+        let new = result[iter_count].clone();
+        let origin = result[iter_count+1].clone();
+        
+        println!("new: {:?}", new);
+        println!("origin: {:?}", origin);
+
+        let conflict = armar_conflict2(origin.2, new.2);
+        println!("pusheo: {} {} {}", result[iter_count].0, result[iter_count].1, conflict);
+        diff_final.lineas.push((result[iter_count].0, result[iter_count].1, conflict));
+
+    }
+
 
 
     // // DESCARTAR !!!!!!!!!!!!!!!!!
@@ -2181,10 +2231,7 @@ mod aplicar_diffs_tests {
         "como\n",
         "<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH\n",
         "estas\n",
-        "<<<<<<< HEAD\nori4\n=======\nnew2\nnew3\n>>>>>>> BRANCH\n",
-        "iguales\n",
-        "<<<<<<< HEAD\nori5\n=======\nnew4\n>>>>>>> BRANCH\n",
-        "iguales para cerrar\n",
+        "<<<<<<< HEAD\nori4\niguales\nori5\niguales para cerrar\n=======\nnew2\nnew3\niguales\nnew4\niguales para cerrar\n>>>>>>> BRANCH\n",
         ];
 
         //assert_eq!(_archivo_reconstruido, archivo_esperado);
