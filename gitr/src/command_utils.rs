@@ -259,19 +259,20 @@ pub fn get_branch_to_checkout(args_received: Vec<String>,cliente: String) -> Res
  **************************/
 
 /// returns the username
-pub fn get_current_username() -> String{
-    if let Some(username) = std::env::var_os("USER") {
-        match username.to_str(){
-            Some(username) => username.to_string(),
-            None => String::from("User"),
-        }
-    } else{
-        String::from("User")
-    }
+pub fn get_current_username(cliente: String) -> String{
+    cliente
+    // if let Some(username) = std::env::var_os("USER") {
+    //     match username.to_str(){
+    //         Some(username) => username.to_string(),
+    //         None => String::from("User"),
+    //     }
+    // } else{
+    //     String::from("User")
+    // }
 }
 /// returns the mail from config
-pub fn get_user_mail_from_config() -> Result<String, GitrError>{
-    let config_data = match file_manager::read_file("gitrconfig".to_string()) {
+pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError>{
+    let config_data = match file_manager::read_file(cliente + "/gitrconfig") {
         Ok(config_data) => config_data,
         Err(e) => {
             return Err(GitrError::FileReadError(e.to_string()))
