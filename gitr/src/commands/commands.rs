@@ -255,17 +255,6 @@ pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     Err(GitrError::InvalidArgumentError(flags.join(" "),"tag [-l] [-a <tag-name> -m <tag-message>] <tag-name>".to_string() ))
 }
 
-
-
-// eec3e4fb8763aaad03bbb9079b9d891c6a80d110
-// object eb3935c7c33a0944f3446cde3975569a5c65b73b
-// type commit
-// tag algo
-// tagger Gianni <gianniboccazzi@gmail.com> 1700846856 -0300
-
-// este es el mensaje
-
-
 pub fn fetch(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     pullear(flags, false,cliente)
 }
