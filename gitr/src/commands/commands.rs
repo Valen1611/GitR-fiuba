@@ -331,6 +331,7 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
 
     // ########## REFERENCE UPDATE REQUEST ##########
     let (pkt_needed, pkt_ids) = reference_update_request(&mut stream,hash_n_references.clone(), cliente.clone())?;
+   
     // ########## PACKFILE ##########
     if pkt_needed {
         push_packfile(&mut stream, pkt_ids, hash_n_references, cliente)?;

@@ -91,6 +91,37 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_i
     Ok((request,pkt_needed,pkt_ids))
 }
 
+fn analizar_ref(hash_n_references: Vec<(String,String)>, refer: String, head_id: String, pkt_needed: &mut bool, pkt_ids: &mut Vec<String>, request: &mut String){
+    let mut falta = true;
+    for hash_n_ref in hash_n_references.clone() {
+        if hash_n_ref.1.ends_with(&refer) { 
+            falta = false;
+            if hash_n_ref.0 != head_id{
+                pkt_needed = true;
+                pkt_ids.push(heads_ids[j].clone());
+                let line = format!("{} {} {}\n",hash_n_ref.0,heads_ids[j],hash_n_ref.1);
+                request.push_str(&format!("{:04X}{}",line.len()+4,line));
+            }
+            break; 
+        }
+    }
+    if falta {
+        pkt_needed = true;
+        let mut ya_lo_tiene = false;
+        for hash_n_ref in hash_n_references.clone() {
+            if heads_ids[j] == hash_n_ref.0 {
+                ya_lo_tiene = true;
+                break;
+            }
+        }
+        if !ya_lo_tiene {
+            pkt_ids.push(heads_ids[j].clone());
+        }
+        let line = format!("0000000000000000000000000000000000000000 {} refs/heads/{}\n",heads_ids[j],refer);
+        request.push_str(&format!("{:04X}{}",line.len()+4,line));
+    }
+}
+
 pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:Vec<String>,cliente: String)->Result<String,GitrError>{
     let set = client_commits.clone().into_iter().collect::<HashSet<String>>();
     let mut want_message = String::new();

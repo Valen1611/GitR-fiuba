@@ -1744,8 +1744,10 @@ pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: 
  **************************/
 
 pub fn reference_update_request(stream: &mut TcpStream,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(bool,Vec<String>),GitrError> {
-    let ids_propios = file_manager::get_heads_ids(cliente.clone())?; // esta sacando de gitr/refs/heads
-    let refs_propios = get_branches(cliente.clone())?; // tambien de gitr/refs/heads
+    let mut ids_propios = file_manager::get_refs_ids("heads",cliente.clone())?; // esta sacando de gitr/refs/heads
+    ids_propios.append(&mut file_manager::get_refs_ids("tags",cliente.clone())?);
+    let mut refs_propios = get_branches(cliente.clone())?; // tambien de gitr/refs/heads
+    refs_propios.append(&mut file_manager::get_tags(cliente.clone())?);
     let (ref_upd,pkt_needed,pkt_ids) = ref_discovery::reference_update_request(hash_n_references.clone(),ids_propios,refs_propios)?;
     if let Err(e) = stream.write(ref_upd.as_bytes()) {
         println!("Error: {}", e);
