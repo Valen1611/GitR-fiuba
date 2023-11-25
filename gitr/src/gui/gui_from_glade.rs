@@ -74,7 +74,7 @@ fn build_ui(application: &gtk::Application,cliente: String)->Option<String>{
         commands::add(vec![".".to_string()],cliente_clon.clone()).unwrap();
         let message = format!("\"{}\"",commit_message.text());
         let cm_msg = vec!["-m".to_string(),message];
-        commands::commit(cm_msg,cliente_clon.clone()).unwrap();
+        commands::commit(cm_msg, "None".to_string() ,cliente_clon.clone()).unwrap();
     });
 
     let branch_selector_clon = branch_selector.clone();

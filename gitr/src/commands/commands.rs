@@ -102,7 +102,7 @@ pub fn rm(flags: Vec<String>,cliente: String)-> Result<(), GitrError> {
 } 
 
 //Record changes to the repository
-pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
+pub fn commit(flags: Vec<String>, second_parent: String, cliente: String)-> Result<(), GitrError>{
     //commit -m <message-of-commit>
     if flags[0] != "-m" || flags.len() < 2 {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m <commit_message>".to_string()))
@@ -124,7 +124,7 @@ pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
         if !message.chars().any(|c| c!= ' ' && c != '\"'){
             return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
         }
-        get_tree_entries(message.to_string(),cliente.clone())?;
+        get_tree_entries(message.to_string(),second_parent, cliente.clone())?;
         print_commit_confirmation(message,cliente.clone())?;
         Ok(())
     } else {

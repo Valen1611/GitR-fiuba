@@ -86,7 +86,7 @@ fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     
     let message_bien = "\n".to_owned()+message;
 
-    let commit = GitObject::Commit(Commit::new_from_packfile(tree.to_string(), parent.to_string(), author.to_string(), committer.to_string(), message_bien.to_string()).unwrap());
+    let commit = GitObject::Commit(Commit::new_from_packfile(tree.to_string(), vec![parent.to_string()], author.to_string(), committer.to_string(), message_bien.to_string()).unwrap());
     Ok(commit)
 }
 
