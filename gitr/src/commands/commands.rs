@@ -311,10 +311,12 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
    
     // ########## WANTS N HAVES ##########
-    protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
-
+    let pkt_needed = protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
     // ########## PACKFILE ##########
-    pull_packfile(&mut stream, actualizar_work_dir, cliente)
+    if pkt_needed {
+        pull_packfile(&mut stream, actualizar_work_dir, cliente)?;
+    }
+    Ok(())
 }
 
 pub fn pull(flags: Vec<String>,cliente: String) -> Result<(), GitrError> {

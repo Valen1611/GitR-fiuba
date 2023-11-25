@@ -1,4 +1,4 @@
-use std::{collections::HashSet, io::{BufReader, BufRead}, fs};
+use std::{collections::HashSet, io::{BufReader, BufRead, Read}, fs, net::TcpStream};
 use crate::{gitr_errors::{GitrError, self}, file_manager};
 
 pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
@@ -52,7 +52,6 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
 
 pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_n_tags_ids: (Vec<String>,Vec<String>), heads_n_tags_refs: (Vec<String>,Vec<String>))->Result<(String,bool,Vec<String>),GitrError>{
     let mut request = String::new();
-    let mut j = 0;
     let mut pkt_ids:Vec<String> = vec![];
     let heads_ids = heads_n_tags_ids.0;
     let tags_ids = heads_n_tags_ids.1;
@@ -64,7 +63,6 @@ pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_n
         analizar_ref(hash_n_references.clone(),(t_refer.to_string(),tags_ids[j].clone()),&mut pkt_ids,&mut request,"tags");
     }
     request.push_str("0000");
-    println!("request: {}",request);
     Ok((request,!pkt_ids.is_empty(),pkt_ids))
 }
 
@@ -121,10 +119,10 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
     if want_message == "0000"{
         return Ok(want_message.to_string());
     }
-    if !client_commits.len() == 0{
+    if client_commits.len() > 0{
         for have in file_manager::get_all_objects_hashes(cliente.clone())? {
-            let have_line = format!("have {}\n",have);
-            want_message.push_str(&format!("{:04X}{}\n",have_line.len()+4,have_line));
+            let have_line = format!("have {}",have);
+            want_message.push_str(&format!("{:04X}{}\n",have_line.len()+5,have_line));
         }
         
         want_message.push_str("0000");
@@ -184,4 +182,16 @@ fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut St
         } 
     }
     Ok(())
+}
+
+pub fn read_long_stream(stream: &mut TcpStream) -> Result<Vec<u8>, std::io::Error>  {
+    let mut buffer = [0; 1024];
+    let mut n = stream.read(&mut buffer)?;
+    let mut buf = Vec::from(&buffer[..n]);
+    while n == 1024 {
+        buffer = [0; 1024];
+        n = stream.read(&mut buffer)?;
+        buf.append(&mut Vec::from(&buffer[..n]));
+    }
+    Ok(buf)
 }

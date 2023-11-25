@@ -1685,7 +1685,7 @@ pub fn protocol_reference_discovery(stream: &mut TcpStream) -> Result<Vec<(Strin
     Ok(hash_n_references)
 }
 
-pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: &mut TcpStream,cliente: String) -> Result<(),GitrError> {
+pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: &mut TcpStream,cliente: String) -> Result<(bool),GitrError> {
     let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_refs_ids("heads",cliente.clone())?,cliente.clone())?;
     file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
     match stream.write(want_message.as_bytes()) {
@@ -1697,13 +1697,15 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
     };
     if want_message == "0000" {
         println!("cliente al día");
-        return Ok(())
+        return Ok(false)
     }
+    let _ = stream.write(&(0 as usize).to_be_bytes());
+    
     let mut buffer = [0;1024];
     match stream.read(&mut buffer) { // Leo si huvo error
         Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
             println!("Error: {}", String::from_utf8_lossy(&buffer));
-            return Ok(())
+            return Ok(false)
         }},
         Err(e) => {
             println!("Error: {}", e);
@@ -1711,19 +1713,30 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
         }
         
     }
-    Ok(())
+    Ok(true)
 }
 
 pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: String) -> Result<(),GitrError> {
-    let mut buffer = Vec::new();
-    let n = match stream.read_to_end(&mut buffer) { // Leo el packfile
+    let mut buf = match ref_discovery::read_long_stream(stream) { // Leo Packfile
+        Ok(buf) => buf,
         Err(e) => {
             println!("Error: {}", e);
-            return Ok(())
-        },
-        Ok(n) => n
+            return Err(GitrError::ConnectionError);
+        }
     };
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
+    
+    // let n = match stream.read_to_end(&mut buffer) { // Leo el packfile
+    //     Err(e) => {
+    //         println!("Error: {}", e);
+    //         return Ok(())
+    //     },
+    //     Ok(n) => n
+    // };
+    if buf.is_empty() {
+        println!("Error: packfile vacío");
+        return Ok(())
+    }
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buf)?;
     for object in pack_file_struct.objects.iter(){
         match object{
             GitObject::Blob(blob) => blob.save(cliente.clone())?,

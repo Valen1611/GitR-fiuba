@@ -78,25 +78,25 @@ impl Commit{
         self.tree.clone()
     }
 
-    pub fn new_commit_from_string(data: String,cliente: String)->Result<Commit,GitrError>{
+    pub fn new_commit_from_string(data: String)->Result<Commit,GitrError>{
         let (mut parent, mut tree, mut author, mut committer, mut message) = ("","None","None","None","None");
         for line in data.lines() {
-            let elems = line.split(" ").collect::<Vec<&str>>();
-            match elems[0] {
-                "tree" => tree = elems[1],
-                "parent" => parent = elems[1],
-                "author" => author = elems[1],
-                "committer" => committer = elems[1],
+            let elems = line.split_once(" ").unwrap_or((line.clone(),""));
+            match elems.0 {
+                "tree" => tree = elems.1,
+                "parent" => parent = elems.1,
+                "author" => author = elems.1,
+                "committer" => committer = elems.1,
                 _ => message = line,
             }
         }
-        let commit = Commit::new(tree.to_string(), parent.to_string(), author.to_string(), committer.to_string(), message.to_string(),cliente.clone())?;
+        let commit = Commit::new_from_packfile(tree.to_string(), parent.to_string(), author.to_string(), committer.to_string(), message.to_string())?;
         Ok(commit)
     }
 
-    pub fn new_commit_from_data(data: String,cliente: String) -> Result<Commit, GitrError>{
+    pub fn new_commit_from_data(data: String) -> Result<Commit, GitrError>{
        let commit_string = data.split("\0").collect::<Vec<&str>>()[1].to_string();
-       Ok(Self::new_commit_from_string(commit_string,cliente.clone())?)
+       Ok(Self::new_commit_from_string(commit_string)?)
     }
 
     pub fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> Result<Vec<String>,GitrError> {
@@ -109,7 +109,7 @@ impl Commit{
         for id in commits_id {
             
             object_ids.insert(id.clone());
-            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?,"Aux".to_string()) {
+            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
                 Ok(commit) => {commits.push(commit)},
                 _ => {return Err(GitrError::InvalidCommitError)}
             }
@@ -138,7 +138,7 @@ impl Commit{
                 continue;
             } 
             parents.push(id.clone());
-            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?,"Aux".to_string()) {
+            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
                 Ok(commit) => {Self::get_parents_rec(commit.parent, &rcv_commits,r_path.clone(),&mut parents)?},
                 _ => {return Err(GitrError::InvalidCommitError)}
             }
@@ -151,7 +151,7 @@ impl Commit{
             return Ok(());
         }
         parents.push(id.clone());
-        match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?, "Aux".to_string()) {
+        match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
             Ok(commit) => {Self::get_parents_rec(commit.parent, receivers_commits, r_path, parents)
             },
             _ => {return Err(GitrError::InvalidCommitError)}
@@ -169,7 +169,7 @@ mod tests {
 
         let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string(),"author".to_string()).unwrap();
         let commit_string = format!("tree {}\nparent {}\nauthor {} {} {}\ncommitter {}\n\nmessage", commit.tree, commit.parent, commit.author, "timestamp", "Buenos Aires +3", commit.committer);
-        let commit_from_string = Commit::new_commit_from_string(commit_string,"Tester".to_string()).unwrap();
+        let commit_from_string = Commit::new_commit_from_string(commit_string).unwrap();
         assert_eq!(commit_from_string.tree, commit.tree);
         assert_eq!(commit_from_string.parent, commit.parent);
         assert_eq!(commit_from_string.author, commit.author);
@@ -181,7 +181,7 @@ mod tests {
     fn new_commit_from_data() {
         let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string(),"author".to_string()).unwrap();
         let commit_string = format!("commit <lenght>\0tree {}\nparent {}\nauthor {} {} {}\ncommitter {}\n\nmessage", commit.tree, commit.parent, commit.author, "timestamp", "Buenos Aires +3", commit.committer);
-        let commit_from_string = Commit::new_commit_from_data(commit_string,"author".to_string()).unwrap();
+        let commit_from_string = Commit::new_commit_from_data(commit_string).unwrap();
         assert_eq!(commit_from_string.tree, commit.tree);
         assert_eq!(commit_from_string.parent, commit.parent);
         assert_eq!(commit_from_string.author, commit.author);
