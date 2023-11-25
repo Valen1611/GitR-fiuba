@@ -50,74 +50,59 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     Ok(references)
 }
 
-pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_ids: Vec<String>, heads_refs: Vec<String>)->Result<(String,bool,Vec<String>),GitrError>{
+pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_n_tags_ids: (Vec<String>,Vec<String>), heads_n_tags_refs: (Vec<String>,Vec<String>))->Result<(String,bool,Vec<String>),GitrError>{
     let mut request = String::new();
     let mut j = 0;
-    let mut pkt_needed = false;
     let mut pkt_ids:Vec<String> = vec![];
-    for refer in heads_refs { // veo si tengo que crear o modificar alguna
-        let mut falta = true;
-        for hash_n_ref in hash_n_references.clone() {
-            if hash_n_ref.1.ends_with(&refer) { 
-                falta = false;
-                if hash_n_ref.0 != heads_ids[j]{
-                    pkt_needed = true;
-                    pkt_ids.push(heads_ids[j].clone());
-                    let line = format!("{} {} {}\n",hash_n_ref.0,heads_ids[j],hash_n_ref.1);
-                    request.push_str(&format!("{:04X}{}",line.len()+4,line));
-                }
-                break; 
-            }
-        }
-        if falta {
-            pkt_needed = true;
-            let mut ya_lo_tiene = false;
-            for hash_n_ref in hash_n_references.clone() {
-                if heads_ids[j] == hash_n_ref.0 {
-                    ya_lo_tiene = true;
-                    break;
-                }
-            }
-            if !ya_lo_tiene {
-                pkt_ids.push(heads_ids[j].clone());
-            }
-            let line = format!("0000000000000000000000000000000000000000 {} refs/heads/{}\n",heads_ids[j],refer);
-            request.push_str(&format!("{:04X}{}",line.len()+4,line));
-        }
-        j += 1;
-    }
+    let heads_ids = heads_n_tags_ids.0;
+    let tags_ids = heads_n_tags_ids.1;
 
+    for (j,h_refer) in heads_n_tags_refs.0.iter().enumerate() { // veo si tengo que crear o modificar alguna de los heads
+        analizar_ref(hash_n_references.clone(),(h_refer.to_string(),heads_ids[j].clone()),&mut pkt_ids,&mut request,"heads");
+    }
+    for (j,t_refer) in heads_n_tags_refs.1.iter().enumerate() { // veo si tengo que crear o modificar alguna de los tags
+        analizar_ref(hash_n_references.clone(),(t_refer.to_string(),tags_ids[j].clone()),&mut pkt_ids,&mut request,"tags");
+    }
     request.push_str("0000");
-    Ok((request,pkt_needed,pkt_ids))
+    println!("request: {}",request);
+    Ok((request,!pkt_ids.is_empty(),pkt_ids))
 }
 
-fn analizar_ref(hash_n_references: Vec<(String,String)>, refer: String, head_id: String, pkt_needed: &mut bool, pkt_ids: &mut Vec<String>, request: &mut String){
+/// # Recibe:
+/// * hash_n_references: Vector de tuplas (hash, referencia) del servidor
+/// * refer: tupla (hash, referencia) de la referencia del cliente a analizar
+/// * pkt_ids: Vector de ids de los pkt que se van a enviar
+/// * request: String que se va a enviar al Servidor
+/// * carpeta: String que indica si la referencia es de heads o tags
+/// # Devuelve:
+/// Mutan pkt_ids y request añadiendo a cada uno la información correspondiente de la referencia analizada (de ser necesario).
+fn analizar_ref(hash_n_references: Vec<(String,String)>, refer: (String,String), pkt_ids: &mut Vec<String>, request: &mut String, carpeta: &str){
     let mut falta = true;
+    let ref_id = refer.1;
+    let refer = refer.0;
     for hash_n_ref in hash_n_references.clone() {
         if hash_n_ref.1.ends_with(&refer) { 
             falta = false;
-            if hash_n_ref.0 != head_id{
-                pkt_needed = true;
-                pkt_ids.push(heads_ids[j].clone());
-                let line = format!("{} {} {}\n",hash_n_ref.0,heads_ids[j],hash_n_ref.1);
+            if hash_n_ref.0 != ref_id{
+                pkt_ids.push(ref_id.clone());
+                let line = format!("{} {} refs/{}/{}\n",hash_n_ref.0,ref_id,carpeta,refer);
                 request.push_str(&format!("{:04X}{}",line.len()+4,line));
             }
             break; 
         }
     }
     if falta {
-        pkt_needed = true;
         let mut ya_lo_tiene = false;
         for hash_n_ref in hash_n_references.clone() {
-            if heads_ids[j] == hash_n_ref.0 {
+            if ref_id == hash_n_ref.0 {
                 ya_lo_tiene = true;
                 break;
             }
         }
         if !ya_lo_tiene {
-            pkt_ids.push(heads_ids[j].clone());
+            pkt_ids.push(ref_id.clone());
         }
-        let line = format!("0000000000000000000000000000000000000000 {} refs/heads/{}\n",heads_ids[j],refer);
+        let line = format!("0000000000000000000000000000000000000000 {} refs/{}/{}\n",ref_id,carpeta,refer);
         request.push_str(&format!("{:04X}{}",line.len()+4,line));
     }
 }

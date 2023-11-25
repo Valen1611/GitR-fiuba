@@ -169,6 +169,7 @@ pub fn get_tree_entries(message:String,cliente: String) -> Result<(), GitrError>
     Ok(())
 }
 /// write a new commit and the branch if necessary
+/// # revisar: cuando se hace el commit se le pasa 3 veces el cliente -> refactor?
 pub fn write_new_commit_and_branch(final_tree:Tree, message: String,cliente: String)->Result<(), GitrError>{
     let head = file_manager::get_head(cliente.clone())?;
     let repo = file_manager::get_current_repo(cliente.clone())?;
@@ -180,13 +181,13 @@ pub fn write_new_commit_and_branch(final_tree:Tree, message: String,cliente: Str
             let current_commit = file_manager::get_current_commit(cliente.clone())?;
             file_manager::write_file(dir.clone(), current_commit)?;
         }
-        let commit = Commit::new(final_tree.get_hash(), "None".to_string(), cliente.clone(), cliente.clone(), message)?;
+        let commit = Commit::new(final_tree.get_hash(), "None".to_string(), cliente.clone(), cliente.clone(), message, cliente.clone())?;
         commit.save(cliente.clone())?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit(cliente.clone())?;
-        let commit = Commit::new(final_tree.get_hash(), current_commit, cliente.clone(), cliente.clone(), message)?;
+        let commit = Commit::new(final_tree.get_hash(), current_commit, cliente.clone(), cliente.clone(), message,cliente.clone())?;
         commit.save(cliente)?;
         file_manager::write_file(dir, commit.get_hash())?;
     } 
@@ -1685,7 +1686,7 @@ pub fn protocol_reference_discovery(stream: &mut TcpStream) -> Result<Vec<(Strin
 }
 
 pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: &mut TcpStream,cliente: String) -> Result<(),GitrError> {
-    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids(cliente.clone())?,cliente.clone())?;
+    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_refs_ids("heads",cliente.clone())?,cliente.clone())?;
     file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
     match stream.write(want_message.as_bytes()) {
         Ok(_) => (),
@@ -1744,10 +1745,8 @@ pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: 
  **************************/
 
 pub fn reference_update_request(stream: &mut TcpStream,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(bool,Vec<String>),GitrError> {
-    let mut ids_propios = file_manager::get_refs_ids("heads",cliente.clone())?; // esta sacando de gitr/refs/heads
-    ids_propios.append(&mut file_manager::get_refs_ids("tags",cliente.clone())?);
-    let mut refs_propios = get_branches(cliente.clone())?; // tambien de gitr/refs/heads
-    refs_propios.append(&mut file_manager::get_tags(cliente.clone())?);
+    let ids_propios = (file_manager::get_refs_ids("heads",cliente.clone())?,file_manager::get_refs_ids("tags",cliente.clone())?); // esta sacando de gitr/refs/heads y tags
+    let refs_propios = (get_branches(cliente.clone())?,file_manager::get_tags(cliente.clone())?); // tambien de gitr/refs/heads y tags
     let (ref_upd,pkt_needed,pkt_ids) = ref_discovery::reference_update_request(hash_n_references.clone(),ids_propios,refs_propios)?;
     if let Err(e) = stream.write(ref_upd.as_bytes()) {
         println!("Error: {}", e);

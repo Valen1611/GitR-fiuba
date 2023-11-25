@@ -240,12 +240,14 @@ pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         return Ok(());
     }
     if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
-        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente)?;
+        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente.clone())?;
+    } else {
+        create_lightweight_tag(flags[0].clone(),cliente.clone())?;
     }
-    
-    //create_lightweight_tag(flags[0].clone(),cliente.clone())?;
     Ok(())
 }
+    
+    
 
 
 
