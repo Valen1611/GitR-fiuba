@@ -2,8 +2,9 @@
 
 
 use std::path::Path;
-use crate::file_manager::{get_branches, get_current_repo};
+use crate::file_manager::{get_branches, get_current_repo, read_object};
 use crate::command_utils::{*, self};
+use crate::objects::tree;
 use std::net::TcpStream;
 use std::io::prelude::*;
 use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
@@ -60,7 +61,38 @@ pub fn hash_object(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 
 
 //Output the contents or other properties such as size, type or delta information of an object 
-pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
+pub fn _cat_file(flags: Vec<String>,cliente: String) -> Result<String,GitrError> {
+
+    let (object_hash, res_output, size, object_type) = get_object_properties(flags.clone(),cliente)?;
+    //print_cat_file_command(&flags[0].clone(), &object_hash, &object_type, res_output.clone(), &size)?;
+    let data_requested = &flags[0];
+    if data_requested == "-t"{
+        return Ok(object_type);
+    }
+    if data_requested == "-s"{
+        return Ok(size);
+    }
+    if data_requested == "-p"{
+        let raw_data = match res_output.split_once('\0') {
+            Some((_object_type, raw_data)) => raw_data,
+            None => {
+                println!("Error: invalid object type");
+                return Err(GitrError::FileReadError(object_hash.to_string()))
+            }
+        };
+        match object_type.as_str() {
+            "blob" => Ok(raw_data.to_string()),
+            "tree" =>  Ok(get_tree_data(raw_data)),
+            "commit" => Ok(raw_data.to_string()),
+            "tag" => Ok(raw_data.to_string()),
+            _ => return Err(GitrError::FileReadError(object_hash.to_string())),
+        }
+    }
+    Ok("".to_string())
+
+}
+
+pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     //cat-file -p <object-hash>
     //cat-file -t <object-hash>
     //cat-file -s <object-hash>
@@ -68,11 +100,11 @@ pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         let flags_str = flags.join(" ");
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
-    let (object_hash, res_output, size, object_type) = get_object_properties(flags.clone(),cliente)?;
-    print_cat_file_command(&flags[0].clone(), &object_hash, &object_type, res_output.clone(), &size)?;
+    let data_to_print = _cat_file(flags, cliente)?;
+    println!("{}", data_to_print);
+    
     Ok(())
 }
-
 
 //Add file contents to the index
 pub fn add(flags: Vec<String>,cliente: String)-> Result<(), GitrError> {
@@ -370,6 +402,17 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     Ok(())
 }
 
+pub fn ls_tree(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
+    if flags.len() != 1 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "lstree <commit-hash>".to_string()));
+    }
+
+    let tree_hash = flags[0].clone();
+
+    cat_file(vec!["-p".to_string(), tree_hash], cliente)?;
+
+    Ok(())
+}
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));
 }

@@ -109,8 +109,9 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
-pub fn print_tree_data(raw_data: &str) {
+pub fn get_tree_data(raw_data: &str) -> String{
     let files = raw_data.split('\n').collect::<Vec<&str>>();
+    let mut tree_data = String::new();
     for object in files {
         let file_atributes = object.split(' ').collect::<Vec<&str>>();
         let file_mode = file_atributes[0];
@@ -123,8 +124,10 @@ pub fn print_tree_data(raw_data: &str) {
             "tree"
         };
 
-        println!("{} {} {} {}", file_mode, file_type, file_hash, file_path);
+        let entry = format!("{} {} {} {}\n", file_mode, file_type, file_hash, file_path);
+        tree_data.push_str(entry.as_str());
     }
+    tree_data
 }
 pub fn print_commit_data(raw_data: &str){
     println!("{}", raw_data);
