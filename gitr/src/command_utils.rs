@@ -61,32 +61,7 @@ pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
  **************************/
 
 
-/// receives properties from an object and prints depending on the flag
-pub fn print_cat_file_command(data_requested:&str, object_hash: &str, object_type:&str, res_output:String, size:&str)->Result<(),GitrError>{
-    if data_requested == "-t"{
-        println!("{}", object_type);
-    }
-    if data_requested == "-s"{
-        println!("{}", size);
-    }
-    if data_requested == "-p"{
-        let raw_data = match res_output.split_once('\0') {
-            Some((_object_type, raw_data)) => raw_data,
-            None => {
-                println!("Error: invalid object type");
-                return Err(GitrError::FileReadError(object_hash.to_string()))
-            }
-        };
-        match object_type {
-            "blob" => print_blob_data(raw_data),
-            "tree" => print_tree_data(raw_data),
-            "commit" => print_commit_data(raw_data),
-            "tag" => print_tag_data(raw_data),
-            _ => println!("Error: invalid object type"),
-        }
-    }
-    Ok(())
-}
+
 /// returns object hash, output, size and type
 pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String, String, String, String), GitrError>{
     let object_hash = &flags[1];

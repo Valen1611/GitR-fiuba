@@ -87,8 +87,10 @@ pub fn _cat_file(flags: Vec<String>,cliente: String) -> Result<String,GitrError>
             "tag" => Ok(raw_data.to_string()),
             _ => return Err(GitrError::FileReadError(object_hash.to_string())),
         }
+    } else {
+        Ok("Invalid option. Expected <[-t/-s/-p>".to_string())
     }
-    Ok("".to_string())
+    
 
 }
 
@@ -403,14 +405,81 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
 }
 
 pub fn ls_tree(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
-    if flags.len() != 1 {
-        return Err(GitrError::InvalidArgumentError(flags.join(" "), "lstree <commit-hash>".to_string()));
+
+    /*
+    *-d                    only show trees
+    -r                    recurse into subtrees
+        -t                    show trees when recursing
+    *-z                    terminate entries with NUL byte
+    -l, --long            include object size
+    --name-only           list only filenames
+    --name-status         list only filenames
+    --full-name           use full path names
+    --full-tree           list entire tree; not just current directory (implies --full-name)
+    --abbrev[=<n>]        use <n> digits to display object names
+
+     */
+    if flags.len() == 0 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree <tree-hash>".to_string()));
     }
 
-    let tree_hash = flags[0].clone();
+    let tree_hash = flags[flags.len()-1].clone();
+    let data = _cat_file(vec!["-p".to_string(), tree_hash], cliente)?;
+    
+    if flags.len() == 1 { // mismo comportamiento que cat-file
+        println!("{}", data);
+        return Ok(())
+    }
 
-    cat_file(vec!["-p".to_string(), tree_hash], cliente)?;
 
+    if flags[0] == "-d" {
+        let entries = data.split('\n').collect::<Vec<&str>>();
+        println!("\x1b[34mentries: {:?}\x1b[0m", entries);
+        for entry in entries {
+            if entry.is_empty() {
+                continue;
+            }
+            let entry = entry.split(' ').collect::<Vec<&str>>();
+
+            if entry[1] == "tree" {
+                println!("tree {} {}", entry[2], entry[0]);
+            }
+        }
+    }
+    if flags[0] == "-z" {
+        let entries = data.split('\n').collect::<Vec<&str>>();
+        println!("\x1b[34mentries: {:?}\x1b[0m", entries);
+        for entry in entries {
+            if entry.is_empty() {
+                continue;
+            }
+            let entry = entry.split(' ').collect::<Vec<&str>>();
+
+            if entry[1] == "tree" {
+                print!("tree {} {}\0", entry[2], entry[0]);
+            }
+        }
+    }
+    if flags[0] == "-l" {
+        let entries = data.split('\n').collect::<Vec<&str>>();
+        println!("\x1b[34mentries: {:?}\x1b[0m", entries);
+        for entry in entries {
+            if entry.is_empty() {
+                continue;
+            }
+            let entry = entry.split(' ').collect::<Vec<&str>>();
+
+            if entry[1] == "tree" {
+                print!("tree {} {}\0", entry[2], entry[0]);
+            }
+        }
+    }
+
+    println!("\x1b[34mflags: {:?}\x1b[0m", flags);
+    
+
+    //cat_file(vec!["-p".to_string(), tree_hash], cliente)?;
+    // aa21d98ba778b2c4059b857d2d1c143ba1742eee
     Ok(())
 }
 pub fn list_repos(cliente: String) {
