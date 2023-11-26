@@ -725,10 +725,10 @@ pub fn update_current_repo(dir_name: &String,cliente: String) -> Result<(), Gitr
 }
 
 /// Devuelve vector con los ids de los commits en los heads activos
-pub fn get_heads_ids(cliente: String) -> Result<Vec<String>, GitrError> {
+pub fn get_refs_ids(carpeta: &str,cliente: String) -> Result<Vec<String>, GitrError> {
     let mut branches: Vec<String> = Vec::new();
     let repo = get_current_repo(cliente.clone())?;
-    let dir = repo + "/gitr/refs/heads";
+    let dir = repo + "/gitr/refs/" + carpeta;
     let paths = match fs::read_dir(dir.clone()) {
         Ok(paths) => paths,
         Err(_) => return Err(GitrError::FileReadError(dir)),

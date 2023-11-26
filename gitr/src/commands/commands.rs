@@ -240,12 +240,14 @@ pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         return Ok(());
     }
     if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
-        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente)?;
+        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente.clone())?;
+    } else {
+        create_lightweight_tag(flags[0].clone(),cliente.clone())?;
     }
-    
-    //create_lightweight_tag(flags[0].clone(),cliente.clone())?;
     Ok(())
 }
+    
+    
 
 
 
@@ -309,10 +311,12 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
    
     // ########## WANTS N HAVES ##########
-    protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
-
+    let pkt_needed = protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
     // ########## PACKFILE ##########
-    pull_packfile(&mut stream, actualizar_work_dir, cliente)
+    if pkt_needed {
+        pull_packfile(&mut stream, actualizar_work_dir, cliente)?;
+    }
+    Ok(())
 }
 
 pub fn pull(flags: Vec<String>,cliente: String) -> Result<(), GitrError> {
@@ -331,6 +335,7 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
 
     // ########## REFERENCE UPDATE REQUEST ##########
     let (pkt_needed, pkt_ids) = reference_update_request(&mut stream,hash_n_references.clone(), cliente.clone())?;
+   
     // ########## PACKFILE ##########
     if pkt_needed {
         push_packfile(&mut stream, pkt_ids, hash_n_references, cliente)?;

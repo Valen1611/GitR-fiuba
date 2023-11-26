@@ -20,7 +20,7 @@ pub struct Commit{
 }
 
 impl Commit{
-    pub fn new(tree: String, parent: String, author: String, committer: String, message: String) -> Result<Self, GitrError>{
+    pub fn new(tree: String, parent: String, author: String, committer: String, message: String, cliente: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
         let header = "commit ";
         let tree_format = format!("tree {}\n", tree);
@@ -28,8 +28,8 @@ impl Commit{
         if parent != "None" {
             format_data.push_str(&format!("parent {}\n", parent));
         }
-        format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config()?, Utc::now().timestamp()));
-        format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config()?, Utc::now().timestamp()));
+        format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config(cliente.clone())?, Utc::now().timestamp()));
+        format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config(cliente.clone())?, Utc::now().timestamp()));
         format_data.push_str("\n");
         let message = message.replace("\"", "");
         format_data.push_str(&format!("{}\n", message));
@@ -81,16 +81,16 @@ impl Commit{
     pub fn new_commit_from_string(data: String)->Result<Commit,GitrError>{
         let (mut parent, mut tree, mut author, mut committer, mut message) = ("","None","None","None","None");
         for line in data.lines() {
-            let elems = line.split(" ").collect::<Vec<&str>>();
-            match elems[0] {
-                "tree" => tree = elems[1],
-                "parent" => parent = elems[1],
-                "author" => author = elems[1],
-                "committer" => committer = elems[1],
+            let elems = line.split_once(" ").unwrap_or((line.clone(),""));
+            match elems.0 {
+                "tree" => tree = elems.1,
+                "parent" => parent = elems.1,
+                "author" => author = elems.1,
+                "committer" => committer = elems.1,
                 _ => message = line,
             }
         }
-        let commit = Commit::new(tree.to_string(), parent.to_string(), author.to_string(), committer.to_string(), message.to_string())?;
+        let commit = Commit::new_from_packfile(tree.to_string(), parent.to_string(), author.to_string(), committer.to_string(), message.to_string())?;
         Ok(commit)
     }
 
@@ -167,7 +167,7 @@ mod tests {
     #[test]
     fn test01_new_commit_from_string() {
 
-        let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string()).unwrap();
+        let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string(),"author".to_string()).unwrap();
         let commit_string = format!("tree {}\nparent {}\nauthor {} {} {}\ncommitter {}\n\nmessage", commit.tree, commit.parent, commit.author, "timestamp", "Buenos Aires +3", commit.committer);
         let commit_from_string = Commit::new_commit_from_string(commit_string).unwrap();
         assert_eq!(commit_from_string.tree, commit.tree);
@@ -179,7 +179,7 @@ mod tests {
 
     #[test]
     fn new_commit_from_data() {
-        let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string()).unwrap();
+        let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string(),"author".to_string()).unwrap();
         let commit_string = format!("commit <lenght>\0tree {}\nparent {}\nauthor {} {} {}\ncommitter {}\n\nmessage", commit.tree, commit.parent, commit.author, "timestamp", "Buenos Aires +3", commit.committer);
         let commit_from_string = Commit::new_commit_from_data(commit_string).unwrap();
         assert_eq!(commit_from_string.tree, commit.tree);

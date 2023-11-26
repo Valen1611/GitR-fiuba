@@ -169,6 +169,7 @@ pub fn get_tree_entries(message:String,cliente: String) -> Result<(), GitrError>
     Ok(())
 }
 /// write a new commit and the branch if necessary
+/// # revisar: cuando se hace el commit se le pasa 3 veces el cliente -> refactor?
 pub fn write_new_commit_and_branch(final_tree:Tree, message: String,cliente: String)->Result<(), GitrError>{
     let head = file_manager::get_head(cliente.clone())?;
     let repo = file_manager::get_current_repo(cliente.clone())?;
@@ -180,13 +181,13 @@ pub fn write_new_commit_and_branch(final_tree:Tree, message: String,cliente: Str
             let current_commit = file_manager::get_current_commit(cliente.clone())?;
             file_manager::write_file(dir.clone(), current_commit)?;
         }
-        let commit = Commit::new(final_tree.get_hash(), "None".to_string(), cliente.clone(), cliente.clone(), message)?;
+        let commit = Commit::new(final_tree.get_hash(), "None".to_string(), cliente.clone(), cliente.clone(), message, cliente.clone())?;
         commit.save(cliente.clone())?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
         let dir = repo + "/gitr/" + &head;
         let current_commit = file_manager::get_current_commit(cliente.clone())?;
-        let commit = Commit::new(final_tree.get_hash(), current_commit, cliente.clone(), cliente.clone(), message)?;
+        let commit = Commit::new(final_tree.get_hash(), current_commit, cliente.clone(), cliente.clone(), message,cliente.clone())?;
         commit.save(cliente)?;
         file_manager::write_file(dir, commit.get_hash())?;
     } 
@@ -259,19 +260,20 @@ pub fn get_branch_to_checkout(args_received: Vec<String>,cliente: String) -> Res
  **************************/
 
 /// returns the username
-pub fn get_current_username() -> String{
-    if let Some(username) = std::env::var_os("USER") {
-        match username.to_str(){
-            Some(username) => username.to_string(),
-            None => String::from("User"),
-        }
-    } else{
-        String::from("User")
-    }
+pub fn get_current_username(cliente: String) -> String{
+    cliente
+    // if let Some(username) = std::env::var_os("USER") {
+    //     match username.to_str(){
+    //         Some(username) => username.to_string(),
+    //         None => String::from("User"),
+    //     }
+    // } else{
+    //     String::from("User")
+    // }
 }
 /// returns the mail from config
-pub fn get_user_mail_from_config() -> Result<String, GitrError>{
-    let config_data = match file_manager::read_file("gitrconfig".to_string()) {
+pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError>{
+    let config_data = match file_manager::read_file(cliente + "/gitrconfig") {
         Ok(config_data) => config_data,
         Err(e) => {
             return Err(GitrError::FileReadError(e.to_string()))
@@ -1683,8 +1685,8 @@ pub fn protocol_reference_discovery(stream: &mut TcpStream) -> Result<Vec<(Strin
     Ok(hash_n_references)
 }
 
-pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: &mut TcpStream,cliente: String) -> Result<(),GitrError> {
-    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids(cliente.clone())?,cliente.clone())?;
+pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: &mut TcpStream,cliente: String) -> Result<(bool),GitrError> {
+    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_refs_ids("heads",cliente.clone())?,cliente.clone())?;
     file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
     match stream.write(want_message.as_bytes()) {
         Ok(_) => (),
@@ -1695,13 +1697,15 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
     };
     if want_message == "0000" {
         println!("cliente al día");
-        return Ok(())
+        return Ok(false)
     }
+    let _ = stream.write(&(0 as usize).to_be_bytes());
+    
     let mut buffer = [0;1024];
     match stream.read(&mut buffer) { // Leo si huvo error
         Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
             println!("Error: {}", String::from_utf8_lossy(&buffer));
-            return Ok(())
+            return Ok(false)
         }},
         Err(e) => {
             println!("Error: {}", e);
@@ -1709,19 +1713,30 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
         }
         
     }
-    Ok(())
+    Ok(true)
 }
 
 pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: String) -> Result<(),GitrError> {
-    let mut buffer = Vec::new();
-    let n = match stream.read_to_end(&mut buffer) { // Leo el packfile
+    let mut buf = match ref_discovery::read_long_stream(stream) { // Leo Packfile
+        Ok(buf) => buf,
         Err(e) => {
             println!("Error: {}", e);
-            return Ok(())
-        },
-        Ok(n) => n
+            return Err(GitrError::ConnectionError);
+        }
     };
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
+    
+    // let n = match stream.read_to_end(&mut buffer) { // Leo el packfile
+    //     Err(e) => {
+    //         println!("Error: {}", e);
+    //         return Ok(())
+    //     },
+    //     Ok(n) => n
+    // };
+    if buf.is_empty() {
+        println!("Error: packfile vacío");
+        return Ok(())
+    }
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buf)?;
     for object in pack_file_struct.objects.iter(){
         match object{
             GitObject::Blob(blob) => blob.save(cliente.clone())?,
@@ -1743,8 +1758,8 @@ pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: 
  **************************/
 
 pub fn reference_update_request(stream: &mut TcpStream,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(bool,Vec<String>),GitrError> {
-    let ids_propios = file_manager::get_heads_ids(cliente.clone())?; // esta sacando de gitr/refs/heads
-    let refs_propios = get_branches(cliente.clone())?; // tambien de gitr/refs/heads
+    let ids_propios = (file_manager::get_refs_ids("heads",cliente.clone())?,file_manager::get_refs_ids("tags",cliente.clone())?); // esta sacando de gitr/refs/heads y tags
+    let refs_propios = (get_branches(cliente.clone())?,file_manager::get_tags(cliente.clone())?); // tambien de gitr/refs/heads y tags
     let (ref_upd,pkt_needed,pkt_ids) = ref_discovery::reference_update_request(hash_n_references.clone(),ids_propios,refs_propios)?;
     if let Err(e) = stream.write(ref_upd.as_bytes()) {
         println!("Error: {}", e);
