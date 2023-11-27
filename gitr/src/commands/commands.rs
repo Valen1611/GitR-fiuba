@@ -2,8 +2,9 @@
 
 
 use std::path::Path;
-use crate::file_manager::{get_branches, get_current_repo};
+use crate::file_manager::{get_branches, get_current_repo, read_object};
 use crate::command_utils::{*, self};
+use crate::objects::tree;
 use std::net::TcpStream;
 use std::io::prelude::*;
 use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
@@ -59,8 +60,9 @@ pub fn hash_object(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 }
 
 
-//Output the contents or other properties such as size, type or delta information of an object 
-pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
+
+
+pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     //cat-file -p <object-hash>
     //cat-file -t <object-hash>
     //cat-file -s <object-hash>
@@ -68,11 +70,11 @@ pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         let flags_str = flags.join(" ");
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
-    let (object_hash, res_output, size, object_type) = get_object_properties(flags.clone(),cliente)?;
-    print_cat_file_command(&flags[0].clone(), &object_hash, &object_type, res_output.clone(), &size)?;
+    let data_to_print = command_utils::_cat_file(flags, cliente)?;
+    println!("{}", data_to_print);
+    
     Ok(())
 }
-
 
 //Add file contents to the index
 pub fn add(flags: Vec<String>,cliente: String)-> Result<(), GitrError> {
@@ -370,6 +372,13 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     Ok(())
 }
 
+
+pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
+    if flags.len() == 0 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
+    }
+    command_utils::_ls_tree(flags, "".to_string(), cliente)
+}
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));
 }
