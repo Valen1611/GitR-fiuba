@@ -145,6 +145,7 @@ fn test_tag_lightweight(){
     let cliente = "cliente_tag_lightweight".to_string();
     fs::create_dir_all(Path::new(&cliente)).unwrap();
     commands::init(vec!["test_tag_lightweight".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_lightweight/blob1").to_string(), "Hello, im blob 1".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_lightweight/blob2").to_string(), "Hello, im blob 2".to_string());
     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
@@ -163,6 +164,7 @@ fn test_tag_annotated(){
     let cliente = "cliente_tag_annotated".to_string();
     fs::create_dir_all(Path::new(&cliente)).unwrap();
     commands::init(vec!["test_tag_annotated".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_annotated/blob1").to_string(), "Hello, im blob 1".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_annotated/blob2").to_string(), "Hello, im blob 2".to_string());
     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
@@ -179,9 +181,12 @@ fn test_tag_annotated(){
 #[test]
 #[serial]
 fn test_tag_delete(){
+
     let cliente = "cliente_tag_delete".to_string();
     fs::create_dir_all(Path::new(&cliente)).unwrap();
     commands::init(vec!["test_tag_delete".to_string()], cliente.clone()).unwrap();
+    //create gitrconfig for test
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_delete/blob1").to_string(), "Hello, im blob 1".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_delete/blob2").to_string(), "Hello, im blob 2".to_string());
     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
