@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, Hash
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_branches}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::{git_object::GitObject, tag}};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_branches, get_commit, update_head}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::{git_object::GitObject, tag}};
 use crate::{objects::{blob::{TreeEntry, Blob}, tag::Tag, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -1805,6 +1805,25 @@ pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_referenc
         println!("Error: {}", e);
         return Err(GitrError::ConnectionError);
     };
+    Ok(())
+}
+/*******************
+ * REBASE FUNCTIONS
+ * *****************/
+
+pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, cliente:String)-> Result<(),GitrError>{
+    let mut last_commit = get_commit(origin_name, cliente.clone())?;
+    for commit_old in to_rebase_commits.iter().rev(){
+        let main_tree = file_manager::get_main_tree(commit_old.clone(),cliente.clone())?;
+        let message = file_manager::get_commit_message(commit_old.clone(),cliente.clone())?;
+        let commit = Commit::new(main_tree.clone(), last_commit.clone(), cliente.clone(), cliente.clone(), message.clone(), cliente.clone())?;
+        commit.save(cliente.clone())?;
+        last_commit = commit.get_hash();
+    }
+    let repo = file_manager::get_current_repo(cliente.clone())?;
+    let head = file_manager::get_head(cliente.clone())?;
+    let dir = repo + "/gitr/" + &head;
+    file_manager::write_file(dir, last_commit)?;
     Ok(())
 }
 

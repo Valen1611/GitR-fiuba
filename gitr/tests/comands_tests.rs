@@ -181,11 +181,9 @@ fn test_tag_annotated(){
 #[test]
 #[serial]
 fn test_tag_delete(){
-
     let cliente = "cliente_tag_delete".to_string();
     fs::create_dir_all(Path::new(&cliente)).unwrap();
     commands::init(vec!["test_tag_delete".to_string()], cliente.clone()).unwrap();
-    //create gitrconfig for test
     let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_delete/blob1").to_string(), "Hello, im blob 1".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_delete/blob2").to_string(), "Hello, im blob 2".to_string());
@@ -200,4 +198,13 @@ fn test_tag_delete(){
     let res = file_manager::read_file(cliente.clone() + "/test_tag_delete/gitr/refs/tags/tag1");
     assert!(res.is_err());
     fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+/*********************
+      REBASE TESTS
+*********************/
+#[test]
+#[serial]
+fn test_rebase(){
+    
 }

@@ -60,7 +60,7 @@ impl Commit{
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
         Ok(Commit {data:compressed_file,hash: hashed_file_str, tree, parent, author, committer, message })
     }
-
+    
     pub fn save(&self,cliente: String) -> Result<(), GitrError>{
         crate::file_manager::write_object(self.data.clone(), self.hash.clone(),cliente)?;
         Ok(())

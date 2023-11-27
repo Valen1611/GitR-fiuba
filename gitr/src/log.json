@@ -3763,3 +3763,1553 @@
 {"type": "FileOperation","timestamp": "27-11-2023 17:17:18","message": "writing data to: cliente_rm/test_rm_blob/gitr/index"}
 {"type": "FileOperation","timestamp": "27-11-2023 17:17:18","message": "reading data from: cliente_rm/.head_repo"}
 {"type": "FileOperation","timestamp": "27-11-2023 17:17:18","message": "reading data from: cliente_rm/test_rm_blob/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:42:22","message": "creating dir: gianni"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:17","message": "writing data to: gianni/gitrconfig"}
+{"type": "Action","timestamp": "27-11-2023 17:43:21","message": "calling init with flags: ["repo"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "creating dir: gianni/repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "creating dir: gianni/repo/gitr"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "creating dir: gianni/repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "creating dir: gianni/repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "creating dir: gianni/repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "creating dir: gianni/repo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "creating dir: gianni/repo/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "creating dir: gianni/repo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "writing data to: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "writing data to: gianni/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:21","message": "writing data to: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 17:43:45","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "writing object 21c7de8be9398f4b356ffe7d75838fa166b4d5a6"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "creating dir: gianni/repo/gitr/objects/21"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "writing data to: gianni/repo/gitr/objects/21/c7de8be9398f4b356ffe7d75838fa166b4d5a6"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "writing data to: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:45","message": "writing data to: gianni/repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 17:43:54","message": "calling commit with flags: ["-m", "\"looo\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "27-11-2023 17:43:54","message": "No se pudo leer: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "27-11-2023 17:43:54","message": "No se pudo leer: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "writing object 54a48b9a3612f5a330daa322d3833a98e129a4a3"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "creating dir: gianni/repo/gitr/objects/54"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "writing data to: gianni/repo/gitr/objects/54/a48b9a3612f5a330daa322d3833a98e129a4a3"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "writing object 54a48b9a3612f5a330daa322d3833a98e129a4a3"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:54","message": "writing data to: gianni/repo/gitr/objects/54/a48b9a3612f5a330daa322d3833a98e129a4a3"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "writing data to: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "writing object c70a7201e3af1f530a4305acc3a39ae150cee665"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "creating dir: gianni/repo/gitr/objects/c7"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "writing data to: gianni/repo/gitr/objects/c7/0a7201e3af1f530a4305acc3a39ae150cee665"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "writing data to: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:55","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 17:43:57","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:43:57","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 17:44:09","message": "calling c with flags: ["-p", "c70a7201e3af1f530a4305acc3a39ae150cee665"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:09","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 17:44:52","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "writing object e61b97b4675238425b864fb64b537c3f5c6f17d0"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "creating dir: gianni/repo/gitr/objects/e6"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "writing data to: gianni/repo/gitr/objects/e6/1b97b4675238425b864fb64b537c3f5c6f17d0"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "writing data to: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "writing data to: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "writing object e61b97b4675238425b864fb64b537c3f5c6f17d0"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "writing data to: gianni/repo/gitr/objects/e6/1b97b4675238425b864fb64b537c3f5c6f17d0"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "reading data from: gianni/repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 17:44:52","message": "adding gianni/repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:52","message": "writing data to: gianni/repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 17:44:57","message": "calling commit with flags: ["-m", "\"otroma\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "writing object c7654ac6b5db5f0fcec84ca278b65ae3123549e7"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "writing data to: gianni/repo/gitr/objects/c7/654ac6b5db5f0fcec84ca278b65ae3123549e7"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "writing object c7654ac6b5db5f0fcec84ca278b65ae3123549e7"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "writing data to: gianni/repo/gitr/objects/c7/654ac6b5db5f0fcec84ca278b65ae3123549e7"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "writing object 03c1d4581a30c01d000fbdda22aef630eb5db9e4"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "creating dir: gianni/repo/gitr/objects/03"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "writing data to: gianni/repo/gitr/objects/03/c1d4581a30c01d000fbdda22aef630eb5db9e4"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "writing data to: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:57","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 17:44:58","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 17:45:07","message": "calling c with flags: ["-p", "03c1d4581a30c01d000fbdda22aef630eb5db9e4"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:45:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:29","message": "creating dir: gianni"}
+{"type": "Action","timestamp": "27-11-2023 18:42:37","message": "calling init with flags: ["rebase_repo"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "creating dir: gianni/rebase_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "creating dir: gianni/rebase_repo/gitr"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "creating dir: gianni/rebase_repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "creating dir: gianni/rebase_repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "creating dir: gianni/rebase_repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "creating dir: gianni/rebase_repo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "creating dir: gianni/rebase_repo/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "creating dir: gianni/rebase_repo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "writing data to: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "writing data to: gianni/rebase_repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:37","message": "writing data to: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:42:52","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "writing object 5ca302900e27180e253237f4a1eeb18dfa84280e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "creating dir: gianni/rebase_repo/gitr/objects/5c"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "writing data to: gianni/rebase_repo/gitr/objects/5c/a302900e27180e253237f4a1eeb18dfa84280e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:52","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:42:58","message": "calling commit with flags: ["-m", "\"primer", "commit\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "27-11-2023 18:42:58","message": "No se pudo leer: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "27-11-2023 18:42:58","message": "No se pudo leer: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "writing object 7e72f13bd6520993da7e1cee93515cf764af5d9c"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "creating dir: gianni/rebase_repo/gitr/objects/7e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "writing data to: gianni/rebase_repo/gitr/objects/7e/72f13bd6520993da7e1cee93515cf764af5d9c"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "writing object 7e72f13bd6520993da7e1cee93515cf764af5d9c"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "writing data to: gianni/rebase_repo/gitr/objects/7e/72f13bd6520993da7e1cee93515cf764af5d9c"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "writing data to: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "writing object 91499ff7b2d54f86580f1d7e41d95d3b4c0d3aae"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "creating dir: gianni/rebase_repo/gitr/objects/91"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "writing data to: gianni/rebase_repo/gitr/objects/91/499ff7b2d54f86580f1d7e41d95d3b4c0d3aae"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "writing data to: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:42:58","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 18:43:11","message": "calling checkout with flags: ["-b", "topic"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "writing data to: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "writing data to: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:11","message": "writing data to: gianni/rebase_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 18:43:22","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "writing object 6c37eb4d157fd696f882e29f66a158ece7bcef4a"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "creating dir: gianni/rebase_repo/gitr/objects/6c"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "writing data to: gianni/rebase_repo/gitr/objects/6c/37eb4d157fd696f882e29f66a158ece7bcef4a"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "writing object 6c37eb4d157fd696f882e29f66a158ece7bcef4a"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "writing data to: gianni/rebase_repo/gitr/objects/6c/37eb4d157fd696f882e29f66a158ece7bcef4a"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:43:22","message": "adding gianni/rebase_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:22","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:43:37","message": "calling commit with flags: ["-m", "\"primer", "commit", "de", "topic\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "writing object 10837e2ec8cbf0cc96b752e75c607ce56a01ff66"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "creating dir: gianni/rebase_repo/gitr/objects/10"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "writing data to: gianni/rebase_repo/gitr/objects/10/837e2ec8cbf0cc96b752e75c607ce56a01ff66"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "writing object 10837e2ec8cbf0cc96b752e75c607ce56a01ff66"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "writing data to: gianni/rebase_repo/gitr/objects/10/837e2ec8cbf0cc96b752e75c607ce56a01ff66"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "writing object 4b818d59f7ce4715c8d68f4fabdc88b5a0dac11e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "creating dir: gianni/rebase_repo/gitr/objects/4b"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "writing data to: gianni/rebase_repo/gitr/objects/4b/818d59f7ce4715c8d68f4fabdc88b5a0dac11e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "writing data to: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:37","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "Action","timestamp": "27-11-2023 18:43:45","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:45","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:45","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:43:47","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "writing data to: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:47","message": "writing data to: gianni/rebase_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 18:43:49","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:49","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:43:49","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:44:00","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "writing object 268d4b170b4b4769c899bcb9ab11e85b33ebff1e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "creating dir: gianni/rebase_repo/gitr/objects/26"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "writing data to: gianni/rebase_repo/gitr/objects/26/8d4b170b4b4769c899bcb9ab11e85b33ebff1e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "writing object 268d4b170b4b4769c899bcb9ab11e85b33ebff1e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "writing data to: gianni/rebase_repo/gitr/objects/26/8d4b170b4b4769c899bcb9ab11e85b33ebff1e"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:44:00","message": "adding gianni/rebase_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:00","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:44:07","message": "calling commit with flags: ["-m", "\"segundo", "commit", "de", "master\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "writing object 693a3d38d8af8b7fd04411ef4d00552bcffc2641"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "creating dir: gianni/rebase_repo/gitr/objects/69"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "writing data to: gianni/rebase_repo/gitr/objects/69/3a3d38d8af8b7fd04411ef4d00552bcffc2641"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "writing object 693a3d38d8af8b7fd04411ef4d00552bcffc2641"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "writing data to: gianni/rebase_repo/gitr/objects/69/3a3d38d8af8b7fd04411ef4d00552bcffc2641"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "writing object f65a325eaafed4f64921834979c384229e848106"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "creating dir: gianni/rebase_repo/gitr/objects/f6"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "writing data to: gianni/rebase_repo/gitr/objects/f6/5a325eaafed4f64921834979c384229e848106"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "writing data to: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:07","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 18:44:12","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "writing object f13ecb7f068289641bcf33fdd4481693a3a14822"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "creating dir: gianni/rebase_repo/gitr/objects/f1"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "writing data to: gianni/rebase_repo/gitr/objects/f1/3ecb7f068289641bcf33fdd4481693a3a14822"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "writing object f13ecb7f068289641bcf33fdd4481693a3a14822"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "writing data to: gianni/rebase_repo/gitr/objects/f1/3ecb7f068289641bcf33fdd4481693a3a14822"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:44:12","message": "adding gianni/rebase_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:12","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:44:22","message": "calling commit with flags: ["-m", "\"tercer", "commit", "de", "master\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "writing object 627e05b23cf0a2651579dae2a48c0cdf6dfea6ae"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "creating dir: gianni/rebase_repo/gitr/objects/62"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "writing data to: gianni/rebase_repo/gitr/objects/62/7e05b23cf0a2651579dae2a48c0cdf6dfea6ae"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "writing object 627e05b23cf0a2651579dae2a48c0cdf6dfea6ae"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "writing data to: gianni/rebase_repo/gitr/objects/62/7e05b23cf0a2651579dae2a48c0cdf6dfea6ae"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "writing object e0d1e7370530b4b14ee905f9d79d766d93225d84"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "creating dir: gianni/rebase_repo/gitr/objects/e0"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "writing data to: gianni/rebase_repo/gitr/objects/e0/d1e7370530b4b14ee905f9d79d766d93225d84"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "writing data to: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:22","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 18:44:32","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:32","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:44:49","message": "calling checkout with flags: ["topic"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "writing data to: gianni/rebase_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "writing data to: gianni/rebase_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:49","message": "writing data to: gianni/rebase_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 18:44:50","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:50","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:50","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:44:58","message": "calling rebase with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "writing object 5fe6d3222717a3bb12631f98463207fd23b3ada0"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "creating dir: gianni/rebase_repo/gitr/objects/5f"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "writing data to: gianni/rebase_repo/gitr/objects/5f/e6d3222717a3bb12631f98463207fd23b3ada0"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:44:58","message": "writing data to: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "Action","timestamp": "27-11-2023 18:45:06","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:06","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:45:26","message": "calling c with flags: ["-p", "4b818d59f7ce4715c8d68f4fabdc88b5a0dac11e"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:26","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:45:43","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:43","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:45:59","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:45:59","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:46:16","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/rebase_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/rebase_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:46:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:55:18","message": "creating dir: gianni"}
+{"type": "Action","timestamp": "27-11-2023 18:57:24","message": "calling init with flags: ["nuevo_repo"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "creating dir: gianni/nuevo_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "creating dir: gianni/nuevo_repo/gitr"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "creating dir: gianni/nuevo_repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "creating dir: gianni/nuevo_repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "creating dir: gianni/nuevo_repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "creating dir: gianni/nuevo_repo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "creating dir: gianni/nuevo_repo/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "creating dir: gianni/nuevo_repo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "writing data to: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "writing data to: gianni/nuevo_repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:24","message": "writing data to: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:57:44","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "writing object 5810e18c9b1ae6da164e8b5d46f919a2675abcfb"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "creating dir: gianni/nuevo_repo/gitr/objects/58"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "writing data to: gianni/nuevo_repo/gitr/objects/58/10e18c9b1ae6da164e8b5d46f919a2675abcfb"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:44","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:57:53","message": "calling commit with flags: ["-m", "\"primer", "commit", "de", "master\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "27-11-2023 18:57:53","message": "No se pudo leer: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "27-11-2023 18:57:53","message": "No se pudo leer: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "writing object d636abf0807f138703e6d6ab297f1d3acc41004d"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "creating dir: gianni/nuevo_repo/gitr/objects/d6"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "writing data to: gianni/nuevo_repo/gitr/objects/d6/36abf0807f138703e6d6ab297f1d3acc41004d"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "writing object d636abf0807f138703e6d6ab297f1d3acc41004d"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "writing data to: gianni/nuevo_repo/gitr/objects/d6/36abf0807f138703e6d6ab297f1d3acc41004d"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "writing object 29eb4c77909d5239d1885478dd775ef54f6072e2"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "creating dir: gianni/nuevo_repo/gitr/objects/29"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "writing data to: gianni/nuevo_repo/gitr/objects/29/eb4c77909d5239d1885478dd775ef54f6072e2"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:53","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 18:57:59","message": "calling checkout with flags: ["-b", "topic"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "writing data to: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:57:59","message": "writing data to: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 18:58:01","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:01","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:01","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:58:13","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "writing object b53cea72f457f620087aa15f610d2418464a9903"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "creating dir: gianni/nuevo_repo/gitr/objects/b5"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "writing data to: gianni/nuevo_repo/gitr/objects/b5/3cea72f457f620087aa15f610d2418464a9903"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "writing object b53cea72f457f620087aa15f610d2418464a9903"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "writing data to: gianni/nuevo_repo/gitr/objects/b5/3cea72f457f620087aa15f610d2418464a9903"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:58:13","message": "adding gianni/nuevo_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:13","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:58:21","message": "calling commit with flags: ["-m", "\"primer", "commit", "de", "topic\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "writing object 6db383d6a00eedbc74c12464db1ec54f5474e354"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "creating dir: gianni/nuevo_repo/gitr/objects/6d"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "writing data to: gianni/nuevo_repo/gitr/objects/6d/b383d6a00eedbc74c12464db1ec54f5474e354"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "writing object 6db383d6a00eedbc74c12464db1ec54f5474e354"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "writing data to: gianni/nuevo_repo/gitr/objects/6d/b383d6a00eedbc74c12464db1ec54f5474e354"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "writing object 943f191ed9c9057463b28107d679d673a67b34d8"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "creating dir: gianni/nuevo_repo/gitr/objects/94"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "writing data to: gianni/nuevo_repo/gitr/objects/94/3f191ed9c9057463b28107d679d673a67b34d8"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:21","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "Action","timestamp": "27-11-2023 18:58:28","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "writing data to: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "writing data to: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 18:58:28","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:28","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:58:37","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "writing object c2833b41bfd3ef2e44f060d6bf3c0dda37482a44"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "creating dir: gianni/nuevo_repo/gitr/objects/c2"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "writing data to: gianni/nuevo_repo/gitr/objects/c2/833b41bfd3ef2e44f060d6bf3c0dda37482a44"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "writing object c2833b41bfd3ef2e44f060d6bf3c0dda37482a44"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "writing data to: gianni/nuevo_repo/gitr/objects/c2/833b41bfd3ef2e44f060d6bf3c0dda37482a44"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:58:37","message": "adding gianni/nuevo_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:37","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:58:42","message": "calling commit with flags: ["-m", "\"segundo", "commit", "de", "master\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "writing object 399bd32e03bacdd2246597aa1b18490a53bc8998"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "creating dir: gianni/nuevo_repo/gitr/objects/39"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "writing data to: gianni/nuevo_repo/gitr/objects/39/9bd32e03bacdd2246597aa1b18490a53bc8998"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "writing object 399bd32e03bacdd2246597aa1b18490a53bc8998"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "writing data to: gianni/nuevo_repo/gitr/objects/39/9bd32e03bacdd2246597aa1b18490a53bc8998"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "writing object e2cefc00ffe49714d630fa8b3155f66bc97e6997"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "creating dir: gianni/nuevo_repo/gitr/objects/e2"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "writing data to: gianni/nuevo_repo/gitr/objects/e2/cefc00ffe49714d630fa8b3155f66bc97e6997"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:42","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 18:58:59","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "writing object fe2892cb56f52ee23aa9b25b3624243b58f90fb7"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "creating dir: gianni/nuevo_repo/gitr/objects/fe"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "writing data to: gianni/nuevo_repo/gitr/objects/fe/2892cb56f52ee23aa9b25b3624243b58f90fb7"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "writing object fe2892cb56f52ee23aa9b25b3624243b58f90fb7"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "writing data to: gianni/nuevo_repo/gitr/objects/fe/2892cb56f52ee23aa9b25b3624243b58f90fb7"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:58:59","message": "adding gianni/nuevo_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:58:59","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 18:59:07","message": "calling commit with flags: ["-m", "\"tercer", "commit", "de", "master\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "writing object 3616457d692b5f3c5a42ef5ec5cc204c16a9e0ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "creating dir: gianni/nuevo_repo/gitr/objects/36"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "writing data to: gianni/nuevo_repo/gitr/objects/36/16457d692b5f3c5a42ef5ec5cc204c16a9e0ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "writing object 3616457d692b5f3c5a42ef5ec5cc204c16a9e0ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "writing data to: gianni/nuevo_repo/gitr/objects/36/16457d692b5f3c5a42ef5ec5cc204c16a9e0ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "writing object 4c3ca2ff39aeadedc905d3b3a23ad032003989a0"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "creating dir: gianni/nuevo_repo/gitr/objects/4c"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "writing data to: gianni/nuevo_repo/gitr/objects/4c/3ca2ff39aeadedc905d3b3a23ad032003989a0"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:07","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 18:59:09","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:09","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:09","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:09","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:59:13","message": "calling checkout with flags: ["topic"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "writing data to: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:13","message": "writing data to: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 18:59:16","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:16","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:16","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:16","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:59:18","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:18","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 18:59:46","message": "calling rebase with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "writing object 3aae9afb2b34b67b84d1246e6f1a6c88539537ab"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "creating dir: gianni/nuevo_repo/gitr/objects/3a"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "writing data to: gianni/nuevo_repo/gitr/objects/3a/ae9afb2b34b67b84d1246e6f1a6c88539537ab"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:46","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "Action","timestamp": "27-11-2023 18:59:47","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 18:59:47","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 19:00:07","message": "calling c with flags: ["-p", "3aae9afb2b34b67b84d1246e6f1a6c88539537ab"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:00:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:17","message": "creating dir: gianni"}
+{"type": "Action","timestamp": "27-11-2023 19:02:31","message": "calling init with flags: ["nuevo_repo"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "creating dir: gianni/nuevo_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "creating dir: gianni/nuevo_repo/gitr"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "creating dir: gianni/nuevo_repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "creating dir: gianni/nuevo_repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "creating dir: gianni/nuevo_repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "creating dir: gianni/nuevo_repo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "creating dir: gianni/nuevo_repo/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "creating dir: gianni/nuevo_repo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "writing data to: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "writing data to: gianni/nuevo_repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:31","message": "writing data to: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 19:02:47","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "writing object 5810e18c9b1ae6da164e8b5d46f919a2675abcfb"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "creating dir: gianni/nuevo_repo/gitr/objects/58"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "writing data to: gianni/nuevo_repo/gitr/objects/58/10e18c9b1ae6da164e8b5d46f919a2675abcfb"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:02:47","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 19:03:00","message": "calling commit with flags: ["-m", "\"primer", "commit", "de", "master\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "27-11-2023 19:03:00","message": "No se pudo leer: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "27-11-2023 19:03:00","message": "No se pudo leer: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "writing object d636abf0807f138703e6d6ab297f1d3acc41004d"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "creating dir: gianni/nuevo_repo/gitr/objects/d6"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "writing data to: gianni/nuevo_repo/gitr/objects/d6/36abf0807f138703e6d6ab297f1d3acc41004d"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "writing object d636abf0807f138703e6d6ab297f1d3acc41004d"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "writing data to: gianni/nuevo_repo/gitr/objects/d6/36abf0807f138703e6d6ab297f1d3acc41004d"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "writing object 8fe5b2154362bc6d374161f7ee037791430ad9f1"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "creating dir: gianni/nuevo_repo/gitr/objects/8f"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "writing data to: gianni/nuevo_repo/gitr/objects/8f/e5b2154362bc6d374161f7ee037791430ad9f1"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:00","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 19:03:07","message": "calling checkout with flags: ["-b", "topic"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "writing data to: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:07","message": "writing data to: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 19:03:18","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "writing object b53cea72f457f620087aa15f610d2418464a9903"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "creating dir: gianni/nuevo_repo/gitr/objects/b5"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "writing data to: gianni/nuevo_repo/gitr/objects/b5/3cea72f457f620087aa15f610d2418464a9903"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "writing object b53cea72f457f620087aa15f610d2418464a9903"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "writing data to: gianni/nuevo_repo/gitr/objects/b5/3cea72f457f620087aa15f610d2418464a9903"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 19:03:18","message": "adding gianni/nuevo_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:18","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 19:03:24","message": "calling commit with flags: ["-m", "\"primer", "commit", "de", "topic\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "writing object 6db383d6a00eedbc74c12464db1ec54f5474e354"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "creating dir: gianni/nuevo_repo/gitr/objects/6d"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "writing data to: gianni/nuevo_repo/gitr/objects/6d/b383d6a00eedbc74c12464db1ec54f5474e354"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "writing object 6db383d6a00eedbc74c12464db1ec54f5474e354"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "writing data to: gianni/nuevo_repo/gitr/objects/6d/b383d6a00eedbc74c12464db1ec54f5474e354"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "writing object c93784842d621d1fd20be9c60e3a6c9bb6390c68"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "creating dir: gianni/nuevo_repo/gitr/objects/c9"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "writing data to: gianni/nuevo_repo/gitr/objects/c9/3784842d621d1fd20be9c60e3a6c9bb6390c68"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:24","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "Action","timestamp": "27-11-2023 19:03:27","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "writing data to: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:27","message": "writing data to: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 19:03:33","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "writing object c2833b41bfd3ef2e44f060d6bf3c0dda37482a44"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "creating dir: gianni/nuevo_repo/gitr/objects/c2"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "writing data to: gianni/nuevo_repo/gitr/objects/c2/833b41bfd3ef2e44f060d6bf3c0dda37482a44"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "writing object c2833b41bfd3ef2e44f060d6bf3c0dda37482a44"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "writing data to: gianni/nuevo_repo/gitr/objects/c2/833b41bfd3ef2e44f060d6bf3c0dda37482a44"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 19:03:33","message": "adding gianni/nuevo_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:33","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 19:03:40","message": "calling commit with flags: ["-m", "\"segundo", "commit", "de", "master\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "writing object 399bd32e03bacdd2246597aa1b18490a53bc8998"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "creating dir: gianni/nuevo_repo/gitr/objects/39"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "writing data to: gianni/nuevo_repo/gitr/objects/39/9bd32e03bacdd2246597aa1b18490a53bc8998"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "writing object 399bd32e03bacdd2246597aa1b18490a53bc8998"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "writing data to: gianni/nuevo_repo/gitr/objects/39/9bd32e03bacdd2246597aa1b18490a53bc8998"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "writing object 697424120bfcc906f9d39be7c09cb02aeddeb2ba"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "creating dir: gianni/nuevo_repo/gitr/objects/69"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "writing data to: gianni/nuevo_repo/gitr/objects/69/7424120bfcc906f9d39be7c09cb02aeddeb2ba"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:40","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 19:03:45","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "writing object fe2892cb56f52ee23aa9b25b3624243b58f90fb7"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "creating dir: gianni/nuevo_repo/gitr/objects/fe"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "writing data to: gianni/nuevo_repo/gitr/objects/fe/2892cb56f52ee23aa9b25b3624243b58f90fb7"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "writing object fe2892cb56f52ee23aa9b25b3624243b58f90fb7"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "writing data to: gianni/nuevo_repo/gitr/objects/fe/2892cb56f52ee23aa9b25b3624243b58f90fb7"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 19:03:45","message": "adding gianni/nuevo_repo/hola to index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:45","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "Action","timestamp": "27-11-2023 19:03:50","message": "calling commit with flags: ["-m", "\"tercer", "commit", "de", "master\""]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "writing object 3616457d692b5f3c5a42ef5ec5cc204c16a9e0ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "creating dir: gianni/nuevo_repo/gitr/objects/36"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "writing data to: gianni/nuevo_repo/gitr/objects/36/16457d692b5f3c5a42ef5ec5cc204c16a9e0ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "writing object 3616457d692b5f3c5a42ef5ec5cc204c16a9e0ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "writing data to: gianni/nuevo_repo/gitr/objects/36/16457d692b5f3c5a42ef5ec5cc204c16a9e0ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "writing object 40754dbc3eae04bb6e6963c2a5d9ba09c3968658"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "creating dir: gianni/nuevo_repo/gitr/objects/40"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "writing data to: gianni/nuevo_repo/gitr/objects/40/754dbc3eae04bb6e6963c2a5d9ba09c3968658"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:50","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "27-11-2023 19:03:54","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:54","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:54","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:54","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 19:03:55","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:03:55","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 19:04:01","message": "calling checkout with flags: ["topic"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "writing data to: gianni/nuevo_repo/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "writing data to: gianni/nuevo_repo/hola"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:01","message": "writing data to: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "Action","timestamp": "27-11-2023 19:04:02","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:02","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 19:04:17","message": "calling rebase with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "writing object c29d4cfd8aca312ecc3746b727bb79108ec90fc6"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "writing data to: gianni/nuevo_repo/gitr/objects/c2/9d4cfd8aca312ecc3746b727bb79108ec90fc6"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:17","message": "writing data to: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "Action","timestamp": "27-11-2023 19:04:18","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/nuevo_repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/nuevo_repo/gitr/refs/heads/topic"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:04:18","message": "reading data from: gianni/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 19:05:05","message": "calling c with flags: ["-p", "c29d4cfd8aca312ecc3746b727bb79108ec90fc6"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 19:05:05","message": "reading data from: gianni/.head_repo"}

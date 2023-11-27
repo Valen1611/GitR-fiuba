@@ -59,9 +59,6 @@ pub fn hash_object(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     Ok(())
 }
 
-
-
-
 pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     //cat-file -p <object-hash>
     //cat-file -t <object-hash>
@@ -405,6 +402,31 @@ pub fn print_current_repo(cliente: String) -> Result<(), GitrError> {
     println!("working on repo: {}", repo);
     Ok(())
 }
+
+pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
+    let origin_name = flags[0].clone();
+    let branch_name = file_manager::get_head(cliente.clone())?.split('/').collect::<Vec<&str>>()[2].to_string();
+    let branch_commits = command_utils::branch_commits_list(branch_name.clone(),cliente.clone())?;
+    let origin_commits = command_utils::branch_commits_list(origin_name.clone(),cliente.clone())?;
+    let mut to_rebase_commits: Vec<String> = vec![];
+    for commit in branch_commits.clone() {
+        if origin_commits.contains(&commit) {
+            if commit == origin_commits[0] {
+                println!("nothing to rebase");
+                return Ok(());
+            }
+            create_rebase_commits(to_rebase_commits, origin_name, cliente.clone())?;
+            break;
+        }
+        to_rebase_commits.push(commit);
+    }
+
+    
+    Ok(())
+}
+// -- 1 -- 2 -- 3 -- 4 - 5 - 6 master
+//                    \
+//                     - 7 - 8 - 9 topic
 
 #[cfg(test)]
 mod tests{
