@@ -3,7 +3,7 @@ use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager
 use std::{io::{Write, self}, fs};
 extern crate flate2;
 
-// use gitr::gui::gui_from_glade::*;
+use gitr::gui::gui_from_glade::*;
 
 fn get_input() -> Result<String, GitrError> {
         print!("\x1b[34mgitr: $ \x1b[0m");
@@ -19,7 +19,8 @@ fn get_input() -> Result<String, GitrError> {
         }
     
         Ok(input)
-    }
+}
+
 
 fn email_valido(email_recibido: String) -> bool {
         let email_parts:Vec<&str>  = email_recibido.split('@').collect::<Vec<&str>>();
@@ -35,7 +36,7 @@ fn email_valido(email_recibido: String) -> bool {
         }
 
         true
-    }
+}
 
 fn setup_config_file(){
     let mut email_recibido = String::new();
@@ -47,11 +48,11 @@ fn setup_config_file(){
             Err(_) => "user@mail.com".to_string(),
         };
     }
-        println!("El email es valido, ya puede comenzar a usar Gitr");
-     let name = command_utils::get_current_username();
-     let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
-     file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
- }
+    println!("El email es valido, ya puede comenzar a usar Gitr");
+    let name = command_utils::get_current_username();
+    let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
+    file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
+}
 
 pub fn existe_config() -> bool{
     fs::metadata("gitrconfig").is_ok()
@@ -66,9 +67,9 @@ fn print_bienvenida() {
 }
 
 fn main() {
-    // let child = std::thread::spawn(move || {
-    //     initialize_gui();
-    // });
+    let child = std::thread::spawn(move || {
+        initialize_gui();
+    });
 
     print_bienvenida();
 

@@ -4,7 +4,7 @@ use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBox
 
 use gtk::{Builder,Window, Button, FileChooserButton};
 
-use crate::commands::commands;
+use crate::commands::commands::{self, remote};
 use crate::file_manager;
 
 fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
@@ -17,6 +17,11 @@ fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
 fn existe_config() -> bool{
     fs::metadata("gitrconfig").is_ok()
 }
+
+// fn show_remote_error(builder: &Builder){
+//     let remote_error_dialog: Dialog = builder.object("remote_error").unwrap();
+//     remote_error_dialog.show();
+// }
 
 fn build_ui(application: &gtk::Application)->Option<String>{
     let glade_src = include_str!("gui_test.glade");
@@ -45,8 +50,9 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let push_button: Button = builder.object("push_button")?;
     let pull_button: Button = builder.object("pull_button")?;
     let fetch_button: Button = builder.object("fetch_button")?;
-    
-    
+    let remote_error_dialog: Dialog = builder.object("remote_error")?;
+    let remote_error_close_button: Button = builder.object("remote_error_close_button")?;
+    let close_commit_dialog_button: Button = builder.object("close_commit_dialog_button")?;
     //====Conexiones de señales====
     
     //====LOGIN====
@@ -54,6 +60,15 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let login_dialog_clone = login_dialog.clone();
     connect_button_clone.connect_clicked(move|_|{
         login_dialog_clone.show();
+    });
+
+    let login_button_clone = login_button.clone();
+    login_button_clone.connect_clicked(move|_|{
+        let mail = mail_entry.text().to_string();
+        let user = user_entry.text().to_string();
+        let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", mail, user);
+        file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
+        login_dialog.hide();
     });
 
     //====COMMIT====
@@ -71,8 +86,16 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         commands::add(vec![".".to_string()]).unwrap();
         let message = format!("\"{}\"",commit_message.text());
         let cm_msg = vec!["-m".to_string(),message];
-        commands::commit(cm_msg).unwrap();
+        if commands::commit(cm_msg).is_err(){
+            println!("Error al hacer commit");
+            return;
+        };
     });
+
+    close_commit_dialog_button.connect_clicked(move |_|{
+        commit_dialog.hide();
+        }
+    );
 
     //====BRANCH====
     let branch_selector_clon = branch_selector.clone();
@@ -99,7 +122,13 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         let repo_name = data_a.file_name().unwrap().to_str().unwrap(); 
         println!("Repo name: {:?}", repo_name);
         file_manager::update_current_repo(&repo_name.to_string()).unwrap();
-        let repo_branches = file_manager::get_branches().unwrap();
+        let repo_branches = match(file_manager::get_branches()){
+            Ok(branches) => branches,
+            Err(e) => {
+                println!("Error al obtener branches: {:?}",e);
+                return;
+            },
+        };
         println!("{:?}",repo_branches);
         update_branches(&branch_selector_clon.clone(),repo_branches);
     });
@@ -115,30 +144,53 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         let url = clone_url.text();
         println!("Clonando repo: {:?}", url);
         clone_dialog_.hide();
-        commands::clone(vec![url.to_string(),"repo_clonado".to_string()]).unwrap();
-        //Aca habria que setear el repo actual al recien
+        if commands::clone(vec![url.to_string(),"repo_clonado".to_string()]).is_err(){
+            println!("Error al clonar");
+            return;
+        };
+        //Aca habria que setear el repo actual al recien con el selector y el file explorer
     });
 
     //====PUSH====
     let clone_push = push_button.clone();
+    let clone_error = remote_error_dialog.clone();
     clone_push.connect_clicked(move|_|{
         let flags = vec![String::from("")];
-        commands::push(flags).unwrap();
+        if commands::push(flags).is_err(){
+            println!("Error al hacer push");
+            clone_error.show();
+            return;
+        };
         println!("Push button clicked");
     });
     //====PULL====
     let clone_pull = pull_button.clone();
+    let clone_error = remote_error_dialog.clone();
     clone_pull.connect_clicked(move|_|{
         let flags = vec![String::from("")];
-        commands::pull(flags).unwrap();
+        if commands::pull(flags).is_err(){
+            println!("Error al hacer pull");
+            clone_error.show();
+            return;
+        };
         println!("Pull button clicked");
     });
     //====FETCH====
     let clone_fetch = fetch_button.clone();
+    let clone_error = remote_error_dialog.clone();
     clone_fetch.connect_clicked(move|_|{
         let flags = vec![String::from("")];
-        commands::fetch(flags);
+        if commands::fetch(flags).is_err(){
+            println!("Error al hacer fetch");
+            clone_error.show();
+            return;
+        };
         println!("Fetch button clicked");
+    });
+
+    //====REMOTE ERROR DIALOG====
+    remote_error_close_button.connect_clicked(move|_|{
+        remote_error_dialog.hide();
     });
 
     window.set_application(Some(application));
