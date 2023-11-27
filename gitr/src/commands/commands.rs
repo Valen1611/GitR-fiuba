@@ -221,11 +221,9 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 // Show the working tree status
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     command_utils::status_print_current_branch(cliente.clone())?;
-
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
     let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
     print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
-    
     print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
     print!("{}",get_status_files_untracked(&untracked_files, hayindex));
     if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {

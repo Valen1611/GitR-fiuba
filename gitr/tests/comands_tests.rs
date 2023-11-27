@@ -134,3 +134,9 @@ fn test_ls_files_stage_after_adding_files(){
     fs::remove_dir_all("test_ls_files_stage").unwrap();
     assert_eq!(res, correct_res);
 }
+
+/*********************
+  TAG TESTS
+*********************/
+
+
