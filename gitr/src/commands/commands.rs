@@ -4,6 +4,7 @@
 use std::path::Path;
 use crate::file_manager::{get_branches, get_current_repo, delete_tag};
 use crate::command_utils::{*, self};
+use crate::objects::tree;
 use std::net::TcpStream;
 use std::io::prelude::*;
 use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
@@ -59,8 +60,9 @@ pub fn hash_object(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 }
 
 
-//Output the contents or other properties such as size, type or delta information of an object 
-pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
+
+
+pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     //cat-file -p <object-hash>
     //cat-file -t <object-hash>
     //cat-file -s <object-hash>
@@ -68,11 +70,11 @@ pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         let flags_str = flags.join(" ");
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
-    let (object_hash, res_output, size, object_type) = get_object_properties(flags.clone(),cliente)?;
-    print_cat_file_command(&flags[0].clone(), &object_hash, &object_type, res_output.clone(), &size)?;
+    let data_to_print = command_utils::_cat_file(flags, cliente)?;
+    println!("{}", data_to_print);
+    
     Ok(())
 }
-
 
 //Add file contents to the index
 pub fn add(flags: Vec<String>,cliente: String)-> Result<(), GitrError> {
@@ -259,6 +261,8 @@ pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     }
     Err(GitrError::InvalidArgumentError(flags.join(" "),"tag [-l] [-a <tag-name> -m <tag-message>] <tag-name>".to_string() ))
 }
+    
+    
 
 pub fn fetch(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     pullear(flags, false,cliente)
@@ -311,10 +315,12 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
    
     // ########## WANTS N HAVES ##########
-    protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
-
+    let pkt_needed = protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
     // ########## PACKFILE ##########
-    pull_packfile(&mut stream, actualizar_work_dir, cliente)
+    if pkt_needed {
+        pull_packfile(&mut stream, actualizar_work_dir, cliente)?;
+    }
+    Ok(())
 }
 
 pub fn pull(flags: Vec<String>,cliente: String) -> Result<(), GitrError> {
@@ -333,6 +339,7 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
 
     // ########## REFERENCE UPDATE REQUEST ##########
     let (pkt_needed, pkt_ids) = reference_update_request(&mut stream,hash_n_references.clone(), cliente.clone())?;
+   
     // ########## PACKFILE ##########
     if pkt_needed {
         push_packfile(&mut stream, pkt_ids, hash_n_references, cliente)?;
@@ -367,6 +374,13 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     Ok(())
 }
 
+
+pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
+    if flags.len() == 0 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
+    }
+    command_utils::_ls_tree(flags, "".to_string(), cliente)
+}
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));
 }
