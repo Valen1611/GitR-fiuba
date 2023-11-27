@@ -238,6 +238,13 @@ pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         return Ok(());
     }
     if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
+        if flags[3].starts_with("\""){
+            let message = &flags[3..];
+            let message = message.join(" ");
+            if !message.chars().any(|c| c!= ' ' && c != '\"'){
+                return Err(GitrError::InvalidArgumentError(flags.join(" "), "tag -a <tag-name> -m \"tag-message\"".to_string()))
+            }
+        } 
         create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente.clone())?;
         return Ok(())
     }
