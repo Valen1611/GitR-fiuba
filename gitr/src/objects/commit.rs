@@ -99,6 +99,7 @@ impl Commit{
     }
 
     pub fn new_commit_from_data(data: String) -> Result<Commit, GitrError>{
+        println!("data: {:?}", data);
        let commit_string = data.split("\0").collect::<Vec<&str>>()[1].to_string();
        Ok(Self::new_commit_from_string(commit_string)?)
     }
@@ -118,9 +119,7 @@ impl Commit{
                 _ => {return Err(GitrError::InvalidCommitError)}
             }
         } 
-        println!("commits len {}",commits.len());
         for commit in commits {
-            println!("===commit: {}\n",String::from_utf8_lossy(&file_manager::decode(&commit.get_data()).unwrap()));
             object_ids.insert(commit.get_tree());
 
             Tree::get_all_tree_objects(commit.get_tree(), r_path.clone(), &mut object_ids)?;
@@ -128,7 +127,8 @@ impl Commit{
         for obj in client_objects{
             object_ids.remove(&obj);
         } 
-        Ok(Vec::from_iter(object_ids.into_iter()))
+        let objects = Vec::from_iter(object_ids.clone().into_iter());
+        Ok(objects)
     
         
     }
@@ -145,23 +145,26 @@ impl Commit{
             } 
             parents.push(id.clone());
             match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
-                Ok(commit) => {Self::get_parents_rec(commit.parents[0].clone(), &rcv_commits,r_path.clone(),&mut parents)?},
+                Ok(commit) => {Self::get_parents_rec(commit.parents.clone(), &rcv_commits,r_path.clone(),&mut parents)?},
                 _ => {return Err(GitrError::InvalidCommitError)}
             }
         }
-        Ok(Vec::from_iter(parents.into_iter()))
+        Ok(parents)
     }
 
-    fn get_parents_rec(id: String, receivers_commits: &HashSet<String>,r_path: String, parents: &mut Vec<String>) -> Result<(), GitrError>{
-        if receivers_commits.contains(&id) || id == "None" || id == ""{
-            return Ok(());
+    fn get_parents_rec(ids: Vec<String>, receivers_commits: &HashSet<String>,r_path: String, parents: &mut Vec<String>) -> Result<(), GitrError>{
+        for id in ids {
+            if receivers_commits.contains(&id) || id == "None" || id == ""{
+                return Ok(());
+            }
+            parents.push(id.clone());
+            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
+                Ok(commit) => {Self::get_parents_rec(commit.parents.clone(), receivers_commits, r_path.clone(), parents)?;
+                },
+                _ => {return Err(GitrError::InvalidCommitError)}
+            }
         }
-        parents.push(id.clone());
-        match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
-            Ok(commit) => {Self::get_parents_rec(commit.parents[0].clone(), receivers_commits, r_path, parents)
-            },
-            _ => {return Err(GitrError::InvalidCommitError)}
-        }
+        Ok(())
     }
 }
 

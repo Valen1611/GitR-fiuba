@@ -1632,3 +1632,662 @@
 {"type": "FileOperation","timestamp": "27-11-2023 14:34:10","message": "reading data from: merge_demo/.head_repo"}
 {"type": "Action","timestamp": "27-11-2023 14:34:23","message": "calling c with flags: ["-p", "ffc93999e8f7f44e4ef340ec97de43b24763fb52"]"}
 {"type": "FileOperation","timestamp": "27-11-2023 14:34:23","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:12:43","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 15:12:45","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:12:45","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:12:45","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:12:45","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:13:41","message": "calling c with flags: ["-p", "9707ef42119384f228e0fd151d7b973b8cc77e26"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:13:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:15:14","message": "calling c with flags: ["-p", "ffc93999e8f7f44e4ef340ec97de43b24763fb52"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:15:14","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:15:26","message": "calling remote with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:15:26","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:15:26","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "Action","timestamp": "27-11-2023 15:15:31","message": "calling remote with flags: ["s1"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:15:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:15:31","message": "writing data to: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "Action","timestamp": "27-11-2023 15:16:17","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:16:17","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:15","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 15:17:51","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:17:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:18:14","message": "calling c with flags: ["-p", "9707ef42119384f228e0fd151d7b973b8cc77e26"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:18:14","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:19:36","message": "calling clone with flags: ["s1", "clonado"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "creating dir: merge_demo/clonado"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "creating dir: merge_demo/clonado/gitr"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "creating dir: merge_demo/clonado/gitr/objects"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "creating dir: merge_demo/clonado/gitr/refs"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "creating dir: merge_demo/clonado/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "creating dir: merge_demo/clonado/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "creating dir: merge_demo/clonado/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "creating dir: merge_demo/clonado/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "writing data to: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "writing data to: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "writing data to: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "writing data to: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:36","message": "reading data from: merge_demo/clonado/gitr/remote"}
+{"type": "Action","timestamp": "27-11-2023 15:19:57","message": "calling clone with flags: ["s1", "clonado"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "creating dir: merge_demo/clonado"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "creating dir: merge_demo/clonado/gitr"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "creating dir: merge_demo/clonado/gitr/objects"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "creating dir: merge_demo/clonado/gitr/refs"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "creating dir: merge_demo/clonado/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "creating dir: merge_demo/clonado/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "creating dir: merge_demo/clonado/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "creating dir: merge_demo/clonado/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "writing data to: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "writing data to: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "writing data to: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "writing data to: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "writing data to: merge_demo/clonado/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/clonado/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:19:57","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Error","timestamp": "27-11-2023 15:19:57","message": "ERROR: No se encontro el objeto 9707ef42119384f228e0fd151d7b973b8cc77e26"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:12","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 15:23:14","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:14","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:14","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:14","message": "reading data from: merge_demo/clonado/gitr/remote"}
+{"type": "Error","timestamp": "27-11-2023 15:23:14","message": "No se pudo leer: merge_demo/clonado/gitr/remote"}
+{"type": "Error","timestamp": "27-11-2023 15:23:14","message": "No se pudo leer el archivo merge_demo/clonado/gitr/remote"}
+{"type": "Action","timestamp": "27-11-2023 15:23:33","message": "calling gtr with flags: ["caso_sin_conflicts"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:33","message": "writing data to: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:23:47","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:23:47","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:50:59","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 15:51:02","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:51:02","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:04","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 15:52:07","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:52:07","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:18","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 15:54:26","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:54:26","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:55:52","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 15:56:00","message": "calling clone with flags: ["s1", "clonado"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "creating dir: merge_demo/clonado"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "creating dir: merge_demo/clonado/gitr"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "creating dir: merge_demo/clonado/gitr/objects"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "creating dir: merge_demo/clonado/gitr/refs"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "creating dir: merge_demo/clonado/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "creating dir: merge_demo/clonado/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "creating dir: merge_demo/clonado/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "creating dir: merge_demo/clonado/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "writing data to: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "writing data to: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "writing data to: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "writing data to: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "writing data to: merge_demo/clonado/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/clonado/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:56:00","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Error","timestamp": "27-11-2023 15:56:00","message": "ERROR: No se encontro el objeto 9707ef42119384f228e0fd151d7b973b8cc77e26"}
+{"type": "Action","timestamp": "27-11-2023 15:57:47","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:57:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:57:57","message": "calling gtr with flags: ["caso_sin_conflicts"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:57:57","message": "writing data to: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:57:59","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:57:59","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:58:27","message": "calling c with flags: ["-p", "5203c92803b164db0a8cb5799defca9455de06da"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:27","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 15:58:47","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 15:58:47","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:00:31","message": "calling c with flags: ["-p", "9707ef42119384f228e0fd151d7b973b8cc77e26"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:00:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:00:44","message": "calling c with flags: ["-p", "5203c92803b164db0a8cb5799defca9455de06da"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:00:44","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:45","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:13:49","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:13:49","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:19","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:16:27","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:16:27","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:31","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:17:34","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:17:34","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:50","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:18:51","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:18:51","message": "reading data from: gitrconfig"}
+{"type": "Action","timestamp": "27-11-2023 16:23:04","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:23:04","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:17","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:25:19","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:25:19","message": "reading data from: gitrconfig"}
+{"type": "Action","timestamp": "27-11-2023 16:28:09","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:28:09","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:11","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:33:15","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:33:15","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:02","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:46:08","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:46:08","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:22","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:47:31","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:31","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:32","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:32","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:32","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:32","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:47:44","message": "calling c with flags: ["-p", "9707ef42119384f228e0fd151d7b973b8cc77e26"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:47:44","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:49:02","message": "calling c with flags: ["-p", "92b2dddbfb1ae5738832e6d73ae58488931f4ece"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:49:02","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:51:04","message": "calling c with flags: ["-p", "2fa62508223f3b5948eee0c1f52d2e2de21f6236"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:51:04","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:51:52","message": "calling c with flags: ["-p", "3f64ad426de60dd4248d71315b1f7e2793819433"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:51:52","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:53:32","message": "calling c with flags: ["-p", "8b725898c235de638c6536f6c0318416df7f37ad"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:53:32","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:54:01","message": "calling c with flags: ["-p", "7d9f3755540103440a7ccb03b4d5e0ebe8ff2e11"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:54:01","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:55:34","message": "calling c with flags: ["-p", "2fa62508223f3b5948eee0c1f52d2e2de21f6236"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:55:34","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 16:56:05","message": "calling c with flags: ["-p", "3f64ad426de60dd4248d71315b1f7e2793819433"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:56:05","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:57:09","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 16:57:15","message": "calling c with flags: ["-p", "9707ef42119384f228e0fd151d7b973b8cc77e26"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 16:57:15","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Action","timestamp": "27-11-2023 17:01:08","message": "calling c with flags: ["-p", "92b2dddbfb1ae5738832e6d73ae58488931f4ece"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:01:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:16:47","message": "creating dir: merge_demo"}
+{"type": "Action","timestamp": "27-11-2023 17:17:10","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: merge_demo/caso_sin_conflicts/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:10","message": "reading data from: gitrconfig"}
+{"type": "Action","timestamp": "27-11-2023 17:17:41","message": "calling clone with flags: ["s1", "clonado"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/refs"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/clonado/gitr/remote"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: gitrconfig"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object 92b2dddbfb1ae5738832e6d73ae58488931f4ece"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/92"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/92/b2dddbfb1ae5738832e6d73ae58488931f4ece"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object 7d9f3755540103440a7ccb03b4d5e0ebe8ff2e11"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/7d"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/7d/9f3755540103440a7ccb03b4d5e0ebe8ff2e11"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object ffc93999e8f7f44e4ef340ec97de43b24763fb52"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/ff"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/ff/c93999e8f7f44e4ef340ec97de43b24763fb52"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object 4a25af97ac935334ec27a5ffd511cdf66f380e5b"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/4a"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/4a/25af97ac935334ec27a5ffd511cdf66f380e5b"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object 14e78df1afe02ab9206134460e0b8e2c6df050d7"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/14"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/14/e78df1afe02ab9206134460e0b8e2c6df050d7"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object 1bba949f42ab0a8c98e95df0d1575ffee45357da"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/1b"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/1b/ba949f42ab0a8c98e95df0d1575ffee45357da"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object 8b725898c235de638c6536f6c0318416df7f37ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/8b"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/8b/725898c235de638c6536f6c0318416df7f37ad"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object 2289e202e55287ea96f78288710950220e3f127f"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/22"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/22/89e202e55287ea96f78288710950220e3f127f"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object 9707ef42119384f228e0fd151d7b973b8cc77e26"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/97"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/97/07ef42119384f228e0fd151d7b973b8cc77e26"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing object fb7a22349a3e81a2913c3dd92825f0b47b0c4ec6"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "creating dir: merge_demo/clonado/gitr/objects/fb"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/objects/fb/7a22349a3e81a2913c3dd92825f0b47b0c4ec6"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/clonado/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/archivo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "reading data from: merge_demo/clonado/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/gitr/index"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:17:41","message": "writing data to: merge_demo/clonado/archivo_mergeado"}
+{"type": "Action","timestamp": "27-11-2023 17:18:08","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/clonado/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/clonado/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:08","message": "reading data from: merge_demo/.head_repo"}
+{"type": "Error","timestamp": "27-11-2023 17:18:08","message": "ERROR: No se encontro el objeto 2fa62508223f3b5948eee0c1f52d2e2de21f6236"}
+{"type": "Action","timestamp": "27-11-2023 17:18:21","message": "calling c with flags: ["-p", "9707ef42119384f228e0fd151d7b973b8cc77e26"]"}
+{"type": "FileOperation","timestamp": "27-11-2023 17:18:21","message": "reading data from: merge_demo/.head_repo"}
