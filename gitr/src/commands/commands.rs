@@ -2,7 +2,7 @@
 
 
 use std::path::Path;
-use crate::file_manager::{get_branches, get_current_repo, read_object};
+use crate::file_manager::{get_branches, get_current_repo, delete_tag};
 use crate::command_utils::{*, self};
 use crate::objects::tree;
 use std::net::TcpStream;
@@ -223,11 +223,9 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 // Show the working tree status
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     command_utils::status_print_current_branch(cliente.clone())?;
-
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
     let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
     print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
-    
     print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
     print!("{}",get_status_files_untracked(&untracked_files, hayindex));
     if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
@@ -238,29 +236,33 @@ pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 
 pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l"){
-        println!("{}",get_tags_str(cliente)?);
+        println!("{}",get_tags_str(cliente.clone())?);
         return Ok(());
     }
     if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
+        if flags[3].starts_with("\""){
+            let message = &flags[3..];
+            let message = message.join(" ");
+            if !message.chars().any(|c| c!= ' ' && c != '\"'){
+                return Err(GitrError::InvalidArgumentError(flags.join(" "), "tag -a <tag-name> -m \"tag-message\"".to_string()))
+            }
+        } 
         create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente.clone())?;
-    } else {
-        create_lightweight_tag(flags[0].clone(),cliente.clone())?;
+        return Ok(())
     }
-    Ok(())
+    if flags.len() == 1 && flags[0] != "-l" {
+        create_lightweight_tag(flags[0].clone(), cliente.clone())?;
+        return Ok(())
+    }
+    if flags.len() == 2 && flags[0] == "-d" {
+        let res = delete_tag(flags[1].clone(), cliente)?;
+        println!("{}", res);
+        return Ok(())
+    }
+    Err(GitrError::InvalidArgumentError(flags.join(" "),"tag [-l] [-a <tag-name> -m <tag-message>] <tag-name>".to_string() ))
 }
     
     
-
-
-
-// eec3e4fb8763aaad03bbb9079b9d891c6a80d110
-// object eb3935c7c33a0944f3446cde3975569a5c65b73b
-// type commit
-// tag algo
-// tagger Gianni <gianniboccazzi@gmail.com> 1700846856 -0300
-
-// este es el mensaje
-
 
 pub fn fetch(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     pullear(flags, false,cliente)
