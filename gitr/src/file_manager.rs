@@ -656,6 +656,8 @@ pub fn get_commit_date(commit: String, cliente: String)->Result<String, GitrErro
     let mut idx = 2;
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
         idx -= 1;
+    } else if commit[2].starts_with("parent") {
+        idx += 1;
     }
     let timestamp = commit[idx].split(' ').collect::<Vec<&str>>()[3];
     let timestamp_parsed = match timestamp.parse::<i64>(){
