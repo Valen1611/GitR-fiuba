@@ -169,7 +169,7 @@ pub fn branch(flags: Vec<String>,cliente: String)->Result<(), GitrError>{
     //branch -l
     //branch <new-branch-name>
     if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
-        print_branches(cliente.clone())?;
+        println!("{}", print_branches(cliente.clone())?);
         return Ok(())
     }
     commit_existing(cliente.clone())?;
@@ -420,8 +420,6 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
         }
         to_rebase_commits.push(commit);
     }
-
-    
     Ok(())
 }
 // -- 1 -- 2 -- 3 -- 4 - 5 - 6 master

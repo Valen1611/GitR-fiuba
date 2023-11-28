@@ -344,7 +344,8 @@ pub fn get_ls_files_deleted_modified(deleted: bool,cliente: String) -> Result<St
  **************************/
 
 /// print all the branches in repo
-pub fn print_branches(cliente: String)-> Result<(), GitrError>{
+pub fn print_branches(cliente: String)-> Result<String, GitrError>{
+    let mut res = String::new();
     let head = file_manager::get_head(cliente.clone())?;
     let head_vec = head.split('/').collect::<Vec<&str>>();
     let head = head_vec[head_vec.len()-1];
@@ -352,12 +353,12 @@ pub fn print_branches(cliente: String)-> Result<(), GitrError>{
         for branch in branches{
             if head == branch{
                 let index_branch = format!("* \x1b[92m{}\x1b[0m", branch);
-                println!("{}",index_branch);
+                res.push_str(&(index_branch + "\n"));
                 continue;
             }
-            println!("{}", branch);
+            res.push_str(&(format!("{}", branch)));
         }
-    Ok(())
+    Ok(res)
 }
 
 /// check if a branch exists
