@@ -60,7 +60,17 @@ pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
  **************************
  **************************/
 
-
+pub fn get_object_hash(cliente: String, file_path:&mut  String, write: bool)->Result<String, GitrError>{
+    let mut res = String::from("");
+    *file_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/" + file_path;
+    let raw_data = file_manager::read_file(file_path.to_string())?;  
+    let blob = Blob::new(raw_data)?;
+    res = blob.get_hash();
+    if write {
+        blob.save(cliente)?;
+    }
+    Ok(res)
+}
 
 /// returns object hash, output, size and type
 pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String, String, String, String), GitrError>{

@@ -49,13 +49,7 @@ pub fn hash_object(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
         file_path = flags[1].clone();
         write = true;
     } 
-    file_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/" + &file_path;
-    let raw_data = file_manager::read_file(file_path)?;  
-    let blob = Blob::new(raw_data)?;
-    println!("{}", blob.get_hash());
-    if write {
-        blob.save(cliente)?;
-    }
+    println!("{}", get_object_hash(cliente, &mut file_path, write)?);
     Ok(())
 }
 

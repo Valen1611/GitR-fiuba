@@ -1,5 +1,5 @@
 use std::{path::Path, fs};
-use gitr::command_utils::{get_object_properties, print_branches};
+use gitr::command_utils::{get_object_properties, print_branches, get_object_hash, _cat_file};
 use gitr::{command_utils, file_manager};
 use gitr::objects::blob::Blob;
 use gitr::{commands::commands, gitr_errors::GitrError};
@@ -314,3 +314,42 @@ fn test_branch_move(){
     assert_eq!(res, correct_res);
 }
 
+// /*********************
+//   HASH-OBJECT TESTS
+// *********************/
+
+#[test]
+#[serial]
+fn test_hash_object(){
+    let cliente = "cliente_hash_object".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_hash_object".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/test_hash_object/blob1").to_string(), "Hello, im blob 1".to_string());
+    let correct_hash = "016a41a6a35d50d311286359f1a7611948a9c529";
+    let res = get_object_hash(cliente.clone(), &mut ("blob1").to_string(), false).unwrap();
+    fs::remove_dir_all(cliente.clone()).unwrap();
+    assert_eq!(res, correct_hash);
+}
+
+
+// /*********************
+//   CAT-FILE TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_cat_file(){
+    let cliente = "cliente_cat_file".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_cat_file".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/test_cat_file/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_cat_file/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    let hash1 = Blob::new("Hello, im blob 1".to_string()).unwrap().get_hash();
+    let res = _cat_file(vec!["-p".to_string(), hash1.clone()], cliente.clone()).unwrap();
+    let correct_res = String::from("Hello, im blob 1");
+    assert_eq!(res, correct_res);
+    let res = _cat_file(vec!["-t".to_string(), hash1], cliente.clone()).unwrap();
+    let correct_res = String::from("blob");
+    assert_eq!(res, correct_res);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
