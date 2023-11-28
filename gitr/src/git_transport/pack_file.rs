@@ -1,6 +1,6 @@
 extern crate flate2;
 
-use std::io::{Write};
+use std::io::Write;
 
 
 use flate2::{Decompress, Compression};
