@@ -644,6 +644,8 @@ pub fn get_commit_author(commit: String, cliente: String)->Result<String, GitrEr
     let mut idx = 2;
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
         idx -= 1;
+    } else if commit[2].starts_with("parent"){
+        idx += 1;
     }
     let author = commit[idx].split(' ').collect::<Vec<&str>>()[1];
     Ok(author.to_string())

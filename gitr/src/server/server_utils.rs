@@ -247,7 +247,6 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
 fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<String>)> {
     
     let changes = String::from_utf8_lossy(buffer);//.unwrap_or("Error");
-    println!("changes: {changes:?}");
     let mut old: Vec<String> = vec![];
     let mut new: Vec<String> = vec![];
     let mut names: Vec<String> = vec![];

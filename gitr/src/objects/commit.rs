@@ -83,23 +83,25 @@ impl Commit{
     }
 
     pub fn new_commit_from_string(data: String)->Result<Commit,GitrError>{
-        let (mut parent, mut tree, mut author, mut committer, mut message) = ("","None","None","None","None");
+        let (mut parent, mut tree, mut author, mut committer, mut message) = (vec![],"None","None","None","None");
         for line in data.lines() {
-            let elems = line.split(" ").collect::<Vec<&str>>();
-            match elems[0] {
-                "tree" => tree = elems[1],
-                "parent" => parent = elems[1],
-                "author" => author = elems[1],
-                "committer" => committer = elems[1],
+            let elems = line.split_once(" ").unwrap_or((line,""));
+            match elems.0 {
+                "tree" => tree = elems.1,
+                "parent" => parent.push(elems.1.to_string()),
+                "author" => author = elems.1,
+                "committer" => committer = elems.1,
                 _ => message = line,
             }
         }
-        let commit = Commit::new(tree.to_string(), vec![parent.to_string()], author.to_string(), committer.to_string(), message.to_string())?;
+        if parent.is_empty(){
+            parent.push("".to_string());
+        }
+        let commit = Commit::new_from_packfile(tree.to_string(), parent ,author.to_string(), committer.to_string(), message.to_string())?;
         Ok(commit)
     }
 
     pub fn new_commit_from_data(data: String) -> Result<Commit, GitrError>{
-        println!("data: {:?}", data);
        let commit_string = data.split("\0").collect::<Vec<&str>>()[1].to_string();
        Ok(Self::new_commit_from_string(commit_string)?)
     }
@@ -155,7 +157,7 @@ impl Commit{
     fn get_parents_rec(ids: Vec<String>, receivers_commits: &HashSet<String>,r_path: String, parents: &mut Vec<String>) -> Result<(), GitrError>{
         for id in ids {
             if receivers_commits.contains(&id) || id == "None" || id == ""{
-                return Ok(());
+                continue;
             }
             parents.push(id.clone());
             match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
