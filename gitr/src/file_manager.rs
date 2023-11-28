@@ -169,7 +169,7 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 
 //reads and object and returns raw data
 pub fn read_object(object: &String,path: String, add_gitr: bool)->Result<String, GitrError>{
-    let path = parse_object_hash(object,path, add_gitr)?;
+    let path = parse_object_hash(object, path, add_gitr)?;
     let bytes = deflate_file(path.clone())?;
     let object_data: Vec<u8> = get_object_data_with_bytes(bytes)?;
     let first_byte = object_data[0];
@@ -487,6 +487,48 @@ pub fn get_branches(cliente: String)-> Result<Vec<String>, GitrError>{
     }
     Ok(branches)
 }
+pub fn get_tags(cliente: String)-> Result<Vec<String>, GitrError>{
+    let mut branches: Vec<String> = Vec::new();
+    let repo = get_current_repo(cliente.clone())?;
+    let dir = repo + "/gitr/refs/tags";
+    let paths = match fs::read_dir(dir.clone()) {
+        Ok(paths) => paths,
+        Err(_) => return Err(GitrError::FileReadError(dir)),
+    };
+    for path in paths {
+        let path = match path {
+            Ok(path) => path,
+            Err(_) => return Err(GitrError::FileReadError(dir)),
+        };
+        let path = path.path();
+        let path = path.to_str();
+        let path = match path{
+            Some(path) => path,
+            None => return Err(GitrError::FileReadError(dir)),
+        };
+        let path = path.split('/').collect::<Vec<&str>>();
+        let path = path[path.len()-1];
+        branches.push(path.to_string());
+    }
+    Ok(branches)
+}
+
+pub fn delete_tag(tag:String,cliente: String)-> Result<String, GitrError>{
+    let repo = get_current_repo(cliente.clone())?;
+    let path = format!("{}/gitr/refs/tags/{}", repo, tag);
+    let hash = match read_file(path.clone()){
+        Ok(hash) => hash,
+        Err(_) => return Err(GitrError::TagNonExistsError(tag))
+    };
+    match fs::remove_file(path){
+        Ok(_) => (),
+        Err(_) => return Err(GitrError::TagNonExistsError(tag))
+    };
+    let hash_first_seven = &hash[0..7];
+    let res = format!("Deleted tag '{}' (was {})", tag, hash_first_seven);
+    Ok(res)
+}
+
 
 //delete a branch in folder refs/heads
 pub fn delete_branch(branch:String, moving: bool,cliente: String)-> Result<(), GitrError>{
@@ -704,10 +746,10 @@ pub fn update_current_repo(dir_name: &String,cliente: String) -> Result<(), Gitr
 }
 
 /// Devuelve vector con los ids de los commits en los heads activos
-pub fn get_heads_ids(cliente: String) -> Result<Vec<String>, GitrError> {
+pub fn get_refs_ids(carpeta: &str,cliente: String) -> Result<Vec<String>, GitrError> {
     let mut branches: Vec<String> = Vec::new();
     let repo = get_current_repo(cliente.clone())?;
-    let dir = repo + "/gitr/refs/heads";
+    let dir = repo + "/gitr/refs/" + carpeta;
     let paths = match fs::read_dir(dir.clone()) {
         Ok(paths) => paths,
         Err(_) => return Err(GitrError::FileReadError(dir)),

@@ -3,7 +3,8 @@ use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
 use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff, commands::commands};
-use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit}, gitr_errors::GitrError};
+use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit,tag::Tag,}, gitr_errors::GitrError};
+use crate::{file_manager::get_branches, git_transport::{ref_discovery, pack_file::PackFile}, objects::git_object::GitObject};
 
 
 /***************************
@@ -61,31 +62,7 @@ pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
  **************************/
 
 
-/// receives properties from an object and prints depending on the flag
-pub fn print_cat_file_command(data_requested:&str, object_hash: &str, object_type:&str, res_output:String, size:&str)->Result<(),GitrError>{
-    if data_requested == "-t"{
-        println!("{}", object_type);
-    }
-    if data_requested == "-s"{
-        println!("{}", size);
-    }
-    if data_requested == "-p"{
-        let raw_data = match res_output.split_once('\0') {
-            Some((_object_type, raw_data)) => raw_data,
-            None => {
-                println!("Error: invalid object type");
-                return Err(GitrError::FileReadError(object_hash.to_string()))
-            }
-        };
-        match object_type {
-            "blob" => print_blob_data(raw_data),
-            "tree" => print_tree_data(raw_data),
-            "commit" => print_commit_data(raw_data),
-            _ => println!("Error: invalid object type"),
-        }
-    }
-    Ok(())
-}
+
 /// returns object hash, output, size and type
 pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String, String, String, String), GitrError>{
     let object_hash = &flags[1];
@@ -96,6 +73,39 @@ pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String,
     Ok((object_hash.to_string(), res_output.clone(), size.to_string(), object_type.to_string()))
 }
 
+//Output the contents or other properties such as size, type or delta information of an object 
+pub fn _cat_file(flags: Vec<String>,cliente: String) -> Result<String,GitrError> {
+
+    let (object_hash, res_output, size, object_type) = get_object_properties(flags.clone(),cliente)?;
+    //print_cat_file_command(&flags[0].clone(), &object_hash, &object_type, res_output.clone(), &size)?;
+    let data_requested = &flags[0];
+    if data_requested == "-t"{
+        return Ok(object_type);
+    }
+    if data_requested == "-s"{
+        return Ok(size);
+    }
+    if data_requested == "-p"{
+        let raw_data = match res_output.split_once('\0') {
+            Some((_object_type, raw_data)) => raw_data,
+            None => {
+                println!("Error: invalid object type");
+                return Err(GitrError::FileReadError(object_hash.to_string()))
+            }
+        };
+        match object_type.as_str() {
+            "blob" => Ok(raw_data.to_string()),
+            "tree" =>  Ok(get_tree_data(raw_data)),
+            "commit" => Ok(raw_data.to_string()),
+            "tag" => Ok(raw_data.to_string()),
+            _ => return Err(GitrError::FileReadError(object_hash.to_string())),
+        }
+    } else {
+        Ok("Invalid option. Expected <[-t/-s/-p>".to_string())
+    }
+    
+
+}
 
 /***************************
  *************************** 
@@ -108,8 +118,9 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
-pub fn print_tree_data(raw_data: &str) {
+pub fn get_tree_data(raw_data: &str) -> String{
     let files = raw_data.split('\n').collect::<Vec<&str>>();
+    let mut tree_data = String::new();
     for object in files {
         let file_atributes = object.split(' ').collect::<Vec<&str>>();
         let file_mode = file_atributes[0];
@@ -122,13 +133,18 @@ pub fn print_tree_data(raw_data: &str) {
             "tree"
         };
 
-        println!("{} {} {} {}", file_mode, file_type, file_hash, file_path);
+        let entry = format!("{} {} {} {}\n", file_mode, file_type, file_hash, file_path);
+        tree_data.push_str(entry.as_str());
     }
+    tree_data
 }
 pub fn print_commit_data(raw_data: &str){
     println!("{}", raw_data);
 }
 
+pub fn print_tag_data(raw_data: &str){
+    println!("{}", raw_data);
+}
 
 /***************************
  *************************** 
@@ -176,7 +192,7 @@ pub fn write_new_commit_and_branch(final_tree:Tree, message: String, second_pare
             let current_commit = file_manager::get_current_commit(cliente.clone())?;
             file_manager::write_file(dir.clone(), current_commit)?;
         }
-        let commit = Commit::new(final_tree.get_hash(), vec!["None".to_string()], cliente.clone(), cliente.clone(), message)?;
+        let commit = Commit::new(final_tree.get_hash(), vec!["None".to_string()], cliente.clone(), cliente.clone(), message,cliente.clone())?;
         commit.save(cliente.clone())?;
         file_manager::write_file(dir, commit.get_hash())?;
     }else{
@@ -186,7 +202,7 @@ pub fn write_new_commit_and_branch(final_tree:Tree, message: String, second_pare
         if second_parent != "None" {
             parents.push(second_parent);
         }
-        let commit = Commit::new(final_tree.get_hash(), parents, cliente.clone(), cliente.clone(), message)?;
+        let commit = Commit::new(final_tree.get_hash(), parents, cliente.clone(), cliente.clone(), message,cliente.clone())?;
         commit.save(cliente)?;
         file_manager::write_file(dir, commit.get_hash())?;
     } 
@@ -259,19 +275,20 @@ pub fn get_branch_to_checkout(args_received: Vec<String>,cliente: String) -> Res
  **************************/
 
 /// returns the username
-pub fn get_current_username() -> String{
-    if let Some(username) = std::env::var_os("USER") {
-        match username.to_str(){
-            Some(username) => username.to_string(),
-            None => String::from("User"),
-        }
-    } else{
-        String::from("User")
-    }
+pub fn get_current_username(cliente: String) -> String{
+    cliente
+    // if let Some(username) = std::env::var_os("USER") {
+    //     match username.to_str(){
+    //         Some(username) => username.to_string(),
+    //         None => String::from("User"),
+    //     }
+    // } else{
+    //     String::from("User")
+    // }
 }
 /// returns the mail from config
-pub fn get_user_mail_from_config() -> Result<String, GitrError>{
-    let config_data = match file_manager::read_file("gitrconfig".to_string()) {
+pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError>{
+    let config_data = match file_manager::read_file(cliente + "/gitrconfig") {
         Ok(config_data) => config_data,
         Err(e) => {
             return Err(GitrError::FileReadError(e.to_string()))
@@ -1300,6 +1317,54 @@ pub fn rm_from_index(file_to_delete: &str,cliente: String)->Result<bool, GitrErr
 
 /***************************
  *************************** 
+ *    TAG FUNCTIONS
+ **************************
+ **************************/
+
+pub fn create_lightweight_tag(tag_name: String, cliente: String) -> Result<(), GitrError>{
+    let current_commit = match get_current_commit(cliente.clone()){
+        Ok(commit) => commit,
+        Err(_) => {
+            println!("fatal: Failed to resolve 'HEAD' as a valid ref.");
+            return Ok(())
+        }
+    };
+    let tag_path = get_current_repo(cliente.clone())? + "/gitr/refs/tags/" + &tag_name;
+    if Path::new(&tag_path).exists() {
+        return Err(GitrError::TagAlreadyExistsError(tag_name.clone()));
+    }
+    file_manager::write_file(tag_path, current_commit)?;
+    Ok(())
+}
+
+pub fn create_annotated_tag(tag_name: String, tag_message: String, cliente: String) -> Result<(), GitrError>{
+    let current_commit = match get_current_commit(cliente.clone()){
+        Ok(commit) => commit,
+        Err(_) => {
+            println!("fatal: Failed to resolve 'HEAD' as a valid ref.");
+            return Ok(())
+        }
+    };
+    let tag_path = get_current_repo(cliente.clone())? + "/gitr/refs/tags/" + &tag_name;
+    if Path::new(&tag_path).exists() {
+        return Err(GitrError::TagAlreadyExistsError(tag_name.clone()));
+    }
+    let tag = Tag::new(tag_name, tag_message, current_commit)?;
+    tag.save(cliente.clone())?;
+    file_manager::write_file(tag_path, tag.get_hash())?;
+    Ok(())
+}
+
+pub fn get_tags_str(cliente: String) -> Result<String,GitrError>{
+    let tags = file_manager::get_tags(cliente)?;
+    let mut tag_str = String::new(); 
+    for t in tags {
+        tag_str.push_str(&(t+"\n"))
+    }
+    Ok(tag_str.strip_suffix("\n").unwrap_or("").to_string())
+}
+/***************************
+ *************************** 
  *    CLONE FUNCTIONS
  **************************
  **************************/
@@ -1367,11 +1432,235 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
 }
 
 
+/***************************
+ *************************** 
+ *    PULL FUNCTIONS
+ **************************
+ **************************/
+
+pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
+    let repo = file_manager::get_current_repo(cliente.clone())?;
+    let remote = file_manager::get_remote(cliente.clone())?;
+    let msj = format!("{} /{}\0host={}\0",orden,repo, remote);
+    let msj = format!("{:04x}{}", msj.len() + 4, msj);
+    let mut stream = match TcpStream::connect("localhost:9418") {
+        Ok(s) => s,
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    match stream.write(msj.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    Ok(stream)
+}
+
+pub fn protocol_reference_discovery(stream: &mut TcpStream) -> Result<Vec<(String,String)>,GitrError> {
+    let mut buffer = [0;1024];
+    let mut ref_disc = String::new();
+    loop {
+        match stream.read(&mut buffer) {
+            Ok(n) => {
+                if n == 0 {
+                    return Err(GitrError::ConnectionError);
+                }
+                let bytes = &buffer[..n];
+                let s = String::from_utf8_lossy(bytes);
+                ref_disc.push_str(&s);
+                if s.ends_with("0000") {
+                    break;
+                }
+            },
+            Err(e) => {
+                println!("Error: {}", e);
+                return Err(GitrError::ConnectionError);
+            }
+        }
+    }
+    let hash_n_references = ref_discovery::discover_references(ref_disc)?;
+    Ok(hash_n_references)
+}
+
+pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: &mut TcpStream,cliente: String) -> Result<bool,GitrError> {
+    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_refs_ids("heads",cliente.clone())?,cliente.clone())?;
+    file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
+    match stream.write(want_message.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    if want_message == "0000" {
+        println!("cliente al día");
+        return Ok(false)
+    }
+    let _ = stream.write(&(0 as usize).to_be_bytes());
+    
+    let mut buffer = [0;1024];
+    match stream.read(&mut buffer) { // Leo si huvo error
+        Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
+            println!("Error: {}", String::from_utf8_lossy(&buffer));
+            return Ok(false)
+        }},
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+        
+    }
+    Ok(true)
+}
+
+pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: String) -> Result<(),GitrError> {
+    let mut buf = match ref_discovery::read_long_stream(stream) { // Leo Packfile
+        Ok(buf) => buf,
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    if buf.is_empty() {
+        println!("Error: packfile vacío");
+        return Ok(())
+    }
+    let pack_file_struct = PackFile::new_from_server_packfile(&mut buf)?;
+    for object in pack_file_struct.objects.iter(){
+        match object{
+            GitObject::Blob(blob) => blob.save(cliente.clone())?,
+            GitObject::Commit(commit) => commit.save(cliente.clone())?,
+            GitObject::Tree(tree) => tree.save(cliente.clone())?,
+        }
+    }
+    if actualizar_work_dir {
+        update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
+    }
+    println!("pull successfull");
+    Ok(())
+}
+
+/***************************
+ *************************** 
+ *    PUSH FUNCTIONS
+ **************************
+ **************************/
+
+pub fn reference_update_request(stream: &mut TcpStream,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(bool,Vec<String>),GitrError> {
+    let ids_propios = (file_manager::get_refs_ids("heads",cliente.clone())?,file_manager::get_refs_ids("tags",cliente.clone())?); // esta sacando de gitr/refs/heads y tags
+    let refs_propios = (get_branches(cliente.clone())?,file_manager::get_tags(cliente.clone())?); // tambien de gitr/refs/heads y tags
+    let (ref_upd,pkt_needed,pkt_ids) = ref_discovery::reference_update_request(hash_n_references.clone(),ids_propios,refs_propios)?;
+    if let Err(e) = stream.write(ref_upd.as_bytes()) {
+        println!("Error: {}", e);
+        return Err(GitrError::ConnectionError);
+    };
+    if ref_upd == "0000" {
+        println!("client up to date");
+        return Ok((false,Vec::new()))
+    }
+    Ok((pkt_needed,pkt_ids))
+}
+
+pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(),GitrError> {
+    let repo = file_manager::get_current_repo(cliente.clone())? + "/gitr";
+    let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|(*t).0.clone()).collect(),repo.clone())?;
+    let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
+    let mut contents: Vec<Vec<u8>> = Vec::new();
+    for id in ids {
+        contents.push(file_manager::get_object_bytes(id, repo.clone())?)
+    }
+    let cont: Vec<(String, String, Vec<u8>)> = crate::git_transport::pack_file::prepare_contents(contents.clone());
+    let pk = crate::git_transport::pack_file::create_packfile(cont.clone())?;
+    if let Err(e) = stream.write(&pk) { // Mando el Packfile
+        println!("Error: {}", e);
+        return Err(GitrError::ConnectionError);
+    };
+    Ok(())
+}
+
+/*******************
+ *   LOG FUNCTIONS
+ * *****************/
+
+pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Result<(),GitrError> {
+    let tree_hash = flags[flags.len()-1].clone();
+    let data = _cat_file(vec!["-p".to_string(), tree_hash.clone()], cliente.clone())?;
+    
+    if flags.len() == 1 { // mismo comportamiento que cat-file
+        println!("{}", data);
+        return Ok(())
+    }
+
+    let entries = data.split('\n').collect::<Vec<&str>>();
+    let mut result = String::new();
+    for entry in entries {
+        if entry.is_empty() {
+            continue;
+        }
+        let entry = entry.split(' ').collect::<Vec<&str>>();
+        
+        let mut res_entry = Vec::new();
+
+        if flags[0].contains('r') { // mostrar archivos recursivamente
+            if entry[1] == "tree" {
+                let new_father = if father_dir.is_empty() {
+                    entry[3].to_string()
+                } else {
+                    father_dir.clone() + "/" + entry[3]
+                };
+                _ls_tree(vec![flags[0].clone(), entry[2].to_string().clone()], new_father.clone(), cliente.clone())?;
+                if !flags[0].contains('t') { // incluir trees en el caso recursivo
+                    continue;
+                }
+
+            }
+        }
+
+        if flags[0].contains('d') { // mostrar solo trees
+            if entry[1] != "tree" {
+                continue;
+            }
+        }
+
+        res_entry.push(entry[0].to_string()); // modo
+        res_entry.push(entry[1].to_string()); // tipo
+        res_entry.push(entry[2].to_string()); // hash
+
+        if flags[0].contains('l') { // incluir tamaño
+            let size = _cat_file(vec!["-s".to_string(), entry[2].to_string().clone()], cliente.clone())?;
+            res_entry.push(size);
+        }
+
+        let full_path = if father_dir.is_empty() {
+            entry[3].to_string()
+        } else {
+            father_dir.clone() + "/" + entry[3]
+        };
+
+        res_entry.push(full_path); // nombre
+
+        if flags[0].contains('z') { // separar con \0
+            res_entry.push("\0".to_string());
+        }
+        else {
+            res_entry.push("\n".to_string());
+        }
+        result.push_str(&res_entry.join(" "));
+    }
+
+    print!("{}", result);
+    Ok(())
+}
+
 #[cfg(test)]
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
 mod diffs_tests{
    
-    use crate::git_transport::ref_discovery::{self, assemble_want_message};
+    
 
     use super::*;
     

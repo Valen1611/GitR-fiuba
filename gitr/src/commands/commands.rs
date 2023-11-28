@@ -1,16 +1,8 @@
-
-
-
 use std::path::Path;
-use crate::file_manager::{get_branches, get_current_repo};
+use crate::file_manager::{get_current_repo, delete_tag};
 use crate::command_utils::{*, self};
-use std::net::TcpStream;
-use std::io::prelude::*;
-use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
-use crate::objects::git_object::GitObject::*;
-use crate::{objects::blob::Blob, objects::commit::Commit, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
-use crate::git_transport::pack_file::{create_packfile};
-use crate::{git_transport};
+use crate::file_manager::commit_log;
+use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
 use crate::git_transport::ref_discovery;
 
 /***************************
@@ -59,8 +51,9 @@ pub fn hash_object(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 }
 
 
-//Output the contents or other properties such as size, type or delta information of an object 
-pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
+
+
+pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     //cat-file -p <object-hash>
     //cat-file -t <object-hash>
     //cat-file -s <object-hash>
@@ -68,11 +61,11 @@ pub fn cat_file(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         let flags_str = flags.join(" ");
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
-    let (object_hash, res_output, size, object_type) = get_object_properties(flags.clone(),cliente)?;
-    print_cat_file_command(&flags[0].clone(), &object_hash, &object_type, res_output.clone(), &size)?;
+    let data_to_print = command_utils::_cat_file(flags, cliente)?;
+    println!("{}", data_to_print);
+    
     Ok(())
 }
-
 
 //Add file contents to the index
 pub fn add(flags: Vec<String>, cliente: String)-> Result<(), GitrError> {
@@ -221,11 +214,9 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 // Show the working tree status
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     command_utils::status_print_current_branch(cliente.clone())?;
-
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
     let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
     print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
-
     print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
     print!("{}",get_status_files_untracked(&untracked_files, hayindex));
     if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
@@ -234,6 +225,35 @@ pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     Ok(())
 }
 
+pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
+    if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l"){
+        println!("{}",get_tags_str(cliente.clone())?);
+        return Ok(());
+    }
+    if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
+        if flags[3].starts_with("\""){
+            let message = &flags[3..];
+            let message = message.join(" ");
+            if !message.chars().any(|c| c!= ' ' && c != '\"'){
+                return Err(GitrError::InvalidArgumentError(flags.join(" "), "tag -a <tag-name> -m \"tag-message\"".to_string()))
+            }
+        } 
+        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente.clone())?;
+        return Ok(())
+    }
+    if flags.len() == 1 && flags[0] != "-l" {
+        create_lightweight_tag(flags[0].clone(), cliente.clone())?;
+        return Ok(())
+    }
+    if flags.len() == 2 && flags[0] == "-d" {
+        let res = delete_tag(flags[1].clone(), cliente)?;
+        println!("{}", res);
+        return Ok(())
+    }
+    Err(GitrError::InvalidArgumentError(flags.join(" "),"tag [-l] [-a <tag-name> -m <tag-message>] <tag-name>".to_string() ))
+}
+    
+    
 
 pub fn fetch(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     pullear(flags, false,cliente)
@@ -280,93 +300,17 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     }
 
     // ########## HANDSHAKE ##########
-    let _repo = file_manager::get_current_repo(cliente.clone())?;
-    let remote = file_manager::get_remote(cliente.clone())?;
-    let msj = format!("git-upload-pack /{}\0host={}\0","mi-repo", remote);
-    let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect("localhost:9418") {
-        Ok(socket) => socket,
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
-    match stream.write(msj.as_bytes()) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
+    let mut stream = handshake("git-upload-pack".to_string(), cliente.clone())?;
     
     //  ########## REFERENCE DISCOVERY ##########
-    let mut buffer = [0;1024];
-    let mut ref_disc = String::new();
-    loop {
-        match stream.read(&mut buffer) {
-            Ok(n) => {
-                if n == 0 {
-                    return Ok(());
-                }
-                let bytes = &buffer[..n];
-                let s = String::from_utf8_lossy(bytes);
-                ref_disc.push_str(&s);
-                if s.ends_with("0000") {
-                    break;
-                }
-            },
-            Err(e) => {
-                println!("Error: {}", e);
-                return Ok(())
-            }
-        }
-    }
-    let hash_n_references = ref_discovery::discover_references(ref_disc)?;
-    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_heads_ids(cliente.clone())?,cliente.clone())?;
-    file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
-    match stream.write(want_message.as_bytes()) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
-    if want_message == "0000" {
-        println!("cliente al día");
-        return Ok(())
-    }
-    match stream.read(&mut buffer) { // Leo si huvo error
-        Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
-            println!("Error: {}", String::from_utf8_lossy(&buffer));
-            return Ok(())
-        }},
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-        
-    }
+    let hash_n_references = protocol_reference_discovery(&mut stream)?;
+   
+    // ########## WANTS N HAVES ##########
+    let pkt_needed = protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
     // ########## PACKFILE ##########
-    let mut buffer = Vec::new();
-    let n = match stream.read_to_end(&mut buffer) { // Leo el packfile
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        },
-        Ok(n) => n
-    };
-    let pack_file_struct = PackFile::new_from_server_packfile(&mut buffer[..n])?;
-    for object in pack_file_struct.objects.iter(){
-        match object{
-            Blob(blob) => blob.save(cliente.clone())?,
-            Commit(commit) => commit.save(cliente.clone())?,
-            Tree(tree) => tree.save(cliente.clone())?,
-        }
+    if pkt_needed {
+        pull_packfile(&mut stream, actualizar_work_dir, cliente)?;
     }
-    if actualizar_work_dir {
-        update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
-    }
-    println!("pull successfull");
     Ok(())
 }
 
@@ -379,73 +323,17 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "push <no-args>".to_string()));
     }
     // ########## HANDSHAKE ##########
-    let repo = file_manager::get_current_repo(cliente.clone())?;
-    let remote = file_manager::get_remote(cliente.clone())?;
-    let msj = format!("git-receive-pack /{}\0host={}\0","mi-repo", remote);
-    let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect("localhost:9418") {
-        Ok(socket) => socket,
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
-    match stream.write(msj.as_bytes()) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok(())
-        }
-    };
+    let mut stream = handshake("git-receive-pack".to_string(), cliente.clone())?;
+
     //  ########## REFERENCE DISCOVERY ##########
-    let mut buffer = [0;1024];
-    let mut ref_disc = String::new();
-    loop {
-        match stream.read(&mut buffer) {
-            Ok(n) => {
-                if n == 0 {
-                    return Ok(());
-                }
-                let bytes = &buffer[..n];
-                let s = String::from_utf8_lossy(bytes);
-                ref_disc.push_str(&s);
-                if s.ends_with("0000") {
-                    break;
-                }
-            },
-            Err(e) => {
-                println!("Error: {}", e);
-                return Ok(())
-            }
-        }
-    }
-    let hash_n_references = ref_discovery::discover_references(ref_disc)?;
+    let hash_n_references = protocol_reference_discovery(&mut stream)?;
+
     // ########## REFERENCE UPDATE REQUEST ##########
-    let ids_propios = file_manager::get_heads_ids(cliente.clone())?; // esta sacando de gitr/refs/heads
-    let refs_propios = get_branches(cliente.clone())?; // tambien de gitr/refs/heads
-    let (ref_upd,pkt_needed,pkt_ids) = ref_discovery::reference_update_request(hash_n_references.clone(),ids_propios,refs_propios)?;
-    if let Err(e) = stream.write(ref_upd.as_bytes()) {
-        println!("Error: {}", e);
-        return Ok(())
-    };
-    if ref_upd == "0000" {
-        println!("client up to date");
-        return Ok(())
-    }
+    let (pkt_needed, pkt_ids) = reference_update_request(&mut stream,hash_n_references.clone(), cliente.clone())?;
+   
+    // ########## PACKFILE ##########
     if pkt_needed {
-        let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|t.0.clone()).collect(),repo + "/gitr")?;
-        let repo = file_manager::get_current_repo(cliente.clone())? + "/gitr";
-        let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
-        let mut contents: Vec<Vec<u8>> = Vec::new();
-        for id in ids {
-            contents.push(file_manager::get_object_bytes(id, repo.clone())?)
-        }
-        let cont: Vec<(String, String, Vec<u8>)> = git_transport::pack_file::prepare_contents(contents.clone());
-        let pk = create_packfile(cont.clone())?;
-        if let Err(e) = stream.write(&pk) { // Mando el Packfile
-            println!("Error: {}", e);
-            return Ok(())
-        };
+        push_packfile(&mut stream, pkt_ids, hash_n_references, cliente)?;
     }
     Ok(())
 }
@@ -477,6 +365,13 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     Ok(())
 }
 
+
+pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
+    if flags.len() == 0 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
+    }
+    command_utils::_ls_tree(flags, "".to_string(), cliente)
+}
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));
 }

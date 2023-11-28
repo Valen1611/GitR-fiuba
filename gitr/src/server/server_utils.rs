@@ -88,7 +88,7 @@ fn gitr_upload_pack(stream: &mut TcpStream, guardados_id: HashSet<String>, r_pat
     if !wants_id.is_empty() {
         snd_packfile(stream, wants_id,haves_id, r_path)?;
     }
-
+    
     Ok(())
 }
 
@@ -146,39 +146,36 @@ fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<Stri
     Ok(())
 }
 
-
-
-
-
 fn packfile_negotiation(stream: &mut TcpStream, guardados_id: HashSet<String>) -> std::io::Result<(Vec<String>, Vec<String>)> {
     let (mut buffer, mut reply) = ([0; 1024], "0008NAK\n".to_string());
     let (mut wants_id, mut haves_id): (Vec<String>, Vec<String>) = (Vec::new(), Vec::new());    
-    loop {
-        let n = stream.read(&mut buffer)?;
-        let pkt_line = from_utf8(&buffer[..n]).unwrap_or("");
-        if pkt_line == "0000" { 
-            return Ok((wants_id, haves_id));
-        } 
-        (wants_id, haves_id) = wants_n_haves(pkt_line.to_string(),wants_id,haves_id)?;
-        
-        
-        for want in wants_id.clone() {
-            if !guardados_id.contains(&want) {
-                return  Err(Error::new(std::io::ErrorKind::InvalidInput, format!("Error: not our ref: {}\n",want)));
 
-            }
-        }
-        for have in haves_id.clone() {
-            if guardados_id.contains(&have) && reply == *"0008NAK\n" {
-                reply = format!("003aACK {}\n", have.clone());
-                let _ = stream.write(reply.as_bytes())?;
-                break
-            }
-        }  
-        if pkt_line.ends_with("0009done\n") { 
-            break;
+    let mut n = stream.read(&mut buffer)?;
+    let mut buf = Vec::from(&buffer[..n]);
+    while n == 1024 {
+        buffer = [0; 1024];
+        n = stream.read(&mut buffer)?;
+        buf.append(&mut Vec::from(&buffer[..n]));
+    }
+    let pkt_line = from_utf8(&buf).unwrap_or("");
+    if pkt_line == "0000" { 
+        return Ok((wants_id, haves_id));
+    } 
+    (wants_id, haves_id) = wants_n_haves(pkt_line.to_string(),wants_id,haves_id)?;
+    
+    for want in wants_id.clone() {
+        if !guardados_id.contains(&want) {
+            return  Err(Error::new(std::io::ErrorKind::InvalidInput, format!("Error: not our ref: {}\n",want)));
+
         }
     }
+    for have in haves_id.clone() {
+        if guardados_id.contains(&have) && reply == *"0008NAK\n" {
+            reply = format!("003aACK {}\n", have.clone());
+            let _ = stream.write(reply.as_bytes())?;
+            break
+        }
+    }  
     if reply == *"0008NAK\n" {
         let _ = stream.write(reply.as_bytes())?;
     }
@@ -309,7 +306,7 @@ fn _capacidades() -> String {
 }
 
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
-    if !pkt_line.is_empty() && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line == "0000\n" || pkt_line == "0000" || pkt_line == "0009done\n" || pkt_line == "00000009done" || pkt_line == "00000009done\n" ) {
+    if !pkt_line.is_empty() && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line.starts_with("0000")) {
         return Ok(())
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))

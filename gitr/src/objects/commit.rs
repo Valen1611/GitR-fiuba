@@ -20,7 +20,7 @@ pub struct Commit{
 }
 
 impl Commit{
-    pub fn new(tree: String, parents: Vec<String>, author: String, committer: String, message: String) -> Result<Self, GitrError>{
+    pub fn new(tree: String, parents: Vec<String>, author: String, committer: String, message: String, cliente: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
         let header = "commit ";
         let tree_format = format!("tree {}\n", tree);
@@ -30,8 +30,8 @@ impl Commit{
                 format_data.push_str(&format!("parent {}\n", parent));
             }
         }
-        format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config()?, Utc::now().timestamp()));
-        format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config()?, Utc::now().timestamp()));
+        format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config(cliente.clone())?, Utc::now().timestamp()));
+        format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config(cliente.clone())?, Utc::now().timestamp()));
         format_data.push_str("\n");
         let message = message.replace("\"", "");
         format_data.push_str(&format!("{}\n", message));

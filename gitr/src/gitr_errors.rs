@@ -26,6 +26,8 @@ pub enum GitrError{
     PackFileError(String,String),
     BranchNonExistsError(String),
     BranchAlreadyExistsError(String),
+    TagAlreadyExistsError(String),
+    TagNonExistsError(String),
 }
 
 impl fmt::Display for GitrError{
@@ -52,6 +54,8 @@ impl fmt::Display for GitrError{
             Self::ConnectionError => write!(f, "No se pudo conectar al servidor"),
             Self::SocketError(origin_function, info) => write!(f, "SocketError en la funcion {}. Info: {}", origin_function, info),
             Self::PackFileError(origin_function, info) => write!(f, "PackFileError en la funcion {}. Info: {}", origin_function, info),
+            Self::TagAlreadyExistsError(tag) => write!(f, "fatal: tag '{}' already exists", tag),
+            Self::TagNonExistsError(tag) => write!(f, "fatal: tag '{}' not found", tag),
     }
 }
 
