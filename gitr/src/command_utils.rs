@@ -356,7 +356,7 @@ pub fn print_branches(cliente: String)-> Result<String, GitrError>{
                 res.push_str(&(index_branch + "\n"));
                 continue;
             }
-            res.push_str(&(format!("{}", branch)));
+            res.push_str(&(format!("{}\n", branch)));
         }
     Ok(res)
 }

@@ -26,8 +26,10 @@ pub enum GitrError{
     PackFileError(String,String),
     BranchNonExistsError(String),
     BranchAlreadyExistsError(String),
+    DeleteCurrentBranchError(String),
     TagAlreadyExistsError(String),
     TagNonExistsError(String),
+
 }
 
 impl fmt::Display for GitrError{
@@ -56,6 +58,8 @@ impl fmt::Display for GitrError{
             Self::PackFileError(origin_function, info) => write!(f, "PackFileError en la funcion {}. Info: {}", origin_function, info),
             Self::TagAlreadyExistsError(tag) => write!(f, "fatal: tag '{}' already exists", tag),
             Self::TagNonExistsError(tag) => write!(f, "fatal: tag '{}' not found", tag),
+            Self::DeleteCurrentBranchError(branch) => write!(f, "cannot delete branch '{}': HEAD points to it", branch),
+            
     }
 }
 

@@ -541,8 +541,7 @@ pub fn delete_branch(branch:String, moving: bool,cliente: String)-> Result<(), G
     }
     let current_head = repo + "/gitr/" + &head;
     if current_head== path || head == "None"{
-        println!("cannot delete branch '{}': HEAD points to it", branch);
-        return Ok(())
+        return Err(GitrError::DeleteCurrentBranchError(branch));
     }
     let _ = fs::remove_file(path);
     println!("Deleted branch {}", branch);

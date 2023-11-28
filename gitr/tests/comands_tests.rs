@@ -217,7 +217,7 @@ fn test_branch_newbranch(){
     commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
     commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
     let res = print_branches(cliente.clone()).unwrap();
-    let correct_res = String::from("* \x1b[92mmaster\x1b[0m\nbranch1");
+    let correct_res = String::from("* \x1b[92mmaster\x1b[0m\nbranch1\n");
     assert_eq!(res, correct_res);
     fs::remove_dir_all(cliente.clone()).unwrap();
 }
@@ -268,7 +268,7 @@ fn test_branch_delete(){
     commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
     commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
     let res = print_branches(cliente.clone()).unwrap();
-    let correct_res = String::from("* \x1b[92mmaster\x1b[0m\nbranch1");
+    let correct_res = String::from("* \x1b[92mmaster\x1b[0m\nbranch1\n");
     assert_eq!(res, correct_res);
     commands::branch(vec!["-d".to_string(), "branch1".to_string()], cliente.clone()).unwrap();
     let res = print_branches(cliente.clone()).unwrap();
@@ -290,5 +290,27 @@ fn test_branch_delete_current(){
     commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
     commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
     let error = commands::branch(vec!["-d".to_string(), "master".to_string()], cliente.clone()).unwrap_err();
-
+    assert!(matches!(error, GitrError::DeleteCurrentBranchError(_)));
+    fs::remove_dir_all(cliente.clone()).unwrap();
 }
+
+#[test]
+#[serial]
+fn test_branch_move(){
+    let cliente = "cliente_branch_move".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_branch_move".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(),("[user]\n\tname = test\n\temail =test@gmail.com").to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_move/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_move/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
+    commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    commands::branch(vec!["-m".to_string(), "branch1".to_string(), "branch2".to_string()], cliente.clone()).unwrap();
+    let res = print_branches(cliente.clone()).unwrap();
+    let correct_res = String::from("branch2\n* \x1b[92mmaster\x1b[0m\n");
+    fs::remove_dir_all(cliente.clone()).unwrap();
+    assert_eq!(res, correct_res);
+}
+
