@@ -423,7 +423,7 @@ pub fn add_to_index(path: &String, hash: &String,cliente: String) -> Result<(), 
     Ok(())
 }
 
-//returns the path of the head branch
+///returns the path of the head branch
 pub fn get_head(cliente: String) ->  Result<String, GitrError>{
     let repo = get_current_repo(cliente.clone())?;
     let path = repo + "/gitr/HEAD";
@@ -686,6 +686,8 @@ pub fn get_commit_author(commit: String, cliente: String)->Result<String, GitrEr
     let mut idx = 2;
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
         idx -= 1;
+    } else if commit[2].starts_with("parent"){
+        idx += 1;
     }
     let author = commit[idx].split(' ').collect::<Vec<&str>>()[1];
     Ok(author.to_string())
@@ -698,6 +700,8 @@ pub fn get_commit_date(commit: String, cliente: String)->Result<String, GitrErro
     let mut idx = 2;
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
         idx -= 1;
+    } else if commit[2].starts_with("parent") {
+        idx += 1;
     }
     let timestamp = commit[idx].split(' ').collect::<Vec<&str>>()[3];
     let timestamp_parsed = match timestamp.parse::<i64>(){
