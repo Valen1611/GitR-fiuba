@@ -416,10 +416,12 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     }
     Ok(())
 }
-// -- 1 -- 2 -- 3 -- 4 - 5 - 6 master
-//                    \
-//                     - 7 - 8 - 9 topic
+// -- 1 -- 2 -- 3 -- 4 - 5 - 6 master 
+        //                    \        
+        //                      - 7' - 8' - 9' topic 
 
+        //git diff $indexbase $file1
+//        the diff in the patch # equivalent to git diff $indexbase $file2
 #[cfg(test)]
 mod tests{
 

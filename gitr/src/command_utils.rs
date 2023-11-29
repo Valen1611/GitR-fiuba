@@ -2,7 +2,7 @@ use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, Hash
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_branches, get_commit, update_head}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::{git_object::GitObject, tag}};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_branches, get_commit, update_head, get_parent_commit}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::{git_object::GitObject, tag}};
 use crate::{objects::{blob::{TreeEntry, Blob}, tag::Tag, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
@@ -1822,10 +1822,19 @@ pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_referenc
  * REBASE FUNCTIONS
  * *****************/
 
+fn check_conflicts_and_get_tree(commit_origin: String, commit_branch: String, commit_base:String)->Result<String,GitrError>{
+    let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
+    let diff_base_branch = Diff::new(base_file_data, branch_file_data);
+    let union_diffs = comparar_diffs(diff_base_origin, diff_base_branch)?;
+    Ok(())
+}
+
 pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, cliente:String)-> Result<(),GitrError>{
-    let mut last_commit = get_commit(origin_name, cliente.clone())?;
+    let commit_branch = get_current_commit(cliente.clone())?;
+    let commit_base = get_parent_commit(commit_branch.clone(), cliente.clone())?;
+    let mut last_commit: String = get_commit(origin_name, cliente.clone())?;
     for commit_old in to_rebase_commits.iter().rev(){
-        let main_tree = file_manager::get_main_tree(commit_old.clone(),cliente.clone())?;
+        let main_tree = check_conflicts_and_get_tree(last_commit, commit_old.to_string(), commit_base.clone())?;
         let message = file_manager::get_commit_message(commit_old.clone(),cliente.clone())?;
         let commit = Commit::new(main_tree.clone(), last_commit.clone(), cliente.clone(), cliente.clone(), message.clone(), cliente.clone())?;
         commit.save(cliente.clone())?;
