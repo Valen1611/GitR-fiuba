@@ -9,6 +9,8 @@ use chrono::Utc;
 
 use crate::{command_utils::{get_user_mail_from_config, get_current_username, flate2compress, sha1hashing}, gitr_errors::GitrError};
 
+#[derive(Debug)]
+
 pub struct Tag{
     data: Vec<u8>,
     hash: String,

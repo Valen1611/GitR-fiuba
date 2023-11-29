@@ -11,7 +11,7 @@ use crate::objects::git_object::GitObject;
 use crate::objects::commit::Commit;
 use crate::objects::tree::Tree;
 use crate::objects::blob::Blob;
-use crate::git_transport::ref_discovery::*;
+use crate::git_transport::{ref_discovery::*,deltas::*};
 #[derive(Debug)]
 pub struct PackFile{
     _version: u32,
@@ -39,15 +39,20 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), GitrError> 
         return Err(GitrError::PackFileError("parse_git_object".to_string(),"No hay suficientes bytes para el encabezado mínimo".to_string()));
     }
     let object_type = (data[0] << 1 >> 5) & 0x07;
+    let offset = object_type == 6;
     let mut length = (data[0]<<4>>4) as usize;
     let mut cursor = 1;
     let mut shift = 4;
-    while (data[cursor-1] & 0x80) != 0 {        
+    loop {        
+        
         length |= (data[cursor] as usize & 0x7F) << shift;
         cursor += 1;
         shift += 7;
         if shift > 28 {
             return Err(GitrError::PackFileError("parse_git_object".to_string(),"La longitud es demasiado grande".to_string()));
+        }
+        if (data[cursor] & 0x80) == 0 {
+            break;
         }
     }
     let object_content = &data[cursor..];
@@ -105,11 +110,13 @@ fn create_blob_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     Ok(blob)
 }
 
-fn git_valid_object_from_packfile(object_type: u8, decoded_data: &[u8])->Result<GitObject,GitrError>{
+fn git_valid_object_from_packfile(object_type: u8, decoded_data: &[u8],pack: &[u8])->Result<GitObject,GitrError>{
     let object = match  object_type{
         1 => create_commit_object(decoded_data)?,
         2 => create_tree_object(decoded_data)?,
         3 => create_blob_object(decoded_data)?,
+        // 4 => create_tag_object(decoded_data)?,
+        6 => transform_delta(decoded_data.to_vec(),pack.to_vec())?,
         _ => return Err(GitrError::PackFileError("git_valid_object_from_packfile".to_string(),"Tipo de objeto no válido".to_string()))
     };
     Ok(object)
@@ -127,8 +134,11 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     for _i in 0..num_objects {
         match parse_git_object(&buffer[12+index..]) {
             Ok((object_type, _length, object_content,cursor)) => {
+                if object_type == 6 {
+                    let (ofs_base,object_content) = get_offset(object_content)?; 
+                }
                 let (decodeado, leidos) = decode(object_content).unwrap();
-                objects.push(git_valid_object_from_packfile(object_type, &decodeado[..])?);
+                objects.push(git_valid_object_from_packfile(object_type, &decodeado[..],&buffer)?);
                 index += leidos as usize + cursor;
             }
             Err(err) => {

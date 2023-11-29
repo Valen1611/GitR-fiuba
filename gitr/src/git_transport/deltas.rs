@@ -1,7 +1,10 @@
+use crate::{objects::git_object::GitObject, gitr_errors::GitrError};
+
 /// en el pack-file vienen asi:
 /// HEADER:
-///     tipo de objeto (3 primeros bits)
-///     offset respecto el objeto que deltifica (hay que restarlo a la pos actual)
+///     * tipo de objeto (3 primeros bits)
+///     * largo encodeado del objeto
+///     * offset respecto el objeto que deltifica (hay que restarlo a la pos actual)
 ///         --- encodeado como el tamaño pero por cada byte que no sea el ultimo se le suma un 1 antes 
 ///             de hacer el corrimiento
 /// CUERPO:
@@ -19,3 +22,22 @@
 ///                 * size = [s3 s2 s1] -> Cantidad de bits a copiar
 ///                 * offset = [o4 o3 o2 o1] -> Offset respecto el inicio del objeto base donde empezar a copiar
 ///             
+
+pub fn get_offset(data: &[u8]) -> Result<(usize,&[u8]),GitrError> {
+    let mut ofs: usize = 0;
+    let mut cant_bytes: usize = 0;
+    
+    for byte in data {
+        cant_bytes += 1;
+        ofs = (ofs << 7 ) | (byte & 0x7f) as usize;
+        if byte & 0x80 == 0 {
+            break;
+        }
+        ofs += 1
+    }
+    Ok((ofs,&data[..]))
+}
+
+pub fn transform_delta(data: Vec<u8>,pack: Vec<u8>) -> Result<GitObject,GitrError>{
+    Err(GitrError::PackFileError("transform_delta".to_string(), "No se pudo obtener el delta".to_string()))
+}

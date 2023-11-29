@@ -1535,6 +1535,7 @@ pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: 
             GitObject::Blob(blob) => blob.save(cliente.clone())?,
             GitObject::Commit(commit) => commit.save(cliente.clone())?,
             GitObject::Tree(tree) => tree.save(cliente.clone())?,
+            GitObject::Tag(tag) => tag.save(cliente.clone())?,
         }
     }
     if actualizar_work_dir {
