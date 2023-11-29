@@ -44,6 +44,7 @@ pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError
         "show-ref" => commands::show_ref(flags,client)?,
         "tag" => commands::tag(flags,client)?,
         "ls-tree" => commands::ls_tree(flags,client)?,
+        "echo" => commands::echo(flags,client)?,
 
         "q" => return Ok(()),
         "l" => logger::log(flags)?,

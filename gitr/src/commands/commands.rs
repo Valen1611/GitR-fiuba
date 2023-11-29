@@ -399,6 +399,34 @@ pub fn print_current_repo(cliente: String) -> Result<(), GitrError> {
     Ok(())
 }
 
+pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
+    if flags.len() == 0 {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "echo <string> > <file>".to_string()));   
+    }
+
+    let mut texto = String::new();
+    let actual: String = flags[0].clone();
+
+    let mut hay_separador = false;
+    for palabra in flags.iter() {
+        if palabra == ">" {
+            hay_separador = true;
+            break;
+        }
+        texto.push_str(&actual);
+        texto.push_str(" ");        
+    }
+    texto = texto.trim_end().to_string();
+    if !hay_separador {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "echo <string> > <file>".to_string()));   
+    }
+
+    let repo_path = file_manager::get_current_repo(cliente.clone())?.to_string();
+
+    let file_path = format!("{}/{}", repo_path, flags[flags.len()-1]);
+    println!("escribo {} en {}", texto, file_path);
+    file_manager::write_file(file_path, texto)
+}
 
 #[cfg(test)]
 mod tests{
