@@ -200,6 +200,11 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         println!("Fetch button clicked");
     });
 
+    //====LOGIN WARNING====
+    if !existe_config() {
+        login_warning.show();
+    }
+
     //====REMOTE ERROR DIALOG====
     remote_error_close_button.connect_clicked(move|_|{
         remote_error_dialog.hide();
@@ -207,17 +212,13 @@ fn build_ui(application: &gtk::Application)->Option<String>{
 
     window.set_application(Some(application));
     window.set_title("test");
-     
     window.show_all();
-    if !existe_config() {
-        login_warning.show();
-    }
     Some("Ok".to_string())
  }
 
 pub fn initialize_gui(){
     let app = Application::builder()
-        .application_id("org.example.HelloWorld")
+        .application_id("org.gitr.gui")
         .build();
 
     app.connect_activate(|app| {
