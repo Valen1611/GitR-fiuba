@@ -6,7 +6,7 @@ use super::blob::TreeEntry;
 
 #[derive(Debug)]
 pub struct Tree{
-    entries: Vec<(String,TreeEntry)>,
+    //entries: Vec<(String,TreeEntry)>,
     data: Vec<u8>,
     hash: String,
 }
@@ -89,7 +89,7 @@ impl Tree{
         let mut format_data = String::new();
         let init = format!("tree {}\0", entries.len());
         format_data.push_str(&init);
-        Ok(Tree {entries, data: compressed_file2, hash: hashed_file_str })
+        Ok(Tree {/*entries, */data: compressed_file2, hash: hashed_file_str })
 
         
     }
@@ -105,7 +105,7 @@ impl Tree{
         let hash = command_utils::sha1hashing2(tree_raw_file.clone());
         let tree_hash = hash.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
-        let tree = Tree{entries: vec![], data: compressed_data, hash: tree_hash};
+        let tree = Tree{/*entries: vec![],*/ data: compressed_data, hash: tree_hash};
         Ok(tree)
     }
 

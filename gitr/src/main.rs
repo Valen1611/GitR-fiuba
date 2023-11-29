@@ -1,4 +1,4 @@
-use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager};
+use gitr::{commands, logger, gitr_errors::GitrError, file_manager};
 
 use std::{io::{Write, self}, fs};
 extern crate flate2;
@@ -73,7 +73,7 @@ fn main() {
     }
     let cliente = args[1].clone();
     let cliente_clon = cliente.clone();
-    let child = std::thread::spawn(move || {
+    let _ = std::thread::spawn(move || {
         initialize_gui(cliente_clon.clone());
     });
     print_bienvenida();

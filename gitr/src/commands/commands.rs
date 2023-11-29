@@ -1,17 +1,8 @@
-
-
-
 use std::path::Path;
-use crate::file_manager::{get_branches, get_current_repo, delete_tag};
+use crate::file_manager::{get_current_repo, delete_tag};
 use crate::command_utils::{*, self};
-use crate::objects::tree;
-use std::net::TcpStream;
-use std::io::prelude::*;
-use crate::file_manager::{commit_log, update_working_directory, get_current_commit};
-use crate::objects::git_object::GitObject::*;
-use crate::{objects::blob::Blob, objects::commit::Commit, file_manager, gitr_errors::GitrError, git_transport::pack_file::PackFile};
-use crate::git_transport::pack_file::{create_packfile};
-use crate::{git_transport};
+use crate::file_manager::commit_log;
+use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
 use crate::git_transport::ref_discovery;
 
 /***************************
@@ -68,7 +59,7 @@ pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
 }
 
 //Add file contents to the index
-pub fn add(flags: Vec<String>,cliente: String)-> Result<(), GitrError> {
+pub fn add(flags: Vec<String>, cliente: String)-> Result<(), GitrError> {
     // add <file-name>
     // add .
     if flags.len() != 1 {
@@ -95,7 +86,7 @@ pub fn rm(flags: Vec<String>,cliente: String)-> Result<(), GitrError> {
 } 
 
 //Record changes to the repository
-pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
+pub fn commit(flags: Vec<String>, second_parent: String, cliente: String)-> Result<(), GitrError>{
     //commit -m <message-of-commit>
     if flags[0] != "-m" || flags.len() < 2 {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m <commit_message>".to_string()))
@@ -117,7 +108,7 @@ pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
         if !message.chars().any(|c| c!= ' ' && c != '\"'){
             return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
         }
-        get_tree_entries(message.to_string(),cliente.clone())?;
+        get_tree_entries(message.to_string(),second_parent, cliente.clone())?;
         print_commit_confirmation(message,cliente.clone())?;
         Ok(())
     } else {
@@ -277,7 +268,7 @@ pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
                 command_utils::fast_forward_merge(branch_name,cliente.clone())?;
                 break;
             }
-            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(),cliente.clone())?;
+            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), branch_name, cliente.clone())?;
             break;
         }
     }

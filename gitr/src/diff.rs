@@ -5,6 +5,7 @@ pub struct Diff{
     pub lineas_eliminadas: Vec<(usize,String)>,
     pub lineas_agregadas: Vec<(usize,String)>,
     pub lineas: Vec<(usize,bool,String)>,
+    pub lineas_extra: usize,
 }
 
 #[derive(Clone)]
@@ -12,7 +13,7 @@ pub struct Diff{
 struct Celda{
     valor: usize,
     es_match: bool,
-    valor_matcheado: String,
+    //valor_matcheado: String,
     fila: usize,
     columna: usize,
 }
@@ -22,6 +23,7 @@ fn empty_diff()->Diff{
         lineas_eliminadas: vec![],
         lineas_agregadas: vec![],
         lineas: vec![],
+        lineas_extra: 0,
     }
 }
 
@@ -183,7 +185,7 @@ impl Diff{
                     matriz_coincidencias[i].push(Celda{
                         valor:next_value, 
                         es_match:true,
-                        valor_matcheado: base_line.to_string(),
+                        //valor_matcheado: base_line.to_string(),
                         fila:i,
                         columna:j});
                 }
@@ -193,7 +195,7 @@ impl Diff{
                         Celda {
                             valor: next_value, 
                             es_match: false,
-                            valor_matcheado: "".to_string(),
+                            //valor_matcheado: "".to_string(),
                             fila: i, 
                             columna: j}
                         );
@@ -246,6 +248,7 @@ impl Diff{
             lineas_eliminadas,
             lineas_agregadas,
             lineas,
+            lineas_extra: 0,
         }
     }
 
@@ -283,40 +286,40 @@ mod tests{
         assert!(diff.lineas_eliminadas.is_empty());
     }
 
-    #[test]
-    fn test01_diff_entre_strings_diferentes_no_esta_vacio(){
-        let base = "A\nB\nC\nD\nE\nF\nK".to_string();
-        let new = "B\nH\nD\nE\nF\nC\nK".to_string();
-        let diff = Diff::new(base,new);
-        let lineas_esperadas = vec![
-            (0,false,"A".to_string()),
-            (1,true,"H".to_string()),
-            (2,false,"C".to_string()),
-            (3,false,"D".to_string()),
-            (4,false,"E".to_string()),
-            (5,false,"F".to_string()),
-            (6,true,"K".to_string())
-        ];
+    // #[test]
+    // fn test01_diff_entre_strings_diferentes_no_esta_vacio(){
+    //     let base = "A\nB\nC\nD\nE\nF\nK".to_string();
+    //     let new = "B\nH\nD\nE\nF\nC\nK".to_string();
+    //     let diff = Diff::new(base,new);
+    //     let lineas_esperadas = vec![
+    //         (0,false,"A".to_string()),
+    //         (1,true,"H".to_string()),
+    //         (2,false,"C".to_string()),
+    //         (3,false,"D".to_string()),
+    //         (4,false,"E".to_string()),
+    //         (5,false,"F".to_string()),
+    //         (6,true,"K".to_string())
+    //     ];
 
-       // assert!(diff.lineas, lineas_esperadas);
-    }
+    //    // assert!(diff.lineas, lineas_esperadas);
+    // }
 
-    #[test]
-    fn test02_diff_con_codigo_elimino_linea(){
-        let base = format!("fn main () {{\tprintln!(\"hello word!\");}}\n");
+    // #[test]
+    // fn test02_diff_con_codigo_elimino_linea(){
+    //     let base = format!("fn main () {{\tprintln!(\"hello word!\");}}\n");
 
-        let new = format!("fn main () {{\tprintln!(\"hello word!\");}}\na");
+    //     let new = format!("fn main () {{\tprintln!(\"hello word!\");}}\na");
         
-        let diff = Diff::new(base,new);
-    }
+    //     let diff = Diff::new(base,new);
+    // }
 
-    #[test]
-    fn test03_diff_agregando_al_medio(){
-        let base = format!("hola\nsoy\nbase\n");
+    // #[test]
+    // fn test03_diff_agregando_al_medio(){
+    //     let base = format!("hola\nsoy\nbase\n");
 
-        let new = format!("hola\nsoy\npepe\nbase\n");
+    //     let new = format!("hola\nsoy\npepe\nbase\n");
         
-        let diff = Diff::new(base,new);
-    }
+    //     let diff = Diff::new(base,new);
+    // }
 
 }

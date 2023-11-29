@@ -30,7 +30,7 @@ pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError
         "status" => commands::status(flags,client)?,
         "add" => commands::add(flags,client)?,
         "rm" => commands::rm(flags,client)?,
-        "commit" => commands::commit(flags,client)?,
+        "commit" => commands::commit(flags, "None".to_string(), client)?,
         "checkout" => commands::checkout(flags,client)?,
         "log" => commands::log(flags,client)?,
         "clone" => commands::clone(flags,client)?,
