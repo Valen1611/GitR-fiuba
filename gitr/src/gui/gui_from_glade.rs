@@ -53,6 +53,8 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let remote_error_dialog: Dialog = builder.object("remote_error")?;
     let remote_error_close_button: Button = builder.object("remote_error_close_button")?;
     let close_commit_dialog_button: Button = builder.object("close_commit_dialog_button")?;
+    let cancel_clone_button: Button = builder.object("cancel_clone_button")?;
+    let cancel_login_button: Button = builder.object("cancel_login_button")?;
     //====Conexiones de señales====
     
     //====LOGIN====
@@ -60,6 +62,11 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let login_dialog_clone = login_dialog.clone();
     connect_button_clone.connect_clicked(move|_|{
         login_dialog_clone.show();
+    });
+
+    let login_dialog_clone = login_dialog.clone();
+    cancel_login_button.connect_clicked(move|_|{
+        login_dialog_clone.hide();
     });
 
     let login_button_clone = login_button.clone();
@@ -70,6 +77,7 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
         login_dialog.hide();
     });
+
 
     //====COMMIT====
     let commit_clone = commit.clone();
@@ -149,6 +157,10 @@ fn build_ui(application: &gtk::Application)->Option<String>{
             return;
         };
         //Aca habria que setear el repo actual al recien con el selector y el file explorer
+    });
+
+    cancel_clone_button.connect_clicked(move|_|{
+        clone_dialog.hide();
     });
 
     //====PUSH====

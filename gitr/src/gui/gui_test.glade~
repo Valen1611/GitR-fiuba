@@ -9,6 +9,7 @@
     <property name="default-height">260</property>
     <property name="type-hint">dialog</property>
     <property name="focus-on-map">False</property>
+    <property name="deletable">False</property>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can-focus">False</property>
@@ -16,6 +17,8 @@
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="baseline-position">top</property>
             <property name="layout-style">end</property>
             <child>
               <object class="GtkButton" id="clone_accept_button">
@@ -28,6 +31,19 @@
                 <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="cancel_clone_button">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -79,7 +95,17 @@
             <property name="can-focus">False</property>
             <property name="layout-style">end</property>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="close_commit_dialog_button">
+                <property name="label" translatable="yes">close</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkButton" id="confirm_commit_button">
@@ -142,6 +168,7 @@
   </object>
   <object class="GtkWindow" id="login_dialog">
     <property name="can-focus">False</property>
+    <property name="deletable">False</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -633,6 +660,7 @@
   <object class="GtkDialog" id="remote_error">
     <property name="can-focus">False</property>
     <property name="type-hint">dialog</property>
+    <property name="deletable">False</property>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can-focus">False</property>
