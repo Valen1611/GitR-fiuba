@@ -1,10 +1,12 @@
 use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, HashSet}, net::TcpStream};
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
-use sha1::{Sha1, Digest};
+use sha1::{Sha1, Digest}
 use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff, commands::commands};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit,tag::Tag,}, gitr_errors::GitrError};
 use crate::{file_manager::get_branches, git_transport::{ref_discovery, pack_file::PackFile}, objects::git_object::GitObject};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_branches, get_commit, update_head, get_parent_commit}, diff::Diff, git_transport::{ref_discovery, pack_file::PackFile}, objects::{git_object::GitObject, tag}};
+use ::{objects::{blob::{TreeEntry, Blob}, tag::Tag, tree::Tree, commit::Commit}, gitr_errors::GitrError};
 
 
 /***************************
@@ -61,7 +63,17 @@ pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
  **************************
  **************************/
 
-
+pub fn get_object_hash(cliente: String, file_path:&mut  String, write: bool)->Result<String, GitrError>{
+    let mut res = String::from("");
+    *file_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/" + file_path;
+    let raw_data = file_manager::read_file(file_path.to_string())?;  
+    let blob = Blob::new(raw_data)?;
+    res = blob.get_hash();
+    if write {
+        blob.save(cliente)?;
+    }
+    Ok(res)
+}
 
 /// returns object hash, output, size and type
 pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String, String, String, String), GitrError>{
@@ -348,7 +360,8 @@ pub fn get_ls_files_deleted_modified(deleted: bool,cliente: String) -> Result<St
  **************************/
 
 /// print all the branches in repo
-pub fn print_branches(cliente: String)-> Result<(), GitrError>{
+pub fn print_branches(cliente: String)-> Result<String, GitrError>{
+    let mut res = String::new();
     let head = file_manager::get_head(cliente.clone())?;
     let head_vec = head.split('/').collect::<Vec<&str>>();
     let head = head_vec[head_vec.len()-1];
@@ -356,12 +369,12 @@ pub fn print_branches(cliente: String)-> Result<(), GitrError>{
         for branch in branches{
             if head == branch{
                 let index_branch = format!("* \x1b[92m{}\x1b[0m", branch);
-                println!("{}",index_branch);
+                res.push_str(&(index_branch + "\n"));
                 continue;
             }
-            println!("{}", branch);
+            res.push_str(&(format!("{}\n", branch)));
         }
-    Ok(())
+    Ok(res)
 }
 
 /// check if a branch exists
@@ -1349,7 +1362,7 @@ pub fn create_annotated_tag(tag_name: String, tag_message: String, cliente: Stri
     if Path::new(&tag_path).exists() {
         return Err(GitrError::TagAlreadyExistsError(tag_name.clone()));
     }
-    let tag = Tag::new(tag_name, tag_message, current_commit)?;
+    let tag = Tag::new(tag_name, tag_message, current_commit, cliente.clone())?;
     tag.save(cliente.clone())?;
     file_manager::write_file(tag_path, tag.get_hash())?;
     Ok(())
@@ -1579,6 +1592,34 @@ pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_referenc
         println!("Error: {}", e);
         return Err(GitrError::ConnectionError);
     };
+    Ok(())
+}
+/*******************
+ * REBASE FUNCTIONS
+ * *****************/
+
+fn check_conflicts_and_get_tree(commit_origin: String, commit_branch: String, commit_base:String)->Result<String,GitrError>{
+    let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
+    let diff_base_branch = Diff::new(base_file_data, branch_file_data);
+    let union_diffs = comparar_diffs(diff_base_origin, diff_base_branch)?;
+    Ok(())
+}
+
+pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, cliente:String)-> Result<(),GitrError>{
+    let commit_branch = get_current_commit(cliente.clone())?;
+    let commit_base = get_parent_commit(commit_branch.clone(), cliente.clone())?;
+    let mut last_commit: String = get_commit(origin_name, cliente.clone())?;
+    for commit_old in to_rebase_commits.iter().rev(){
+        let main_tree = check_conflicts_and_get_tree(last_commit, commit_old.to_string(), commit_base.clone())?;
+        let message = file_manager::get_commit_message(commit_old.clone(),cliente.clone())?;
+        let commit = Commit::new(main_tree.clone(), last_commit.clone(), cliente.clone(), cliente.clone(), message.clone(), cliente.clone())?;
+        commit.save(cliente.clone())?;
+        last_commit = commit.get_hash();
+    }
+    let repo = file_manager::get_current_repo(cliente.clone())?;
+    let head = file_manager::get_head(cliente.clone())?;
+    let dir = repo + "/gitr/" + &head;
+    file_manager::write_file(dir, last_commit)?;
     Ok(())
 }
 

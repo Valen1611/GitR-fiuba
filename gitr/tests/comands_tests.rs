@@ -1,6 +1,5 @@
 use std::{path::Path, fs};
-
-use gitr::{command_utils, file_manager};
+use gitr::command_utils::{get_object_properties, print_branches, get_object_hash, _cat_file};
 
 use gitr::commands::commands;
 use gitr::file_manager::{write_file, read_index};
@@ -171,6 +170,7 @@ fn test_tag_lightweight(){
     let cliente = "cliente_tag_lightweight".to_string();
     fs::create_dir_all(Path::new(&cliente)).unwrap();
     commands::init(vec!["test_tag_lightweight".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_lightweight/blob1").to_string(), "Hello, im blob 1".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_lightweight/blob2").to_string(), "Hello, im blob 2".to_string());
     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
@@ -189,6 +189,7 @@ fn test_tag_annotated(){
     let cliente = "cliente_tag_annotated".to_string();
     fs::create_dir_all(Path::new(&cliente)).unwrap();
     commands::init(vec!["test_tag_annotated".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_annotated/blob1").to_string(), "Hello, im blob 1".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_annotated/blob2").to_string(), "Hello, im blob 2".to_string());
     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
@@ -208,6 +209,7 @@ fn test_tag_delete(){
     let cliente = "cliente_tag_delete".to_string();
     fs::create_dir_all(Path::new(&cliente)).unwrap();
     commands::init(vec!["test_tag_delete".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_delete/blob1").to_string(), "Hello, im blob 1".to_string());
     let _ = write_file((cliente.clone() + "/test_tag_delete/blob2").to_string(), "Hello, im blob 2".to_string());
     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
@@ -220,5 +222,159 @@ fn test_tag_delete(){
     commands::tag(vec!["-d".to_string(), "tag1".to_string()], cliente.clone()).unwrap();
     let res = file_manager::read_file(cliente.clone() + "/test_tag_delete/gitr/refs/tags/tag1");
     assert!(res.is_err());
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+// /*********************
+//   BRANCH TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_branch_newbranch(){
+    let cliente = "cliente_branch".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_branch".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(),("[user]\n\tname = test\n\temail = test@gmail.com").to_string());
+    let _ = write_file((cliente.clone() + "/test_branch/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_branch/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
+    commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    let res = print_branches(cliente.clone()).unwrap();
+    let correct_res = String::from("* \x1b[92mmaster\x1b[0m\nbranch1\n");
+    assert_eq!(res, correct_res);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+#[test]
+#[serial]
+fn test_branch_no_commit(){
+    let cliente = "cliente_branch_no_commit".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_branch_no_commit".to_string()], cliente.clone()).unwrap();
+    let error = commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap_err();
+    let res = print_branches(cliente.clone()).unwrap();
+    let correct_res = String::from("");
+    assert_eq!(res, correct_res);
+    assert!(matches!(error, GitrError::NoCommitExisting(_)));
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+#[test]
+#[serial]
+fn test_branch_already_exists(){
+    let cliente = "cliente_branch_already_exists".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_branch_already_exists".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(),("[user]\n\tname = test\n\temail =test@gmail.com").to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_already_exists/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_already_exists/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
+    commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    let error = commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap_err();
+    assert!(matches!(error, GitrError::BranchAlreadyExistsError(_)));
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+#[test]
+#[serial]
+fn test_branch_delete(){
+    let cliente = "cliente_branch_delete".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_branch_delete".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(),("[user]\n\tname = test\n\temail =test@gmail.com").to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_delete/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_delete/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
+    commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    let res = print_branches(cliente.clone()).unwrap();
+    let correct_res = String::from("* \x1b[92mmaster\x1b[0m\nbranch1\n");
+    assert_eq!(res, correct_res);
+    commands::branch(vec!["-d".to_string(), "branch1".to_string()], cliente.clone()).unwrap();
+    let res = print_branches(cliente.clone()).unwrap();
+    let correct_res = String::from("* \x1b[92mmaster\x1b[0m\n");
+    assert_eq!(res, correct_res);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+#[test]
+#[serial]
+fn test_branch_delete_current(){
+    let cliente = "cliente_branch_delete_current".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_branch_delete_current".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(),("[user]\n\tname = test\n\temail =test@gmail.com").to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_delete_current/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_delete_current/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
+    let error = commands::branch(vec!["-d".to_string(), "master".to_string()], cliente.clone()).unwrap_err();
+    assert!(matches!(error, GitrError::DeleteCurrentBranchError(_)));
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+#[test]
+#[serial]
+fn test_branch_move(){
+    let cliente = "cliente_branch_move".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_branch_move".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(),("[user]\n\tname = test\n\temail =test@gmail.com").to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_move/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_branch_move/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
+    commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    commands::branch(vec!["-m".to_string(), "branch1".to_string(), "branch2".to_string()], cliente.clone()).unwrap();
+    let res = print_branches(cliente.clone()).unwrap();
+    let correct_res = String::from("branch2\n* \x1b[92mmaster\x1b[0m\n");
+    fs::remove_dir_all(cliente.clone()).unwrap();
+    assert_eq!(res, correct_res);
+}
+
+// /*********************
+//   HASH-OBJECT TESTS
+// *********************/
+
+#[test]
+#[serial]
+fn test_hash_object(){
+    let cliente = "cliente_hash_object".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_hash_object".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/test_hash_object/blob1").to_string(), "Hello, im blob 1".to_string());
+    let correct_hash = "016a41a6a35d50d311286359f1a7611948a9c529";
+    let res = get_object_hash(cliente.clone(), &mut ("blob1").to_string(), false).unwrap();
+    fs::remove_dir_all(cliente.clone()).unwrap();
+    assert_eq!(res, correct_hash);
+}
+
+
+// /*********************
+//   CAT-FILE TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_cat_file(){
+    let cliente = "cliente_cat_file".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_cat_file".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/test_cat_file/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_cat_file/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    let hash1 = Blob::new("Hello, im blob 1".to_string()).unwrap().get_hash();
+    let res = _cat_file(vec!["-p".to_string(), hash1.clone()], cliente.clone()).unwrap();
+    let correct_res = String::from("Hello, im blob 1");
+    assert_eq!(res, correct_res);
+    let res = _cat_file(vec!["-t".to_string(), hash1], cliente.clone()).unwrap();
+    let correct_res = String::from("blob");
+    assert_eq!(res, correct_res);
     fs::remove_dir_all(cliente.clone()).unwrap();
 }
