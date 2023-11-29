@@ -105,7 +105,9 @@ pub fn commit(flags: Vec<String>, second_parent: String, cliente: String)-> Resu
         return status(flags,cliente.clone());
     }
     let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone())?;
-    let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    let (new, mut modified) = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    let mut to_be_commited = new;
+    to_be_commited.append(&mut modified);
     println!("to be commited: {to_be_commited:?}");
     if to_be_commited.is_empty() {
         println!("nothing to commit, working tree clean");
@@ -215,11 +217,11 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     command_utils::status_print_current_branch(cliente.clone())?;
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
-    let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
-    print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
+    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    print!("{}", get_status_files_to_be_comited(&new_files, &modified_files)?);
     print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
     print!("{}",get_status_files_untracked(&untracked_files, hayindex));
-    if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
+    if new_files.is_empty() && modified_files.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
         println!("nothing to commit, working tree clean");
     }
     Ok(())
@@ -396,6 +398,7 @@ pub fn print_current_repo(cliente: String) -> Result<(), GitrError> {
     println!("working on repo: {}", repo);
     Ok(())
 }
+
 
 #[cfg(test)]
 mod tests{

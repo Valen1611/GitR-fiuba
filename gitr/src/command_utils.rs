@@ -954,15 +954,15 @@ fn create_merge_commit(branch_name: String, branch_commit: String, cliente: Stri
     Ok(working_dir_hashmap)
 }
 
-pub fn get_status_files_to_be_comited(to_be_commited: &Vec<String>)->Result<String, GitrError>{
+pub fn get_status_files_to_be_comited(new_files: &Vec<String>, modified_files: &Vec<String>)->Result<String, GitrError>{
     let mut res = String::new();
     // let working_dir_hashmap = get_working_dir_hashmap()?;
-    if !to_be_commited.is_empty() {
+    if !new_files.is_empty() || !modified_files.is_empty() {
         let header1 = format!("Changes to be committed:\n");
         let header2 = format!("  (use \"rm <file>...\" to unstage)\n");
         res.push_str(&header1);
         res.push_str(&header2);
-        for file in to_be_commited.clone() {
+        for file in new_files.clone() {
             let file_name = match file.split_once ('/'){
                 Some((_path, file)) => file.to_string(),
                 None => file.to_string(),
@@ -971,7 +971,21 @@ pub fn get_status_files_to_be_comited(to_be_commited: &Vec<String>)->Result<Stri
                 // let line = format!("\t\x1b[31mdeleted:   {}\x1b[0m\n", file_name);
                 // res.push_str(&line);
             // }else{
-                let line = format!("\t\x1b[92mmodified   {}\x1b[0m\n", file_name);
+                let line = format!("\t\x1b[92mnew file:   {}\x1b[0m\n", file_name);
+                res.push_str(&line);
+            // }
+
+        }
+        for file in modified_files.clone() {
+            let file_name = match file.split_once ('/'){
+                Some((_path, file)) => file.to_string(),
+                None => file.to_string(),
+            };
+            // if !working_dir_hashmap.contains_key(file.as_str()) {
+                // let line = format!("\t\x1b[31mdeleted:   {}\x1b[0m\n", file_name);
+                // res.push_str(&line);
+            // }else{
+                let line = format!("\t\x1b[92mmodified:   {}\x1b[0m\n", file_name);
                 res.push_str(&line);
             // }
         }
@@ -1202,18 +1216,19 @@ pub fn get_current_commit_hashmap(cliente: String) -> Result<HashMap<String, Str
       }
       Ok(tree_hashmap)
 }
-pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result<Vec<String>, GitrError>{
+pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result<(Vec<String>, Vec<String>), GitrError>{
     //let working_dir_hashmap = get_working_dir_hashmap(cliente.clone())?;
     let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
     let current_commit_hashmap = get_current_commit_hashmap(cliente.clone())?;
-    let mut to_be_commited = Vec::new();
+    let mut new_files_to_be_commited = Vec::new();
+    let mut modified_files_to_be_commited = Vec::new();
     for (path, hash) in index_hashmap.clone().into_iter() {
         if !current_commit_hashmap.contains_key(path.as_str()) {
-            to_be_commited.push(path);
+            new_files_to_be_commited.push(path);
         }
         else if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
             if hash != *commit_hash  && !not_staged.contains(&path){ 
-                to_be_commited.push(path);
+                modified_files_to_be_commited.push(path);
             }
         }
     }
@@ -1222,7 +1237,7 @@ pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result
     //         to_be_commited.push(path);
     //     }
     // }
-    Ok(to_be_commited)
+    Ok((new_files_to_be_commited, modified_files_to_be_commited))
 }
 
 
@@ -2238,101 +2253,4 @@ mod juntar_consecutivos_tests {
 
 
         }  
-    
-    
 }
-
-//0 hola
-//1 como
-//2 +origin1\norigin2\norigin3
-//3 estas
-//4 +ori4
-//5 iguales
-//6 +ori5
-//7 iguales para cerrar
-
-
-//0 hola
-//1 como
-//2 +new1
-//3 estas
-//4 +new2\nnew3
-//5 iguales
-//6 +new4
-//7 iguales para cerrar
-
-
-
-
-/*
-    base:
-    hola
-    como
-    estas
-    base
-    linea base
-    linea base
-
-
-    origin:
-    hola
-    como
-    ori1
-    estas
-    ori2
-    ori3
-    ori4
-    linea base
-    linea base
-    ori5
-
-    new:
-    hola
-    como
-    new1
-    estas
-    new2
-    linea base
-    linea base
-
-    diff base new:
-    2. +new1
-    3. -base
-    4. +new2
-    
-
-    diff base origin:
-    2. +ori1
-    3. -base
-    4. +ori2
-    5. +ori3
-    6. +ori4
-    9. +ori5
-
-
-    Archivo salida:
-    hola
-    como
-    2+ >>>HEAD
-    ori1
-    ===
-    new1
-    <<<<
-    estas
-    4+>>>HEAD
-    ori2
-    ori3
-    ori4
-    ======
-    new2
-    <<<<new
-    linea base
-    linea base
-    5+ori5
-
-
-    res posible 1:
-    2. +ori1\nori2\nori3\nori4
-    4. -base
-
-*/
