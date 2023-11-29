@@ -121,7 +121,6 @@ pub fn read_object(buffer: &mut[u8]) -> Result<(GitObject,usize),GitrError>{
                 let (_length,cursor2 ) = get_encoded_length(&object_content[cursor1..])?;
                 object_content = &object_content[cursor1+cursor2..];
             }
-            println!("tipo: {}",object_type);
             let (decodeado, leidos) = decode(object_content).unwrap();
             let obj = git_valid_object_from_packfile(object_type, &decodeado[..],&buffer,ofs_base)?;
             let index = leidos as usize + cursor;
@@ -146,10 +145,9 @@ pub fn prepare_contents(datos: Vec<Vec<u8>>) -> Vec<(String,String,Vec<u8>)> {
         }
         let (header, raw_data) = data.split_at(i);
         let h_str = String::from_utf8_lossy(header).to_string();
-        let div = h_str.split(' ').collect::<Vec<&str>>();
-        let (obj_type, obj_len) = (div[0].to_string(), div[1].to_string());
+        let (obj_type, obj_len) = h_str.split_once(" ").unwrap_or(("", ""));
         let (_, raw_data) = raw_data.split_at(1);
-        contents.push((obj_type, obj_len, raw_data.to_vec()));
+        contents.push((obj_type.to_string(), obj_len.to_string(), raw_data.to_vec()));
     }
     contents
 }

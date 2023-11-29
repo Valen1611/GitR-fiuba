@@ -66,7 +66,7 @@ impl Tag{
                 _ => message = line.to_string(),
             }
         }
-        let tag = Tag::new_from_packfile(name, message,commit,tagger)?;
+        let tag = Tag::new_from_packfile(name, "\n".to_string()+&message,commit,tagger)?;
         Ok(tag)
     }
 

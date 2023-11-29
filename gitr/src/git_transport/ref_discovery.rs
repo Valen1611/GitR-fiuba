@@ -35,7 +35,7 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     let mut references: Vec<(String,String)> = vec![];
     let iter_refs: Vec<&str> = received_data.lines().collect();
     //Extraigo el primer hash al que apunta HEAD
-    if received_data == "0000"{
+    if received_data == "0000" || received_data == ""{
         return Ok(references)
     }
     let head_hash = extract_head_hash(iter_refs[0]);

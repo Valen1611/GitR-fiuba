@@ -96,9 +96,9 @@ impl Commit{
             }
         }
         if parent.is_empty(){
-            parent.push("None".to_string());
+            parent.push("".to_string());
         }
-        let commit = Commit::new_from_packfile(tree.to_string(), parent ,author.to_string(), committer.to_string(), "\n".to_string()+message)?;
+        let commit = Commit::new_from_packfile(tree.to_string(), parent ,author.to_string(), committer.to_string(), message.to_string())?;
         Ok(commit)
     }
 
