@@ -35,9 +35,10 @@ pub fn get_offset(data: &[u8]) -> Result<(usize,&[u8]),GitrError> {
         }
         ofs += 1
     }
-    Ok((ofs,&data[..]))
+    Ok((ofs,&data[cant_bytes..]))
 }
 
-pub fn transform_delta(data: Vec<u8>,pack: Vec<u8>) -> Result<GitObject,GitrError>{
+pub fn transform_delta(data: Vec<u8>,pack: Vec<u8>, offset: usize) -> Result<GitObject,GitrError>{
+    
     Err(GitrError::PackFileError("transform_delta".to_string(), "No se pudo obtener el delta".to_string()))
 }

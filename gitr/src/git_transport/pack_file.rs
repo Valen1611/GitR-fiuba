@@ -9,6 +9,7 @@ use crate::command_utils;
 use crate::gitr_errors::{GitrError, self};
 use crate::objects::git_object::GitObject;
 use crate::objects::commit::Commit;
+use crate::objects::tag::Tag;
 use crate::objects::tree::Tree;
 use crate::objects::blob::Blob;
 use crate::git_transport::{ref_discovery::*,deltas::*};
@@ -39,68 +40,39 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), GitrError> 
         return Err(GitrError::PackFileError("parse_git_object".to_string(),"No hay suficientes bytes para el encabezado mínimo".to_string()));
     }
     let object_type = (data[0] << 1 >> 5) & 0x07;
-    let offset = object_type == 6;
-    let mut length = (data[0]<<4>>4) as usize;
-    let mut cursor = 1;
-    let mut shift = 4;
-    loop {        
-        
-        length |= (data[cursor] as usize & 0x7F) << shift;
-        cursor += 1;
-        shift += 7;
-        if shift > 28 {
-            return Err(GitrError::PackFileError("parse_git_object".to_string(),"La longitud es demasiado grande".to_string()));
-        }
-        if (data[cursor] & 0x80) == 0 {
-            break;
-        }
-    }
+    let (length, cursor) = get_encoded_length(data)?;
     let object_content = &data[cursor..];
     Ok((object_type, length, object_content, cursor))
 }
 
-fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
-    let data_str = String::from_utf8_lossy(decoded_data);
-    let data_for_commit = data_str.split('\n').collect::<Vec<&str>>();
-    let (mut parent, mut tree, mut author, mut committer, mut message) = (vec![],"None","None","None","None");
+fn get_encoded_length(data: &[u8]) -> Result<(usize,usize),GitrError> {
+    let mut length = (data[0]<<4>>4) as usize;
+    let mut cursor = 1;
+    let mut shift = 4;
+    while (data[cursor-1] & 0x80) != 0  {      
+        length |= (data[cursor] as usize & 0x7F) << shift;
+        shift += 7;
+        if shift > 28 {
+            return Err(GitrError::PackFileError("parse_git_object".to_string(),"La longitud es demasiado grande".to_string()));
+        }
+        cursor += 1;
+    }
+    Ok((length,cursor))
+}
 
-    for line in data_for_commit{
-        if line.starts_with("tree"){
-            tree = line.split(' ').collect::<Vec<&str>>()[1];
-        }
-        if line.starts_with("parent"){
-            parent.push(line.split(' ').collect::<Vec<&str>>()[1].to_string());
-        }
-        if line.starts_with("author"){
-            author = match line.split_once(' '){
-                Some(tupla) => tupla.1,
-                None => return Err(GitrError::PackFileError("create_commit_object".to_string(),"Error al parsear el author".to_string()))
-            };
-        }
-        if line.starts_with("committer"){
-            committer = match line.split_once(' '){
-                Some(tupla) => tupla.1,
-                None => return Err(GitrError::PackFileError("create_commit_object".to_string(),"Error al parsear el commiter".to_string()))
-            };
-        }
-        if line.contains('\0') || line.is_empty(){
-            continue;
-        }
-        message = line;
-    }
-    
-    let message_bien = "\n".to_owned()+message;
-    if parent.is_empty(){
-        parent.push("None".to_string());
-    }
-    let commit = GitObject::Commit(Commit::new_from_packfile(tree.to_string(), parent, author.to_string(), committer.to_string(), message_bien.to_string()).unwrap());
-    
-    Ok(commit)
+fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
+    let commit = Commit::new_commit_from_string(String::from_utf8_lossy(decoded_data).to_string())?;
+    Ok(GitObject::Commit(commit))
 }
 
 fn create_tree_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     let tree = GitObject::Tree(Tree::new_from_packfile(decoded_data)?);
     Ok(tree)
+}
+
+fn create_tag_object(decoded_data: &[u8]) -> Result<GitObject,GitrError>{
+    let tag = GitObject::Tag(Tag::new_tag_from_string(String::from_utf8_lossy(decoded_data).to_string())?);
+    Ok(tag)
 }
 
 fn create_blob_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
@@ -110,13 +82,13 @@ fn create_blob_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     Ok(blob)
 }
 
-fn git_valid_object_from_packfile(object_type: u8, decoded_data: &[u8],pack: &[u8])->Result<GitObject,GitrError>{
+fn git_valid_object_from_packfile(object_type: u8, decoded_data: &[u8],pack: &[u8],offset: usize)->Result<GitObject,GitrError>{
     let object = match  object_type{
         1 => create_commit_object(decoded_data)?,
         2 => create_tree_object(decoded_data)?,
         3 => create_blob_object(decoded_data)?,
-        // 4 => create_tag_object(decoded_data)?,
-        6 => transform_delta(decoded_data.to_vec(),pack.to_vec())?,
+        4 => create_tag_object(decoded_data)?,
+        6 => transform_delta(decoded_data.to_vec(),pack.to_vec(),offset)?,
         _ => return Err(GitrError::PackFileError("git_valid_object_from_packfile".to_string(),"Tipo de objeto no válido".to_string()))
     };
     Ok(object)
@@ -130,24 +102,36 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     let num_objects = u32::from_be_bytes(num_objects);
     let mut objects = vec![];
 
-    let mut index: usize = 0;
+    let mut index: usize = 12;
     for _i in 0..num_objects {
-        match parse_git_object(&buffer[12+index..]) {
-            Ok((object_type, _length, object_content,cursor)) => {
-                if object_type == 6 {
-                    let (ofs_base,object_content) = get_offset(object_content)?; 
-                }
-                let (decodeado, leidos) = decode(object_content).unwrap();
-                objects.push(git_valid_object_from_packfile(object_type, &decodeado[..],&buffer)?);
-                index += leidos as usize + cursor;
-            }
-            Err(err) => {
-                println!("Error: {}", err);
-                return Err(GitrError::PackFileError("read_pack_file".to_string(),"no se pudo parsear el objeto".to_string()));
-            }
-        }
+        let (obj,leidos) = read_object(&mut buffer[index..])?;
+        index += leidos;
+        objects.push(obj);
     }
     Ok(objects)
+}
+
+pub fn read_object(buffer: &mut[u8]) -> Result<(GitObject,usize),GitrError>{
+    match parse_git_object(buffer) {
+        Ok((object_type, _length, mut object_content,cursor)) => {
+            let mut ofs_base: usize = 0;
+            if object_type == 6 {
+                (ofs_base,object_content) = get_offset(object_content)?;
+                let (_length,cursor1 ) = get_encoded_length(object_content)?;
+                let (_length,cursor2 ) = get_encoded_length(&object_content[cursor1..])?;
+                object_content = &object_content[cursor1+cursor2..];
+            }
+            println!("tipo: {}",object_type);
+            let (decodeado, leidos) = decode(object_content).unwrap();
+            let obj = git_valid_object_from_packfile(object_type, &decodeado[..],&buffer,ofs_base)?;
+            let index = leidos as usize + cursor;
+            return Ok((obj,index));
+        },
+        Err(err) => {
+            println!("Error: {}", err);
+            return Err(GitrError::PackFileError("read_pack_file".to_string(),"no se pudo parsear el objeto".to_string()));
+        }
+    }
 }
 
 pub fn prepare_contents(datos: Vec<Vec<u8>>) -> Vec<(String,String,Vec<u8>)> {
@@ -187,6 +171,7 @@ pub fn create_packfile(contents: Vec<(String,String,Vec<u8>)>) -> Result<Vec<u8>
             "commit" => 1,
             "tree" => 2,
             "blob" => 3,
+            "tag" => 4,
             _ => return Err(GitrError::PackFileError("create_packfile".to_string(),"Tipo de objeto no válido".to_string()))
         };
         
@@ -229,6 +214,10 @@ pub fn create_packfile(contents: Vec<(String,String,Vec<u8>)>) -> Result<Vec<u8>
 
 impl PackFile{
     pub fn new_from_server_packfile(buffer: &mut[u8])->Result<PackFile, GitrError>{
+        if buffer.len() < 32 {
+            println!("Error: No hay suficientes bytes para el packfile mínimo, se recibió {buffer:?}");
+            return Err(GitrError::PackFileError("new_from_server_packfile".to_string(),"No hay suficientes bytes para el encabezado mínimo".to_string()));
+        }
         verify_header(&buffer[..=3])?;
         let version = extract_version(&buffer[4..=7])?;
         let objects = read_pack_file(buffer)?;

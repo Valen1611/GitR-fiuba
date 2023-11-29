@@ -6,6 +6,7 @@ use crate::file_manager::{self};
 use crate::gitr_errors::GitrError;
 use crate::command_utils::{flate2compress, sha1hashing, get_user_mail_from_config};
 
+use super::tag::Tag;
 use super::tree::Tree;
 
 #[derive(Debug)]
@@ -102,7 +103,11 @@ impl Commit{
     }
 
     pub fn new_commit_from_data(data: String) -> Result<Commit, GitrError>{
-       let commit_string = data.split("\0").collect::<Vec<&str>>()[1].to_string();
+       let commit_elems = data.split("\0").collect::<Vec<&str>>();
+       if commit_elems.len() != 2 || !commit_elems[0].contains("commit"){
+        return Err(GitrError::InvalidCommitError)
+        }
+       let commit_string = commit_elems[1].to_string();
        Ok(Self::new_commit_from_string(commit_string)?)
     }
 
@@ -114,11 +119,15 @@ impl Commit{
         }
         let mut commits: Vec<Commit> = Vec::new();
         for id in commits_id {
-            
             object_ids.insert(id.clone());
-            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
+            match Commit::new_commit_from_data(file_manager::get_object(id.clone(), r_path.clone())?) {
                 Ok(commit) => {commits.push(commit)},
-                _ => {return Err(GitrError::InvalidCommitError)}
+                _ => {
+                    match Tag::new_tag_from_data(file_manager::get_object(id.clone(), r_path.clone())?) {
+                        Ok(tag) => {commits.push(Commit::new_commit_from_data(file_manager::get_object(tag.get_commit_hash(), r_path.clone())?)?)},
+                        Err(_) => return Err(GitrError::InvalidCommitError)
+                    }
+                }
             }
         } 
         for commit in commits {
@@ -146,9 +155,14 @@ impl Commit{
                 continue;
             } 
             parents.push(id.clone());
-            match Commit::new_commit_from_data(file_manager::get_object(id, r_path.clone())?) {
+            match Commit::new_commit_from_data(file_manager::get_object(id.clone(), r_path.clone())?) {
                 Ok(commit) => {Self::get_parents_rec(commit.parents.clone(), &rcv_commits,r_path.clone(),&mut parents)?},
-                _ => {return Err(GitrError::InvalidCommitError)}
+                _ => { 
+                    match Tag::new_tag_from_data(file_manager::get_object(id, r_path.clone())?) {
+                        Ok(tag) => {Self::get_parents_rec(vec![tag.get_commit_hash()], &rcv_commits,r_path.clone(),&mut parents)?},
+                        Err(_) => return Err(GitrError::InvalidCommitError)
+                    }
+                }
             }
         }
         Ok(parents)

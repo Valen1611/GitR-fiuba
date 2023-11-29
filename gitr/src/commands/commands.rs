@@ -230,15 +230,16 @@ pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         println!("{}",get_tags_str(cliente.clone())?);
         return Ok(());
     }
-    if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
+    if flags.len() >= 4 && flags[0] == "-a" && flags[2] == "-m" {
+        let mut message = "".to_string();
         if flags[3].starts_with("\""){
-            let message = &flags[3..];
-            let message = message.join(" ");
+            let aux = &flags[3..];
+            message = aux.join(" ");
             if !message.chars().any(|c| c!= ' ' && c != '\"'){
                 return Err(GitrError::InvalidArgumentError(flags.join(" "), "tag -a <tag-name> -m \"tag-message\"".to_string()))
             }
         } 
-        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente.clone())?;
+        create_annotated_tag(flags[1].clone(), message.clone(), cliente.clone())?;
         return Ok(())
     }
     if flags.len() == 1 && flags[0] != "-l" {
@@ -333,6 +334,7 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
    
     // ########## PACKFILE ##########
     if pkt_needed {
+        println!("pushing packfile");
         push_packfile(&mut stream, pkt_ids, hash_n_references, cliente)?;
     }
     Ok(())

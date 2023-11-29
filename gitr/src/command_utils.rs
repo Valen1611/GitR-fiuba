@@ -1349,7 +1349,7 @@ pub fn create_annotated_tag(tag_name: String, tag_message: String, cliente: Stri
     if Path::new(&tag_path).exists() {
         return Err(GitrError::TagAlreadyExistsError(tag_name.clone()));
     }
-    let tag = Tag::new(tag_name, tag_message, current_commit)?;
+    let tag = Tag::new(tag_name, tag_message, current_commit,cliente.clone())?;
     tag.save(cliente.clone())?;
     file_manager::write_file(tag_path, tag.get_hash())?;
     Ok(())
