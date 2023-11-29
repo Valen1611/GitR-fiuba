@@ -1527,9 +1527,6 @@ pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: 
             GitObject::Tag(tag) => tag.save(cliente.clone())?,
         }
     }
-    if actualizar_work_dir {
-        update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
-    }
     println!("pull of {} objects successfull",pack_file_struct.objects.len());
     Ok(())
 }

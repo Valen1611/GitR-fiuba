@@ -1,5 +1,5 @@
 use std::path::Path;
-use crate::file_manager::{get_current_repo, delete_tag};
+use crate::file_manager::{get_current_repo, delete_tag, get_current_commit, update_working_directory};
 use crate::command_utils::{*, self};
 use crate::file_manager::commit_log;
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
@@ -314,6 +314,7 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     }
     if actualizar_work_dir {
         file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
+        update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
     }
 
     Ok(())
