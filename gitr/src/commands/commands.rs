@@ -405,7 +405,6 @@ pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     }
 
     let mut texto = String::new();
-    let actual: String = flags[0].clone();
 
     let mut hay_separador = false;
     for palabra in flags.iter() {
@@ -413,7 +412,7 @@ pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
             hay_separador = true;
             break;
         }
-        texto.push_str(&actual);
+        texto.push_str(&palabra);
         texto.push_str(" ");        
     }
     texto = texto.trim_end().to_string();
@@ -427,6 +426,8 @@ pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     println!("escribo {} en {}", texto, file_path);
     file_manager::write_file(file_path, texto)
 }
+
+
 
 #[cfg(test)]
 mod tests{
