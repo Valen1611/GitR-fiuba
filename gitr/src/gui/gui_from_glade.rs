@@ -1,6 +1,5 @@
 use std::fs;
 
-use chrono::Utc;
 use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBoxText};
 
 use gtk::{Builder,Window, Button, FileChooserButton};
@@ -11,7 +10,7 @@ use crate::file_manager;
 fn get_commits() -> String{
     let mut commits = match  file_manager::commit_log("-1".to_string(),"client".to_string()) {
         Ok(commits) => commits,
-        Err(e) => "No hay commits para mostrar".to_string(),
+        Err(_) => "No hay commits para mostrar".to_string(),
     };
     commits = commits.trim_end().to_string();
 
@@ -36,14 +35,9 @@ fn get_commits() -> String{
         } else {
             message.to_string()
         };
-        println!("Hash: {}",hash);
-        println!("Author: {}",author);
-        println!("Date: {:?}",date);
-        println!("Message: {}",message);
 
         if day != fecha_actual {
             let month = date.split(" ").collect::<Vec<&str>>()[1];
-            
             let year = date.split(" ").collect::<Vec<&str>>()[4];
             res.push_str("█\n");
             let fecha = format!("█■■> Commits on {} {}, {}\n", month, day, year);
@@ -57,27 +51,10 @@ fn get_commits() -> String{
         res.push_str(&format!("█    ║ {}{: <width$}{} ║\n", short_message,"",  hash_digits, width = spaces_needed_first_line));
         res.push_str(&format!("█    ║ {}    {}{: <width$}║\n", author, time, "", width = spaces_needed_second_line));
         res.push_str("█    ╚══════════════════════════════════════════════════════════════╝\n");
-
-
-
-        
     }
 
-
-    println!("{}",res);
     res
 }
-
-// solamente para prinetear facil los commits, borrar cuando este todo ok
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn test_get_commits() {
-        get_commits();
-    }
-}
-
 
 fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
     branch_selector.remove_all();
