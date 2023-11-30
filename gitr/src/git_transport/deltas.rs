@@ -18,9 +18,9 @@ use crate::{objects::git_object::GitObject, gitr_errors::GitrError};
 /// 
 ///             (a = size 3) (b = size 2) (c = size 1) (d = ofs 4) (e = ofs 3) (f = ofs 2) (g = ofs 1)
 ///         
-///             # Estos no estan encodeados, se usan directamente, queda:
-///                 * size = [s3 s2 s1] -> Cantidad de bits a copiar
+///             # Estos no estan encodeados, se usan directamente y si no se activan quedan en 0x00, queda:
 ///                 * offset = [o4 o3 o2 o1] -> Offset respecto el inicio del objeto base donde empezar a copiar
+///                 * size = [s3 s2 s1] -> Cantidad de bits a copiar
 ///             
 
 pub fn get_offset(data: &[u8]) -> Result<(usize,&[u8]),GitrError> {
@@ -38,7 +38,30 @@ pub fn get_offset(data: &[u8]) -> Result<(usize,&[u8]),GitrError> {
     Ok((ofs,&data[cant_bytes..]))
 }
 
-pub fn transform_delta(data: Vec<u8>,pack: Vec<u8>, offset: usize) -> Result<GitObject,GitrError>{
+fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize),GitrError> {
+    if instruction.len() != 8{
+        return Err(GitrError::PackFileError("parse_copy_instruction".to_string(), "Instruccion de copia invalida".to_string()));
+    }
+    let size: usize = 0;
+    let ofs: usize = 0;
     
+
+}
+
+pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<GitObject,GitrError>{
+    let mut final_data: Vec<u8> = Vec::new();
+    let mut i: usize = 0;
+    while i < data.len() {
+        let byte = data[i];
+        if byte & 0x80 == 0 { // empieza con 0 -> nueva data
+            let size = (byte <<1>>1) as usize;
+            let new_data = &data[i+1..i+1+size];
+            final_data.extend(new_data);
+            i += size+1;
+        } else { // empieza con 1 -> copiar de la base
+            let (ofs, size) = parse_copy_instruction(data[i..i+8].to_vec())?;
+        }
+    }
+
     Err(GitrError::PackFileError("transform_delta".to_string(), "No se pudo obtener el delta".to_string()))
 }

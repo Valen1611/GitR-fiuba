@@ -133,7 +133,6 @@ fn snd_packfile(stream: &mut TcpStream, wants_id: Vec<String>,haves_id: Vec<Stri
     let mut contents: Vec<Vec<u8>> = vec![];
     let all_commits = Commit::get_parents(wants_id.clone(), haves_id.clone(), r_path.clone()).unwrap_or(wants_id);
     let wants_id = Commit::get_objects_from_commits(all_commits.clone(), haves_id, r_path.clone()).unwrap_or(vec![]);
-    println!("wants_id: {:?}", wants_id);
     for id in wants_id.clone() {
         match file_manager::get_object_bytes(id, r_path.clone()){
             Ok(obj) => contents.push(obj),

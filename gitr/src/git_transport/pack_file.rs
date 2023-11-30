@@ -82,13 +82,13 @@ fn create_blob_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     Ok(blob)
 }
 
-fn git_valid_object_from_packfile(object_type: u8, decoded_data: &[u8],pack: &[u8],offset: usize)->Result<GitObject,GitrError>{
+fn git_valid_object_from_packfile(object_type: u8, decoded_data: &[u8],base: &[u8])->Result<GitObject,GitrError>{
     let object = match  object_type{
         1 => create_commit_object(decoded_data)?,
         2 => create_tree_object(decoded_data)?,
         3 => create_blob_object(decoded_data)?,
         4 => create_tag_object(decoded_data)?,
-        6 => transform_delta(decoded_data.to_vec(),pack.to_vec(),offset)?,
+        6 => transform_delta(decoded_data,base)?,
         _ => return Err(GitrError::PackFileError("git_valid_object_from_packfile".to_string(),"Tipo de objeto no válido".to_string()))
     };
     Ok(object)
@@ -104,25 +104,27 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
 
     let mut index: usize = 12;
     for _i in 0..num_objects {
-        let (obj,leidos) = read_object(&mut buffer[index..])?;
+        let (obj,leidos) = read_object(buffer,index)?;
         index += leidos;
         objects.push(obj);
     }
     Ok(objects)
 }
 
-pub fn read_object(buffer: &mut[u8]) -> Result<(GitObject,usize),GitrError>{
-    match parse_git_object(buffer) {
+pub fn read_object(buffer: &mut[u8], index: usize) -> Result<(GitObject,usize),GitrError>{
+    match parse_git_object(&buffer[index..]) {
         Ok((object_type, _length, mut object_content,cursor)) => {
             let mut ofs_base: usize = 0;
+            let mut base = vec![]; 
             if object_type == 6 {
                 (ofs_base,object_content) = get_offset(object_content)?;
                 let (_length,cursor1 ) = get_encoded_length(object_content)?;
                 let (_length,cursor2 ) = get_encoded_length(&object_content[cursor1..])?;
+                base = decode(&buffer[index-ofs_base..]).unwrap_or((vec![],0)).0;
                 object_content = &object_content[cursor1+cursor2..];
             }
-            let (decodeado, leidos) = decode(object_content).unwrap();
-            let obj = git_valid_object_from_packfile(object_type, &decodeado[..],&buffer,ofs_base)?;
+            let (decodeado, leidos) = decode(object_content).unwrap_or((vec![],0));
+            let obj = git_valid_object_from_packfile(object_type, &decodeado,&base)?;
             let index = leidos as usize + cursor;
             return Ok((obj,index));
         },
