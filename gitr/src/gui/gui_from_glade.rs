@@ -33,11 +33,6 @@ fn existe_config() -> bool{
     fs::metadata("gitrconfig").is_ok()
 }
 
-// fn show_remote_error(builder: &Builder){
-//     let remote_error_dialog: Dialog = builder.object("remote_error").unwrap();
-//     remote_error_dialog.show();
-// }
-
 fn build_ui(application: &gtk::Application)->Option<String>{
     let glade_src = include_str!("gui_test.glade");
     let builder = Builder::from_string(glade_src);

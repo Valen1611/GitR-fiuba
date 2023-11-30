@@ -179,7 +179,7 @@
           <object class="GtkLabel" id="login_dialog_top_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Set your email and username for this repo</property>
+            <property name="label" translatable="yes">Set your user and email for this repo</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -501,24 +501,21 @@
                               <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <child>
-                                  <placeholder/>
-                                </child>
+                                <property name="halign">end</property>
                                 <child>
                                   <object class="GtkButton">
                                     <property name="label" translatable="yes">Save changes</property>
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="receives-default">True</property>
+                                    <property name="halign">end</property>
+                                    <property name="valign">end</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">True</property>
-                                    <property name="position">1</property>
+                                    <property name="position">2</property>
                                   </packing>
-                                </child>
-                                <child>
-                                  <placeholder/>
                                 </child>
                               </object>
                               <packing>
