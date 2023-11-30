@@ -29,12 +29,14 @@ pub enum GitrError{
     DeleteCurrentBranchError(String),
     TagAlreadyExistsError(String),
     TagNonExistsError(String),
+    InputError,
 
 }
 
 impl fmt::Display for GitrError{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            Self::InputError => write!(f,"Error en la entrada de comandos"),
             Self::BranchNonExistsError(branch) => write!(f, "error: branch '{}' not found.", branch),
             Self::FileDeletionError(fun) => write!(f, "En la funcion {} falló una eliminación", fun),
             Self::FileCreationError(path) => write!(f, "ERROR: No se pudo crear el archivo {}", path),

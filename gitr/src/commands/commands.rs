@@ -402,7 +402,7 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
                 println!("nothing to rebase");
                 return Ok(());
             }
-            create_rebase_commits(to_rebase_commits, origin_name, cliente.clone())?;
+            create_rebase_commits(to_rebase_commits, origin_name, cliente.clone(), commit)?;
             break;
         }
         to_rebase_commits.push(commit);
@@ -410,7 +410,7 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     Ok(())
 }
 // -- 1 -- 2 -- 3 -- 4 - 5 - 6 master 
-//                    \       \ 6'   
+//                    \       \ 6' - 6'' - 6''  
 //                      - 7 - 8 - 9  topic  git rebase master
 
         //git diff $indexbase $file1

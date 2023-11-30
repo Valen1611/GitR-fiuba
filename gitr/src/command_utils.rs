@@ -1,4 +1,4 @@
-use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, HashSet}, net::TcpStream};
+use std::{io::{Write, Read, self}, fs::{self}, path::Path, collections::{HashMap, HashSet}, net::TcpStream};
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
@@ -852,46 +852,66 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo
     Ok((diff_final,hubo_conflict))
 }
 
-pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, cliente: String) -> Result< (), GitrError> {
+pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, cliente: String) -> Result<bool, GitrError> {
+    println!("Origin ( o master): {}", origin_commit);
+    println!("Branch (o topic): {}", branch_commit);
+    println!("Base: {}", base_commit);
     let branch_hashmap = get_commit_hashmap(branch_commit.clone(),cliente.clone())?;
     let mut origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
     file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone(),cliente.clone())?;
     origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
     let base_hashmap = get_commit_hashmap(base_commit.clone(),cliente.clone())?;
+    let mut hubo_conflict= false;
     for (path, origin_file_hash) in origin_hashmap.iter(){
-        let origin_file_data =file_manager::read_file(path.clone())?; 
-        
+        let origin_file_data: String =file_manager::read_file_data_from_blob_hash(origin_file_hash.clone(), cliente.clone())?; 
+        println!("branch_hashmap:{:?}", branch_hashmap);
         if branch_hashmap.contains_key(&path.clone()){
+            println!("Entre al if");
             let branch_file_hash = branch_hashmap[path].clone(); //aax
             let branch_file_data = file_manager::read_file_data_from_blob_hash(branch_file_hash.clone(),cliente.clone())?;
 
+            println!("Hashes");
+            println!("Origin file hash: {}", origin_file_hash);
+            println!("Branch file hash: {}", branch_file_hash);
+            
+            
+            
             if origin_file_hash == &branch_file_hash{
+                println!("entro al if 1");
                 continue;
             }
             
             let base_file_hash = base_hashmap[path].clone(); // chequear que capaz puede no exisiir en base
             let base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone(),cliente.clone())?;
-
+            
+            println!("Base file hash: {}", base_file_hash);
             if &base_file_hash == origin_file_hash {
+                println!("entro al if 2");
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
                 aplicar_difs(path.clone(), diff_base_branch)?;
                 continue;
             }
             
-            if base_file_hash == branch_file_hash {              
+            if base_file_hash == branch_file_hash {     
+                println!("entro al if 3");
                 continue;
            
             }
     
-            // println!("base_file_data: {:?}", base_file_data);
-            // println!("origin_file_data: {:?}", origin_file_data);
-            // println!("branch_file_data: {:?}", branch_file_data);
+            println!("base_file_data: {:?}", base_file_data);
+            println!("origin_file_data: {:?}", origin_file_data);
+            println!("branch_file_data: {:?}", branch_file_data);
 
             let len_archivo = base_file_data.len();
+            
+            println!("Origin ( o master): {}", origin_commit);
+            println!("Branch (o topic): {}", branch_commit);
+            println!("Base: {}", base_commit);
 
             let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
-            let diff_base_branch = Diff::new(base_file_data, branch_file_data);
-            let (union_diffs,hubo_conflict) = comparar_diffs(diff_base_origin, diff_base_branch, len_archivo-1)?; //une los diffs o da el conflict
+            let diff_base_branch = Diff::new(base_file_data.clone(), branch_file_data.clone());
+            let union_diffs;
+            (union_diffs,hubo_conflict) = comparar_diffs(diff_base_origin, diff_base_branch, len_archivo-1)?; //une los diffs o da el conflict
             //println!("union_diffs: {:?}", union_diffs);
             aplicar_difs(path.clone(), union_diffs)?;
         }
@@ -904,7 +924,7 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
     // create_merge_commit(branch_name,branch_commit, cliente)?;
     // aca crearse otro commit especial para poder tener 2 padre,s pero no tocar la funcion commit original
 
-    Ok(())
+    Ok(hubo_conflict)
 }
 /*
 pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
@@ -932,6 +952,7 @@ pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
 }
 
 */
+
 pub fn create_merge_commit(branch_name: String, branch_commit: String, cliente: String) -> Result<(), GitrError> {
     let index_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/gitr/index";
     if !Path::new(&index_path).exists() {
@@ -1109,9 +1130,10 @@ pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_h
 
 
 pub fn get_commit_hashmap(commit: String,cliente: String) -> Result<HashMap<String, String>, GitrError> {
-      let mut tree_hashmap = HashMap::new();
+    let mut tree_hashmap = HashMap::new();
     let current_commit = get_current_commit(cliente.clone())?;
     if current_commit == commit{
+        println!("get_commit_hashmap(): entre al if que los commits son iguales");
         let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
         return Ok(index_hashmap);
     }
@@ -1599,21 +1621,38 @@ pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_referenc
  * *****************/
 
 fn check_conflicts_and_get_tree(origin_commit: String, branch_commit: String, base_commit:String, cliente:String)->Result<String,GitrError>{
-    let (diff, hubo_conflict) = three_way_merge(base_commit, origin_commit, branch_commit, cliente)?;
+    println!("Origin ( o master): {}", origin_commit);
+    println!("Branch (o topic): {}", branch_commit);
+    println!("Base: {}", base_commit);
 
-    
-    Ok(())
+    let hubo_conflict = three_way_merge(base_commit, origin_commit, branch_commit, cliente.clone())?;
+    while hubo_conflict{
+        println!("conflicts detected, please resolve them and then run '--continue'");
+        print!("$ ");
+        let mut input = String::new();
+        match io::stdin().read_line(&mut input){
+            Ok(_) => (),
+            Err(e) => return Err(GitrError::InputError),
+        }
+        if input.trim() == "--continue"{
+            break
+        }
+    }
+    commands::add(vec![".".to_string()],cliente.clone())?;
+    let (tree_map, tree_order) = get_hashmap_for_checkout(cliente.clone())?;
+    let final_tree = create_trees(tree_map, tree_order[0].clone(),cliente.clone())?;
+    Ok(final_tree.get_hash())
 }
 
-pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, cliente:String)-> Result<(),GitrError>{
-    let commit_branch = get_current_commit(cliente.clone())?;
-    let commit_base = get_parent_commit(commit_branch.clone(), cliente.clone())?;
+pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, cliente:String, commit_base: String)->Result<(),GitrError>{
     let mut last_commit: String = get_commit(origin_name, cliente.clone())?;
     for commit_old in to_rebase_commits.iter().rev(){
-        let main_tree = check_conflicts_and_get_tree(last_commit, commit_old.to_string(), commit_base.clone(),cliente.clone())?;
+        let main_tree = check_conflicts_and_get_tree(last_commit.clone(), commit_old.to_string(), commit_base.clone(),cliente.clone())?;
         let message = file_manager::get_commit_message(commit_old.clone(),cliente.clone())?;
         let commit = Commit::new(main_tree.clone(), vec![last_commit.clone()], cliente.clone(), cliente.clone(), message.clone(), cliente.clone())?;
         commit.save(cliente.clone())?;
+        let dir = get_current_repo(cliente.clone())?+ "/gitr/" + &get_head(cliente.clone())?;
+        file_manager::write_file(dir, commit.get_hash())?;
         last_commit = commit.get_hash();
     }
     let repo = file_manager::get_current_repo(cliente.clone())?;
