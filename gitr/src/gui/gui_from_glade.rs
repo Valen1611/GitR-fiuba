@@ -1,11 +1,26 @@
 use std::fs;
 
-use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBoxText};
+use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBoxText, Label};
 
 use gtk::{Builder,Window, Button, FileChooserButton};
 
 use crate::commands::commands::{self, remote};
 use crate::file_manager;
+
+fn email_valido(email_recibido: String) -> bool {
+    let email_parts:Vec<&str>  = email_recibido.split('@').collect::<Vec<&str>>();
+    if email_parts.len() != 2 {
+        return false; 
+    }
+    
+    let domain = email_parts[1];
+
+    if !domain.contains('.') {
+        return false
+    }
+
+    true
+}
 
 fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
     branch_selector.remove_all();
@@ -55,6 +70,9 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let close_commit_dialog_button: Button = builder.object("close_commit_dialog_button")?;
     let cancel_clone_button: Button = builder.object("cancel_clone_button")?;
     let cancel_login_button: Button = builder.object("cancel_login_button")?;
+    let login_close_button: Button = builder.object("login_close_button")?;
+    let login_connect_button: Button = builder.object("login_connect_button")?;
+    let login_dialog_top_label: Label = builder.object("login_dialog_top_label")?;
     //====Conexiones de señales====
     
     //====LOGIN====
@@ -70,14 +88,39 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     });
 
     let login_button_clone = login_button.clone();
+    let login_dialog_clone = login_dialog.clone();
     login_button_clone.connect_clicked(move|_|{
+        println!("Login clicked");
         let mail = mail_entry.text().to_string();
         let user = user_entry.text().to_string();
+        if !email_valido(mail.clone()){
+            login_dialog_top_label.set_text("Mail inválido. Con formato nombre@xxxxxx.yyy");
+            return;
+        }
+        if user.is_empty(){
+            login_dialog_top_label.set_text("Usuario vacío. Ingrese un usuario válido");
+            return;
+        }
         let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", mail, user);
         file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
-        login_dialog.hide();
+        login_dialog_clone.hide();
     });
 
+    let login_dialog_clone = login_dialog.clone();
+    let login_warning_clone = login_warning.clone();
+    login_connect_button.connect_clicked(move |_|{
+        login_warning_clone.hide();
+        login_dialog_clone.show();
+    });
+
+    //====LOGIN WARNING====
+    if !existe_config() {
+        login_warning.show();
+    }
+
+    login_close_button.connect_clicked(move |_|{
+        login_warning.hide();
+    });
 
     //====COMMIT====
     let commit_clone = commit.clone();
@@ -200,10 +243,7 @@ fn build_ui(application: &gtk::Application)->Option<String>{
         println!("Fetch button clicked");
     });
 
-    //====LOGIN WARNING====
-    if !existe_config() {
-        login_warning.show();
-    }
+    
 
     //====REMOTE ERROR DIALOG====
     remote_error_close_button.connect_clicked(move|_|{

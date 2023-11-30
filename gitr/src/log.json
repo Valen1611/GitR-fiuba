@@ -28,3 +28,13 @@
 {"type": "FileOperation","timestamp": "27-11-2023 16:38:15","message": "reading data from: .head_repo"}
 {"type": "FileOperation","timestamp": "27-11-2023 16:40:33","message": "writing data to: .head_repo"}
 {"type": "FileOperation","timestamp": "27-11-2023 16:40:33","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "30-11-2023 08:50:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "30-11-2023 08:50:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "30-11-2023 08:50:01","message": "reading data from: target/CACHEDIR.TAG"}
+{"type": "FileOperation","timestamp": "30-11-2023 08:50:01","message": "writing object 20d7c319cda945dc07729797750a49b232206ab5"}
+{"type": "FileOperation","timestamp": "30-11-2023 08:50:01","message": "reading data from: .head_repo"}
+{"type": "FileOperation","timestamp": "30-11-2023 08:50:01","message": "creating dir: target/gitr/objects/20"}
+{"type": "FileOperation","timestamp": "30-11-2023 09:04:42","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "30-11-2023 09:27:13","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "30-11-2023 09:27:28","message": "writing data to: gitrconfig"}
+{"type": "FileOperation","timestamp": "30-11-2023 09:30:59","message": "writing data to: gitrconfig"}
