@@ -268,7 +268,9 @@ pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
                 command_utils::fast_forward_merge(branch_name,cliente.clone())?;
                 break;
             }
-            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), branch_name, cliente.clone())?;
+            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), cliente.clone())?;
+            add(vec![".".to_string()], cliente.clone())?;
+            command_utils::create_merge_commit(branch_name,branch_commits[0].clone(), cliente)?;
             break;
         }
     }
@@ -408,8 +410,8 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     Ok(())
 }
 // -- 1 -- 2 -- 3 -- 4 - 5 - 6 master 
-        //                    \        
-        //                      - 7' - 8' - 9' topic 
+//                    \       \ 6'   
+//                      - 7 - 8 - 9  topic  git rebase master
 
         //git diff $indexbase $file1
 //        the diff in the patch # equivalent to git diff $indexbase $file2
