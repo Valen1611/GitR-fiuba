@@ -22,23 +22,23 @@ fn get_commits() -> String{
 
         //println!("\x1b[34mCommit: \x1b[0m {:?}",commit);
         commit = commit.trim_start();
-        let hash = commit.split("\n").collect::<Vec<&str>>()[0].split_at(8).1;
-        let author = commit.split("\n").collect::<Vec<&str>>()[1].split_at(8).1;
-        let date = commit.split("\n").collect::<Vec<&str>>()[2].split_at(5).1.trim_start();
-        let message = commit.split("\n").collect::<Vec<&str>>()[3].trim_start();
+        let hash = commit.split('\n').collect::<Vec<&str>>()[0].split_at(8).1;
+        let author = commit.split('\n').collect::<Vec<&str>>()[1].split_at(8).1;
+        let date = commit.split('\n').collect::<Vec<&str>>()[2].split_at(5).1.trim_start();
+        let message = commit.split('\n').collect::<Vec<&str>>()[3].trim_start();
 
-        let day = date.split(" ").collect::<Vec<&str>>()[2];
-        let time = date.split(" ").collect::<Vec<&str>>()[3];
+        let day = date.split(' ').collect::<Vec<&str>>()[2];
+        let time = date.split(' ').collect::<Vec<&str>>()[3];
         let hash_digits = hash.split_at(8).0;
         let short_message = if message.len() > 40 {
-            (&message[..40]).to_string() + "..."
+            message[..40].to_string() + "..."
         } else {
             message.to_string()
         };
 
         if day != fecha_actual {
-            let month = date.split(" ").collect::<Vec<&str>>()[1];
-            let year = date.split(" ").collect::<Vec<&str>>()[4];
+            let month = date.split(' ').collect::<Vec<&str>>()[1];
+            let year = date.split(' ').collect::<Vec<&str>>()[4];
             res.push_str("█\n");
             let fecha = format!("█■■> Commits on {} {}, {}\n", month, day, year);
             res.push_str(&fecha);
@@ -54,6 +54,18 @@ fn get_commits() -> String{
     }
 
     res
+}
+
+#[cfg(test)]
+
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn print() {
+        println!("{}", get_commits());
+    }
 }
 
 fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){

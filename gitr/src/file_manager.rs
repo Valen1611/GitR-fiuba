@@ -340,7 +340,7 @@ fn parse_object_hash(object: &String,path: String, add_gitr: bool) -> Result<Str
 
     let mut repo = path;
     if add_gitr {
-        repo = repo + "/gitr";
+        repo += "/gitr";
     }
     let dir = repo + "/objects/";  
     let folder_dir = dir.clone() + &folder_name;
@@ -811,7 +811,7 @@ pub fn get_repos(cliente: String) -> Vec<String> {
                 continue;
             }
             if entry.file_type().unwrap().is_dir() {
-                let p = entry.path().display().to_string().split("/").collect::<Vec<&str>>()[2].to_string();
+                let p = entry.path().display().to_string().split('/').collect::<Vec<&str>>()[2].to_string();
                 repos.push(p.to_string());
             }
         }

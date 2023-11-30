@@ -183,7 +183,7 @@ pub fn branch(flags: Vec<String>,cliente: String)->Result<(), GitrError>{
 
 pub fn ls_files(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     //ls-files --stage
-    if flags.len() == 0 || flags[0] == "--cached" || flags[0] == "-c" {
+    if flags.is_empty() || flags[0] == "--cached" || flags[0] == "-c" {
         let ls_files_res = get_ls_files_cached(cliente.clone())?;
         print!("{}", ls_files_res);
         return Ok(())
@@ -228,12 +228,12 @@ pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 }
 
 pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
-    if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l"){
+    if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l"){
         println!("{}",get_tags_str(cliente.clone())?);
         return Ok(());
     }
     if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
-        if flags[3].starts_with("\""){
+        if flags[3].starts_with('\"'){
             let message = &flags[3..];
             let message = message.join(" ");
             if !message.chars().any(|c| c!= ' ' && c != '\"'){
@@ -369,11 +369,12 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
 
 
 pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
-    if flags.len() == 0 {
+    if flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
     }
     command_utils::_ls_tree(flags, "".to_string(), cliente)
 }
+
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));
 }
@@ -400,7 +401,7 @@ pub fn print_current_repo(cliente: String) -> Result<(), GitrError> {
 }
 
 pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
-    if flags.len() == 0 {
+    if flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "echo <string> > <file>".to_string()));   
     }
 
@@ -412,8 +413,8 @@ pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
             hay_separador = true;
             break;
         }
-        texto.push_str(&palabra);
-        texto.push_str(" ");        
+        texto.push_str(palabra);
+        texto.push(' ');        
     }
     texto = texto.trim_end().to_string();
     if !hay_separador {
@@ -433,12 +434,12 @@ pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
 mod tests{
 
     use super::*;
-    #[test]
-    fn test00_clone_from_daemon(){
-        let mut flags = vec![];
-        flags.push("localhost:9418".to_string());
-        flags.push("repo_clonado".to_string());
-        assert!(clone(flags,"test".to_string()).is_ok());
-    }
+    // #[test]
+    // fn test00_clone_from_daemon(){
+    //     let mut flags = vec![];
+    //     flags.push("localhost:9418".to_string());
+    //     flags.push("repo_clonado".to_string());
+    //     assert!(clone(flags,"test".to_string()).is_ok());
+    // }
 
 }

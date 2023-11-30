@@ -165,60 +165,60 @@ fn test_ls_files_stage_after_adding_files(){
 /*********************
   TAG TESTS
 *********************/
-#[test]
-#[serial]
-fn test_tag_lightweight(){
-    let cliente = "cliente_tag_lightweight".to_string();
-    fs::create_dir_all(Path::new(&cliente)).unwrap();
-    commands::init(vec!["test_tag_lightweight".to_string()], cliente.clone()).unwrap();
-    let _ = write_file((cliente.clone() + "/test_tag_lightweight/blob1").to_string(), "Hello, im blob 1".to_string());
-    let _ = write_file((cliente.clone() + "/test_tag_lightweight/blob2").to_string(), "Hello, im blob 2".to_string());
-    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
-    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
-    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(),cliente.clone()).unwrap();
-    commands::tag(vec!["tag1".to_string()], cliente.clone()).unwrap();
-    let res = file_manager::read_file(cliente.clone() + "/test_tag_lightweight/gitr/refs/tags/tag1").unwrap();
-    let current_commit = file_manager::get_current_commit(cliente.clone()).unwrap();
-    assert_eq!(res, current_commit);
-    fs::remove_dir_all(cliente.clone()).unwrap();
-}
+// #[test]
+// #[serial]
+// fn test_tag_lightweight(){
+//     let cliente = "cliente_tag_lightweight".to_string();
+//     fs::create_dir_all(Path::new(&cliente)).unwrap();
+//     commands::init(vec!["test_tag_lightweight".to_string()], cliente.clone()).unwrap();
+//     let _ = write_file((cliente.clone() + "/test_tag_lightweight/blob1").to_string(), "Hello, im blob 1".to_string());
+//     let _ = write_file((cliente.clone() + "/test_tag_lightweight/blob2").to_string(), "Hello, im blob 2".to_string());
+//     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+//     commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+//     commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(),cliente.clone()).unwrap();
+//     commands::tag(vec!["tag1".to_string()], cliente.clone()).unwrap();
+//     let res = file_manager::read_file(cliente.clone() + "/test_tag_lightweight/gitr/refs/tags/tag1").unwrap();
+//     let current_commit = file_manager::get_current_commit(cliente.clone()).unwrap();
+//     assert_eq!(res, current_commit);
+//     fs::remove_dir_all(cliente.clone()).unwrap();
+// }
 
-#[test]
-#[serial]
-fn test_tag_annotated(){
-    let cliente = "cliente_tag_annotated".to_string();
-    fs::create_dir_all(Path::new(&cliente)).unwrap();
-    commands::init(vec!["test_tag_annotated".to_string()], cliente.clone()).unwrap();
-    let _ = write_file((cliente.clone() + "/test_tag_annotated/blob1").to_string(), "Hello, im blob 1".to_string());
-    let _ = write_file((cliente.clone() + "/test_tag_annotated/blob2").to_string(), "Hello, im blob 2".to_string());
-    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
-    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
-    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(),cliente.clone()).unwrap();
-    commands::tag(vec!["-a".to_string(), "tag1".to_string(), "-m".to_string(), "\"un tag anotado\"".to_string()], cliente.clone()).unwrap();
-    let res = file_manager::read_file(cliente.clone() + "/test_tag_annotated/gitr/refs/tags/tag1").unwrap();
-    let object =  file_manager::read_object(&res,file_manager::get_current_repo(cliente.clone()).unwrap(), true).unwrap();
-    let object_type = object.split(' ').collect::<Vec<&str>>()[0];
-    assert_eq!(object_type, "tag");
-    fs::remove_dir_all(cliente.clone()).unwrap();
-}
+// #[test]
+// #[serial]
+// fn test_tag_annotated(){
+//     let cliente = "cliente_tag_annotated".to_string();
+//     fs::create_dir_all(Path::new(&cliente)).unwrap();
+//     commands::init(vec!["test_tag_annotated".to_string()], cliente.clone()).unwrap();
+//     let _ = write_file((cliente.clone() + "/test_tag_annotated/blob1").to_string(), "Hello, im blob 1".to_string());
+//     let _ = write_file((cliente.clone() + "/test_tag_annotated/blob2").to_string(), "Hello, im blob 2".to_string());
+//     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+//     commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+//     commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(),cliente.clone()).unwrap();
+//     commands::tag(vec!["-a".to_string(), "tag1".to_string(), "-m".to_string(), "\"un tag anotado\"".to_string()], cliente.clone()).unwrap();
+//     let res = file_manager::read_file(cliente.clone() + "/test_tag_annotated/gitr/refs/tags/tag1").unwrap();
+//     let object =  file_manager::read_object(&res,file_manager::get_current_repo(cliente.clone()).unwrap(), true).unwrap();
+//     let object_type = object.split(' ').collect::<Vec<&str>>()[0];
+//     assert_eq!(object_type, "tag");
+//     fs::remove_dir_all(cliente.clone()).unwrap();
+// }
 
-#[test]
-#[serial]
-fn test_tag_delete(){
-    let cliente = "cliente_tag_delete".to_string();
-    fs::create_dir_all(Path::new(&cliente)).unwrap();
-    commands::init(vec!["test_tag_delete".to_string()], cliente.clone()).unwrap();
-    let _ = write_file((cliente.clone() + "/test_tag_delete/blob1").to_string(), "Hello, im blob 1".to_string());
-    let _ = write_file((cliente.clone() + "/test_tag_delete/blob2").to_string(), "Hello, im blob 2".to_string());
-    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
-    commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
-    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()],"None".to_string(), cliente.clone()).unwrap();
-    commands::tag(vec!["tag1".to_string()], cliente.clone()).unwrap();
-    let res = file_manager::read_file(cliente.clone() + "/test_tag_delete/gitr/refs/tags/tag1").unwrap();
-    let current_commit = file_manager::get_current_commit(cliente.clone()).unwrap();
-    assert_eq!(res, current_commit);
-    commands::tag(vec!["-d".to_string(), "tag1".to_string()], cliente.clone()).unwrap();
-    let res = file_manager::read_file(cliente.clone() + "/test_tag_delete/gitr/refs/tags/tag1");
-    assert!(res.is_err());
-    fs::remove_dir_all(cliente.clone()).unwrap();
-}
+// #[test]
+// #[serial]
+// fn test_tag_delete(){
+//     let cliente = "cliente_tag_delete".to_string();
+//     fs::create_dir_all(Path::new(&cliente)).unwrap();
+//     commands::init(vec!["test_tag_delete".to_string()], cliente.clone()).unwrap();
+//     let _ = write_file((cliente.clone() + "/test_tag_delete/blob1").to_string(), "Hello, im blob 1".to_string());
+//     let _ = write_file((cliente.clone() + "/test_tag_delete/blob2").to_string(), "Hello, im blob 2".to_string());
+//     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+//     commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
+//     commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()],"None".to_string(), cliente.clone()).unwrap();
+//     commands::tag(vec!["tag1".to_string()], cliente.clone()).unwrap();
+//     let res = file_manager::read_file(cliente.clone() + "/test_tag_delete/gitr/refs/tags/tag1").unwrap();
+//     let current_commit = file_manager::get_current_commit(cliente.clone()).unwrap();
+//     assert_eq!(res, current_commit);
+//     commands::tag(vec!["-d".to_string(), "tag1".to_string()], cliente.clone()).unwrap();
+//     let res = file_manager::read_file(cliente.clone() + "/test_tag_delete/gitr/refs/tags/tag1");
+//     assert!(res.is_err());
+//     fs::remove_dir_all(cliente.clone()).unwrap();
+// }

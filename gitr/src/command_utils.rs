@@ -98,7 +98,7 @@ pub fn _cat_file(flags: Vec<String>,cliente: String) -> Result<String,GitrError>
             "tree" =>  Ok(get_tree_data(raw_data)),
             "commit" => Ok(raw_data.to_string()),
             "tag" => Ok(raw_data.to_string()),
-            _ => return Err(GitrError::FileReadError(object_hash.to_string())),
+            _ => Err(GitrError::FileReadError(object_hash.to_string())),
         }
     } else {
         Ok("Invalid option. Expected <[-t/-s/-p>".to_string())
@@ -210,6 +210,7 @@ pub fn write_new_commit_and_branch(final_tree:Tree, message: String, second_pare
 }
 
 /// returns a hashmap to create trees (using the index)
+
 pub fn get_hashmap_for_checkout(cliente: String)->Result<(HashMap<String, Vec<String>>,Vec<String>),GitrError>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); 
@@ -313,7 +314,7 @@ pub fn get_ls_files_cached(cliente: String) -> Result<String, GitrError>{
         Err(_) => return Ok(string_res),
     };
     for file_path in index.lines() {
-        let correct_path = match file_path.split_once("/") {
+        let correct_path = match file_path.split_once('/') {
             Some((_path, file)) => file,
             None => file_path,
         };
@@ -562,22 +563,20 @@ fn juntar_consecutivos(diff: Diff)->Diff{
         
         if *index == 0 || i == 0{
             output.push((*index, *accion, s.to_string()));
-        } else {
-            if let Some((prev_num, _, prev_str)) = output.last_mut() {
-          
-                if *prev_num + corrimiento == *index  {
-                    prev_str.push_str(("\n".to_string()+s.as_str()).as_str());
-                    corrimiento += 1;
-                    corrimiento_total += 1;
+        } else if let Some((prev_num, _, prev_str)) = output.last_mut() {
+        
+              if *prev_num + corrimiento == *index  {
+                  prev_str.push_str(("\n".to_string()+s.as_str()).as_str());
+                  corrimiento += 1;
+                  corrimiento_total += 1;
 
-                } else {
-                    output.push((*index, *accion, s.to_string()));
-                    corrimiento = 1;
-                }
-            } else {
-                output.push((*index, *accion, s.to_string()));
-            }
-        }
+              } else {
+                  output.push((*index, *accion, s.to_string()));
+                  corrimiento = 1;
+              }
+          } else {
+              output.push((*index, *accion, s.to_string()));
+          }
     }
     for (index, accion, s) in input.iter() {
         if !accion {
@@ -773,38 +772,15 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
         }
     }
 
+
+
     commands::add(vec![".".to_string()], cliente.clone())?;
     create_merge_commit(branch_name,branch_commit, cliente)?;
-    // aca crearse otro commit especial para poder tener 2 padre,s pero no tocar la funcion commit original
 
     Ok(())
 }
-/*
-pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
 
 
-    let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone())?;
-    let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
-    println!("to be commited: {to_be_commited:?}");
-    if to_be_commited.is_empty() {
-        println!("nothing to commit, working tree clean");
-        return Ok(())
-    }
-    if flags[1].starts_with('\"'){
-        let message = &flags[1..];
-        let message = message.join(" ");
-        if !message.chars().any(|c| c!= ' ' && c != '\"'){
-            return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
-        }
-        get_tree_entries(message.to_string(),cliente.clone())?;
-        print_commit_confirmation(message,cliente.clone())?;
-        Ok(())
-    } else {
-        Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
-    }
-}
-
-*/
 fn create_merge_commit(branch_name: String, branch_commit: String, cliente: String) -> Result<(), GitrError> {
     let index_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/gitr/index";
     if !Path::new(&index_path).exists() {
@@ -843,8 +819,8 @@ fn create_merge_commit(branch_name: String, branch_commit: String, cliente: Stri
 pub fn get_status_files_to_be_comited(new_files: &Vec<String>, modified_files: &Vec<String>)->Result<String, GitrError>{
     let mut res = String::new();
     if !new_files.is_empty() || !modified_files.is_empty() {
-        let header1 = format!("Changes to be committed:\n");
-        let header2 = format!("  (use \"rm <file>...\" to unstage)\n");
+        let header1 = "Changes to be committed:\n".to_string();
+        let header2 = "  (use \"rm <file>...\" to unstage)\n".to_string();
         res.push_str(&header1);
         res.push_str(&header2);
         for file in new_files.clone() {
@@ -873,9 +849,9 @@ pub fn get_status_files_not_staged(not_staged: &Vec<String>,cliente: String)-> R
     let (index,hayindex)= get_index_hashmap(cliente.clone())?;
     let working_dir_hashmap = get_working_dir_hashmap(cliente.clone())?;
     if !not_staged.is_empty() {
-        let header1 = format!("Changes not staged for commit:\n");
-        let header2 = format!("  (use \"add <file>...\" to update what will be committed)\n");
-        let header3 = format!("  (use \"rm <file>...\" to discard changes in working directory)\n");
+        let header1 = "Changes not staged for commit:\n".to_string();
+        let header2 = "  (use \"add <file>...\" to update what will be committed)\n".to_string();
+        let header3 = "  (use \"rm <file>...\" to discard changes in working directory)\n".to_string();
         res.push_str(&header1);
         res.push_str(&header2);
         res.push_str(&header3);
@@ -899,8 +875,8 @@ pub fn get_status_files_not_staged(not_staged: &Vec<String>,cliente: String)-> R
 pub fn get_status_files_untracked(untracked_files: &Vec<String>, hayindex: bool)-> String {
     let mut res = String::new();
     if !untracked_files.is_empty() {
-        let header1 = format!("Untracked files:\n");
-        let header2 = format!("  (use \"add <file>...\" to include in what will be committed)\n");
+        let header1 = "Untracked files:\n".to_string();
+        let header2 = "  (use \"add <file>...\" to include in what will be committed)\n".to_string();
         res.push_str(&header1);
         res.push_str(&header2);
         for file in untracked_files.clone() {
@@ -913,7 +889,7 @@ pub fn get_status_files_untracked(untracked_files: &Vec<String>, hayindex: bool)
         }
 
         if !hayindex {
-            let nothing_output = format!("nothing added to commit but untracked files present (use \"add\" to track)\n");
+            let nothing_output = "nothing added to commit but untracked files present (use \"add\" to track)\n".to_string();
             res.push_str(&nothing_output);
         }
     }
@@ -1251,7 +1227,7 @@ pub fn get_tags_str(cliente: String) -> Result<String,GitrError>{
     for t in tags {
         tag_str.push_str(&(t+"\n"))
     }
-    Ok(tag_str.strip_suffix("\n").unwrap_or("").to_string())
+    Ok(tag_str.strip_suffix('\n').unwrap_or("").to_string())
 }
 /***************************
  *************************** 
@@ -1390,7 +1366,7 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
         println!("cliente al día");
         return Ok(false)
     }
-    let _ = stream.write(&(0 as usize).to_be_bytes());
+    let _ = stream.write(&0_usize.to_be_bytes());
     
     let mut buffer = [0;1024];
     match stream.read(&mut buffer) { // Leo si huvo error
@@ -1457,7 +1433,7 @@ pub fn reference_update_request(stream: &mut TcpStream,hash_n_references: Vec<(S
 
 pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(),GitrError> {
     let repo = file_manager::get_current_repo(cliente.clone())? + "/gitr";
-    let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|(*t).0.clone()).collect(),repo.clone())?;
+    let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|t.0.clone()).collect(),repo.clone())?;
     let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
     let mut contents: Vec<Vec<u8>> = Vec::new();
     for id in ids {

@@ -32,8 +32,8 @@ impl Commit{
         }
         format_data.push_str(&format!("author {} <{}> {} -0300\n", author, get_user_mail_from_config(cliente.clone())?, Utc::now().timestamp()));
         format_data.push_str(&format!("committer {} <{}> {} -0300\n", committer, get_user_mail_from_config(cliente.clone())?, Utc::now().timestamp()));
-        format_data.push_str("\n");
-        let message = message.replace("\"", "");
+        format_data.push('\n');
+        let message = message.replace('\"', "");
         format_data.push_str(&format!("{}\n", message));
         let size = format_data.as_bytes().len();
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
@@ -55,7 +55,7 @@ impl Commit{
         }
         format_data.push_str(&format!("author {}\n", author)); //Utc::now().timestamp()
         format_data.push_str(&format!("committer {}", committer));
-        format_data.push_str("\n");
+        format_data.push('\n');
         format_data.push_str(&format!("{}\n", message));
         let size = format_data.as_bytes().len();      
         let format_data_entera = format!("{}{}\0{}", header, size, format_data);
@@ -85,7 +85,7 @@ impl Commit{
     pub fn new_commit_from_string(data: String)->Result<Commit,GitrError>{
         let (mut parent, mut tree, mut author, mut committer, mut message) = (vec![],"None","None","None","None");
         for line in data.lines() {
-            let elems = line.split_once(" ").unwrap_or((line,""));
+            let elems = line.split_once(' ').unwrap_or((line,""));
             match elems.0 {
                 "tree" => tree = elems.1,
                 "parent" => parent.push(elems.1.to_string()),
@@ -102,8 +102,8 @@ impl Commit{
     }
 
     pub fn new_commit_from_data(data: String) -> Result<Commit, GitrError>{
-       let commit_string = data.split("\0").collect::<Vec<&str>>()[1].to_string();
-       Ok(Self::new_commit_from_string(commit_string)?)
+       let commit_string = data.split('\0').collect::<Vec<&str>>()[1].to_string();
+       Self::new_commit_from_string(commit_string)
     }
 
     pub fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> Result<Vec<String>,GitrError> {
@@ -129,7 +129,7 @@ impl Commit{
         for obj in client_objects{
             object_ids.remove(&obj);
         } 
-        let objects = Vec::from_iter(object_ids.clone().into_iter());
+        let objects = Vec::from_iter(object_ids.clone());
         Ok(objects)
     
         
@@ -156,7 +156,7 @@ impl Commit{
 
     fn get_parents_rec(ids: Vec<String>, receivers_commits: &HashSet<String>,r_path: String, parents: &mut Vec<String>) -> Result<(), GitrError>{
         for id in ids {
-            if receivers_commits.contains(&id) || id == "None" || id == ""{
+            if receivers_commits.contains(&id) || id == "None" || id.is_empty(){
                 continue;
             }
             parents.push(id.clone());
