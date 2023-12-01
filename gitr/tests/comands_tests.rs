@@ -239,7 +239,7 @@ fn test_branch_newbranch(){
     let _ = write_file((cliente.clone() + "/test_branch/blob2").to_string(), "Hello, im blob 2".to_string());
     commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
     commands::add(vec!["blob2".to_string()], cliente.clone()).unwrap();
-    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()],"None".to_string(), cliente.clone()).unwrap();
     commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
     let res = print_branches(cliente.clone()).unwrap();
     let correct_res = String::from("* \x1b[92mmaster\x1b[0m\nbranch1\n");

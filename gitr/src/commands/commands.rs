@@ -410,8 +410,8 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     Ok(())
 }
 // -- 1 -- 2 -- 3 -- 4 - 5 - 6 master 
-//                    \       \ 6' - 6'' - 6''  
-//                      - 7 - 8 - 9  topic  git rebase master
+        //                    \      
+        //                      - 7 - 8 - 9 topic  git rebase master
 
         //git diff $indexbase $file1
 //        the diff in the patch # equivalent to git diff $indexbase $file2
