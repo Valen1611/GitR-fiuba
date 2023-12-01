@@ -22,7 +22,7 @@ fn email_valido(email_recibido: String) -> bool {
     true
 }
 
-fn update_branches(branch_selector: &ComboBoxText,branches: Vec<String>){
+fn update_branches(branch_selector: &ComboBoxText,branches: &Vec<String>){
     branch_selector.remove_all();
     for branch in branches{
         branch_selector.append_text(&branch);
@@ -68,8 +68,57 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let login_close_button: Button = builder.object("login_close_button")?;
     let login_connect_button: Button = builder.object("login_connect_button")?;
     let login_dialog_top_label: Label = builder.object("login_dialog_top_label")?;
+    let init_button: Button = builder.object("init_button")?;
+    let init_dialog: Dialog = builder.object("init_dialog")?;
+    let init_cancel_button: Button = builder.object("init_cancel_button")?;
+    let init_accept_button: Button = builder.object("init_accept_button")?;
+    let init_repo_name: Entry = builder.object("init_repo_name")?;
+    let merge_branch_selector: ComboBoxText = builder.object("merge_branch_selector")?;
+    let merge_button: Button = builder.object("merge_button")?;
+    let add_branch_button: Button = builder.object("add_branch_button")?;
+    let add_branch_dialog: Dialog = builder.object("add_branch_dialog")?;
+    let branch_cancel_button: Button = builder.object("branch_cancel_button")?;
+    let branch_button: Button = builder.object("branch_button")?;
+    let new_branch_name: Entry = builder.object("new_branch_name")?;
     //====Conexiones de señales====
-    
+    //====ADD BRANCH====
+    let add_branch_dialog_clone = add_branch_dialog.clone();
+    add_branch_button.connect_clicked(move|_|{
+        add_branch_dialog_clone.show();
+    });
+
+    let add_branch_dialog_clone = add_branch_dialog.clone();
+    let branch_selector_clone = branch_selector.clone();
+    let merge_branch_selector_clone = merge_branch_selector.clone();
+    branch_button.connect_clicked(move|_|{
+        let branch_name = new_branch_name.text();
+        let flags = vec![branch_name.to_string()];
+        match commands::branch(flags){
+            Ok(_) => (),
+            Err(e) => {
+                println!("Error al crear branch: {:?}",e);
+                return;
+            },
+        };
+
+        let repo_branches = match(file_manager::get_branches()){
+            Ok(branches) => branches,
+            Err(e) => {
+                println!("Error al obtener branches: {:?}",e);
+                return;
+            },
+        };
+
+        update_branches(&branch_selector_clone.clone(),&repo_branches);
+        update_branches(&merge_branch_selector_clone.clone(),&repo_branches);
+        add_branch_dialog_clone.hide();
+    });
+
+    branch_cancel_button.connect_clicked(move|_|{
+        add_branch_dialog.hide();
+    });
+
+
     //====LOGIN====
     let connect_button_clone = connect_button.clone();
     let login_dialog_clone = login_dialog.clone();
@@ -128,13 +177,16 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     let commit_confirm_clone=commit_confirm.clone();
     let commit_dialog_clone = commit_dialog.clone();
     commit_confirm_clone.connect_clicked(move|_|{
-        commit_dialog_clone.close();
+        commit_dialog_clone.hide();
         commands::add(vec![".".to_string()]).unwrap();
         let message = format!("\"{}\"",commit_message.text());
         let cm_msg = vec!["-m".to_string(),message];
-        if commands::commit(cm_msg).is_err(){
-            println!("Error al hacer commit");
-            return;
+        match commands::commit(cm_msg){
+            Ok(_) => (),
+            Err(e) => {
+                println!("Error al hacer commit: {:?}",e);
+                return;
+            },
         };
     });
 
@@ -176,7 +228,8 @@ fn build_ui(application: &gtk::Application)->Option<String>{
             },
         };
         println!("{:?}",repo_branches);
-        update_branches(&branch_selector_clon.clone(),repo_branches);
+        update_branches(&branch_selector_clon.clone(),&repo_branches);
+        update_branches(&merge_branch_selector.clone(),&repo_branches);
     });
 
     //====CLONE====
@@ -244,6 +297,31 @@ fn build_ui(application: &gtk::Application)->Option<String>{
     remote_error_close_button.connect_clicked(move|_|{
         remote_error_dialog.hide();
     });
+
+    //====INIT====
+    let init_button_clone = init_button.clone();
+    let init_dialog_clone = init_dialog.clone();
+    init_button_clone.connect_clicked(move|_|{
+        init_dialog_clone.show();
+    });
+
+    let init_dialog_clone = init_dialog.clone();
+    init_cancel_button.connect_clicked(move|_|{
+        init_dialog_clone.hide();
+    });
+
+    let init_dialog_clone = init_dialog.clone();
+    let init_repo_name_clone = init_repo_name.clone();
+    
+    init_accept_button.connect_clicked(move|_|{
+        let repo_name = init_repo_name_clone.text();
+        init_dialog_clone.hide();
+        if commands::init(vec![repo_name.to_string()]).is_err(){
+            println!("Error al inicializar repo");
+            return;
+        };
+    });
+    
 
     window.set_application(Some(application));
     window.set_title("test");
