@@ -68,7 +68,7 @@ fn print_bienvenida() {
 
 fn main() {
     let child = std::thread::spawn(move || {
-        initialize_gui();
+        initialize_gui(cliente.clone());
     });
 
     print_bienvenida();
@@ -104,9 +104,8 @@ fn main() {
             }
         };
     }
-    // match child.join(){
-    //     Ok(_) => (),
-    //     Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
-    // }
-
+    match child.join(){
+        Ok(_) => (),
+        Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
+    }
 }
