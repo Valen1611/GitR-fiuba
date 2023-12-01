@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, io::{BufReader, BufRead, Read}, fs, net::TcpStream};
 use crate::{gitr_errors::{GitrError, self}, file_manager};
 
 pub fn verify_header(header_slice: &[u8])->Result<(),GitrError>{
@@ -50,48 +50,62 @@ pub fn discover_references(received_data: String) -> Result<Vec<(String,String)>
     Ok(references)
 }
 
-pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_ids: Vec<String>, heads_refs: Vec<String>)->Result<(String,bool,Vec<String>),GitrError>{
+pub fn reference_update_request(hash_n_references: Vec<(String,String)>, heads_n_tags_ids: (Vec<String>,Vec<String>), heads_n_tags_refs: (Vec<String>,Vec<String>))->Result<(String,bool,Vec<String>),GitrError>{
     let mut request = String::new();
-    let mut j = 0;
-    let mut pkt_needed = false;
     let mut pkt_ids:Vec<String> = vec![];
-    for refer in heads_refs { // veo si tengo que crear o modificar alguna
-        let mut falta = true;
-        for hash_n_ref in hash_n_references.clone() {
-            if hash_n_ref.1.ends_with(&refer) { 
-                falta = false;
-                if hash_n_ref.0 != heads_ids[j]{
-                    pkt_needed = true;
-                    pkt_ids.push(heads_ids[j].clone());
-                    let line = format!("{} {} {}\n",hash_n_ref.0,heads_ids[j],hash_n_ref.1);
-                    request.push_str(&format!("{:04X}{}",line.len()+4,line));
-                }
-                break; 
-            }
-        }
-        if falta {
-            pkt_needed = true;
-            let mut ya_lo_tiene = false;
-            for hash_n_ref in hash_n_references.clone() {
-                if heads_ids[j] == hash_n_ref.0 {
-                    ya_lo_tiene = true;
-                    break;
-                }
-            }
-            if !ya_lo_tiene {
-                pkt_ids.push(heads_ids[j].clone());
-            }
-            let line = format!("0000000000000000000000000000000000000000 {} refs/heads/{}\n",heads_ids[j],refer);
-            request.push_str(&format!("{:04X}{}",line.len()+4,line));
-        }
-        j += 1;
-    }
+    let heads_ids = heads_n_tags_ids.0;
+    let tags_ids = heads_n_tags_ids.1;
 
+    for (j,h_refer) in heads_n_tags_refs.0.iter().enumerate() { // veo si tengo que crear o modificar alguna de los heads
+        analizar_ref(hash_n_references.clone(),(h_refer.to_string(),heads_ids[j].clone()),&mut pkt_ids,&mut request,"heads");
+    }
+    for (j,t_refer) in heads_n_tags_refs.1.iter().enumerate() { // veo si tengo que crear o modificar alguna de los tags
+        analizar_ref(hash_n_references.clone(),(t_refer.to_string(),tags_ids[j].clone()),&mut pkt_ids,&mut request,"tags");
+    }
     request.push_str("0000");
-    Ok((request,pkt_needed,pkt_ids))
+    Ok((request,!pkt_ids.is_empty(),pkt_ids))
 }
 
-pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:Vec<String>)->Result<String,GitrError>{
+/// # Recibe:
+/// * hash_n_references: Vector de tuplas (hash, referencia) del servidor
+/// * refer: tupla (hash, referencia) de la referencia del cliente a analizar
+/// * pkt_ids: Vector de ids de los pkt que se van a enviar
+/// * request: String que se va a enviar al Servidor
+/// * carpeta: String que indica si la referencia es de heads o tags
+/// # Devuelve:
+/// Mutan pkt_ids y request añadiendo a cada uno la información correspondiente de la referencia analizada (de ser necesario).
+fn analizar_ref(hash_n_references: Vec<(String,String)>, refer: (String,String), pkt_ids: &mut Vec<String>, request: &mut String, carpeta: &str){
+    let mut falta = true;
+    let ref_id = refer.1;
+    let refer = refer.0;
+    for hash_n_ref in hash_n_references.clone() {
+        if hash_n_ref.1.ends_with(&refer) { 
+            falta = false;
+            if hash_n_ref.0 != ref_id{
+                pkt_ids.push(ref_id.clone());
+                let line = format!("{} {} refs/{}/{}\n",hash_n_ref.0,ref_id,carpeta,refer);
+                request.push_str(&format!("{:04X}{}",line.len()+4,line));
+            }
+            break; 
+        }
+    }
+    if falta {
+        let mut ya_lo_tiene = false;
+        for hash_n_ref in hash_n_references.clone() {
+            if ref_id == hash_n_ref.0 {
+                ya_lo_tiene = true;
+                break;
+            }
+        }
+        if !ya_lo_tiene {
+            pkt_ids.push(ref_id.clone());
+        }
+        let line = format!("0000000000000000000000000000000000000000 {} refs/{}/{}\n",ref_id,carpeta,refer);
+        request.push_str(&format!("{:04X}{}",line.len()+4,line));
+    }
+}
+
+pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:Vec<String>,cliente: String)->Result<String,GitrError>{
     let set = client_commits.clone().into_iter().collect::<HashSet<String>>();
     let mut want_message = String::new();
     for refer in references{
@@ -105,14 +119,79 @@ pub fn assemble_want_message(references: &Vec<(String,String)>, client_commits:V
     if want_message == "0000"{
         return Ok(want_message.to_string());
     }
-    if !client_commits.len() == 0{
-        for have in file_manager::get_all_objects()? {
-            let have_line = format!("have {}\n",have);
-            want_message.push_str(&format!("{:04X}{}\n",have_line.len()+4,have_line));
+    if client_commits.len() > 0{
+        for have in file_manager::get_all_objects_hashes(cliente.clone())? {
+            let have_line = format!("have {}",have);
+            want_message.push_str(&format!("{:04X}{}\n",have_line.len()+5,have_line));
         }
         
         want_message.push_str("0000");
     }
     want_message.push_str("0009done\n");
     Ok(want_message)
+}
+
+pub fn ref_discovery(r_path: &str) -> std::io::Result<(String,HashSet<String>)> {
+    let mut contenido_total = String::new();
+    let mut guardados: HashSet<String> = HashSet::new();
+    let ruta = format!("{}/HEAD",r_path);
+    let mut cont = String::new();
+    let archivo = fs::File::open(ruta)?;
+    BufReader::new(archivo).read_line(&mut cont)?;
+    
+    let c =r_path.to_string() +"/"+ cont.split_at(5).1;
+    let mut contenido = "".to_string();
+    if let Ok(f) = fs::File::open(c){
+        BufReader::new(f).read_line(&mut contenido)?;
+        guardados.insert(contenido.clone());
+        let longitud = contenido.len() + 10;
+        let longitud_hex = format!("{:04x}", longitud);
+        contenido_total.push_str(&longitud_hex);
+        contenido_total.push_str(&contenido);
+        contenido_total.push_str(&(" ".to_string() + "HEAD"));
+        contenido_total.push('\n');
+    }
+
+    let refs_path = format!("{}/refs",r_path);
+    ref_discovery_dir(&(refs_path.clone() + "/heads"),r_path, &mut contenido_total,&mut guardados)?;
+    ref_discovery_dir(&(refs_path + "/tags"),r_path, &mut contenido_total,&mut guardados)?;
+    
+    contenido_total.push_str("0000");
+    
+    Ok((contenido_total,guardados))
+}
+    
+fn ref_discovery_dir(dir_path: &str,original_path: &str,contenido_total: &mut String, guardados: &mut HashSet<String>) -> std::io::Result<()> {
+    for elem in fs::read_dir(dir_path)? {
+        let elem = elem?;
+        let ruta = elem.path();
+        if ruta.is_file() {
+            let mut contenido = String::new();
+            let archivo = fs::File::open(&ruta)?;
+            BufReader::new(archivo).read_line(&mut contenido)?;
+            guardados.insert(contenido.clone());
+            let path_str = ruta.to_str().unwrap_or("ERROR").strip_prefix(&format!("{}/",original_path)).unwrap_or("ERROR2");
+            let path_str = &path_str.replace('/', "\\");
+            let longitud = contenido.len() + path_str.len() + 6;
+            let longitud_hex = format!("{:04x}", longitud);
+            contenido_total.push_str(&longitud_hex);
+            contenido_total.push_str(&contenido);
+            contenido_total.push_str(&(" ".to_string() + path_str));
+            contenido_total.push('\n');
+
+        } 
+    }
+    Ok(())
+}
+
+pub fn read_long_stream(stream: &mut TcpStream) -> Result<Vec<u8>, std::io::Error>  {
+    let mut buffer = [0; 1024];
+    let mut n = stream.read(&mut buffer)?;
+    let mut buf = Vec::from(&buffer[..n]);
+    while n == 1024 {
+        buffer = [0; 1024];
+        n = stream.read(&mut buffer)?;
+        buf.append(&mut Vec::from(&buffer[..n]));
+    }
+    Ok(buf)
 }

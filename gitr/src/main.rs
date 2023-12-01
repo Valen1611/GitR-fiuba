@@ -1,4 +1,4 @@
-use gitr::{commands, logger, gitr_errors::GitrError, command_utils, file_manager};
+use gitr::{commands, logger, gitr_errors::GitrError, file_manager};
 
 use std::{io::{Write, self}, fs};
 extern crate flate2;
@@ -38,7 +38,7 @@ fn email_valido(email_recibido: String) -> bool {
         true
 }
 
-fn setup_config_file(){
+fn setup_config_file(client_path: String){
     let mut email_recibido = String::new();
 
     while !email_valido(email_recibido.clone()) {
@@ -54,8 +54,8 @@ fn setup_config_file(){
     file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
 }
 
-pub fn existe_config() -> bool{
-    fs::metadata("gitrconfig").is_ok()
+pub fn existe_config(client_path: String) -> bool{
+    fs::metadata(client_path + "/gitrconfig").is_ok()
 }
 
 fn print_bienvenida() {
@@ -72,11 +72,10 @@ fn main() {
     });
 
     print_bienvenida();
-
-    if !existe_config() {
-        setup_config_file();
+    let _ = file_manager::create_directory(&cliente);
+    if !existe_config(cliente.clone()) {
+        setup_config_file(cliente.clone());
     }        
-    
 
     loop {
 
@@ -94,7 +93,7 @@ fn main() {
         let argv: Vec<String> = commands::handler::parse_input(input);
         
         // argv = ["command", "flag1", "flag2", ...]
-        match commands::handler::command_handler(argv) {
+        match commands::handler::command_handler(argv,cliente.clone()) {
             Ok(_) => (),
             Err(e) => {
                 println!("{}", e);

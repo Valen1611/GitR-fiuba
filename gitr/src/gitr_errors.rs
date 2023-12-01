@@ -26,11 +26,17 @@ pub enum GitrError{
     PackFileError(String,String),
     BranchNonExistsError(String),
     BranchAlreadyExistsError(String),
+    DeleteCurrentBranchError(String),
+    TagAlreadyExistsError(String),
+    TagNonExistsError(String),
+    InputError,
+
 }
 
 impl fmt::Display for GitrError{
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            Self::InputError => write!(f,"Error en la entrada de comandos"),
             Self::BranchNonExistsError(branch) => write!(f, "error: branch '{}' not found.", branch),
             Self::FileDeletionError(fun) => write!(f, "En la funcion {} falló una eliminación", fun),
             Self::FileCreationError(path) => write!(f, "ERROR: No se pudo crear el archivo {}", path),
@@ -52,6 +58,10 @@ impl fmt::Display for GitrError{
             Self::ConnectionError => write!(f, "No se pudo conectar al servidor"),
             Self::SocketError(origin_function, info) => write!(f, "SocketError en la funcion {}. Info: {}", origin_function, info),
             Self::PackFileError(origin_function, info) => write!(f, "PackFileError en la funcion {}. Info: {}", origin_function, info),
+            Self::TagAlreadyExistsError(tag) => write!(f, "fatal: tag '{}' already exists", tag),
+            Self::TagNonExistsError(tag) => write!(f, "fatal: tag '{}' not found", tag),
+            Self::DeleteCurrentBranchError(branch) => write!(f, "cannot delete branch '{}': HEAD points to it", branch),
+            
     }
 }
 
