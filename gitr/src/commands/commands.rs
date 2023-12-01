@@ -40,18 +40,9 @@ pub fn hash_object(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
         file_path = flags[1].clone();
         write = true;
     } 
-    file_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/" + &file_path;
-    let raw_data = file_manager::read_file(file_path)?;  
-    let blob = Blob::new(raw_data)?;
-    println!("{}", blob.get_hash());
-    if write {
-        blob.save(cliente)?;
-    }
+    println!("{}", get_object_hash(cliente, &mut file_path, write)?);
     Ok(())
 }
-
-
-
 
 pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     //cat-file -p <object-hash>
@@ -163,7 +154,7 @@ pub fn branch(flags: Vec<String>,cliente: String)->Result<(), GitrError>{
     //branch -l
     //branch <new-branch-name>
     if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
-        print_branches(cliente.clone())?;
+        println!("{}", print_branches(cliente.clone())?);
         return Ok(())
     }
     commit_existing(cliente.clone())?;
@@ -277,7 +268,9 @@ pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
                 command_utils::fast_forward_merge(branch_name,cliente.clone())?;
                 break;
             }
-            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), branch_name, cliente.clone())?;
+            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), cliente.clone())?;
+            add(vec![".".to_string()], cliente.clone())?;
+            command_utils::create_merge_commit(branch_name,branch_commits[0].clone(), cliente)?;
             break;
         }
     }
@@ -397,6 +390,31 @@ pub fn print_current_repo(cliente: String) -> Result<(), GitrError> {
     Ok(())
 }
 
+pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
+    let origin_name = flags[0].clone();
+    let branch_name = file_manager::get_head(cliente.clone())?.split('/').collect::<Vec<&str>>()[2].to_string();
+    let branch_commits = command_utils::branch_commits_list(branch_name.clone(),cliente.clone())?;
+    let origin_commits = command_utils::branch_commits_list(origin_name.clone(),cliente.clone())?;
+    let mut to_rebase_commits: Vec<String> = vec![];
+    for commit in branch_commits.clone() {
+        if origin_commits.contains(&commit) {
+            if commit == origin_commits[0] {
+                println!("nothing to rebase");
+                return Ok(());
+            }
+            create_rebase_commits(to_rebase_commits, origin_name, cliente.clone(), commit)?;
+            break;
+        }
+        to_rebase_commits.push(commit);
+    }
+    Ok(())
+}
+// -- 1 -- 2 -- 3 -- 4 - 5 - 6 master 
+        //                    \      
+        //                      - 7 - 8 - 9 topic  git rebase master
+
+        //git diff $indexbase $file1
+//        the diff in the patch # equivalent to git diff $indexbase $file2
 #[cfg(test)]
 mod tests{
 
