@@ -1,4 +1,4 @@
-use crate::{objects::git_object::GitObject, gitr_errors::GitrError};
+use crate::gitr_errors::GitrError;
 
 /// en el pack-file vienen asi:
 /// HEADER:
@@ -23,7 +23,7 @@ use crate::{objects::git_object::GitObject, gitr_errors::GitrError};
 ///                 * size = [s3 s2 s1] -> Cantidad de bits a copiar
 ///             
 
-pub fn get_offset(data: &[u8]) -> Result<(usize,&[u8]),GitrError> {
+pub fn get_offset(data: &[u8]) -> Result<(usize,usize),GitrError> {
     let mut ofs: usize = 0;
     let mut cant_bytes: usize = 0;
     
@@ -35,20 +35,38 @@ pub fn get_offset(data: &[u8]) -> Result<(usize,&[u8]),GitrError> {
         }
         ofs += 1
     }
-    Ok((ofs,&data[cant_bytes..]))
+    Ok((ofs,cant_bytes))
 }
 
 fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize),GitrError> {
     if instruction.len() != 8{
         return Err(GitrError::PackFileError("parse_copy_instruction".to_string(), "Instruccion de copia invalida".to_string()));
     }
-    let size: usize = 0;
-    let ofs: usize = 0;
-    
+    let mut size: usize = 0;
+    let mut ofs: usize = 0;
+    let activator = instruction[0];
+    let mut i: usize = 0;
+    while i < 7 {
+        if i < 3 {
+            if (activator & (1 << i)) != 0 {
+                size = (size << 8) | instruction[7-i] as usize;
+            } else {
+                size = (size << 8) | 0 as usize;
+            }
+        } else if i > 3 {
+            if (activator & (1 << i)) != 0 {
+                ofs = (ofs << 8) | instruction[7-i] as usize;
+            } else {
+                ofs = (ofs << 8) | 0 as usize;
+            }
+        }
+        i += 1;
+    }
+    Ok((ofs,size))
 
 }
 
-pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<GitObject,GitrError>{
+pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<Vec<u8>,GitrError>{
     let mut final_data: Vec<u8> = Vec::new();
     let mut i: usize = 0;
     while i < data.len() {
@@ -60,8 +78,10 @@ pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<GitObject,GitrError>{
             i += size+1;
         } else { // empieza con 1 -> copiar de la base
             let (ofs, size) = parse_copy_instruction(data[i..i+8].to_vec())?;
+            let base_data = &base[ofs..ofs+size];
+            final_data.extend(base_data);
+            i += 8;
         }
     }
-
-    Err(GitrError::PackFileError("transform_delta".to_string(), "No se pudo obtener el delta".to_string()))
+    Ok(final_data)
 }
