@@ -881,10 +881,19 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
                 continue;
             }
             
-            let base_file_hash = base_hashmap[path].clone(); // chequear que capaz puede no exisiir en base
-            let base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone(),cliente.clone())?;
+            let mut base_file_hash = "".to_string();
+            let base_file_data;
+
+            if !base_hashmap.contains_key(path){
+                base_file_data= "".to_string();
+            }
+            else{
+                base_file_hash = base_hashmap[path].clone(); // chequear que capaz puede no exisiir en base
+                base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone(),cliente.clone())?;
+            }
             
-            println!("Base file hash: {}", base_file_hash);
+            
+            //println!("Base file hash: {}", base_file_hash);
             if &base_file_hash == origin_file_hash {
                 println!("entro al if 2");
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
@@ -1646,6 +1655,9 @@ fn check_conflicts_and_get_tree(origin_commit: String, branch_commit: String, ba
 
 pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, cliente:String, commit_base: String)->Result<(),GitrError>{
     let mut last_commit: String = get_commit(origin_name, cliente.clone())?;
+    let head = get_head(cliente.clone())?;
+    let path = get_current_repo(cliente.clone())? + "/gitr/" + &head;
+    file_manager::write_file(path, last_commit.clone())?; 
     for commit_old in to_rebase_commits.iter().rev(){
         let main_tree = check_conflicts_and_get_tree(last_commit.clone(), commit_old.to_string(), commit_base.clone(),cliente.clone())?;
         let message = file_manager::get_commit_message(commit_old.clone(),cliente.clone())?;
