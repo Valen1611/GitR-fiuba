@@ -120,7 +120,9 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
 pub fn read_object(buffer: &[u8], index: usize) -> Result<(GitObject,usize),GitrError>{
     match parse_git_object(&buffer[index..]) {
         Ok((object_type, _length, object_content,cursor)) => {
+            println!("tipo:{object_type}");           
             if object_type == 6 {
+                println!("======LLEGO UN DELTA=======");
                 let (obj,leidos) = valid_delta_from_packfile(object_content, buffer, index)?;
                 return Ok((obj,leidos + cursor));
             } else {
@@ -227,7 +229,7 @@ pub fn create_packfile(contents: Vec<(String,String,Vec<u8>)>) -> Result<Vec<u8>
 impl PackFile{
     pub fn new_from_server_packfile(buffer: &mut[u8])->Result<PackFile, GitrError>{
         if buffer.len() < 32 {
-            println!("Error: No hay suficientes bytes para el packfile mínimo, se recibió {buffer:?}");
+            println!("Error: No hay suficientes bytes para el packfile mínimo, se recibieron {} bytes\n {:?}",buffer.len(),String::from_utf8_lossy(buffer));
             return Err(GitrError::PackFileError("new_from_server_packfile".to_string(),"No hay suficientes bytes para el encabezado mínimo".to_string()));
         }
         verify_header(&buffer[..=3])?;

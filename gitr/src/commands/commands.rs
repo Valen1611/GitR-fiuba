@@ -310,7 +310,7 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     let pkt_needed = protocol_wants_n_haves(hash_n_references.clone(), &mut stream, cliente.clone())?;
     // ########## PACKFILE ##########
     if pkt_needed {
-        pull_packfile(&mut stream, actualizar_work_dir, cliente.clone())?;
+        pull_packfile(&mut stream, cliente.clone())?;
     }
     if actualizar_work_dir {
         file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;

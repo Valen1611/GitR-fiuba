@@ -1440,8 +1440,9 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
 
 pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
     let repo = file_manager::get_current_repo(cliente.clone())?;
+    let repo_para_daemon = "repo_repo".to_string();
     let remote = file_manager::get_remote(cliente.clone())?;
-    let msj = format!("{} /{}\0host={}\0",orden,repo, remote);
+    let msj = format!("{} /{}\0host={}\0",orden,repo_para_daemon, remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
     let mut stream = match TcpStream::connect("localhost:9418") {
         Ok(s) => s,
@@ -1461,14 +1462,19 @@ pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
 }
 
 pub fn protocol_reference_discovery(stream: &mut TcpStream) -> Result<Vec<(String,String)>,GitrError> {
-    let buffer = match read_long_stream(stream) {
-        Ok(buf) => buf,
-        Err(e) => {
-            println!("Error: {}", e);
-            return Err(GitrError::ConnectionError);
-        }
-    };
+    let mut buffer = Vec::new();
+    while !buffer.ends_with("0000".as_bytes()){
+        let aux = match read_long_stream(stream) {
+            Ok(buf) => buf,
+            Err(e) => {
+                println!("Error: {}", e);
+                return Err(GitrError::ConnectionError);
+            }
+        };
+        buffer.extend(aux);
+    }
     let ref_disc = String::from_utf8_lossy(&buffer).to_string();
+    println!("ref_discovery:\n{}",ref_disc);
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
     Ok(hash_n_references)
 }
@@ -1485,6 +1491,7 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
             return Err(GitrError::ConnectionError);
         }
     };
+    println!("wants:\n{want_message}");
     if want_message == "0000" {
         println!("cliente al día");
         return Ok(false)
@@ -1493,10 +1500,12 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
     
     let mut buffer = [0;1024];
     match stream.read(&mut buffer) { // Leo si huvo error
-        Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
-            println!("Error: {}", String::from_utf8_lossy(&buffer));
-            return Ok(false)
-        }},
+        Ok(_n) => {
+            if String::from_utf8_lossy(&buffer).contains("Error") {
+                println!("Error: {}", String::from_utf8_lossy(&buffer));
+                return Ok(false)
+            }
+        },
         Err(e) => {
             println!("Error: {}", e);
             return Err(GitrError::ConnectionError);
@@ -1506,7 +1515,7 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
     Ok(true)
 }
 
-pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: String) -> Result<(),GitrError> {
+pub fn pull_packfile(stream: &mut TcpStream, cliente: String) -> Result<(),GitrError> {
     let mut buf = match ref_discovery::read_long_stream(stream) { // Leo Packfile
         Ok(buf) => buf,
         Err(e) => {
