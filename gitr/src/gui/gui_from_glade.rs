@@ -1,5 +1,6 @@
 use std::fs;
 
+use gtk::gio::ApplicationFlags;
 use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBoxText, Label};
 
 use gtk::{Builder,Window, Button, FileChooserButton};
@@ -342,13 +343,12 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     Some("Ok".to_string())
  }
 
-pub fn initialize_gui(cliente: String){
-    let app = Application::builder()
-        .application_id("org.gitr.gui")
-        .build();
-
-    app.connect_activate(move|app| {
-        build_ui(app, cliente.clone());
+ pub fn initialize_gui(cliente: String){
+    let app = Application::new(Some("test.test"), ApplicationFlags::HANDLES_OPEN);
+    let cliente_clon = cliente.clone();
+    app.connect_open(move|app,files,_| {
+        build_ui(&app, cliente_clon.clone());
     });
+
     app.run();
 }

@@ -19,8 +19,7 @@ fn get_input() -> Result<String, GitrError> {
         }
     
         Ok(input)
-}
-
+    }
 
 fn email_valido(email_recibido: String) -> bool {
         let email_parts:Vec<&str>  = email_recibido.split('@').collect::<Vec<&str>>();
@@ -36,7 +35,7 @@ fn email_valido(email_recibido: String) -> bool {
         }
 
         true
-}
+    }
 
 fn setup_config_file(client_path: String){
     let mut email_recibido = String::new();
@@ -49,9 +48,9 @@ fn setup_config_file(client_path: String){
         };
     }
     println!("El email es valido, ya puede comenzar a usar Gitr");
-    let name = command_utils::get_current_username();
+    let name = client_path.clone();
     let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
-    file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
+    file_manager::write_file(client_path + "/gitrconfig", config_file_data).unwrap();
 }
 
 pub fn existe_config(client_path: String) -> bool{
@@ -67,10 +66,16 @@ fn print_bienvenida() {
 }
 
 fn main() {
+    let args = std::env::args().collect::<Vec<String>>();
+    if args.len() < 2 {
+        println!("Usage: cargo run --bin client <client_name>");
+        return;
+    }
+    let cliente = args[1].clone();
+    let cliente_clon = cliente.clone();
     let child = std::thread::spawn(move || {
-        initialize_gui(cliente.clone());
+        initialize_gui(cliente_clon.clone());
     });
-
     print_bienvenida();
     let _ = file_manager::create_directory(&cliente);
     if !existe_config(cliente.clone()) {
@@ -103,9 +108,13 @@ fn main() {
                 };
             }
         };
+
+        
+
     }
     match child.join(){
         Ok(_) => (),
         Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
     }
+
 }
