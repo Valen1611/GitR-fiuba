@@ -12,9 +12,9 @@ use crate::{command_utils::{get_user_mail_from_config, get_current_username, fla
 pub struct Tag{
     data: Vec<u8>,
     hash: String,
-    tag_name: String,
-    tag_message: String,
-    commit_hash: String,
+    //tag_name: String,
+    //tag_message: String,
+    //commit_hash: String,
 }
 
 /*
@@ -41,7 +41,7 @@ impl Tag{
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        Ok(Tag {data:compressed_file,hash: hashed_file_str, tag_name: tag_name, tag_message: tag_message,commit_hash: commit_hash })
+        Ok(Tag {data:compressed_file,hash: hashed_file_str, /*tag_name: tag_name, tag_message: tag_message,commit_hash: commit_hash */})
     }
     
 
@@ -57,3 +57,38 @@ impl Tag{
 
 
 
+
+//1700847004 -0300
+#[cfg(test)]
+mod tests{
+    use crate::command_utils::create_annotated_tag;
+
+    use super::*;
+    
+    // #[test]
+    // fn test_tag_test_hash(){
+    //             //si se va a correr este test, cambiar el timestamp a mano en new
+
+    //     let tag_name = "nuevo".to_string();
+    //     let tag_message = "mensajeeee".to_string();
+    //     let commit_object = "5a80a3efc93f00c9143f0a7ed4888780a777e6e".to_string();
+    //     let tag = Tag::new(tag_name, tag_message, commit_object).unwrap();
+    //     let hash = tag.hash;
+    //     let expected_hash = "9883f1bbaee5e89bdc8998cd532882619ca6d87e";
+
+    //     assert_eq!(hash, expected_hash);
+    // }
+    
+    #[test]
+    fn test_tag_save() {
+        let tag_name = "nuevo".to_string();
+        let tag_message = "mensajeeee".to_string();
+        //let commit_object = "5a80a3efc93f00c9143f0a7ed4888780a777e6e".to_string();
+        //let tag = Tag::new(tag_name, tag_message, commit_object).unwrap();
+        //tag.save("gianni".to_string()).unwrap();
+        
+        create_annotated_tag(tag_name, tag_message, "gianni".to_string()).unwrap();
+    }
+    
+
+}

@@ -96,7 +96,9 @@ pub fn commit(flags: Vec<String>, second_parent: String, cliente: String)-> Resu
         return status(flags,cliente.clone());
     }
     let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone())?;
-    let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    let (new, mut modified) = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    let mut to_be_commited = new;
+    to_be_commited.append(&mut modified);
     println!("to be commited: {to_be_commited:?}");
     if to_be_commited.is_empty() {
         println!("nothing to commit, working tree clean");
@@ -172,7 +174,7 @@ pub fn branch(flags: Vec<String>,cliente: String)->Result<(), GitrError>{
 
 pub fn ls_files(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     //ls-files --stage
-    if flags.len() == 0 || flags[0] == "--cached" || flags[0] == "-c" {
+    if flags.is_empty() || flags[0] == "--cached" || flags[0] == "-c" {
         let ls_files_res = get_ls_files_cached(cliente.clone())?;
         print!("{}", ls_files_res);
         return Ok(())
@@ -206,23 +208,23 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     command_utils::status_print_current_branch(cliente.clone())?;
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
-    let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
-    print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
+    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    print!("{}", get_status_files_to_be_comited(&new_files, &modified_files)?);
     print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
     print!("{}",get_status_files_untracked(&untracked_files, hayindex));
-    if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
+    if new_files.is_empty() && modified_files.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
         println!("nothing to commit, working tree clean");
     }
     Ok(())
 }
 
 pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
-    if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l"){
+    if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l"){
         println!("{}",get_tags_str(cliente.clone())?);
         return Ok(());
     }
     if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
-        if flags[3].starts_with("\""){
+        if flags[3].starts_with('\"'){
             let message = &flags[3..];
             let message = message.join(" ");
             if !message.chars().any(|c| c!= ' ' && c != '\"'){
@@ -360,11 +362,12 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
 
 
 pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
-    if flags.len() == 0 {
+    if flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
     }
     command_utils::_ls_tree(flags, "".to_string(), cliente)
 }
+
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));
 }
@@ -389,6 +392,38 @@ pub fn print_current_repo(cliente: String) -> Result<(), GitrError> {
     println!("working on repo: {}", repo);
     Ok(())
 }
+
+
+pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
+    if flags.is_empty() {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "echo <string> > <file>".to_string()));   
+    }
+
+    let mut texto = String::new();
+
+    let mut hay_separador = false;
+    for palabra in flags.iter() {
+        if palabra == ">" {
+            hay_separador = true;
+            break;
+        }
+        texto.push_str(palabra);
+        texto.push(' ');        
+    }
+    texto = texto.trim_end().to_string();
+    if !hay_separador {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "echo <string> > <file>".to_string()));   
+    }
+
+    let repo_path = file_manager::get_current_repo(cliente.clone())?.to_string();
+
+    let file_path = format!("{}/{}", repo_path, flags[flags.len()-1]);
+    println!("escribo {} en {}", texto, file_path);
+    file_manager::write_file(file_path, texto)
+}
+
+
+
 
 pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     let origin_name = flags[0].clone();
@@ -415,16 +450,17 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 
         //git diff $indexbase $file1
 //        the diff in the patch # equivalent to git diff $indexbase $file2
+
 #[cfg(test)]
 mod tests{
 
     use super::*;
-    #[test]
-    fn test00_clone_from_daemon(){
-        let mut flags = vec![];
-        flags.push("localhost:9418".to_string());
-        flags.push("repo_clonado".to_string());
-        assert!(clone(flags,"test".to_string()).is_ok());
-    }
+    // #[test]
+    // fn test00_clone_from_daemon(){
+    //     let mut flags = vec![];
+    //     flags.push("localhost:9418".to_string());
+    //     flags.push("repo_clonado".to_string());
+    //     assert!(clone(flags,"test".to_string()).is_ok());
+    // }
 
 }
