@@ -2373,6 +2373,7 @@ mod juntar_consecutivos_tests {
     
     
 }
+
 #[cfg(test)]
 mod rebase_tests{
     use crate::commands::commands;
