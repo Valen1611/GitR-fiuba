@@ -535,6 +535,11 @@ fn _aplicar_diffs(string_archivo: String, diff: Diff) -> Result<Vec<String>, Git
             if diff.lineas[j].0 == i{ //en la linea hay una operación
                 if !diff.lineas[j].1{ //es un delete
                     
+                    if j+1 >= max_j {
+                        j+=1;
+                        continue;
+                    }
+
                     if diff.lineas[j+1].1{//hay un add tambien
                         archivo_reconstruido.push(diff.lineas[j+1].2.clone()+"\n"); //pusheo el add, ignorando lo que se borró
                         j+=2;
@@ -2292,7 +2297,6 @@ mod aplicar_diffs_tests {
 
 }
 
-
 #[cfg(test)]
 mod juntar_consecutivos_tests {
     
@@ -2372,6 +2376,492 @@ mod juntar_consecutivos_tests {
         }  
     
     
+}
+
+
+#[cfg(test)]
+mod merge_con_archivos{
+    use crate::commands::commands;
+    use super::*;
+
+    fn refresh_files(){
+        delete_repo("cliente/test".to_string());
+        let cliente = "cliente".to_string();
+        fs::create_dir_all(Path::new(&cliente)).unwrap();
+        commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
+        file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = cliente\n\temail = cliente@gmail.com".to_string()).unwrap();
+    }
+
+    #[test]
+    fn merge_con_archivos_test_1_conflict_trivial(){
+        refresh_files();
+        let base = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de base\n",
+            "\n",
+            "\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let origin = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de origin\n",
+            "\n",
+            "\n",
+            "linea agregada de origin\n",
+            "chau\n",
+        ].concat();
+
+        let branch = vec![
+            "hola\n",
+            "\n",
+            "linea agregada de branch\n",
+            "\n",
+            "linea de branch\n",
+            "\n",
+            "\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let cliente = "cliente".to_string();
+
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
+
+        let archivo_esperado = vec![
+            "hola\n",
+            "\n",
+            "linea agregada de branch\n",
+            "\n",
+            "<<<<<<< HEAD\n",
+            "linea de origin\n",
+            "=======\n",
+            "linea de branch\n",
+            ">>>>>>> BRANCH\n",
+            "\n",
+            "\n",
+            "linea agregada de origin\n",
+            "chau\n",
+        ].concat();
+
+
+        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
+
+        assert_eq!(archivo_mergeado, archivo_esperado);
+    }
+
+    #[test]
+    fn merge_con_archivos_test_2_conflict_sin_archivo_base(){
+        refresh_files();
+        let base = "".to_string();
+
+        let origin = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de origin\n",
+            "\n",
+            "\n",
+            "linea agregada de origin\n",
+            "chau\n",
+        ].concat();
+
+        let branch = vec![
+            "hola\n",
+            "\n",
+            "linea agregada de branch\n",
+            "\n",
+            "linea de branch\n",
+            "\n",
+            "\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let cliente = "cliente".to_string();
+
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
+
+        let archivo_esperado = vec![
+            "<<<<<<< HEAD\n",
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de origin\n",
+            "\n",
+            "\n",
+            "linea agregada de origin\n",
+            "chau\n",
+            "\n",
+            "=======\n",
+            "hola\n",
+            "\n",
+            "linea agregada de branch\n",
+            "\n",
+            "linea de branch\n",
+            "\n",
+            "\n",
+            "\n",
+            "chau\n",
+            "\n",
+            ">>>>>>> BRANCH\n",
+        ].concat();
+
+
+        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
+
+        assert_eq!(archivo_mergeado, archivo_esperado);
+    }
+
+    #[test]
+    fn merge_con_archivos_test_3_conflict_multilinea(){
+        refresh_files();
+        let base = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de base 1\n",
+            "linea de base 2\n",
+            "linea de base 3\n",
+            "linea de base 4\n",
+            "\n",
+            "\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let origin = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de origin 1\n",
+            "linea de origin 2\n",
+            "linea de origin 3\n",
+            "\n",
+            "\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let branch = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de branch 1\n",
+            "linea de branch 2\n",
+            "linea de branch 3\n",
+            "linea de branch 4\n",
+            "linea de branch 5\n",
+            "\n",
+            "\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let cliente = "cliente".to_string();
+
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
+
+        let archivo_esperado = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "<<<<<<< HEAD\n",
+            "linea de origin 1\n",
+            "linea de origin 2\n",
+            "linea de origin 3\n",
+            "=======\n",
+            "linea de branch 1\n",
+            "linea de branch 2\n",
+            "linea de branch 3\n",
+            "linea de branch 4\n",
+            "linea de branch 5\n",
+            ">>>>>>> BRANCH\n",
+            "\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+
+        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
+
+        assert_eq!(archivo_mergeado, archivo_esperado);
+    }
+
+    #[test]
+    fn merge_con_archivos_test_4_multiples_conflicts_multilinea(){
+        refresh_files();
+        let base = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de base 1\n",
+            "linea de base 2\n",
+            "linea de base 3\n",
+            "linea igual para todos\n",
+            "linea de base 5\n",
+            "linea de base 6\n",
+            "linea de base 7\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let origin = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de origin 1\n",
+            "linea de origin 2\n",
+            "linea de origin 3\n",
+            "linea igual para todos\n",
+            "linea de origin 4\n",
+            "linea de origin 5\n",
+            "linea de origin 6\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let branch = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "linea de branch 1\n",
+            "linea de branch 2\n",
+            "linea de branch 3\n",
+            "linea igual para todos\n",
+            "linea de branch 4\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+        let cliente = "cliente".to_string();
+
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
+
+
+
+
+        let archivo_esperado = vec![
+            "hola\n",
+            "\n",
+            "\n",
+            "\n",
+            "<<<<<<< HEAD\n",
+            "linea de origin 1\n",
+            "linea de origin 2\n",
+            "linea de origin 3\n",
+            "=======\n",
+            "linea de branch 1\n",
+            "linea de branch 2\n",
+            "linea de branch 3\n",
+            ">>>>>>> BRANCH\n",
+            "linea igual para todos\n",
+            "<<<<<<< HEAD\n",
+            "linea de origin 4\n",
+            "linea de origin 5\n",
+            "linea de origin 6\n",
+            "=======\n",
+            "linea de branch 4\n",
+            ">>>>>>> BRANCH\n",
+            "\n",
+            "chau\n",
+        ].concat();
+
+
+        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
+
+        for linea in archivo_mergeado.lines(){
+            println!("{}", linea);
+        }
+
+
+        assert_eq!(archivo_mergeado, archivo_esperado);
+    }
+
+    #[test]
+    fn merge_con_archivos_test_5_ejemplo_de_codigo(){
+        refresh_files();
+        let base = vec![
+            "fn main() {\n",
+            "    let a = 1;\n",
+            "    let b = 2;\n",
+            "\n",
+            "    if a == b {\n",
+            "        println!(\"iguales\");\n",
+            "    } else {\n",
+            "        println!(\"distintos\");\n",
+            "    }\n",
+            "}\n",
+        ].concat();
+
+        let origin = vec![
+            "fn main() {\n",
+            "    let a = 1;\n",
+            "    let origin_variable = 2;\n",
+            "\n",
+            "    if a == b {\n",
+            "        println!(\"iguales\");\n",
+            "        let res = origin_function();\n",
+            "    } else {\n",
+            "        println!(\"distintos\");\n",
+            "    }\n",
+            "}\n",
+
+        ].concat();
+
+        let branch = vec![
+            "fn main() {\n",
+            "    let a = 1;\n",
+            "    let branch_variable = 2;\n",
+            "\n",
+            "    if a == b {\n",
+            "        println!(\"iguales\");\n",
+            "        let res = branch_function();\n",
+            "        println!(\"res: {}\", res);\n",
+            "    } else {\n",
+            "        println!(\"distintos\");\n",
+            "    }\n",
+            "}\n",
+           
+        ].concat();
+
+        let cliente = "cliente".to_string();
+
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
+
+
+        let archivo_esperado = vec![
+            "fn main() {\n",
+            "    let a = 1;\n",
+            "<<<<<<< HEAD\n",
+            "    let origin_variable = 2;\n",
+            "=======\n",
+            "    let branch_variable = 2;\n",
+            ">>>>>>> BRANCH\n",
+            "\n",
+            "    if a == b {\n",
+            "        println!(\"iguales\");\n",
+            "<<<<<<< HEAD\n",
+            "        let res = origin_function();\n",
+            "=======\n",
+            "        let res = branch_function();\n",
+            "        println!(\"res: {}\", res);\n",
+            ">>>>>>> BRANCH\n",
+            "        let res = origin_function();\n",
+            "    } else {\n",
+            "        println!(\"distintos\");\n",
+            "    }\n",
+            "}\n",
+        ].concat();            
+
+        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
+
+        file_manager::write_file("obtuve".to_string(), archivo_mergeado.clone()).unwrap();
+        //file_manager::write_file("esperado".to_string(), archivo_esperado.clone()).unwrap();
+
+        assert_eq!(archivo_mergeado, archivo_esperado);
+    }
+
+
+}
+
+fn delete_repo(repo_path: String){
+        let path = Path::new(&repo_path);
+        println!("path: {:?}", path);
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
 }
 
 #[cfg(test)]
@@ -2470,13 +2960,7 @@ mod rebase_tests{
         commands::rebase(vec!["master".to_string()], cliente).unwrap();
     }
 
-    fn delete_repo(repo_path: String){
-        let path = Path::new(&repo_path);
-        println!("path: {:?}", path);
-        if path.exists() {
-            fs::remove_dir_all(path).unwrap();
-        }
-    }
+    
     #[test]
     fn destruir_archivos(){
         delete_repo("bruno/test".to_string());
