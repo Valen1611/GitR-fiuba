@@ -7,12 +7,12 @@ use gtk::{Builder,Window, Button, FileChooserButton};
 
 use crate::commands::commands::{self, remote};
 use crate::file_manager;
+use crate::gitr_errors::GitrError;
 
-
-fn get_commits() -> String{
-    let mut commits = match  file_manager::commit_log("-1".to_string(),"client".to_string()) {
+fn get_commits(cliente:String) -> String{
+    let mut commits = match  file_manager::commit_log("-1".to_string(),cliente) {
         Ok(commits) => commits,
-        Err(_) => "No hay commits para mostrar".to_string(),
+        Err(_) => return "No hay commits para mostrar".to_string(),
     };
     commits = commits.trim_end().to_string();
 
@@ -58,19 +58,6 @@ fn get_commits() -> String{
     res
 }
 
-#[cfg(test)]
-
-mod tests {
-
-    use super::*;
-
-    #[test]
-    fn print() {
-        println!("{}", get_commits());
-    }
-}
-
-
 fn email_valido(email_recibido: String) -> bool {
     let email_parts:Vec<&str>  = email_recibido.split('@').collect::<Vec<&str>>();
     if email_parts.len() != 2 {
@@ -93,14 +80,14 @@ fn update_branches(branch_selector: &ComboBoxText,branches: &Vec<String>){
     }
 }
 
-fn existe_config() -> bool{
-    fs::metadata("gitrconfig").is_ok()
+fn existe_config(cliente: String) -> bool{
+    fs::metadata(cliente.clone() +"/gitrconfig").is_ok()
 }
 
 fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let glade_src = include_str!("gui_test.glade");
     let builder = Builder::from_string(glade_src);
-   
+    
     //====Builders para componentes====
     let window:Window = builder.object("main_window")?;
     let repo_selector:FileChooserButton = builder.object("repo_selector")?;
@@ -120,7 +107,6 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let connect_button: Button = builder.object("connect_button")?;
     let login_button: Button = builder.object("login_button")?;
     let mail_entry: Entry = builder.object("mail_entry")?;
-    let user_entry: Entry = builder.object("user_entry")?;
     let push_button: Button = builder.object("push_button")?;
     let pull_button: Button = builder.object("pull_button")?;
     let fetch_button: Button = builder.object("fetch_button")?;
@@ -139,11 +125,18 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let init_repo_name: Entry = builder.object("init_repo_name")?;
     let merge_branch_selector: ComboBoxText = builder.object("merge_branch_selector")?;
     let merge_button: Button = builder.object("merge_button")?;
+    let rebase_branch_selector: ComboBoxText = builder.object("rebase_branch_selector")?;
+    let rebase_button: Button = builder.object("rebase_button")?;
     let add_branch_button: Button = builder.object("add_branch_button")?;
     let add_branch_dialog: Dialog = builder.object("add_branch_dialog")?;
     let branch_cancel_button: Button = builder.object("branch_cancel_button")?;
     let branch_button: Button = builder.object("branch_button")?;
     let new_branch_name: Entry = builder.object("new_branch_name")?;
+    let conflict_file_chooser: FileChooserButton = builder.object("conflict_file_chooser")?;
+    let conflict_text_view: TextView = builder.object("conflict_text_view")?;
+    let conflict_buffer: TextBuffer = conflict_text_view.buffer()?;
+    let conflict_save_button: Button = builder.object("conflict_save_button")?;
+    let remote_error_label: Label = builder.object("remote_error_label")?;
     //====Conexiones de señales====
     //====ADD BRANCH====
     let add_branch_dialog_clone = add_branch_dialog.clone();
@@ -154,6 +147,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let add_branch_dialog_clone = add_branch_dialog.clone();
     let branch_selector_clone = branch_selector.clone();
     let merge_branch_selector_clone = merge_branch_selector.clone();
+    let rebase_branch_selector_clone = rebase_branch_selector.clone();
     let cliente_ = cliente.clone();
     branch_button.connect_clicked(move|_|{
         let branch_name = new_branch_name.text();
@@ -176,6 +170,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
 
         update_branches(&branch_selector_clone.clone(),&repo_branches);
         update_branches(&merge_branch_selector_clone.clone(),&repo_branches);
+        update_branches(&rebase_branch_selector_clone.clone(),&repo_branches);
         add_branch_dialog_clone.hide();
     });
 
@@ -198,20 +193,19 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
 
     let login_button_clone = login_button.clone();
     let login_dialog_clone = login_dialog.clone();
+    let cliente_clon = cliente.clone();
+
+    login_dialog_top_label.set_text(format!("Hola, {}. Por favor, ingrese su mail",cliente_clon.clone()).as_str());
+
     login_button_clone.connect_clicked(move|_|{
         println!("Login clicked");
         let mail = mail_entry.text().to_string();
-        let user = user_entry.text().to_string();
         if !email_valido(mail.clone()){
             login_dialog_top_label.set_text("Mail inválido. Con formato nombre@xxxxxx.yyy");
             return;
         }
-        if user.is_empty(){
-            login_dialog_top_label.set_text("Usuario vacío. Ingrese un usuario válido");
-            return;
-        }
-        let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", mail, user);
-        file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
+        let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", mail, cliente_clon.clone());
+        file_manager::write_file(cliente_clon.clone() + "/gitrconfig", config_file_data).unwrap();
         login_dialog_clone.hide();
     });
 
@@ -223,7 +217,8 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     });
 
     //====LOGIN WARNING====
-    if !existe_config() {
+    let cliente_clone = cliente.clone();
+    if !existe_config(cliente_clone.clone()) {
         login_warning.show();
     }
 
@@ -242,10 +237,23 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let commit_confirm_clone=commit_confirm.clone();
     let commit_dialog_clone = commit_dialog.clone();
     let cliente_ = cliente.clone();
-
+    let remote_error_dialog_clone = remote_error_dialog.clone();
+    let remote_error_label_clone = remote_error_label.clone();
+    
     commit_confirm_clone.connect_clicked(move|_|{
         commit_dialog_clone.hide();
-        commands::add(vec![".".to_string()],cliente_.clone()).unwrap();
+        match commands::add(vec![".".to_string()],cliente_.clone()){
+            Ok(_)=> (),
+            Err(e)=> {
+                if e == GitrError::FileReadError(cliente_.clone()+"/.head_repo"){
+                    remote_error_label_clone.set_text("No hay un repositorio asociado, busque o cree uno.");
+                }
+                else{
+                    remote_error_label_clone.set_text(format!("Error al hacer add: {:?}",e).as_str());
+                }
+                remote_error_dialog_clone.show();
+            },
+        };
         let message = format!("\"{}\"",commit_message.text());
         let cm_msg = vec!["-m".to_string(),message];
         match commands::commit(cm_msg,"None".to_string(),cliente_.clone()){
@@ -279,12 +287,19 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
                 return;
             },
         }
-        let commits = file_manager::commit_log("-1".to_string(),cliente_.clone()).unwrap();
+        let commits = get_commits(cliente_.clone());
         buffer.set_text(&commits);
     });
 
     let branch_selector_clon = branch_selector.clone();
+    let merge_branch_selector_clon = merge_branch_selector.clone();
+    let rebase_branch_selector_clone = rebase_branch_selector.clone();
     let cliente_ = cliente.clone();
+    let current_repo = match file_manager::get_current_repo(cliente_.clone()){
+        Ok(repo) => repo,
+        Err(e) => cliente_.clone(),
+    };
+    repo_selector.set_current_folder(current_repo.clone());
     repo_selector.connect_file_set(move |data|{
         let data_a = data.filename().unwrap();
         let repo_name = data_a.file_name().unwrap().to_str().unwrap(); 
@@ -294,12 +309,15 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
             Ok(branches) => branches,
             Err(e) => {
                 println!("Error al obtener branches: {:?}",e);
+                //TODO WARNING DE QUE LA CARPETA NO ES UN REPO
                 return;
             },
         };
         println!("{:?}",repo_branches);
         update_branches(&branch_selector_clon.clone(),&repo_branches);
-        update_branches(&merge_branch_selector.clone(),&repo_branches);
+        update_branches(&merge_branch_selector_clon.clone(),&repo_branches);
+        update_branches(&rebase_branch_selector_clone.clone(),&repo_branches);
+
     });
 
     //====CLONE====
@@ -368,8 +386,6 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         println!("Fetch button clicked");
     });
 
-    
-
     //====REMOTE ERROR DIALOG====
     remote_error_close_button.connect_clicked(move|_|{
         remote_error_dialog.hide();
@@ -389,16 +405,78 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
 
     let init_dialog_clone = init_dialog.clone();
     let init_repo_name_clone = init_repo_name.clone();
-    
+    let cliente_ = cliente.clone();
+    let repo_sel = repo_selector.clone();
     init_accept_button.connect_clicked(move|_|{
         let repo_name = init_repo_name_clone.text();
         init_dialog_clone.hide();
-        if commands::init(vec![repo_name.to_string()],cliente.clone()).is_err(){
+        if commands::init(vec![repo_name.to_string()],cliente_.clone()).is_err(){
             println!("Error al inicializar repo");
             return;
         };
+        repo_sel.set_current_folder(cliente_.clone()+"/"+repo_name.as_str());
     });
     
+    //====MERGE====
+    let merge_button_clone = merge_button.clone();
+    let merge_branch_selector_clone = merge_branch_selector.clone();
+    let cliente_ = cliente.clone();
+    merge_button_clone.connect_clicked(move|_|{
+        let branch = match merge_branch_selector_clone.clone().active_text(){
+            Some(branch) => branch,
+            None => return,
+        };
+        let flags = vec![branch.to_string()];
+        match commands::merge_(flags,cliente_.clone()){
+            Ok(hubo_conflict) => {
+                println!("Hubieron conflicts, arreglarlos");
+            },
+            Err(e) => {
+                println!("Error al hacer merge: {:?}",e);
+                return;
+            },
+        }
+    });
+
+    //====CONFLICTS====
+    let conflict_file_chooser_clone = conflict_file_chooser.clone();
+    let cliente_ = cliente.clone();
+    let conf_buffer = conflict_buffer.clone();
+    conflict_file_chooser_clone.set_current_folder(cliente_.clone());
+    conflict_file_chooser.connect_file_set(move |data|{
+        let filename = data.filename().unwrap().to_str().unwrap().to_string();
+        let data_from_file = file_manager::read_file(filename.clone()).unwrap();
+        println!("Data from file: {:?}",data_from_file);
+        conf_buffer.set_text(&data_from_file);
+    });
+
+    let conf_buffer = conflict_buffer.clone();
+    conflict_save_button.connect_clicked(move|_|{
+        let filename = conflict_file_chooser_clone.filename().unwrap().to_str().unwrap().to_string();
+        let data = conf_buffer.text(&conf_buffer.start_iter(),&conf_buffer.end_iter(),false).unwrap().to_string();
+        file_manager::write_file(filename.clone(),data).unwrap();
+    });
+
+    //====REBASE====
+    let rebase_branch_selector_clone = rebase_branch_selector.clone();
+    rebase_button.connect_clicked(move|_|{
+        let branch = match rebase_branch_selector_clone.clone().active_text(){
+            Some(branch) => branch,
+            None => return,
+        };
+        let flags = vec![branch.to_string()];
+        match commands::rebase(flags,cliente_.clone()){
+            Ok(hubo_conflict) => {
+                println!("Hubieron conflicts, arreglarlos");
+            },
+            Err(e) => {
+                println!("Error al hacer merge: {:?}",e);
+                return;
+            },
+        }
+    });
+
+
 
     window.set_application(Some(application));
     window.set_title("test");
