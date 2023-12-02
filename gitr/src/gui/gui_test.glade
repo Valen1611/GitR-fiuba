@@ -626,13 +626,10 @@ Presione el botón "Connect" para proveer esta información.</property>
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkComboBoxText" id="conflict_file_chooser">
+                      <object class="GtkFileChooserButton" id="conflict_file_chooser">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <items>
-                          <item translatable="yes">file1</item>
-                          <item translatable="yes">file2</item>
-                        </items>
+                        <property name="title" translatable="yes"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -663,7 +660,7 @@ Presione el botón "Connect" para proveer esta información.</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkTextView">
+                              <object class="GtkTextView" id="conflict_text_view">
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="hexpand">True</property>
@@ -681,7 +678,7 @@ Presione el botón "Connect" para proveer esta información.</property>
                                 <property name="can-focus">False</property>
                                 <property name="halign">end</property>
                                 <child>
-                                  <object class="GtkButton">
+                                  <object class="GtkButton" id="conflict_save_button">
                                     <property name="label" translatable="yes">Guardar cambios</property>
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>

@@ -79,8 +79,8 @@ fn update_branches(branch_selector: &ComboBoxText,branches: &Vec<String>){
     }
 }
 
-fn existe_config() -> bool{
-    fs::metadata("gitrconfig").is_ok()
+fn existe_config(cliente: String) -> bool{
+    fs::metadata(cliente.clone() +"/gitrconfig").is_ok()
 }
 
 fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
@@ -130,6 +130,10 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let branch_cancel_button: Button = builder.object("branch_cancel_button")?;
     let branch_button: Button = builder.object("branch_button")?;
     let new_branch_name: Entry = builder.object("new_branch_name")?;
+    let conflict_file_chooser: FileChooserButton = builder.object("conflict_file_chooser")?;
+    let conflict_text_view: TextView = builder.object("conflict_text_view")?;
+    let conflict_buffer: TextBuffer = conflict_text_view.buffer()?;
+    let conflict_save_button: Button = builder.object("conflict_save_button")?;
     //====Conexiones de señales====
     //====ADD BRANCH====
     let add_branch_dialog_clone = add_branch_dialog.clone();
@@ -184,6 +188,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
 
     let login_button_clone = login_button.clone();
     let login_dialog_clone = login_dialog.clone();
+    let cliente_clon = cliente.clone();
     login_button_clone.connect_clicked(move|_|{
         println!("Login clicked");
         let mail = mail_entry.text().to_string();
@@ -197,7 +202,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
             return;
         }
         let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", mail, user);
-        file_manager::write_file("gitrconfig".to_string(), config_file_data).unwrap();
+        file_manager::write_file(cliente_clon.clone() + "/gitrconfig", config_file_data).unwrap();
         login_dialog_clone.hide();
     });
 
@@ -209,7 +214,8 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     });
 
     //====LOGIN WARNING====
-    if !existe_config() {
+    let cliente_clone = cliente.clone();
+    if !existe_config(cliente_clone.clone()) {
         login_warning.show();
     }
 
@@ -271,7 +277,9 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     });
 
     let branch_selector_clon = branch_selector.clone();
+    let merge_branch_selector_clon = merge_branch_selector.clone();
     let cliente_ = cliente.clone();
+    repo_selector.set_current_folder(cliente_.clone());
     repo_selector.connect_file_set(move |data|{
         let data_a = data.filename().unwrap();
         let repo_name = data_a.file_name().unwrap().to_str().unwrap(); 
@@ -281,12 +289,13 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
             Ok(branches) => branches,
             Err(e) => {
                 println!("Error al obtener branches: {:?}",e);
+                //TODO WARNING DE QUE LA CARPETA NO ES UN REPO
                 return;
             },
         };
         println!("{:?}",repo_branches);
         update_branches(&branch_selector_clon.clone(),&repo_branches);
-        update_branches(&merge_branch_selector.clone(),&repo_branches);
+        update_branches(&merge_branch_selector_clon.clone(),&repo_branches);
     });
 
     //====CLONE====
@@ -355,8 +364,6 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         println!("Fetch button clicked");
     });
 
-    
-
     //====REMOTE ERROR DIALOG====
     remote_error_close_button.connect_clicked(move|_|{
         remote_error_dialog.hide();
@@ -376,16 +383,61 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
 
     let init_dialog_clone = init_dialog.clone();
     let init_repo_name_clone = init_repo_name.clone();
-    
+    let cliente_ = cliente.clone();
     init_accept_button.connect_clicked(move|_|{
         let repo_name = init_repo_name_clone.text();
         init_dialog_clone.hide();
-        if commands::init(vec![repo_name.to_string()],cliente.clone()).is_err(){
+        if commands::init(vec![repo_name.to_string()],cliente_.clone()).is_err(){
             println!("Error al inicializar repo");
             return;
         };
     });
     
+    //====MERGE====
+    let merge_button_clone = merge_button.clone();
+    let merge_branch_selector_clone = merge_branch_selector.clone();
+    let cliente_ = cliente.clone();
+    merge_button_clone.connect_clicked(move|_|{
+        let branch = match merge_branch_selector_clone.clone().active_text(){
+            Some(branch) => branch,
+            None => return,
+        };
+        let flags = vec![branch.to_string()];
+        match commands::merge_(flags,cliente_.clone()){
+            Ok(hubo_conflict) => {
+                println!("Hubieron conflicts, arreglarlos");
+            },
+            Err(e) => {
+                println!("Error al hacer merge: {:?}",e);
+                return;
+            },
+        }
+    });
+
+    //====CONFLICTS====
+    let conflict_file_chooser_clone = conflict_file_chooser.clone();
+    let cliente_ = cliente.clone();
+    let conf_buffer = conflict_buffer.clone();
+    conflict_file_chooser_clone.set_current_folder(cliente_.clone());
+    conflict_file_chooser.connect_file_set(move |data|{
+        let filename = data.filename().unwrap().to_str().unwrap().to_string();
+        let data_from_file = file_manager::read_file(filename.clone()).unwrap();
+        println!("Data from file: {:?}",data_from_file);
+        conf_buffer.set_text(&data_from_file);
+    });
+
+    let conf_buffer = conflict_buffer.clone();
+    conflict_save_button.connect_clicked(move|_|{
+        let filename = conflict_file_chooser_clone.filename().unwrap().to_str().unwrap().to_string();
+        let data = conf_buffer.text(&conf_buffer.start_iter(),&conf_buffer.end_iter(),false).unwrap().to_string();
+        file_manager::write_file(filename.clone(),data).unwrap();
+    });
+
+
+
+
+
+
 
     window.set_application(Some(application));
     window.set_title("test");
