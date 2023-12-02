@@ -865,7 +865,6 @@ pub fn create_merge_commit(branch_name: String, branch_commit: String, cliente: 
     get_tree_entries(message.to_string(),branch_commit, cliente.clone())?;
     print_commit_confirmation(message,cliente.clone())?;
     Ok(())
-
 }
 
 /***************************
