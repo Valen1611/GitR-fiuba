@@ -4387,3 +4387,63 @@
 {"type": "FileOperation","timestamp": "02-12-2023 18:35:21","message": "creating dir: bruno"}
 {"type": "FileOperation","timestamp": "02-12-2023 18:35:45","message": "creating dir: bruno"}
 {"type": "FileOperation","timestamp": "02-12-2023 18:36:00","message": "writing data to: bruno/gitrconfig"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:39:54","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:40:19","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:40:23","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 18:40:23","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:45:53","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:45:57","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 18:45:57","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:45:57","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 18:45:57","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:56:13","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:56:36","message": "writing data to: bruno/gitrconfig"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:56:52","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 18:56:52","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 18:56:52","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 18:56:52","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:07:28","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:07:33","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 19:07:33","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:07:33","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 19:07:33","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:06","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:11","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 19:09:11","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:11","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 19:09:11","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "creating dir: bruno/repo_gui"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "creating dir: bruno/repo_gui/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "creating dir: bruno/repo_gui/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "creating dir: bruno/repo_gui/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "creating dir: bruno/repo_gui/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "creating dir: bruno/repo_gui/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "creating dir: bruno/repo_gui/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "creating dir: bruno/repo_gui/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "writing data to: bruno/repo_gui/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "writing data to: bruno/repo_gui/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:09:23","message": "writing data to: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:11:15","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:12:40","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:12:40","message": "reading data from: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:12:58","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:12:58","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 19:12:58","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:10","message": "writing data to: bruno/gitrconfig"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:16","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 19:13:16","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:16","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 19:13:16","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "creating dir: bruno/repo_gui"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "creating dir: bruno/repo_gui/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "creating dir: bruno/repo_gui/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "creating dir: bruno/repo_gui/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "creating dir: bruno/repo_gui/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "creating dir: bruno/repo_gui/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "creating dir: bruno/repo_gui/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "creating dir: bruno/repo_gui/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "writing data to: bruno/repo_gui/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "writing data to: bruno/repo_gui/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:13:23","message": "writing data to: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:29:02","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:29:03","message": "reading data from: bruno/.head_repo"}

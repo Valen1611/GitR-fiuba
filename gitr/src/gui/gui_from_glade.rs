@@ -7,6 +7,7 @@ use gtk::{Builder,Window, Button, FileChooserButton};
 
 use crate::commands::commands::{self, remote};
 use crate::file_manager;
+use crate::gitr_errors::GitrError;
 
 fn get_commits(cliente:String) -> String{
     let mut commits = match  file_manager::commit_log("-1".to_string(),cliente) {
@@ -135,6 +136,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let conflict_text_view: TextView = builder.object("conflict_text_view")?;
     let conflict_buffer: TextBuffer = conflict_text_view.buffer()?;
     let conflict_save_button: Button = builder.object("conflict_save_button")?;
+    let remote_error_label: Label = builder.object("remote_error_label")?;
     //====Conexiones de señales====
     //====ADD BRANCH====
     let add_branch_dialog_clone = add_branch_dialog.clone();
@@ -235,10 +237,23 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let commit_confirm_clone=commit_confirm.clone();
     let commit_dialog_clone = commit_dialog.clone();
     let cliente_ = cliente.clone();
-
+    let remote_error_dialog_clone = remote_error_dialog.clone();
+    let remote_error_label_clone = remote_error_label.clone();
+    
     commit_confirm_clone.connect_clicked(move|_|{
         commit_dialog_clone.hide();
-        commands::add(vec![".".to_string()],cliente_.clone()).unwrap();
+        match commands::add(vec![".".to_string()],cliente_.clone()){
+            Ok(_)=> (),
+            Err(e)=> {
+                if e == GitrError::FileReadError(cliente_.clone()+"/.head_repo"){
+                    remote_error_label_clone.set_text("No hay un repositorio asociado, busque o cree uno.");
+                }
+                else{
+                    remote_error_label_clone.set_text(format!("Error al hacer add: {:?}",e).as_str());
+                }
+                remote_error_dialog_clone.show();
+            },
+        };
         let message = format!("\"{}\"",commit_message.text());
         let cm_msg = vec!["-m".to_string(),message];
         match commands::commit(cm_msg,"None".to_string(),cliente_.clone()){
@@ -272,7 +287,6 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
                 return;
             },
         }
-        //let commits = file_manager::commit_log("-1".to_string(),cliente_.clone()).unwrap();
         let commits = get_commits(cliente_.clone());
         buffer.set_text(&commits);
     });
@@ -281,7 +295,11 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let merge_branch_selector_clon = merge_branch_selector.clone();
     let rebase_branch_selector_clone = rebase_branch_selector.clone();
     let cliente_ = cliente.clone();
-    repo_selector.set_current_folder(cliente_.clone());
+    let current_repo = match file_manager::get_current_repo(cliente_.clone()){
+        Ok(repo) => repo,
+        Err(e) => cliente_.clone(),
+    };
+    repo_selector.set_current_folder(current_repo.clone());
     repo_selector.connect_file_set(move |data|{
         let data_a = data.filename().unwrap();
         let repo_name = data_a.file_name().unwrap().to_str().unwrap(); 
@@ -388,6 +406,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let init_dialog_clone = init_dialog.clone();
     let init_repo_name_clone = init_repo_name.clone();
     let cliente_ = cliente.clone();
+    let repo_sel = repo_selector.clone();
     init_accept_button.connect_clicked(move|_|{
         let repo_name = init_repo_name_clone.text();
         init_dialog_clone.hide();
@@ -395,6 +414,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
             println!("Error al inicializar repo");
             return;
         };
+        repo_sel.set_current_folder(cliente_.clone()+"/"+repo_name.as_str());
     });
     
     //====MERGE====
