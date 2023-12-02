@@ -1,8 +1,0 @@
-{"type": "FileOperation","timestamp": "02-12-2023 19:38:10","message": "creating dir: bruno"}
-{"type": "FileOperation","timestamp": "02-12-2023 19:38:10","message": "reading data from: bruno/.head_repo"}
-{"type": "Error","timestamp": "02-12-2023 19:38:10","message": "No se pudo leer: bruno/.head_repo"}
-{"type": "FileOperation","timestamp": "02-12-2023 19:38:16","message": "writing data to: bruno/gitrconfig"}
-{"type": "FileOperation","timestamp": "02-12-2023 19:38:23","message": "reading data from: bruno/.head_repo"}
-{"type": "Error","timestamp": "02-12-2023 19:38:23","message": "No se pudo leer: bruno/.head_repo"}
-{"type": "FileOperation","timestamp": "02-12-2023 19:38:23","message": "reading data from: bruno/.head_repo"}
-{"type": "Error","timestamp": "02-12-2023 19:38:23","message": "No se pudo leer: bruno/.head_repo"}

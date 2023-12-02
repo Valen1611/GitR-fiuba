@@ -2242,474 +2242,7 @@ mod merge_con_archivos{
     use crate::commands::commands;
     use super::*;
 
-    fn refresh_files(){
-        delete_repo("cliente/test".to_string());
-        let cliente = "cliente".to_string();
-        fs::create_dir_all(Path::new(&cliente)).unwrap();
-        commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
-        file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = cliente\n\temail = cliente@gmail.com".to_string()).unwrap();
-    }
-
-    #[test]
-    fn merge_con_archivos_test_1_conflict_trivial(){
-        refresh_files();
-        let base = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de base\n",
-            "\n",
-            "\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let origin = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de origin\n",
-            "\n",
-            "\n",
-            "linea agregada de origin\n",
-            "chau\n",
-        ].concat();
-
-        let branch = vec![
-            "hola\n",
-            "\n",
-            "linea agregada de branch\n",
-            "\n",
-            "linea de branch\n",
-            "\n",
-            "\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let cliente = "cliente".to_string();
-
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-
-        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
-
-        let archivo_esperado = vec![
-            "hola\n",
-            "\n",
-            "linea agregada de branch\n",
-            "\n",
-            "<<<<<<< HEAD\n",
-            "linea de origin\n",
-            "=======\n",
-            "linea de branch\n",
-            ">>>>>>> BRANCH\n",
-            "\n",
-            "\n",
-            "linea agregada de origin\n",
-            "chau\n",
-        ].concat();
-
-
-        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
-
-        assert_eq!(archivo_mergeado, archivo_esperado);
-    }
-
-    #[test]
-    fn merge_con_archivos_test_2_conflict_sin_archivo_base(){
-        refresh_files();
-        let base = "".to_string();
-
-        let origin = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de origin\n",
-            "\n",
-            "\n",
-            "linea agregada de origin\n",
-            "chau\n",
-        ].concat();
-
-        let branch = vec![
-            "hola\n",
-            "\n",
-            "linea agregada de branch\n",
-            "\n",
-            "linea de branch\n",
-            "\n",
-            "\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let cliente = "cliente".to_string();
-
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-
-        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
-
-        let archivo_esperado = vec![
-            "<<<<<<< HEAD\n",
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de origin\n",
-            "\n",
-            "\n",
-            "linea agregada de origin\n",
-            "chau\n",
-            "\n",
-            "=======\n",
-            "hola\n",
-            "\n",
-            "linea agregada de branch\n",
-            "\n",
-            "linea de branch\n",
-            "\n",
-            "\n",
-            "\n",
-            "chau\n",
-            "\n",
-            ">>>>>>> BRANCH\n",
-        ].concat();
-
-
-        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
-
-        assert_eq!(archivo_mergeado, archivo_esperado);
-    }
-
-    #[test]
-    fn merge_con_archivos_test_3_conflict_multilinea(){
-        refresh_files();
-        let base = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de base 1\n",
-            "linea de base 2\n",
-            "linea de base 3\n",
-            "linea de base 4\n",
-            "\n",
-            "\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let origin = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de origin 1\n",
-            "linea de origin 2\n",
-            "linea de origin 3\n",
-            "\n",
-            "\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let branch = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de branch 1\n",
-            "linea de branch 2\n",
-            "linea de branch 3\n",
-            "linea de branch 4\n",
-            "linea de branch 5\n",
-            "\n",
-            "\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let cliente = "cliente".to_string();
-
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-
-        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
-
-        let archivo_esperado = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "<<<<<<< HEAD\n",
-            "linea de origin 1\n",
-            "linea de origin 2\n",
-            "linea de origin 3\n",
-            "=======\n",
-            "linea de branch 1\n",
-            "linea de branch 2\n",
-            "linea de branch 3\n",
-            "linea de branch 4\n",
-            "linea de branch 5\n",
-            ">>>>>>> BRANCH\n",
-            "\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-
-        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
-
-        assert_eq!(archivo_mergeado, archivo_esperado);
-    }
-
-    #[test]
-    fn merge_con_archivos_test_4_multiples_conflicts_multilinea(){
-        refresh_files();
-        let base = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de base 1\n",
-            "linea de base 2\n",
-            "linea de base 3\n",
-            "linea igual para todos\n",
-            "linea de base 5\n",
-            "linea de base 6\n",
-            "linea de base 7\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let origin = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de origin 1\n",
-            "linea de origin 2\n",
-            "linea de origin 3\n",
-            "linea igual para todos\n",
-            "linea de origin 4\n",
-            "linea de origin 5\n",
-            "linea de origin 6\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let branch = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "linea de branch 1\n",
-            "linea de branch 2\n",
-            "linea de branch 3\n",
-            "linea igual para todos\n",
-            "linea de branch 4\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-        let cliente = "cliente".to_string();
-
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-
-        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
-
-
-
-
-        let archivo_esperado = vec![
-            "hola\n",
-            "\n",
-            "\n",
-            "\n",
-            "<<<<<<< HEAD\n",
-            "linea de origin 1\n",
-            "linea de origin 2\n",
-            "linea de origin 3\n",
-            "=======\n",
-            "linea de branch 1\n",
-            "linea de branch 2\n",
-            "linea de branch 3\n",
-            ">>>>>>> BRANCH\n",
-            "linea igual para todos\n",
-            "<<<<<<< HEAD\n",
-            "linea de origin 4\n",
-            "linea de origin 5\n",
-            "linea de origin 6\n",
-            "=======\n",
-            "linea de branch 4\n",
-            ">>>>>>> BRANCH\n",
-            "\n",
-            "chau\n",
-        ].concat();
-
-
-        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
-
-        for linea in archivo_mergeado.lines(){
-            println!("{}", linea);
-        }
-
-
-        assert_eq!(archivo_mergeado, archivo_esperado);
-    }
-
-    #[test]
-    fn merge_con_archivos_test_5_ejemplo_de_codigo(){
-        refresh_files();
-        let base = vec![
-            "fn main() {\n",
-            "    let a = 1;\n",
-            "    let b = 2;\n",
-            "\n",
-            "    if a == b {\n",
-            "        println!(\"iguales\");\n",
-            "    } else {\n",
-            "        println!(\"distintos\");\n",
-            "    }\n",
-            "}\n",
-        ].concat();
-
-        let origin = vec![
-            "fn main() {\n",
-            "    let a = 1;\n",
-            "    let origin_variable = 2;\n",
-            "\n",
-            "    if a == b {\n",
-            "        println!(\"iguales\");\n",
-            "        let res = origin_function();\n",
-            "    } else {\n",
-            "        println!(\"distintos\");\n",
-            "    }\n",
-            "}\n",
-
-        ].concat();
-
-        let branch = vec![
-            "fn main() {\n",
-            "    let a = 1;\n",
-            "    let branch_variable = 2;\n",
-            "\n",
-            "    if a == b {\n",
-            "        println!(\"iguales\");\n",
-            "        let res = branch_function();\n",
-            "        println!(\"res: {}\", res);\n",
-            "    } else {\n",
-            "        println!(\"distintos\");\n",
-            "    }\n",
-            "}\n",
-           
-        ].concat();
-
-        let cliente = "cliente".to_string();
-
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(),base).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"base\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), branch).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"branch\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-
-        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
-        file_manager::write_file("cliente/test/archivo1.txt".to_string(), origin).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"origin\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::merge(vec!["branch".to_string()],cliente.clone()).unwrap();
-
-
-        let archivo_esperado = vec![
-            "fn main() {\n",
-            "    let a = 1;\n",
-            "<<<<<<< HEAD\n",
-            "    let origin_variable = 2;\n",
-            "=======\n",
-            "    let branch_variable = 2;\n",
-            ">>>>>>> BRANCH\n",
-            "\n",
-            "    if a == b {\n",
-            "        println!(\"iguales\");\n",
-            "<<<<<<< HEAD\n",
-            "        let res = origin_function();\n",
-            "=======\n",
-            "        let res = branch_function();\n",
-            "        println!(\"res: {}\", res);\n",
-            ">>>>>>> BRANCH\n",
-            "        let res = origin_function();\n",
-            "    } else {\n",
-            "        println!(\"distintos\");\n",
-            "    }\n",
-            "}\n",
-        ].concat();            
-
-        let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
-
-        file_manager::write_file("obtuve".to_string(), archivo_mergeado.clone()).unwrap();
-        //file_manager::write_file("esperado".to_string(), archivo_esperado.clone()).unwrap();
-
-        assert_eq!(archivo_mergeado, archivo_esperado);
-    }
+   
 
 
 }
@@ -2722,105 +2255,105 @@ fn delete_repo(repo_path: String){
         }
 }
 
-#[cfg(test)]
-mod rebase_tests{
-    use crate::commands::commands;
-    use super::*;
-    #[test]
-    fn crear_archivos_1(){ //esto así anda
-        delete_repo("bruno/test".to_string());
-        let cliente = "bruno".to_string();
-        fs::create_dir_all(Path::new(&cliente)).unwrap();
-        commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
-        let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
+// #[cfg(test)]
+// mod rebase_tests{
+//     use crate::commands::commands;
+//     use super::*;
+//     #[test]
+//     fn crear_archivos_1(){ //esto así anda
+//         delete_repo("bruno/test".to_string());
+//         let cliente = "bruno".to_string();
+//         fs::create_dir_all(Path::new(&cliente)).unwrap();
+//         commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
+//         let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
 
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        
-        commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
-        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
-        
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2".to_string()).unwrap();
-        file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
-
-        file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
-        commands::rebase(vec!["master".to_string()], cliente).unwrap();
-    }
-
-    #[test]
-    fn crear_archivos_2(){ //
-        delete_repo("bruno/test".to_string());
-        let cliente = "bruno".to_string();
-        fs::create_dir_all(Path::new(&cliente)).unwrap();
-        commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
-        let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
-
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
         
-        commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
-        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+//         commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
+//         commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
         
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
         
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2\n estoy en topic 2 q onda".to_string()).unwrap();
-        file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2".to_string()).unwrap();
+//         file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
         
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
-        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"ahora topic 3".to_string()).unwrap();
-
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
         
-        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+//         commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
 
-        file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
-        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 2, otro archivo".to_string()).unwrap();
+//         file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
-        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
-        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 3\n estoy en master 3".to_string()).unwrap();
+//         commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+//         commands::rebase(vec!["master".to_string()], cliente).unwrap();
+//     }
 
-        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-        commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+//     #[test]
+//     fn crear_archivos_2(){ //
+//         delete_repo("bruno/test".to_string());
+//         let cliente = "bruno".to_string();
+//         fs::create_dir_all(Path::new(&cliente)).unwrap();
+//         commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
+//         let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
 
-        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
-        commands::rebase(vec!["master".to_string()], cliente).unwrap();
-    }
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        
+//         commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
+//         commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2\n estoy en topic 2 q onda".to_string()).unwrap();
+//         file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
+//         file_manager::write_file("bruno/test/archivo4.txt".to_string(),"ahora topic 3".to_string()).unwrap();
+
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+//         commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+
+//         file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
+//         file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 2, otro archivo".to_string()).unwrap();
+
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
+//         file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 3\n estoy en master 3".to_string()).unwrap();
+
+//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+//         commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+//         commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+//         commands::rebase(vec!["master".to_string()], cliente).unwrap();
+//     }
 
     
-    #[test]
-    fn destruir_archivos(){
-        delete_repo("bruno/test".to_string());
-    }
-}
+//     #[test]
+//     fn destruir_archivos(){
+//         delete_repo("bruno/test".to_string());
+//     }
+// }

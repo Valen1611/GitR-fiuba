@@ -12,7 +12,7 @@ use crate::gitr_errors::GitrError;
 fn get_commits(cliente:String) -> String{
     let mut commits = match  file_manager::commit_log("-1".to_string(),cliente) {
         Ok(commits) => commits,
-        Err(_) => "No hay commits para mostrar".to_string(),
+        Err(_) => return "No hay commits para mostrar".to_string(),
     };
     commits = commits.trim_end().to_string();
 
@@ -57,7 +57,6 @@ fn get_commits(cliente:String) -> String{
 
     res
 }
-
 
 fn email_valido(email_recibido: String) -> bool {
     let email_parts:Vec<&str>  = email_recibido.split('@').collect::<Vec<&str>>();
