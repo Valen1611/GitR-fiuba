@@ -12,7 +12,7 @@ use crate::file_manager;
 fn get_commits() -> String{
     let mut commits = match  file_manager::commit_log("-1".to_string(),"client".to_string()) {
         Ok(commits) => commits,
-        Err(_) => "No hay commits para mostrar".to_string(),
+        Err(_) => return "No hay commits para mostrar".to_string(),
     };
     commits = commits.trim_end().to_string();
 
@@ -58,17 +58,6 @@ fn get_commits() -> String{
     res
 }
 
-#[cfg(test)]
-
-mod tests {
-
-    use super::*;
-
-    #[test]
-    fn print() {
-        println!("{}", get_commits());
-    }
-}
 
 
 fn email_valido(email_recibido: String) -> bool {

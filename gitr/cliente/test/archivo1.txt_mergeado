@@ -1,21 +1,23 @@
-fn main() {
-    let a = 1;
+hola
+
+
+
 <<<<<<< HEAD
-    let origin_variable = 2;
+linea de origin 1
+linea de origin 2
+linea de origin 3
 =======
-    let branch_variable = 2;
+linea de branch 1
+linea de branch 2
+linea de branch 3
+>>>>>>> BRANCH
+linea igual para todos
+<<<<<<< HEAD
+linea de origin 4
+linea de origin 5
+linea de origin 6
+=======
+linea de branch 4
 >>>>>>> BRANCH
 
-    if a == b {
-        println!("iguales");
-<<<<<<< HEAD
-        let res = origin_function();
-=======
-        let res = branch_function();
-        println!("res: {}", res);
->>>>>>> BRANCH
-        let res = origin_function();
-    } else {
-        println!("distintos");
-    }
-}
+chau
