@@ -6,7 +6,7 @@ use super::blob::TreeEntry;
 
 #[derive(Debug)]
 pub struct Tree{
-    entries: Vec<(String,TreeEntry)>,
+    //entries: Vec<(String,TreeEntry)>,
     data: Vec<u8>,
     hash: String,
 }
@@ -34,7 +34,7 @@ impl Tree{
         entries.sort_by(|a, b| a.0.cmp(&b.0));
 
         let mut objs_entries = Vec::new();
-        let mut entries_size: u8 = 0;
+        let mut entries_size: usize = 0;
         for (path, entry) in &entries {
             match entry {
                 TreeEntry::Blob(blob) => {
@@ -51,7 +51,7 @@ impl Tree{
                     ]
                     .concat();
 
-                    entries_size += obj_entry.len() as u8;
+                    entries_size += obj_entry.len();
                     objs_entries.push(obj_entry);                
                 
                 }
@@ -67,7 +67,7 @@ impl Tree{
                     ]
                     .concat();
 
-                    entries_size += obj_entry.len() as u8;
+                    entries_size += obj_entry.len();
                     objs_entries.push(obj_entry);    
                 }
             }
@@ -89,7 +89,7 @@ impl Tree{
         let mut format_data = String::new();
         let init = format!("tree {}\0", entries.len());
         format_data.push_str(&init);
-        Ok(Tree {entries, data: compressed_file2, hash: hashed_file_str })
+        Ok(Tree {/*entries, */data: compressed_file2, hash: hashed_file_str })
 
         
     }
@@ -105,12 +105,12 @@ impl Tree{
         let hash = command_utils::sha1hashing2(tree_raw_file.clone());
         let tree_hash = hash.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
-        let tree = Tree{entries: vec![], data: compressed_data, hash: tree_hash};
+        let tree = Tree{/*entries: vec![],*/ data: compressed_data, hash: tree_hash};
         Ok(tree)
     }
 
-    pub fn save(&self) -> Result<(), GitrError>{
-        file_manager::write_object(self.data.clone(), self.hash.clone())?;
+    pub fn save(&self,cliente: String) -> Result<(), GitrError>{
+        file_manager::write_object(self.data.clone(), self.hash.clone(),cliente)?;
         Ok(())
     }
     
@@ -148,7 +148,7 @@ impl Tree{
           
     
     pub fn get_all_tree_objects(tree_id: String, r_path: String, object_ids: &mut HashSet<String>) -> Result<(),GitrError> {
-        if let Ok(tree_str) = file_manager::read_object_w_path(&tree_id, r_path.clone()) {
+        if let Ok(tree_str) = file_manager::read_object(&tree_id, r_path.clone(), false) {
             let tree_objects = match Tree::get_objects_id_from_string(tree_str){
                 Ok(ids) => {ids},
                 _ => return Err(GitrError::InvalidTreeError)

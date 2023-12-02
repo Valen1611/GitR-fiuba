@@ -57,14 +57,14 @@ fn parse_git_object(data: &[u8]) -> Result<(u8, usize, &[u8],usize), GitrError> 
 fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     let data_str = String::from_utf8_lossy(decoded_data);
     let data_for_commit = data_str.split('\n').collect::<Vec<&str>>();
-    let (mut parent, mut tree, mut author, mut committer, mut message) = ("None","None","None","None","None");
+    let (mut parent, mut tree, mut author, mut committer, mut message) = (vec![],"None","None","None","None");
 
     for line in data_for_commit{
         if line.starts_with("tree"){
             tree = line.split(' ').collect::<Vec<&str>>()[1];
         }
         if line.starts_with("parent"){
-            parent = line.split(' ').collect::<Vec<&str>>()[1];
+            parent.push(line.split(' ').collect::<Vec<&str>>()[1].to_string());
         }
         if line.starts_with("author"){
             author = match line.split_once(' '){
@@ -85,8 +85,11 @@ fn create_commit_object(decoded_data: &[u8])->Result<GitObject,GitrError>{
     }
     
     let message_bien = "\n".to_owned()+message;
-
-    let commit = GitObject::Commit(Commit::new_from_packfile(tree.to_string(), parent.to_string(), author.to_string(), committer.to_string(), message_bien.to_string()).unwrap());
+    if parent.is_empty(){
+        parent.push("None".to_string());
+    }
+    let commit = GitObject::Commit(Commit::new_from_packfile(tree.to_string(), parent, author.to_string(), committer.to_string(), message_bien.to_string()).unwrap());
+    
     Ok(commit)
 }
 
