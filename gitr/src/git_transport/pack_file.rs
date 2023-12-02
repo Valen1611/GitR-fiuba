@@ -1,5 +1,6 @@
 extern crate flate2;
 
+use std::collections::HashMap;
 use std::io::Write;
 
 
@@ -109,27 +110,33 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
     let mut objects = vec![];
 
     let mut index: usize = 12;
+    let mut hash_objects: HashMap<String,(u8,Vec<u8>)> = HashMap::new();
     for _i in 0..num_objects {
-        let (obj,leidos) = read_object(buffer,index)?;
+        let (obj,leidos) = read_object(buffer,index,&mut hash_objects)?;
         index += leidos;
         objects.push(obj);
     }
     Ok(objects)
 }
 
-pub fn read_object(buffer: &[u8], index: usize) -> Result<(GitObject,usize),GitrError>{
+pub fn read_object(buffer: &[u8], index: usize, objects_dir: &mut HashMap<String,(u8,Vec<u8>)>) -> Result<(GitObject,usize),GitrError>{
     match parse_git_object(&buffer[index..]) {
         Ok((object_type, _length, object_content,cursor)) => {
-            println!("tipo:{object_type}");           
+            println!("tipo:{object_type}");    
+            let (obj,leidos): (GitObject,usize);       
             if object_type == 6 {
-                println!("======LLEGO UN DELTA=======");
-                let (obj,leidos) = valid_delta_from_packfile(object_content, buffer, index)?;
-                return Ok((obj,leidos + cursor));
+                println!("======LLEGO UN DELTA OFS=======");
+                (obj,leidos) = delta_ofs_from_packfile(object_content, buffer, index, objects_dir)?;
+            }else if object_type == 7{
+                println!("======LLEGO UN DELTA REF=======");
+                (obj,leidos) = delta_ref_from_packfile(object_content,objects_dir)?;
             } else {
-                let (decodeado, leidos) = decode(object_content)?;
-                let obj = git_valid_object_from_packfile(object_type, &decodeado)?;
-                return Ok((obj,leidos as usize + cursor));
+                let (decodeado, l) = decode(object_content)?;
+                leidos = l as usize;
+                obj = git_valid_object_from_packfile(object_type, &decodeado)?;
             }
+            objects_dir.insert(obj.get_hash().to_string(),(obj.get_type(),obj.get_data()));
+            return Ok((obj,leidos + cursor));
         },
         Err(err) => {
             println!("Error: {}", err);
@@ -138,19 +145,33 @@ pub fn read_object(buffer: &[u8], index: usize) -> Result<(GitObject,usize),Gitr
     }
 }
 
-fn valid_delta_from_packfile(object_content: &[u8], buffer: &[u8], index: usize) -> Result<(GitObject,usize),GitrError>{
+fn delta_ofs_from_packfile(object_content: &[u8], buffer: &[u8], index: usize, objects_dir: &mut HashMap<String,(u8,Vec<u8>)>) -> Result<(GitObject,usize),GitrError>{
     let (ofs,c1) = get_offset(object_content)?; // primero esta el offset
-    let (_length,c2 ) = get_encoded_length(&object_content[c1..])?; // despues la longitud del obj base
-    let (_length,c3 ) = get_encoded_length(&object_content[c1+c2..])?; // despues la longitud del obj resultante
-    let (delta_decoded, c4) = decode(&object_content[c1+c2+c3..])?; // descomprimo el delta
-    let base_git_object = read_object(buffer, index-ofs)?.0; // busco el objeto base
+    let (delta_decoded, c2) = decode(&object_content[c1..])?; // descomprimo el delta
+    let (_length,c3 ) = get_encoded_length(&delta_decoded)?; // despues la longitud del obj base
+    let (_length,c4 ) = get_encoded_length(&delta_decoded[c3..])?; // despues la longitud del obj resultante
+    let base_git_object = read_object(buffer, index-ofs,objects_dir)?.0; // busco el objeto base
     let base = decode(&base_git_object.get_data())?.0; // le saco la data al objeto base
     let base_type = base_git_object.get_type(); // obtengo el tipo del objeto base
-    let reconstructed = transform_delta(&delta_decoded, &base)?; // la reconstruyo
+    let reconstructed = transform_delta(&delta_decoded[c3+c4..], &base)?; // la reconstruyo
     let obj = git_valid_object_from_packfile(base_type, &reconstructed)?; // la parseo
-    Ok((obj,c1+c2+c3+c4 as usize))
+    Ok((obj,c1+c2 as usize))
 }
 
+fn delta_ref_from_packfile(object_content: &[u8],objects_dir: &mut HashMap<String,(u8,Vec<u8>)>) -> Result<(GitObject,usize),GitrError> {
+    let hex_string: String = object_content[..20].iter().map(|b| format!("{:02x}", b)).collect();
+    let (delta_decoded, c1) = decode(&object_content[20..])?; // descomprimo el delta
+    let (_length,c2 ) = get_encoded_length(&delta_decoded)?; // despues la longitud del obj base
+    let (_length,c3 ) = get_encoded_length(&delta_decoded[c2..])?; // despues la longitud del obj resultante
+    if let Some(b) = objects_dir.get(&hex_string){
+        let base = decode(&b.1)?.0;
+        let base_type = b.0;
+        let reconstructed = transform_delta(&delta_decoded[c2+c3..], &base)?; // la reconstruyo
+        let obj = git_valid_object_from_packfile(base_type, &reconstructed)?; // la parseo
+        return Ok((obj,20+c1 as usize))
+    }
+    Err(GitrError::PackFileError("delta_ref_from_packfile".to_string(), "No se encontro el objeto base".to_string()))
+}
 
 pub fn prepare_contents(datos: Vec<Vec<u8>>) -> Vec<(String,String,Vec<u8>)> {
     let mut contents: Vec<(String, String, Vec<u8>)> = Vec::new();
