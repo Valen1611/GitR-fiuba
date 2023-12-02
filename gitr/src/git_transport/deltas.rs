@@ -39,9 +39,6 @@ pub fn get_offset(data: &[u8]) -> Result<(usize,usize),GitrError> {
 }
 
 fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize,usize),GitrError> {
-    if instruction.len() != 8{
-        return Err(GitrError::PackFileError("parse_copy_instruction".to_string(), "Instruccion de copia invalida".to_string()));
-    }
     let mut size: usize = 0;
     let mut ofs: usize = 0;
     let activator = instruction[0];
@@ -61,7 +58,8 @@ fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize,usize),Gi
         } else if i >= 3 {
             // println!("va al ofs, bit: {:08b}",(64>>i));
             if (activator & (64 >> i)) != 0 {
-                ofs = (ofs << 8) | instruction[7-i] as usize;
+                ofs = (ofs << 8) | instruction[tamanio-j] as usize;
+                j +=1;
             } else {
                 ofs = (ofs << 8) | 0 as usize;
             }
@@ -87,22 +85,17 @@ pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<Vec<u8>,GitrError>{
     i = 0;
     while i < data.len() {
         let byte = data[i];
-        println!("i: {}\nbyte: {:08b}",i,byte);
         if byte & 0x80 == 0 { // empieza con 0 -> nueva data
             let size = (byte <<1>>1) as usize;
-            println!("==nueva data size: {}",size);
             let new_data = &data[i+1..i+1+size];
             final_data.extend(new_data);
             i += size+1;
         } else { // empieza con 1 -> copiar de la base
-            println!("==copiar de la base");
-            let (ofs, size,tamanio) = parse_copy_instruction(data[i..i+8].to_vec())?;
+            let (ofs, size,tamanio) = parse_copy_instruction(data[i..].to_vec())?;
             let base_data = &base[ofs..ofs+size];
             final_data.extend(base_data);
             i += 1+tamanio;
         }
-        println!("hasta ahora: {:?}",String::from_utf8_lossy(&final_data));
-        println!("quedan: {}",data.len()-i);
     }
     Ok(final_data)
 }
