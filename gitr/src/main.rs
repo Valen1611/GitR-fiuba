@@ -73,12 +73,14 @@ fn main() {
     }
     let cliente = args[1].clone();
     let cliente_clon = cliente.clone();
+
     let child = std::thread::spawn(move || {
         initialize_gui(cliente_clon.clone());
     });
     print_bienvenida();
+
     let _ = file_manager::create_directory(&cliente);
-    if !existe_config(cliente.clone()) {
+    while !existe_config(cliente.clone()) {
         setup_config_file(cliente.clone());
     }        
 
