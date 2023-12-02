@@ -73,7 +73,7 @@ fn main() {
     }
     let cliente = args[1].clone();
     let cliente_clon = cliente.clone();
-    let _ = std::thread::spawn(move || {
+    let child = std::thread::spawn(move || {
         initialize_gui(cliente_clon.clone());
     });
     print_bienvenida();
@@ -112,9 +112,9 @@ fn main() {
         
 
     }
-    // match child.join(){
-    //     Ok(_) => (),
-    //     Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
-    // }
+    match child.join(){
+        Ok(_) => (),
+        Err(e) => println!("Error al cerrar el thread de la GUI: {:?}",e),
+    }
 
 }

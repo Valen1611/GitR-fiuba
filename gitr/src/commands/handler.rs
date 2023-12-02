@@ -44,10 +44,9 @@ pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError
         "show-ref" => commands::show_ref(flags,client)?,
         "tag" => commands::tag(flags,client)?,
         "ls-tree" => commands::ls_tree(flags,client)?,
-        
+        "rebase" => commands::rebase(flags,client)?,
         "q" => return Ok(()),
         "l" => logger::log(flags)?,
-        
         "list-repos" | "lr" => commands::list_repos(client),
         "go-to-repo" | "gtr" => commands::go_to_repo(flags,client)?,
         "cur-repo" | "cr" => commands::print_current_repo(client)?,

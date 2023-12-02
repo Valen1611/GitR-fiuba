@@ -15,7 +15,6 @@ sha1 = "0.10.6"
 serial_test = "*"
 gtk = "0.18.1"
 
-
 [[bin]]
 
 name = "server"

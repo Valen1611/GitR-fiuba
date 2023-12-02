@@ -28,13 +28,13 @@ tagger <author-with-timestamp>\n
 */
 
 impl Tag{
-    pub fn new(tag_name: String, tag_message: String, commit_hash: String) -> Result<Self, GitrError>{
+    pub fn new(tag_name: String, tag_message: String, commit_hash: String, cliente: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
         format_data.push_str(&format!("object {}\n", commit_hash));
         format_data.push_str("type commit\n");
         format_data.push_str(&format!("tag {}\n", tag_name));
-        format_data.push_str(&format!("tagger {} <{}> {} -0300\n", get_current_username("cliente".to_string()), get_user_mail_from_config("cliente".to_string())?, Utc::now().timestamp()));
-        format_data.push('\n');
+        format_data.push_str(&format!("tagger {} <{}> {} -0300\n", get_current_username(cliente.clone()), get_user_mail_from_config(cliente)?, Utc::now().timestamp()));
+        format_data.push_str("\n");
         format_data.push_str(&format!("{}\n", tag_message));
         let size = format_data.as_bytes().len();
         let format_data_entera = format!("tag {}\0{}", size, format_data);
@@ -56,10 +56,7 @@ impl Tag{
 }
 
 
-/*
 
-cargo test --package gitr --lib -- tag::tests::test_tag_save --exact --color always
-*/
 
 //1700847004 -0300
 #[cfg(test)]

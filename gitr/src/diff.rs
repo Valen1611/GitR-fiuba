@@ -172,6 +172,19 @@ impl Diff{
         if base == new {
             return empty_diff();
         }
+        if base.len() == 0{
+            let mut only_add_diff = Diff{
+                lineas_eliminadas: vec![],
+                lineas_agregadas: vec![],
+                lineas: vec![],
+                lineas_extra: 0,
+            };
+            let new_lines = new.split("\n").collect::<Vec<&str>>();
+            for (i, line) in new_lines.iter().enumerate() {
+                only_add_diff.lineas.push((i, true, line.to_string()));
+            }
+            return only_add_diff
+        }
         let base_lines = base.lines().collect::<Vec<&str>>();
         let new_lines = new.lines().collect::<Vec<&str>>();
 
