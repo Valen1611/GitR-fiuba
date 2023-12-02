@@ -58,6 +58,69 @@ fn get_commits(cliente:String) -> String{
     res
 }
 
+
+fn get_commits() -> String{
+    let mut commits = match  file_manager::commit_log("-1".to_string(),"client".to_string()) {
+        Ok(commits) => commits,
+        Err(_) => "No hay commits para mostrar".to_string(),
+    };
+    commits = commits.trim_end().to_string();
+
+    let mut res = String::new();
+    let max_string_len = 60;
+    
+    let mut fecha_actual = "-1";
+    for mut commit in commits.split("\n\n\n").collect::<Vec<&str>>(){
+
+        //println!("\x1b[34mCommit: \x1b[0m {:?}",commit);
+        commit = commit.trim_start();
+        let hash = commit.split('\n').collect::<Vec<&str>>()[0].split_at(8).1;
+        let author = commit.split('\n').collect::<Vec<&str>>()[1].split_at(8).1;
+        let date = commit.split('\n').collect::<Vec<&str>>()[2].split_at(5).1.trim_start();
+        let message = commit.split('\n').collect::<Vec<&str>>()[3].trim_start();
+
+        let day = date.split(' ').collect::<Vec<&str>>()[2];
+        let time = date.split(' ').collect::<Vec<&str>>()[3];
+        let hash_digits = hash.split_at(8).0;
+        let short_message = if message.len() > 40 {
+            message[..40].to_string() + "..."
+        } else {
+            message.to_string()
+        };
+
+        if day != fecha_actual {
+            let month = date.split(' ').collect::<Vec<&str>>()[1];
+            let year = date.split(' ').collect::<Vec<&str>>()[4];
+            res.push_str("█\n");
+            let fecha = format!("█■■> Commits on {} {}, {}\n", month, day, year);
+            res.push_str(&fecha);
+            res.push_str("█\n");
+        }
+        fecha_actual = day;
+        let spaces_needed_first_line = max_string_len - short_message.len() - hash_digits.len();
+        let spaces_needed_second_line = max_string_len - author.len() - time.len() - 3;
+        res.push_str("█    ╔══════════════════════════════════════════════════════════════╗\n");
+        res.push_str(&format!("█    ║ {}{: <width$}{} ║\n", short_message,"",  hash_digits, width = spaces_needed_first_line));
+        res.push_str(&format!("█    ║ {}    {}{: <width$}║\n", author, time, "", width = spaces_needed_second_line));
+        res.push_str("█    ╚══════════════════════════════════════════════════════════════╝\n");
+    }
+
+    res
+}
+
+#[cfg(test)]
+
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn print() {
+        println!("{}", get_commits());
+    }
+}
+
+
 fn email_valido(email_recibido: String) -> bool {
     let email_parts:Vec<&str>  = email_recibido.split('@').collect::<Vec<&str>>();
     if email_parts.len() != 2 {
