@@ -4,7 +4,7 @@ use std::fs::{File, OpenOptions, ReadDir};
 use std::io::{prelude::*, Bytes};
 use std::fs;
 use std::path::Path;
-use crate::command_utils::flate2compress;
+use crate::commands::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
 use crate::{logger, file_manager};
 

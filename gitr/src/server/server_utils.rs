@@ -10,7 +10,11 @@ use std::io::Write;
 use std::net::{TcpListener, TcpStream};
 use std::str::from_utf8;
 
+use std::sync::mpsc;
 use std::thread;
+use gtk::glib::Receiver;
+use gtk::glib::Sender;
+
 use crate::file_manager;
 use crate::git_transport::pack_file::PackFile;
 use crate::git_transport::pack_file::create_packfile;
@@ -24,12 +28,29 @@ use crate::objects::git_object::GitObject;
 pub fn server_init (s_addr: &str) -> std::io::Result<()>  {
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
-
+    
+    thread::spawn(move || {
+        let mut input = String::new();
+        loop {
+            std::io::stdin().read_line(&mut input).expect("Failed to read line");
+            let trimmed = input.trim().to_lowercase();
+            if trimmed == "q" {
+                // Envia un mensaje al hilo principal para indicar que debe salir
+                TcpStream::connect("localhost:9418").unwrap().write("q".as_bytes()).unwrap();
+                break;
+            }
+            input.clear();
+        }
+    });
     for stream in listener.incoming() {
         match stream {
-            Ok(stream) => {                
-                let builder = thread::Builder::new().name("cliente_random".to_string());
-
+            Ok(stream) => {  
+                let mut buf: [u8; 1] = [0; 1];
+                let n = stream.peek(&mut buf)?;          
+                if n == 0 || buf[0] == b'q'{
+                    break;
+                } 
+                let builder = thread::Builder::new().name("cliente".to_string());
                 childs.push(builder.spawn(|| {handle_client(stream)})?);
             }
             Err(e) => {
@@ -101,12 +122,12 @@ fn gitr_receive_pack(stream: &mut TcpStream, r_path: String) -> std::io::Result<
         if old.is_empty() { //el cliente esta al dia
             return Ok(());
         }
-        let pkt_needed = update_refs(old, new, names, r_path.clone())?;
         // ########## *PACKFILE DATA ##########
-        if pkt_needed {
+        if pkt_needed(old.clone(), new.clone()) {
             let (ids, content) = rcv_packfile_bruno(stream)?;
             update_contents(ids, content, r_path.clone())?;
         } 
+        update_refs(old, new, names, r_path)?;
    
         return Ok(())
     }
@@ -202,35 +223,51 @@ fn rcv_packfile_bruno(stream: &mut TcpStream) -> std::io::Result<(Vec<String>, V
                 contents.push(commit.get_data());},
             GitObject::Tree(tree) => {
                 hashes.push(tree.get_hash());
-                contents.push(tree.get_data());
+                contents.push(tree.get_data());},
+            GitObject::Tag(tag) => {
+                hashes.push(tag.get_hash());
+                contents.push(tag.get_data());
             },
         }
     }
     Ok((hashes,contents))
 }
 
-fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: String) -> std::io::Result<bool> {
+fn pkt_needed(old: Vec<String>, new: Vec<String>) -> bool {
     let nul_obj = "0000000000000000000000000000000000000000";
-    let mut pkt_needed = false;
+    for i in 0..old.len() {
+        if old[i] == nul_obj  && new[i] != nul_obj{ // crear referencia
+            return true
+        } else if new[i] == nul_obj && old[i] != nul_obj { // borrar referencia
+            return true
+        } else if old[i] == new[i] { // no hubo cambios
+            return false
+        } else { // Modificacion de referencia
+            return true
+        }
+    }
+    false
+}
+
+fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: String) -> std::io::Result<()> {
+    let nul_obj = "0000000000000000000000000000000000000000";
     for i in 0..old.len() {
         let path = r_path.clone() + "/" + &names[i];
-        if old[i] == nul_obj  && new[i] != nul_obj{ 
+        if old[i] == nul_obj  && new[i] != nul_obj{ // crear referencia
             let mut new_file = File::create(&path)?;
             new_file.write_all(new[i].as_bytes())?;
-            pkt_needed = true;
             continue
-        } else if new[i] == nul_obj && old[i] != nul_obj { 
+        } else if new[i] == nul_obj && old[i] != nul_obj { // borrar referencia
             fs::remove_file(&path)?;
             continue
-        } else if old[i] == new[i] { 
+        } else if old[i] == new[i] { // no hubo cambios -> Error
             return Err(Error::new(std::io::ErrorKind::Other, "Error: el archivo no cambio")); // no se si es el error correcto
-        } else { 
-            pkt_needed = true;
+        } else { // Modificacion de referencia
             let path = path.replace('\\', "/");
             let old_file = fs::File::open(&path)?;
             let mut old_ref = String::new();
             BufReader::new(old_file).read_line(&mut old_ref)?;
-            if old_ref == old[i] {
+            if old_ref == old[i] { // si la ref vieja no cambio en el transcurso del programa -> ok
                 let mut new_file = File::create(&path)?;
                 new_file.write_all(new[i].as_bytes())?;
             } else {
@@ -238,7 +275,7 @@ fn update_refs(old: Vec<String>,new: Vec<String>, names: Vec<String>, r_path: St
             }
         }
     }
-    Ok(pkt_needed)
+    Ok(())
 }
 
 fn get_changes(buffer: &[u8]) -> std::io::Result<(Vec<String>,Vec<String>, Vec<String>)> {

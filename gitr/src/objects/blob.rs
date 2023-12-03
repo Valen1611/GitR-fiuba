@@ -1,7 +1,7 @@
 use crate::file_manager;
 use crate::gitr_errors::GitrError;
 use crate::objects::tree::Tree;
-use crate::command_utils::{flate2compress, sha1hashing};
+use crate::commands::command_utils::{flate2compress, sha1hashing};
 
 #[derive(Debug)]
 

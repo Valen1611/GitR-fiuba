@@ -1,8 +1,9 @@
 use std::{path::Path, fs};
-use gitr::command_utils::{print_branches, get_object_hash, _cat_file, self};
+
+use gitr::{commands::command_utils::{print_branches, get_object_hash, _cat_file, self}, file_manager};
 
 use gitr::commands::commands;
-use gitr::file_manager::{write_file, read_index, get_current_repo, self};
+use gitr::file_manager::{write_file, read_index, get_current_repo};
 use gitr::gitr_errors::GitrError;
 use gitr::objects::blob::Blob;
 use serial_test::serial;
