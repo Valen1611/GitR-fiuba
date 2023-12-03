@@ -1,9 +1,10 @@
 use std::path::Path;
-use crate::file_manager::{get_current_repo, delete_tag};
-use crate::command_utils::{*, self};
+use crate::file_manager::{get_current_repo, delete_tag, get_current_commit, update_working_directory};
 use crate::file_manager::commit_log;
-use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
+use crate::{file_manager, gitr_errors::GitrError};
 use crate::git_transport::ref_discovery;
+
+use super::command_utils::{*, self};
 
 /***************************
  *************************** 
@@ -52,7 +53,7 @@ pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         let flags_str = flags.join(" ");
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
-    let data_to_print = command_utils::_cat_file(flags, cliente)?;
+    let data_to_print = _cat_file(flags, cliente)?;
     println!("{}", data_to_print);
     
     Ok(())
@@ -216,15 +217,16 @@ pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
         println!("{}",get_tags_str(cliente.clone())?);
         return Ok(());
     }
-    if flags.len() == 4 && flags[0] == "-a" && flags[2] == "-m" {
-        if flags[3].starts_with('\"'){
-            let message = &flags[3..];
-            let message = message.join(" ");
+    if flags.len() >= 4 && flags[0] == "-a" && flags[2] == "-m" {
+        let mut message = "".to_string();
+        if flags[3].starts_with("\""){
+            let aux = &flags[3..];
+            message = aux.join(" ");
             if !message.chars().any(|c| c!= ' ' && c != '\"'){
                 return Err(GitrError::InvalidArgumentError(flags.join(" "), "tag -a <tag-name> -m \"tag-message\"".to_string()))
             }
         } 
-        create_annotated_tag(flags[1].clone(), flags[3].clone(), cliente.clone())?;
+        create_annotated_tag(flags[1].clone(), message.clone(), cliente.clone())?;
         return Ok(())
     }
     if flags.len() == 1 && flags[0] != "-l" {
@@ -260,14 +262,14 @@ pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<(bool, String), Git
     let branch_name = _flags[0].clone();
     let origin_name = file_manager::get_head(cliente.clone())?.split('/').collect::<Vec<&str>>()[2].to_string();
 
-    let branch_commits = command_utils::branch_commits_list(branch_name.clone(),cliente.clone())?;
-    let origin_commits = command_utils::branch_commits_list(origin_name,cliente.clone())?;
+    let branch_commits = branch_commits_list(branch_name.clone(),cliente.clone())?;
+    let origin_commits = branch_commits_list(origin_name,cliente.clone())?;
     for commit in branch_commits.clone() {
         if origin_commits.contains(&commit) {
             if commit == origin_commits[0] {
                 println!("Updating {}..{}" ,&origin_commits[0][..7], &branch_commits[0][..7]);
                 println!("Fast-forward");
-                command_utils::fast_forward_merge(branch_name,cliente.clone())?;
+                fast_forward_merge(branch_name,cliente.clone())?;
                 break;
             }
             hubo_conflict = command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), cliente.clone())?;
@@ -303,11 +305,16 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
    
     // ########## WANTS N HAVES ##########
-    let pkt_needed = protocol_wants_n_haves(hash_n_references, &mut stream, cliente.clone())?;
+    let pkt_needed = protocol_wants_n_haves(hash_n_references.clone(), &mut stream, cliente.clone())?;
     // ########## PACKFILE ##########
     if pkt_needed {
-        pull_packfile(&mut stream, actualizar_work_dir, cliente)?;
+        pull_packfile(&mut stream, cliente.clone())?;
     }
+    if actualizar_work_dir {
+        file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
+        update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
+    }
+
     Ok(())
 }
 
@@ -330,6 +337,7 @@ pub fn push(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
    
     // ########## PACKFILE ##########
     if pkt_needed {
+        println!("pushing packfile");
         push_packfile(&mut stream, pkt_ids, hash_n_references, cliente)?;
     }
     Ok(())
@@ -366,8 +374,7 @@ pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
     if flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
     }
-    let res = command_utils::_ls_tree(flags, "".to_string(), cliente)?;
-    println!("{}", res);
+    command_utils::_ls_tree(flags, "".to_string(), cliente)?;
     Ok(())
 }
 
@@ -454,16 +461,12 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
         //git diff $indexbase $file1
 //        the diff in the patch # equivalent to git diff $indexbase $file2
 
-#[cfg(test)]
-mod tests{
-
-    use super::*;
-    // #[test]
-    // fn test00_clone_from_daemon(){
-    //     let mut flags = vec![];
-    //     flags.push("localhost:9418".to_string());
-    //     flags.push("repo_clonado".to_string());
-    //     assert!(clone(flags,"test".to_string()).is_ok());
-    // }
-
+pub fn check_ignore(paths: Vec<String>, client: String)->Result<(), GitrError>{
+    if paths.is_empty(){
+        return Err(GitrError::InvalidArgumentError(paths.join(" "), "check-ignore <path>".to_string()));
+    }
+    match command_utils::check_ignore_(paths, client){
+        Ok(_) => Ok(()),
+        Err(e) => Err(e)
+    }
 }

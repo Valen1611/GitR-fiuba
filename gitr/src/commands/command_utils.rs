@@ -2,7 +2,7 @@ use std::{io::{Write, Read, self}, fs::{self}, path::Path, collections::{HashMap
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_parent_commit, get_commit}, diff::Diff, commands::commands};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_commit}, diff::Diff, commands::commands, git_transport::ref_discovery::read_long_stream};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit,tag::Tag,}, gitr_errors::GitrError};
 use crate::{file_manager::get_branches, git_transport::{ref_discovery, pack_file::PackFile}, objects::git_object::GitObject};
 
@@ -62,7 +62,7 @@ pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
  **************************/
 
 pub fn get_object_hash(cliente: String, file_path:&mut  String, write: bool)->Result<String, GitrError>{
-    let mut res = String::from("");
+    let res: String;
     *file_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/" + file_path;
     let raw_data = file_manager::read_file(file_path.to_string())?;  
     let blob = Blob::new(raw_data)?;
@@ -552,7 +552,9 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     let string_archivo = file_manager::read_file(path.clone())?;
     let archivo_reconstruido = _aplicar_diffs(string_archivo.clone(), diff.clone())?;
 
-    file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
+    //file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
+    file_manager::write_file(path, archivo_reconstruido.concat().to_string())?;
+
     Ok(())
 }
 
@@ -1189,6 +1191,13 @@ pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result
 
 
 pub fn save_and_add_blob_to_index(file_path: String,cliente: String) -> Result<(), GitrError> {
+    match path_is_ignored(vec![file_path.clone()], cliente.clone()){
+        Ok(r) => if r{
+            return Ok(())
+        }
+        Err (e) => return Err(e),
+    }
+    println!("agrego este path: {}",file_path);
     let raw_data = file_manager::read_file(file_path.clone())?;
     let blob = Blob::new(raw_data)?;
     blob.save(cliente.clone())?;
@@ -1395,6 +1404,7 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
 
 pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
     let repo = file_manager::get_current_repo(cliente.clone())?;
+    let _repo_para_daemon = "repo_repo".to_string();
     let remote = file_manager::get_remote(cliente.clone())?;
     let msj = format!("{} /{}\0host={}\0",orden,repo, remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
@@ -1416,34 +1426,28 @@ pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
 }
 
 pub fn protocol_reference_discovery(stream: &mut TcpStream) -> Result<Vec<(String,String)>,GitrError> {
-    let mut buffer = [0;1024];
-    let mut ref_disc = String::new();
-    loop {
-        match stream.read(&mut buffer) {
-            Ok(n) => {
-                if n == 0 {
-                    return Err(GitrError::ConnectionError);
-                }
-                let bytes = &buffer[..n];
-                let s = String::from_utf8_lossy(bytes);
-                ref_disc.push_str(&s);
-                if s.ends_with("0000") {
-                    break;
-                }
-            },
+    let mut buffer = Vec::new();
+    while !buffer.ends_with("0000".as_bytes()){
+        let aux = match read_long_stream(stream) {
+            Ok(buf) => buf,
             Err(e) => {
                 println!("Error: {}", e);
                 return Err(GitrError::ConnectionError);
             }
-        }
+        };
+        buffer.extend(aux);
     }
+    let ref_disc = String::from_utf8_lossy(&buffer).to_string();
+    println!("ref_discovery:\n{}",ref_disc);
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
     Ok(hash_n_references)
 }
 
 pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: &mut TcpStream,cliente: String) -> Result<bool,GitrError> {
-    let want_message = ref_discovery::assemble_want_message(&hash_n_references,file_manager::get_refs_ids("heads",cliente.clone())?,cliente.clone())?;
-    file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
+    let mut refs_ids = file_manager::get_refs_ids("heads",cliente.clone())?;
+    refs_ids.append(file_manager::get_refs_ids("tags", cliente.clone())?.as_mut());
+    let want_message = ref_discovery::assemble_want_message(&hash_n_references,refs_ids,cliente.clone())?;
+    // file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
     match stream.write(want_message.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -1451,6 +1455,7 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
             return Err(GitrError::ConnectionError);
         }
     };
+    println!("wants:\n{want_message}");
     if want_message == "0000" {
         println!("cliente al día");
         return Ok(false)
@@ -1459,10 +1464,12 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
     
     let mut buffer = [0;1024];
     match stream.read(&mut buffer) { // Leo si huvo error
-        Ok(_n) => {if String::from_utf8_lossy(&buffer).contains("Error") {
-            println!("Error: {}", String::from_utf8_lossy(&buffer));
-            return Ok(false)
-        }},
+        Ok(_n) => {
+            if String::from_utf8_lossy(&buffer).contains("Error") {
+                println!("Error: {}", String::from_utf8_lossy(&buffer));
+                return Ok(false)
+            }
+        },
         Err(e) => {
             println!("Error: {}", e);
             return Err(GitrError::ConnectionError);
@@ -1472,7 +1479,7 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
     Ok(true)
 }
 
-pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: String) -> Result<(),GitrError> {
+pub fn pull_packfile(stream: &mut TcpStream, cliente: String) -> Result<(),GitrError> {
     let mut buf = match ref_discovery::read_long_stream(stream) { // Leo Packfile
         Ok(buf) => buf,
         Err(e) => {
@@ -1490,12 +1497,10 @@ pub fn pull_packfile(stream: &mut TcpStream,actualizar_work_dir: bool, cliente: 
             GitObject::Blob(blob) => blob.save(cliente.clone())?,
             GitObject::Commit(commit) => commit.save(cliente.clone())?,
             GitObject::Tree(tree) => tree.save(cliente.clone())?,
+            GitObject::Tag(tag) => tag.save(cliente.clone())?,
         }
     }
-    if actualizar_work_dir {
-        update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
-    }
-    println!("pull successfull");
+    println!("pull of {} objects successfull",pack_file_struct.objects.len());
     Ok(())
 }
 
@@ -1552,7 +1557,7 @@ fn check_conflicts_and_get_tree(origin_commit: String, branch_commit: String, ba
         let mut input = String::new();
         match io::stdin().read_line(&mut input){
             Ok(_) => (),
-            Err(e) => return Err(GitrError::InputError),
+            Err(_e) => return Err(GitrError::InputError),
         }
         if input.trim() == "--continue"{
             break
@@ -1579,6 +1584,51 @@ pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, 
         last_commit = commit.get_hash();
     }
     Ok(())
+}
+
+/*******************
+ * CHECK-IGNORE FUNCTIONS
+ * *****************/
+fn path_is_ignored(paths: Vec<String>, client: String)->Result<bool, GitrError>{
+    let ignored_paths = match check_ignore_(paths, client){
+        Ok(paths) => paths,
+        Err(e) => return Err(e),
+    };
+    if ignored_paths.is_empty(){
+        return Ok(false)
+    }
+    return Ok(true);
+}
+
+pub fn check_ignore_(paths: Vec<String>, client: String)->Result<Vec<String>, GitrError>{
+    let path = armar_path("gitrignore".to_string(),client.clone())?;
+    println!("path: {}", path);
+    let gitignore = file_manager::read_file(path)?;
+    println!("gitignore: {}", gitignore);
+    let lineas_ignore:Vec<&str> = gitignore.split("\n").collect();
+    let mut lineas_full:Vec<String> = vec![];
+    let repo = file_manager::get_current_repo(client.clone())?;
+    for linea in lineas_ignore{
+        lineas_full.push(repo.to_owned()+linea);
+    }
+    println!("lineas_ignore: {:?}", lineas_full);
+    let mut ignored_paths = vec![];
+    for path in paths{
+        if lineas_full.contains(&path){
+            ignored_paths.push(path);
+        }
+    }
+    Ok(ignored_paths)
+}
+
+pub fn armar_path(path: String, cliente: String)->Result<String,GitrError>{
+    let full_path = vec![
+        file_manager::get_current_repo(cliente)?,
+        "/".to_string(),
+        path
+    ];
+    println!("full_path: {:?}", full_path);
+    Ok(full_path.concat())
 }
 
 // --continue
@@ -1615,6 +1665,7 @@ pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Resu
     let data = _cat_file(vec!["-p".to_string(), tree_hash.clone()], cliente.clone())?;
     
     if flags.len() == 1 { // mismo comportamiento que cat-file
+        print!("{}", data);
         return Ok(data)
     }
 
@@ -1675,7 +1726,7 @@ pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Resu
         result.push_str(&res_entry.join(" "));
     }
 
-
+    print!("{}", result);
     Ok(result)
 }
 
@@ -2246,15 +2297,10 @@ mod juntar_consecutivos_tests {
 
 }
 
-    
-    
-
-
-
 #[cfg(test)]
 mod merge_con_archivos{
-    use crate::commands::commands;
-    use super::*;
+    // use crate::commands::commands;
+    // use super::*;
 
    
 
@@ -2269,105 +2315,180 @@ fn delete_repo(repo_path: String){
         }
 }
 
-// #[cfg(test)]
-// mod rebase_tests{
-//     use crate::commands::commands;
-//     use super::*;
-//     #[test]
-//     fn crear_archivos_1(){ //esto así anda
-//         delete_repo("bruno/test".to_string());
-//         let cliente = "bruno".to_string();
-//         fs::create_dir_all(Path::new(&cliente)).unwrap();
-//         commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
-//         let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
+#[cfg(test)]
+mod rebase_tests{
+    use crate::commands::commands;
+    use super::*;
+    #[test]
+    fn crear_archivos_1(){ //esto así anda
+        delete_repo("bruno/test".to_string());
+        let cliente = "bruno".to_string();
+        fs::create_dir_all(Path::new(&cliente)).unwrap();
+        commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
+        let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
 
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-        
-//         commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
-//         commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
-        
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2".to_string()).unwrap();
-//         file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-        
-//         commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
-
-//         file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
-
-//         commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
-//         commands::rebase(vec!["master".to_string()], cliente).unwrap();
-//     }
-
-//     #[test]
-//     fn crear_archivos_2(){ //
-//         delete_repo("bruno/test".to_string());
-//         let cliente = "bruno".to_string();
-//         fs::create_dir_all(Path::new(&cliente)).unwrap();
-//         commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
-//         let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
-
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
         
-//         commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
-//         commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
         
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
         
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2\n estoy en topic 2 q onda".to_string()).unwrap();
-//         file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
         
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
-//         file_manager::write_file("bruno/test/archivo4.txt".to_string(),"ahora topic 3".to_string()).unwrap();
-
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
         
-//         commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
 
-//         file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
-//         file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 2, otro archivo".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
-//         file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
-//         file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 3\n estoy en master 3".to_string()).unwrap();
+        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::rebase(vec!["master".to_string()], cliente).unwrap();
+    }
 
-//         commands::add(vec![".".to_string()],cliente.clone()).unwrap();
-//         commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+    #[test]
+    fn crear_archivos_2(){ //
+        delete_repo("bruno/test".to_string());
+        let cliente = "bruno".to_string();
+        fs::create_dir_all(Path::new(&cliente)).unwrap();
+        commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
+        let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
 
-//         commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
-//         commands::rebase(vec!["master".to_string()], cliente).unwrap();
-//     }
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        
+        commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2\n estoy en topic 2 q onda".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"ahora topic 3".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+
+        file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 2, otro archivo".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 3\n estoy en master 3".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::rebase(vec!["master".to_string()], cliente).unwrap();
+    }
 
     
-//     #[test]
-//     fn destruir_archivos(){
-//         delete_repo("bruno/test".to_string());
-//     }
-// }
+    #[test]
+    fn destruir_archivos(){
+        delete_repo("bruno/test".to_string());
+    }
+}
+
+#[cfg(test)]
+mod check_ignore_tests{
+    use std::{fs, path::Path};
+
+    use serial_test::serial;
+
+    use crate::commands::commands;
+
+    use super::*;
+    #[serial]
+    #[test]
+    fn test00_check_ignore_encuentra_gitignore(){
+        let cliente = "cliente".to_string();
+        let gitignore = file_manager::read_file(armar_path("gitrignore".to_string(),cliente).unwrap());
+        assert!(gitignore.is_ok());
+    }
+
+    #[serial]
+    #[test]
+    fn test01_check_ignore_lee_correctamente_una_linea(){
+        let cliente = "cliente".to_string();
+        let paths = vec!["/target".to_string()];
+        let vec_match = vec![
+            "/target".to_string()
+        ];
+        assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
+    }
+
+    #[serial]
+    #[test]
+    fn test02_check_ignore_lee_correctamente_varias_lineas_desde_archivo(){
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
+        let cliente = "cliente".to_string();
+        let flags = vec!["repo_ignore".to_string()];
+        commands::init(flags, cliente.clone()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/gitrignore".to_string(), "/target\n/target2\n".to_string()).unwrap();
+        let paths = vec!["/target".to_string(), "/target2".to_string()];
+        let vec_match = vec![
+            "/target".to_string(),
+            "/target2".to_string()
+        ];
+        assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
+    }
+
+    #[serial]
+    #[test]
+    fn test03_add_ignora_archivos_en_gitingore(){
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
+        let cliente = "cliente".to_string();
+        let flags = vec!["repo_ignore".to_string()];
+        commands::init(flags, cliente.clone()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/gitrignore".to_string(), "/file1\n/folder/file3\n".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/file1".to_string(), "file1".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/file2".to_string(), "file2".to_string()).unwrap();
+
+        file_manager::create_directory(&"cliente/repo_ignore/folder".to_string()).unwrap();
+
+        file_manager::write_file("cliente/repo_ignore/folder/file3".to_string(), "file3".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/folder/file4".to_string(), "file3".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        let index = file_manager::read_index(cliente.clone()).unwrap();
+        assert!(!index.contains(&"cliente/repo_ignore/file1".to_string()));
+        assert!(!index.contains(&"cliente/repo_ignore/folder/file3".to_string()));
+    }
+}

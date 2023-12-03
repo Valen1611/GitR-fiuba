@@ -62,6 +62,7 @@ pub fn command_handler(argv: Vec<String>,  hubo_conflict:  bool , branch_hash: S
         "tag" => commands::tag(flags,client)?,
         "ls-tree" => commands::ls_tree(flags,client)?,
         "rebase" => commands::rebase(flags,client)?,
+        "check-ignore" => commands::check_ignore(flags,client)?,
         "q" => return Ok((false, "".to_string())),
         "l" => logger::log(flags)?,
         "list-repos" | "lr" => commands::list_repos(client),

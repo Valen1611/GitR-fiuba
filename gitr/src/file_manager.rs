@@ -4,7 +4,7 @@ use std::fs::{File, OpenOptions, ReadDir};
 use std::io::{prelude::*, Bytes};
 use std::fs;
 use std::path::Path;
-use crate::command_utils::flate2compress;
+use crate::commands::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
 use crate::{logger, file_manager};
 
@@ -103,7 +103,7 @@ pub fn delete_all_files(cliente: String)-> Result<(), GitrError>{
     let path = Path::new(&repo);
     if let Ok(entries) = fs::read_dir(path) {
         for entry in entries.flatten() {
-                if entry.file_name() != "gitr" && entry.file_name() != ".git" {
+                if entry.file_name() != "gitr" && entry.file_name() != ".git" && entry.file_name() != "gitrignore" {
                     if entry.path().is_file() {
                         match fs::remove_file(entry.path()) {
                             Ok(_) => continue,
@@ -374,6 +374,7 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/refs/remotes/daemon"))?;
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
         write_file(name.clone() + "/gitr/remote", "".to_string())?;
+        write_file(name.clone() + "/gitrignore", "".to_string())?;
     Ok(())
 }
 
