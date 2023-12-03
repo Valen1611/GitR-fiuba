@@ -1,9 +1,10 @@
 use std::{path::Path, fs};
-
-use gitr::{commands::command_utils::{print_branches, get_object_hash, _cat_file, self}, file_manager};
+use gitr::commands::command_utils;
+use gitr::commands::command_utils::*;
 
 use gitr::commands::commands;
-use gitr::file_manager::{write_file, read_index, get_current_repo};
+use gitr::file_manager;
+use gitr::file_manager::*;
 use gitr::gitr_errors::GitrError;
 use gitr::objects::blob::Blob;
 use serial_test::serial;
@@ -459,6 +460,7 @@ fn merge_con_archivos_test_1_conflict_trivial(){
     let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
 }
 
 #[test]
@@ -540,6 +542,7 @@ fn merge_con_archivos_test_2_conflict_sin_archivo_base(){
     let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
 }
 
 #[test]
@@ -635,6 +638,7 @@ fn merge_con_archivos_test_3_conflict_multilinea(){
     let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
 }
 
 #[test]
@@ -744,6 +748,7 @@ fn merge_con_archivos_test_4_multiples_conflicts_multilinea(){
 
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
 }
 
 #[test]
@@ -844,4 +849,146 @@ fn merge_con_archivos_test_5_ejemplo_de_codigo(){
     //file_manager::write_file("esperado".to_string(), archivo_esperado.clone()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
+}
+
+// /*********************
+//   COMMIT TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_commit(){
+    let cliente = "cliente_commit".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_commit".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail =test@gmail.com".to_string());
+    let _ = write_file((cliente.clone() + "/test_commit/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_commit/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec![".".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+    let res = file_manager::read_file(cliente.clone() + "/test_commit/gitr/refs/heads/master").unwrap();
+    let current_commit = file_manager::get_current_commit(cliente.clone()).unwrap();
+    assert_eq!(res, current_commit);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+// /*********************
+//   CHECKOUT TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_checkout(){
+    let cliente = "cliente_checkout".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_checkout".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail =test@gmail.com".to_string());
+    let _ = write_file((cliente.clone() + "/test_checkout/blob1").to_string(), "Hello, im blob 1".to_string());
+    commands::add(vec![".".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+    commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    commands::checkout(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/test_checkout/blob1").to_string(), "Hello, im blob 1 in branch1".to_string());
+    commands::add(vec![".".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 2\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+    commands::checkout(vec!["master".to_string()], cliente.clone()).unwrap();
+    let res = file_manager::read_file(cliente.clone() + "/test_checkout/blob1").unwrap();
+    let correct_res = String::from("Hello, im blob 1");
+    assert_eq!(res, correct_res);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+// /*********************
+//   STATUS TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_status_first_status_without_files_or_commits(){
+    let cliente = "cliente_status".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_status".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail =test@gmail.com".to_string());
+    let res = get_status(cliente.clone()).unwrap();
+    let correct_res = String::from("On branch master\n\nNo commits yet\n\nnothing to commit, working tree clean\n");
+    assert_eq!(res, correct_res);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+#[test]
+#[serial]
+fn test_status_new_file_untracked(){
+    let cliente = "cliente_status_new_file_added".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_status_new_file_added".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail =test@gmail.com".to_string());
+    let _ = write_file((cliente.clone() + "/test_status_new_file_added/blob1").to_string(), "Hello, im blob 1".to_string());
+    let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone()).unwrap();
+
+    assert!(untracked_files.contains(&(cliente.clone() + "/test_status_new_file_added/blob1")));
+    assert!(!not_staged.contains(&"blob1".to_string()));
+    assert!(!hayindex);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+#[test]
+#[serial]
+fn test_status_new_file_added(){
+    let cliente = "cliente_status_new_file_added".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_status_new_file_added".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(),("[user]\n\tname = test\n\temail =test@gmail.com").to_string());
+    let _ = write_file((cliente.clone() + "/test_status_new_file_added/blob1").to_string(), "Hello, im blob 1".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone()).unwrap();
+    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone()).unwrap();
+    assert!(new_files.contains(&(cliente.clone() + "/test_status_new_file_added/blob1")));
+    assert!(!modified_files.contains(&"blob1".to_string()));
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+
+#[test]
+#[serial]
+fn test_status_new_file_modified(){
+    let cliente = "cliente_status_new_file_modified".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_status_new_file_modified".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(),("[user]\n\tname = test\n\temail =g@gmail.com").to_string());
+    let _ = write_file((cliente.clone() + "/test_status_new_file_modified/blob1").to_string(), "Hello, im blob 1".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/test_status_new_file_modified/blob1").to_string(), "Hello, im blob 1 modified".to_string());
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone()).unwrap();
+    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone()).unwrap();
+    assert!(!new_files.contains(&(cliente.clone() + "/test_status_new_file_modified/blob1")));
+    assert!(modified_files.contains(&(cliente.clone() + "/test_status_new_file_modified/blob1")));
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+// /*********************
+//   LS-TREE TESTS
+// *********************/
+
+
+#[test]
+#[serial]
+fn test_ls_tree_sin_flags_se_comporta_como_cat_file() {
+    refresh_files();
+    let cliente = "cliente".to_string();
+
+    write_file((cliente.clone() + "/test/blob1").to_string(), "Hello, im blob 1".to_string()).unwrap();
+    commands::add(vec!["blob1".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+
+    let current_commit = file_manager::get_current_commit(cliente.clone()).unwrap();
+    
+    let commit = file_manager::read_object(&current_commit, cliente.clone() + "/test/gitr/", false).unwrap();
+
+    let _tree_hash = commit.split(" ").collect::<Vec<&str>>()[2].to_string();
+    let tree_hash = _tree_hash.split("\n").collect::<Vec<&str>>()[0].to_string();
+    let res = command_utils::_ls_tree(vec![tree_hash.clone()], "".to_string(), cliente.clone()).unwrap();
+
+    let cat_file = _cat_file(vec!["-p".to_string(), tree_hash], cliente.clone()).unwrap();
+
+    assert_eq!(res, cat_file);
 }

@@ -209,15 +209,8 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 
 // Show the working tree status
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
-    status_print_current_branch(cliente.clone())?;
-    let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
-    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone())?;
-    print!("{}", get_status_files_to_be_comited(&new_files, &modified_files)?);
-    print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
-    print!("{}",get_status_files_untracked(&untracked_files, hayindex));
-    if new_files.is_empty() && modified_files.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
-        println!("nothing to commit, working tree clean");
-    }
+    let status = get_status(cliente.clone())?;
+    println!("{}", status);
     Ok(())
 }
 
@@ -263,7 +256,7 @@ pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     }
 }
 
-pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<bool, GitrError>{
+pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<(bool, String), GitrError>{
     if _flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(_flags.join(" "), "merge <branch-name>".to_string()))
     }
@@ -282,12 +275,14 @@ pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<bool, GitrError>{
                 break;
             }
             hubo_conflict = command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), cliente.clone())?;
-            add(vec![".".to_string()], cliente.clone())?;
-            command_utils::create_merge_commit(branch_name,branch_commits[0].clone(), cliente)?;
+            if !hubo_conflict {
+                add(vec![".".to_string()], cliente.clone())?;
+                command_utils::create_merge_commit(branch_name, branch_commits[0].clone(), cliente)?;
+            }
             break;
         }
-    }
-    Ok(hubo_conflict)
+    } 
+    Ok((hubo_conflict, branch_commits[0].clone()))
 }
 
 pub fn remote(flags: Vec<String>,cliente: String) -> Result<(), GitrError> {
@@ -377,12 +372,12 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     Ok(())
 }
 
-
 pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
     if flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
     }
-    _ls_tree(flags, "".to_string(), cliente)
+    command_utils::_ls_tree(flags, "".to_string(), cliente)?;
+    Ok(())
 }
 
 pub fn list_repos(cliente: String) {

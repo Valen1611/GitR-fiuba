@@ -83,9 +83,10 @@ fn main() {
     while !existe_config(cliente.clone()) {
         setup_config_file(cliente.clone());
     }        
+    let mut hubo_conflict = false;
+    let mut branch_hash = "".to_string();
 
     loop {
-
         let input = match get_input() {
             Ok(input) => input,
             Err(e) => {
@@ -100,8 +101,11 @@ fn main() {
         let argv: Vec<String> = commands::handler::parse_input(input);
         
         // argv = ["command", "flag1", "flag2", ...]
-        match commands::handler::command_handler(argv,cliente.clone()) {
-            Ok(_) => (),
+        match commands::handler::command_handler(argv,  hubo_conflict, branch_hash.clone(), cliente.clone()) {
+            Ok((hubo_conflict_res, branch_hash_res)) => {
+                hubo_conflict = hubo_conflict_res;
+                branch_hash = branch_hash_res;
+            },
             Err(e) => {
                 println!("{}", e);
                 match logger::log_error(e.to_string()) {

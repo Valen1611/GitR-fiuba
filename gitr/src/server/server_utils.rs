@@ -10,10 +10,9 @@ use std::io::Write;
 use std::net::{TcpListener, TcpStream};
 use std::str::from_utf8;
 
-use std::sync::mpsc;
+
 use std::thread;
-use gtk::glib::Receiver;
-use gtk::glib::Sender;
+
 
 use crate::file_manager;
 use crate::git_transport::pack_file::PackFile;
