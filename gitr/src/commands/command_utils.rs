@@ -1400,6 +1400,7 @@ pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
             return Err(GitrError::ConnectionError);
         }
     };
+    print!("Handshake: {}", msj);
     match stream.write(msj.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -1598,11 +1599,15 @@ pub fn check_ignore_(paths: Vec<String>, client: String)->Result<Vec<String>, Gi
     }
     println!("lineas_ignore: {:?}", lineas_full);
     let mut ignored_paths = vec![];
+    println!("paths: {:?}", paths);
+    println!("lineas_full: {:?}", lineas_full);
     for path in paths{
         if lineas_full.contains(&path){
+            println!("path: {} is ignored", path);
             ignored_paths.push(path);
         }
     }
+    println!("ignored_paths: {:?}", ignored_paths);
     Ok(ignored_paths)
 }
 
@@ -2424,9 +2429,9 @@ mod check_ignore_tests{
     #[test]
     fn test01_check_ignore_lee_correctamente_una_linea(){
         let cliente = "cliente".to_string();
-        let paths = vec!["/target".to_string()];
+        let paths = vec!["cliente/repo_ignore/target".to_string()];
         let vec_match = vec![
-            "/target".to_string()
+            "cliente/repo_ignore/target".to_string()
         ];
         assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
     }
@@ -2443,10 +2448,10 @@ mod check_ignore_tests{
         let flags = vec!["repo_ignore".to_string()];
         commands::init(flags, cliente.clone()).unwrap();
         file_manager::write_file("cliente/repo_ignore/gitrignore".to_string(), "/target\n/target2\n".to_string()).unwrap();
-        let paths = vec!["/target".to_string(), "/target2".to_string()];
+        let paths = vec!["cliente/repo_ignore/target".to_string(), "cliente/repo_ignore/target2".to_string()];
         let vec_match = vec![
-            "/target".to_string(),
-            "/target2".to_string()
+            "cliente/repo_ignore/target".to_string(),
+            "cliente/repo_ignore/target2".to_string()
         ];
         assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
     }
