@@ -1569,6 +1569,20 @@ pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, 
 /*******************
  * CHECK-IGNORE FUNCTIONS
  * *****************/
+ pub fn check_ignore_(paths: Vec<String>, client: String)->Result<Vec<String>, GitrError>{
+    let path = armar_path("gitrignore".to_string(),client.clone())?;
+    println!("path: {}", path);
+    let gitignore = file_manager::read_file(path)?;
+    println!("gitignore: {}", gitignore);
+    let lineas_ignore:Vec<&str> = gitignore.split("\n").collect();
+    let mut ignored_paths = vec![];
+    for path in paths{
+        if lineas_ignore.contains(&path.as_str()){
+            ignored_paths.push(path);
+        }
+    }
+    Ok(ignored_paths)
+ }
 
 pub fn armar_path(path: String, cliente: String)->Result<String,GitrError>{
     let full_path = vec![
@@ -2397,7 +2411,7 @@ mod check_ignore_tests{
         let vec_match = vec![
             "/target".to_string()
         ];
-        assert_eq!(commands::check_ignore(paths,cliente).unwrap(), vec_match);
+        assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
     }
 
     #[serial]
@@ -2417,6 +2431,6 @@ mod check_ignore_tests{
             "/target".to_string(),
             "/target2".to_string()
         ];
-        assert_eq!(commands::check_ignore(paths,cliente).unwrap(), vec_match);
+        assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
     }
 }

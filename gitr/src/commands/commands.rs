@@ -458,19 +458,14 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
         //git diff $indexbase $file1
 //        the diff in the patch # equivalent to git diff $indexbase $file2
 
-pub fn check_ignore(paths: Vec<String>, client: String)->Result<Vec<String>, GitrError>{
-    let path = command_utils::armar_path("gitrignore".to_string(),client.clone())?;
-    println!("path: {}", path);
-    let gitignore = file_manager::read_file(path)?;
-    println!("gitignore: {}", gitignore);
-    let lineas_ignore:Vec<&str> = gitignore.split("\n").collect();
-    let mut ignored_paths = vec![];
-    for path in paths{
-        if lineas_ignore.contains(&path.as_str()){
-            ignored_paths.push(path);
-        }
+pub fn check_ignore(paths: Vec<String>, client: String)->Result<(), GitrError>{
+    if paths.is_empty(){
+        return Err(GitrError::InvalidArgumentError(paths.join(" "), "check-ignore <path>".to_string()));
     }
-    Ok(ignored_paths)
+    match command_utils::check_ignore_(paths, client){
+        Ok(_) => Ok(()),
+        Err(e) => Err(e)
+    }
 }
 
 #[cfg(test)]
