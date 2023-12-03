@@ -47,7 +47,7 @@ fn setup_config_file(client_path: String){
             Err(_) => "user@mail.com".to_string(),
         };
     }
-    println!("El email es valido, ya puede comenzar a usar Gitr");
+    println!("El email es valido, ya puede comenzar a usar Gitr\n");
     let name = client_path.clone();
     let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
     file_manager::write_file(client_path + "/gitrconfig", config_file_data).unwrap();

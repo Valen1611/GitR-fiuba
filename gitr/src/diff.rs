@@ -239,20 +239,20 @@ impl Diff{
             }
         } 
         lineas.sort_by(|a, b| a.0.cmp(&b.0)); //ordeno ascendente
-        println!("Lineas {:?}", lineas);
+        //println!("Lineas {:?}", lineas);
 
         
 
         // solo sirven los prints, por ahora quedan porque me ayudan a debuggear
         for (i, line) in base_lines.iter().enumerate() {
             if indices_lineas_eliminadas.contains(&i) {
-                println!("{}. -{}",i, line);
+                //println!("{}. -{}",i, line);
                 lineas_eliminadas.push((i, line.to_string()));
             }
         }
         for (i, line) in new_lines.iter().enumerate() {
             if indices_lineas_agregadas.contains(&i) {
-                println!("{}. +{}",i, line);
+                //println!("{}. +{}",i, line);
                 lineas_agregadas.push((i, line.to_string()));
             }
         }
