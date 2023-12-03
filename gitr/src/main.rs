@@ -11,13 +11,11 @@ fn get_input() -> Result<String, GitrError> {
             Ok(_) => (),
             Err(e) => return Err(GitrError::InvalidArgumentError(e.to_string(), "Usage: TODO".to_string())),
         }
-    
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
             Ok(_) => (),
             Err(e) => return Err(GitrError::InvalidArgumentError(e.to_string(), "Usage: TODO".to_string())),
         }
-    
         Ok(input)
     }
 
@@ -27,13 +25,10 @@ fn email_valido(email_recibido: String) -> bool {
         if email_parts.len() != 2 {
             return false; 
         }
-        
         let domain = email_parts[1];
-
         if !domain.contains('.') {
             return false
         }
-
         true
     }
 
@@ -114,8 +109,6 @@ fn main() {
                 };
             }
         };
-
-        
 
     }
     match child.join(){
