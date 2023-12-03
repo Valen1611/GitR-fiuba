@@ -203,7 +203,6 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
     remote(vec![flags[0].clone()],cliente.clone())?;
     
     pullear(vec![],true,cliente)?;
-    panic!("pre pull");
     Ok(())
 }
 
