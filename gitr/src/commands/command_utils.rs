@@ -1415,6 +1415,7 @@ pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
             return Err(GitrError::ConnectionError);
         }
     };
+    print!("Handshake: {}", msj);
     match stream.write(msj.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -1602,19 +1603,17 @@ fn path_is_ignored(paths: Vec<String>, client: String)->Result<bool, GitrError>{
 
 pub fn check_ignore_(paths: Vec<String>, client: String)->Result<Vec<String>, GitrError>{
     let path = armar_path("gitrignore".to_string(),client.clone())?;
-    println!("path: {}", path);
     let gitignore = file_manager::read_file(path)?;
-    println!("gitignore: {}", gitignore);
     let lineas_ignore:Vec<&str> = gitignore.split("\n").collect();
     let mut lineas_full:Vec<String> = vec![];
     let repo = file_manager::get_current_repo(client.clone())?;
     for linea in lineas_ignore{
         lineas_full.push(repo.to_owned()+linea);
     }
-    println!("lineas_ignore: {:?}", lineas_full);
     let mut ignored_paths = vec![];
     for path in paths{
         if lineas_full.contains(&path){
+            println!("path: {} is ignored", path);
             ignored_paths.push(path);
         }
     }
@@ -1627,7 +1626,6 @@ pub fn armar_path(path: String, cliente: String)->Result<String,GitrError>{
         "/".to_string(),
         path
     ];
-    println!("full_path: {:?}", full_path);
     Ok(full_path.concat())
 }
 
@@ -2438,10 +2436,18 @@ mod check_ignore_tests{
     #[serial]
     #[test]
     fn test01_check_ignore_lee_correctamente_una_linea(){
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
         let cliente = "cliente".to_string();
-        let paths = vec!["/target".to_string()];
+        let flags = vec!["repo_ignore".to_string()];
+        commands::init(flags, cliente.clone()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/gitrignore".to_string(), "/target\n".to_string()).unwrap();
+        let paths = vec!["cliente/repo_ignore/target".to_string()];
         let vec_match = vec![
-            "/target".to_string()
+            "cliente/repo_ignore/target".to_string()
         ];
         assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
     }
@@ -2458,10 +2464,10 @@ mod check_ignore_tests{
         let flags = vec!["repo_ignore".to_string()];
         commands::init(flags, cliente.clone()).unwrap();
         file_manager::write_file("cliente/repo_ignore/gitrignore".to_string(), "/target\n/target2\n".to_string()).unwrap();
-        let paths = vec!["/target".to_string(), "/target2".to_string()];
+        let paths = vec!["cliente/repo_ignore/target".to_string(), "cliente/repo_ignore/target2".to_string()];
         let vec_match = vec![
-            "/target".to_string(),
-            "/target2".to_string()
+            "cliente/repo_ignore/target".to_string(),
+            "cliente/repo_ignore/target2".to_string()
         ];
         assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
     }

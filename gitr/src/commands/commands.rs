@@ -201,7 +201,9 @@ pub fn ls_files(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
     init(vec![flags[1].clone()],cliente.clone())?;
     remote(vec![flags[0].clone()],cliente.clone())?;
+    
     pullear(vec![],true,cliente)?;
+    panic!("post pull");
     Ok(())
 }
 
@@ -303,7 +305,7 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
     
     //  ########## REFERENCE DISCOVERY ##########
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
-   
+    
     // ########## WANTS N HAVES ##########
     let pkt_needed = protocol_wants_n_haves(hash_n_references.clone(), &mut stream, cliente.clone())?;
     // ########## PACKFILE ##########
@@ -314,7 +316,7 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
         file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
         update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
     }
-
+    
     Ok(())
 }
 
@@ -465,7 +467,12 @@ pub fn check_ignore(paths: Vec<String>, client: String)->Result<(), GitrError>{
     if paths.is_empty(){
         return Err(GitrError::InvalidArgumentError(paths.join(" "), "check-ignore <path>".to_string()));
     }
-    match command_utils::check_ignore_(paths, client){
+    let repo = file_manager::get_current_repo(client.clone())?;
+    let mut full_paths = vec![];
+    for linea in paths{
+        full_paths.push(repo.to_owned()+linea.as_str());
+    }
+    match command_utils::check_ignore_(full_paths, client){
         Ok(_) => Ok(()),
         Err(e) => Err(e)
     }
