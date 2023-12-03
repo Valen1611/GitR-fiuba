@@ -34,7 +34,7 @@ impl Tree{
         entries.sort_by(|a, b| a.0.cmp(&b.0));
 
         let mut objs_entries = Vec::new();
-        let mut entries_size: u8 = 0;
+        let mut entries_size: usize = 0;
         for (path, entry) in &entries {
             match entry {
                 TreeEntry::Blob(blob) => {
@@ -51,7 +51,7 @@ impl Tree{
                     ]
                     .concat();
 
-                    entries_size += obj_entry.len() as u8;
+                    entries_size += obj_entry.len();
                     objs_entries.push(obj_entry);                
                 
                 }
@@ -67,7 +67,7 @@ impl Tree{
                     ]
                     .concat();
 
-                    entries_size += obj_entry.len() as u8;
+                    entries_size += obj_entry.len();
                     objs_entries.push(obj_entry);    
                 }
             }

@@ -1,8 +1,8 @@
-use std::{io::{Write, Read}, fs::{self}, path::Path, collections::{HashMap, HashSet}, net::TcpStream};
+use std::{io::{Write, Read, self}, fs::{self}, path::Path, collections::{HashMap, HashSet}, net::TcpStream};
 use flate2::Compression;
 use flate2::write::ZlibEncoder;
 use sha1::{Sha1, Digest};
-use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory}, diff::Diff, commands::commands, git_transport::ref_discovery::read_long_stream};
+use crate::{file_manager::{read_index, self, get_head, get_current_commit, get_current_repo, visit_dirs, update_working_directory, get_commit}, diff::Diff, commands::commands, git_transport::ref_discovery::read_long_stream};
 use crate::{objects::{blob::{TreeEntry, Blob}, tree::Tree, commit::Commit,tag::Tag,}, gitr_errors::GitrError};
 use crate::{file_manager::get_branches, git_transport::{ref_discovery, pack_file::PackFile}, objects::git_object::GitObject};
 
@@ -61,7 +61,17 @@ pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
  **************************
  **************************/
 
-
+pub fn get_object_hash(cliente: String, file_path:&mut  String, write: bool)->Result<String, GitrError>{
+    let res: String;
+    *file_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/" + file_path;
+    let raw_data = file_manager::read_file(file_path.to_string())?;  
+    let blob = Blob::new(raw_data)?;
+    res = blob.get_hash();
+    if write {
+        blob.save(cliente)?;
+    }
+    Ok(res)
+}
 
 /// returns object hash, output, size and type
 pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String, String, String, String), GitrError>{
@@ -98,7 +108,7 @@ pub fn _cat_file(flags: Vec<String>,cliente: String) -> Result<String,GitrError>
             "tree" =>  Ok(get_tree_data(raw_data)),
             "commit" => Ok(raw_data.to_string()),
             "tag" => Ok(raw_data.to_string()),
-            _ => return Err(GitrError::FileReadError(object_hash.to_string())),
+            _ => Err(GitrError::FileReadError(object_hash.to_string())),
         }
     } else {
         Ok("Invalid option. Expected <[-t/-s/-p>".to_string())
@@ -210,6 +220,7 @@ pub fn write_new_commit_and_branch(final_tree:Tree, message: String, second_pare
 }
 
 /// returns a hashmap to create trees (using the index)
+
 pub fn get_hashmap_for_checkout(cliente: String)->Result<(HashMap<String, Vec<String>>,Vec<String>),GitrError>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); 
@@ -313,7 +324,7 @@ pub fn get_ls_files_cached(cliente: String) -> Result<String, GitrError>{
         Err(_) => return Ok(string_res),
     };
     for file_path in index.lines() {
-        let correct_path = match file_path.split_once("/") {
+        let correct_path = match file_path.split_once('/') {
             Some((_path, file)) => file,
             None => file_path,
         };
@@ -348,7 +359,8 @@ pub fn get_ls_files_deleted_modified(deleted: bool,cliente: String) -> Result<St
  **************************/
 
 /// print all the branches in repo
-pub fn print_branches(cliente: String)-> Result<(), GitrError>{
+pub fn print_branches(cliente: String)-> Result<String, GitrError>{
+    let mut res = String::new();
     let head = file_manager::get_head(cliente.clone())?;
     let head_vec = head.split('/').collect::<Vec<&str>>();
     let head = head_vec[head_vec.len()-1];
@@ -356,12 +368,12 @@ pub fn print_branches(cliente: String)-> Result<(), GitrError>{
         for branch in branches{
             if head == branch{
                 let index_branch = format!("* \x1b[92m{}\x1b[0m", branch);
-                println!("{}",index_branch);
+                res.push_str(&(index_branch + "\n"));
                 continue;
             }
-            println!("{}", branch);
+            res.push_str(&(format!("{}\n", branch)));
         }
-    Ok(())
+    Ok(res)
 }
 
 /// check if a branch exists
@@ -471,7 +483,6 @@ pub fn commit_existing(cliente: String) -> Result<(), GitrError>{
  **************************
  **************************/
 
- 
 pub fn fast_forward_merge(branch_name:String,cliente: String)->Result<(),GitrError> {
     let commit: String = file_manager::get_commit(branch_name,cliente.clone())?;
     let head = get_head(cliente.clone())?;
@@ -493,36 +504,20 @@ pub fn get_blobs_from_commit(commit_hash: String,cliente: String)->Result<(),Git
 
 fn _aplicar_diffs(string_archivo: String, diff: Diff) -> Result<Vec<String>, GitrError> {
     let mut archivo_reconstruido = vec![];
-    //print in color red
-    //println!("\x1b[31m{}\x1b[0m", "some red text");
-    // println!("\x1b[31mstring_archivo: {:?}\x1b[0m", string_archivo);
-    // println!("\x1b[31mdiff: {:?}\x1b[0m", diff);
-    //println!("diff a aplicar: {:?}", diff);
-   // println!("diff:+ {:?}", diff.lineas_agregadas);
-   // println!("diff:- {:?}", diff.lineas_eliminadas);
-
-    /*
-    hay 2 casos a tener en cuenta
-     - Cuando el index del diff llega a una linea mas grande que la del archivo
-        - hay que agregar por afuera del loop las lineas del diff que quedaorn afuera
-
-     - Cuando el archivo tiene mas lines que el diff (probablemente siempre)
-        - hay que agregar por afuera del loop las lineas del archivo que quedaron afuera
-    
-
-
-     */
-
 
     let mut j = 0; //con este indexo el diff
     let max_j = diff.lineas.len();
-    //let j = 0; //con este indexo el archivo
-    //let mut final_archivo = 0;
+
     for (i,line) in string_archivo.lines().enumerate(){
         if j < max_j {   
             if diff.lineas[j].0 == i{ //en la linea hay una operación
                 if !diff.lineas[j].1{ //es un delete
                     
+                    if j+1 >= max_j {
+                        j+=1;
+                        continue;
+                    }
+
                     if diff.lineas[j+1].1{//hay un add tambien
                         archivo_reconstruido.push(diff.lineas[j+1].2.clone()+"\n"); //pusheo el add, ignorando lo que se borró
                         j+=2;
@@ -546,77 +541,20 @@ fn _aplicar_diffs(string_archivo: String, diff: Diff) -> Result<Vec<String>, Git
                 archivo_reconstruido.push(line.to_string()+"\n");
             }
     }
-    /*let mut lineas_archivo = string_archivo.lines().collect::<Vec<&str>>();
-    loop{
-        let linea_actual = lineas_archivo[j];
-        if linea_actual.is_empty(){
-            break;
-        }
-        if diff.lineas[i].0 == j{ //hay operaciones en esa linea
-            if !diff.lineas[i].1{ //es un delete
-
-            }
-        }
-    }*/
-    /*for (i,line) in string_archivo.lines().enumerate(){
-        let tiene_add = diff.has_add_diff(i);
-        if diff.has_delete_diff(i){
-            if tiene_add.0{
-                print!(". Hay dif de add. Pusheo: {}",tiene_add.1.clone());
-                archivo_reconstruido.push(tiene_add.1.clone()+"\n"); 
-            }
-            continue;
-        }
-        else if tiene_add.0 { 
-            print!(". No hay dif de delete. Sí hay de add. Agrego: [{},{}]",line.to_string().clone(),tiene_add.1.clone());
-            archivo_reconstruido.push(line.to_string()+"\n");
-            archivo_reconstruido.push(tiene_add.1.clone()+"\n");
-        } else {
-            archivo_reconstruido.push(line.to_string()+"\n"); 
-        }
-    }*/
- 
-    
-    
-    
-
-    
+     
     for i in j..diff.lineas.len() { //agrego los diffs que me faltaron antes
-        
-        //println!("diff.lineas[i].2: {}", diff.lineas[i].2.clone());
         archivo_reconstruido.push(diff.lineas[i].2.clone()+"\n");
     }
-
-    //println!("archivo_reconstruido: {:?}", archivo_reconstruido);
-
     Ok(archivo_reconstruido)
 }
 
 fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
-    //println!("=============PRINTS DE APLICAR_DIFFS=============");
     let string_archivo = file_manager::read_file(path.clone())?;
     let archivo_reconstruido = _aplicar_diffs(string_archivo.clone(), diff.clone())?;
-   // println!("archivo_reconstruido: {:?}", archivo_reconstruido);
+
     file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
-    //println!("=======================================");
-   // println!("");
     Ok(())
 }
-/*
-fn armar_conflict(origin_conflicts: &mut Vec<String>, new_conflicts: &mut Vec<String>) -> String { //armo el conflict y vacío los vectores para "reiniciarlos"
-    let conflict = [
-        "<<<<<<< HEAD\n",
-        origin_conflicts.concat().as_str(),
-        "\n",
-        "\n=======\n",
-        new_conflicts.concat().as_str(),
-        ">>>>>>> BRANCH"
-        ].concat();
-    origin_conflicts.clear();
-    new_conflicts.clear();
-    conflict
-}
-*/
 
 fn armar_conflict2(origin_conflicts: String, new_conflicts: String) -> String { //armo el conflict y vacío los vectores para "reiniciarlos"
     let conflict = [
@@ -630,7 +568,6 @@ fn armar_conflict2(origin_conflicts: String, new_conflicts: String) -> String { 
 }
 
 fn juntar_consecutivos(diff: Diff)->Diff{
-    //println!("=============PRINTS DE JUNTAR_CONSECUTIVOS=============");
     let mut diff_juntado = Diff::new("".to_string(), "".to_string());
 
     let input = diff.lineas.clone();
@@ -638,41 +575,33 @@ fn juntar_consecutivos(diff: Diff)->Diff{
     let mut corrimiento = 1;
     let mut corrimiento_total = 0;
     for (i, (index, accion, s)) in input.iter().enumerate() {
-        //println!("i: {}, index: {}, accion: {}, s: {}", i, index, accion, s);
         if !accion {
             continue;
         }
         
         if *index == 0 || i == 0{
             output.push((*index, *accion, s.to_string()));
-        } else {
-            if let Some((prev_num, _, prev_str)) = output.last_mut() {
-          
-               // println!("prev_num: {}, index: {}", prev_num, index);
-                if *prev_num + corrimiento == *index  {
-                   // println!("prev_str: {}", prev_str);
-                   // println!("s: {}", s);
-                    prev_str.push_str(("\n".to_string()+s.as_str()).as_str());
-                    corrimiento += 1;
-                    corrimiento_total += 1;
+        } else if let Some((prev_num, _, prev_str)) = output.last_mut() {
+        
+              if *prev_num + corrimiento == *index  {
+                  prev_str.push_str(("\n".to_string()+s.as_str()).as_str());
+                  corrimiento += 1;
+                  corrimiento_total += 1;
 
-                } else {
-                    output.push((*index, *accion, s.to_string()));
-                    corrimiento = 1;
-                }
-            } else {
-                output.push((*index, *accion, s.to_string()));
-            }
-        }
+              } else {
+                  output.push((*index, *accion, s.to_string()));
+                  corrimiento = 1;
+              }
+          } else {
+              output.push((*index, *accion, s.to_string()));
+          }
     }
-   // println!("out post true: {:?}", output);
     for (index, accion, s) in input.iter() {
         if !accion {
             output.push((*index, *accion, s.to_string()));
             continue;
         }
     }
-   // println!("out post false: {:?}", output);
     output.sort_by(|a,b|{
         let cmp_first = a.0.cmp(&b.0);
         let cmp_second = a.1.cmp(&b.1);
@@ -692,52 +621,43 @@ fn juntar_consecutivos(diff: Diff)->Diff{
         .map(|(index, accion, s)| (index, accion, s))
         .collect();
     diff_juntado.lineas_extra = corrimiento_total;
-   // println!("diff_juntado: {:?}", diff_juntado);
     diff_juntado
 }
 
-fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo: usize) -> Result<Diff, GitrError> {
-//    println!("=============PRINTS DE COMPARAR_DIFFS=============");
-    let mut diff_final = Diff::new("".to_string(), "".to_string());
-    
+
+fn preparar_lineas_para_comparar(diff_base_origin: Diff, diff_base_branch: Diff) ->Vec<(usize, bool, String, String)> {
+
     let origin_consec = juntar_consecutivos(diff_base_origin).lineas;
     let new_consec = juntar_consecutivos(diff_base_branch).lineas;
 
-    let mut origin_tagged: Vec<(usize, bool, String, &str)> = Vec::new();
+    let mut origin_tagged: Vec<(usize, bool, String, String)> = Vec::new();
     let mut new_tagged = Vec::new();
 
     for (i, accion, linea) in origin_consec.clone() {
-        origin_tagged.push((i, accion, linea, "origin"));
+        origin_tagged.push((i, accion, linea, "origin".to_string()));
     }
     for (i, accion, linea) in new_consec.clone() {
-        new_tagged.push((i, accion, linea, "new"));
+        new_tagged.push((i, accion, linea, "new".to_string()));
     }
 
     let mut joined_diffs = origin_tagged;
     joined_diffs.extend(new_tagged);
-    //println!("joined_diffs: {:?}", joined_diffs);
-    //joined_diffs.dedup(); ++ESTO YA NO SIRVE PORQUE CON EL DEDUP() DEL FINAL YA SACO LOS REPETIDOS++
-    //let set: HashSet<_> = joined_diffs.clone().into_iter().collect(); 
-    //println!("set: {:?}", set);
-    //let mut result: Vec<_> = set.into_iter().collect();
 
-    let mut seen_set = HashSet::new();
-    let mut unique_vec = Vec::new();
-    // volvemos a necesitar filtrar duplicados con diccionario porque
+    let mut vistos = HashSet::new();
+    let mut unicos = Vec::new();
+    // necesitamos filtrar duplicados con diccionario porque
     // hay que ingnorar el ultimo elemento de la tupla, porque ese si
     // puede ser diferente
-    for tuple in joined_diffs {
-        // Create a tuple with the first three elements
-        let key = (tuple.0, tuple.1, tuple.2.clone());
+    for tupla in joined_diffs {
+        let key = (tupla.0, tupla.1, tupla.2.clone());
 
-        // Check if the tuple is already in the set
-        if seen_set.insert(key.clone()) {
-            // If not, add the original tuple to the unique vector
-            unique_vec.push(tuple);
+        if vistos.insert(key.clone()) {
+            // si no existe, agregamos con las 4 cosas
+            unicos.push(tupla);
         }
     }
 
-    let mut result = unique_vec.clone();
+    let mut result = unicos.clone();
 
     result.sort_by(|a,b|{
         let cmp_first = a.0.cmp(&b.0);
@@ -752,35 +672,31 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo
             cmp_first.then(cmp_second)
         }
     });
+    result
+}
 
+fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo: usize) -> Result<(Diff, bool), GitrError> {
+    let mut diff_final = Diff::new("".to_string(), "".to_string());
+    
+    let result = preparar_lineas_para_comparar(diff_base_origin, diff_base_branch);
+
+    // dic solo con los de agregar
     let mut map: HashMap<usize, Vec<(String, String)>> = HashMap::new();
     for (index, flag, string, tag) in result.clone() {
         if flag {
             map.entry(index).or_insert_with(Vec::new).push((string, tag.to_string()));
         }
      }
-     /*
-     RESULT:
-        2.-"base"
-        2.+"master"
-        2.+"new"
-        3.+"en new agrego una linea nueva"
-
-     dic:
-        2: ["master", "new"]
-        3: ["en new agrego una linea nueva"]
-      */
+   
     let mut indices_ya_visitados = HashSet::new();
     
-
     let mut hay_extra = false;
     let mut iter_count:i8 = -1;
+    let mut hubo_conflict = false;
     for (index, flag, string, _) in result.clone() {
-        println!("index: {}, flag: {}, str: \"{}\"", index, flag, string);
         iter_count += 1;
 
         if index > limite_archivo {
-            println!("me voy en index: {}", index);
             hay_extra = true;
             break;
         }
@@ -804,6 +720,7 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo
         }
 
         //para este punto hay un conflict
+        hubo_conflict = true;
         let conflict = armar_conflict2(lineas[0].0.clone(), lineas[1].0.clone());
         diff_final.lineas.push((index, flag, conflict));
         indices_ya_visitados.insert(index);
@@ -817,7 +734,6 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo
             o si tengo 2 lineas, y en ese caso tengo que armar el conflict y pushear
     
             solo puedo tener esos 2 casos en este punto
-            
              */
             diff_final.lineas.push((result[iter_count as usize].0, result[iter_count as usize].1, result[iter_count as usize].2.clone()));
         } else {
@@ -827,99 +743,119 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo
                 origin = result[iter_count as usize + 1].clone();
                 new = result[iter_count as usize].clone();
             }
-            
     
             let conflict = armar_conflict2(origin.2, new.2);
             diff_final.lineas.push((result[iter_count as usize].0, result[iter_count as usize].1, conflict));
-    
         }
-
     }
 
-    Ok(diff_final)
+    Ok((diff_final,hubo_conflict))
 }
 
-pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, branch_name: String, cliente: String) -> Result<(), GitrError> {
+pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, cliente: String) -> Result<bool, GitrError> {
+    println!("Origin ( o master): {}", origin_commit);
+    println!("Branch (o topic): {}", branch_commit);
+    println!("Base: {}", base_commit);
     let branch_hashmap = get_commit_hashmap(branch_commit.clone(),cliente.clone())?;
     let mut origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
     file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone(),cliente.clone())?;
     origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
     let base_hashmap = get_commit_hashmap(base_commit.clone(),cliente.clone())?;
+    let mut hubo_conflict= false;
     for (path, origin_file_hash) in origin_hashmap.iter(){
-        let origin_file_data =file_manager::read_file(path.clone())?; 
-        
+        let origin_file_data: String =file_manager::read_file_data_from_blob_hash(origin_file_hash.clone(), cliente.clone())?; 
+        println!("branch_hashmap:{:?}", branch_hashmap);
         if branch_hashmap.contains_key(&path.clone()){
+            println!("Entre al if");
             let branch_file_hash = branch_hashmap[path].clone(); //aax
             let branch_file_data = file_manager::read_file_data_from_blob_hash(branch_file_hash.clone(),cliente.clone())?;
 
+            println!("Hashes");
+            println!("Origin file hash: {}", origin_file_hash);
+            println!("Branch file hash: {}", branch_file_hash);
+            
+            
+            
             if origin_file_hash == &branch_file_hash{
+                println!("entro al if 1");
                 continue;
             }
             
-            let base_file_hash = base_hashmap[path].clone(); // chequear que capaz puede no exisiir en base
-            let base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone(),cliente.clone())?;
+            let mut base_file_hash = "".to_string();
+            let base_file_data;
 
+            if !base_hashmap.contains_key(path){
+                base_file_data= "".to_string();
+            }
+            else{
+                base_file_hash = base_hashmap[path].clone(); // chequear que capaz puede no exisiir en base
+                base_file_data = file_manager::read_file_data_from_blob_hash(base_file_hash.clone(),cliente.clone())?;
+            }
+            
+            
+            //println!("Base file hash: {}", base_file_hash);
             if &base_file_hash == origin_file_hash {
+                println!("entro al if 2");
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
                 aplicar_difs(path.clone(), diff_base_branch)?;
                 continue;
             }
             
-            if base_file_hash == branch_file_hash {              
+            if base_file_hash == branch_file_hash {     
+                println!("entro al if 3");
                 continue;
            
             }
     
-            // println!("base_file_data: {:?}", base_file_data);
-            // println!("origin_file_data: {:?}", origin_file_data);
-            // println!("branch_file_data: {:?}", branch_file_data);
+            println!("base_file_data: {:?}", base_file_data);
+            println!("origin_file_data: {:?}", origin_file_data);
+            println!("branch_file_data: {:?}", branch_file_data);
 
-            let len_archivo = base_file_data.len();
+            let mut len_archivo = base_file_data.len();
+            if len_archivo == 0{
+                if branch_file_data.len() > origin_file_data.len(){
+                    len_archivo = branch_file_data.len();
+                }
+                else{
+                    len_archivo = origin_file_data.len();
+                }
+            }
+
+            println!("Origin ( o master): {}", origin_commit);
+            println!("Branch (o topic): {}", branch_commit);
+            println!("Base: {}", base_commit);
 
             let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
-            let diff_base_branch = Diff::new(base_file_data, branch_file_data);
-            let union_diffs = comparar_diffs(diff_base_origin, diff_base_branch, len_archivo-1)?; //une los diffs o da el conflict
-            //println!("union_diffs: {:?}", union_diffs);
-            aplicar_difs(path.clone(), union_diffs)?;
+            let diff_base_branch = Diff::new(base_file_data.clone(), branch_file_data.clone());
+            let union_diffs;
+            (union_diffs,hubo_conflict) = comparar_diffs(diff_base_origin, diff_base_branch, len_archivo-1)?; //une los diffs o da el conflict
+            println!("union_diffs: {:?}", union_diffs);
+            
+            if base_file_data.is_empty() || base_file_data.len() == 0{
+                println!("entro al if base empty");
+                let archivo_reconstruido = _aplicar_diffs("".to_string(), union_diffs)?;
+                println!("archivo_reconstruido: {:?}", archivo_reconstruido);
+                file_manager::write_file(path.to_string()+"_mergeado", archivo_reconstruido.concat().to_string())?;
+            }
+            else{
+                println!("entro al else base lleno");
+                aplicar_difs(path.clone(), union_diffs)?;
+            }
         }
         else{
             continue;
         }
     }
 
-    commands::add(vec![".".to_string()], cliente.clone())?;
-    create_merge_commit(branch_name,branch_commit, cliente)?;
+    // commands::add(vec![".".to_string()], cliente.clone())?;
+    // create_merge_commit(branch_name,branch_commit, cliente)?;
     // aca crearse otro commit especial para poder tener 2 padre,s pero no tocar la funcion commit original
 
-    Ok(())
-}
-/*
-pub fn commit(flags: Vec<String>,cliente: String)-> Result<(), GitrError>{
-
-
-    let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone())?;
-    let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
-    println!("to be commited: {to_be_commited:?}");
-    if to_be_commited.is_empty() {
-        println!("nothing to commit, working tree clean");
-        return Ok(())
-    }
-    if flags[1].starts_with('\"'){
-        let message = &flags[1..];
-        let message = message.join(" ");
-        if !message.chars().any(|c| c!= ' ' && c != '\"'){
-            return Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
-        }
-        get_tree_entries(message.to_string(),cliente.clone())?;
-        print_commit_confirmation(message,cliente.clone())?;
-        Ok(())
-    } else {
-        Err(GitrError::InvalidArgumentError(flags.join(" "), "commit -m \"commit_message\"".to_string()))
-    }
+    Ok(hubo_conflict)
 }
 
-*/
-fn create_merge_commit(branch_name: String, branch_commit: String, cliente: String) -> Result<(), GitrError> {
+
+pub fn create_merge_commit(branch_name: String, branch_commit: String, cliente: String) -> Result<(), GitrError> {
     let index_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/gitr/index";
     if !Path::new(&index_path).exists() {
         return commands::status(vec![],cliente.clone());
@@ -929,7 +865,6 @@ fn create_merge_commit(branch_name: String, branch_commit: String, cliente: Stri
     get_tree_entries(message.to_string(),branch_commit, cliente.clone())?;
     print_commit_confirmation(message,cliente.clone())?;
     Ok(())
-
 }
 
 /***************************
@@ -954,26 +889,29 @@ fn create_merge_commit(branch_name: String, branch_commit: String, cliente: Stri
     Ok(working_dir_hashmap)
 }
 
-pub fn get_status_files_to_be_comited(to_be_commited: &Vec<String>)->Result<String, GitrError>{
+pub fn get_status_files_to_be_comited(new_files: &Vec<String>, modified_files: &Vec<String>)->Result<String, GitrError>{
     let mut res = String::new();
-    // let working_dir_hashmap = get_working_dir_hashmap()?;
-    if !to_be_commited.is_empty() {
-        let header1 = format!("Changes to be committed:\n");
-        let header2 = format!("  (use \"rm <file>...\" to unstage)\n");
+    if !new_files.is_empty() || !modified_files.is_empty() {
+        let header1 = "Changes to be committed:\n".to_string();
+        let header2 = "  (use \"rm <file>...\" to unstage)\n".to_string();
         res.push_str(&header1);
         res.push_str(&header2);
-        for file in to_be_commited.clone() {
+        for file in new_files.clone() {
             let file_name = match file.split_once ('/'){
                 Some((_path, file)) => file.to_string(),
                 None => file.to_string(),
             };
-            // if !working_dir_hashmap.contains_key(file.as_str()) {
-                // let line = format!("\t\x1b[31mdeleted:   {}\x1b[0m\n", file_name);
-                // res.push_str(&line);
-            // }else{
-                let line = format!("\t\x1b[92mmodified   {}\x1b[0m\n", file_name);
-                res.push_str(&line);
-            // }
+            let line = format!("\t\x1b[92mnew file:   {}\x1b[0m\n", file_name);
+            res.push_str(&line);
+        
+        }
+        for file in modified_files.clone() {
+            let file_name = match file.split_once ('/'){
+                Some((_path, file)) => file.to_string(),
+                None => file.to_string(),
+            };
+            let line = format!("\t\x1b[92mmodified:   {}\x1b[0m\n", file_name);
+            res.push_str(&line);
         }
     }
     Ok(res)
@@ -984,9 +922,9 @@ pub fn get_status_files_not_staged(not_staged: &Vec<String>,cliente: String)-> R
     let (index,hayindex)= get_index_hashmap(cliente.clone())?;
     let working_dir_hashmap = get_working_dir_hashmap(cliente.clone())?;
     if !not_staged.is_empty() {
-        let header1 = format!("Changes not staged for commit:\n");
-        let header2 = format!("  (use \"add <file>...\" to update what will be committed)\n");
-        let header3 = format!("  (use \"rm <file>...\" to discard changes in working directory)\n");
+        let header1 = "Changes not staged for commit:\n".to_string();
+        let header2 = "  (use \"add <file>...\" to update what will be committed)\n".to_string();
+        let header3 = "  (use \"rm <file>...\" to discard changes in working directory)\n".to_string();
         res.push_str(&header1);
         res.push_str(&header2);
         res.push_str(&header3);
@@ -1010,8 +948,8 @@ pub fn get_status_files_not_staged(not_staged: &Vec<String>,cliente: String)-> R
 pub fn get_status_files_untracked(untracked_files: &Vec<String>, hayindex: bool)-> String {
     let mut res = String::new();
     if !untracked_files.is_empty() {
-        let header1 = format!("Untracked files:\n");
-        let header2 = format!("  (use \"add <file>...\" to include in what will be committed)\n");
+        let header1 = "Untracked files:\n".to_string();
+        let header2 = "  (use \"add <file>...\" to include in what will be committed)\n".to_string();
         res.push_str(&header1);
         res.push_str(&header2);
         for file in untracked_files.clone() {
@@ -1024,7 +962,7 @@ pub fn get_status_files_untracked(untracked_files: &Vec<String>, hayindex: bool)
         }
 
         if !hayindex {
-            let nothing_output = format!("nothing added to commit but untracked files present (use \"add\" to track)\n");
+            let nothing_output = "nothing added to commit but untracked files present (use \"add\" to track)\n".to_string();
             res.push_str(&nothing_output);
         }
     }
@@ -1096,12 +1034,13 @@ pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_h
 
 
 pub fn get_commit_hashmap(commit: String,cliente: String) -> Result<HashMap<String, String>, GitrError> {
-      let mut tree_hashmap = HashMap::new();
-    let current_commit = get_current_commit(cliente.clone())?;
-    if current_commit == commit{
-        let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
-        return Ok(index_hashmap);
-    }
+    let mut tree_hashmap = HashMap::new();
+    // let current_commit = get_current_commit(cliente.clone())?;
+    // if current_commit == commit{
+    //     println!("get_commit_hashmap(): entre al if que los commits son iguales");
+    //     let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
+    //     return Ok(index_hashmap);
+    // }
       if !commit.is_empty() {
         let repo = file_manager::get_current_repo(cliente.clone())?;
         let tree = file_manager::get_main_tree(commit,cliente.clone())?;
@@ -1202,18 +1141,19 @@ pub fn get_current_commit_hashmap(cliente: String) -> Result<HashMap<String, Str
       }
       Ok(tree_hashmap)
 }
-pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result<Vec<String>, GitrError>{
+pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result<(Vec<String>, Vec<String>), GitrError>{
     //let working_dir_hashmap = get_working_dir_hashmap(cliente.clone())?;
     let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
     let current_commit_hashmap = get_current_commit_hashmap(cliente.clone())?;
-    let mut to_be_commited = Vec::new();
+    let mut new_files_to_be_commited = Vec::new();
+    let mut modified_files_to_be_commited = Vec::new();
     for (path, hash) in index_hashmap.clone().into_iter() {
         if !current_commit_hashmap.contains_key(path.as_str()) {
-            to_be_commited.push(path);
+            new_files_to_be_commited.push(path);
         }
         else if let Some(commit_hash) = current_commit_hashmap.get(path.as_str()) {
             if hash != *commit_hash  && !not_staged.contains(&path){ 
-                to_be_commited.push(path);
+                modified_files_to_be_commited.push(path);
             }
         }
     }
@@ -1222,7 +1162,7 @@ pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result
     //         to_be_commited.push(path);
     //     }
     // }
-    Ok(to_be_commited)
+    Ok((new_files_to_be_commited, modified_files_to_be_commited))
 }
 
 
@@ -1234,6 +1174,13 @@ pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result
 
 
 pub fn save_and_add_blob_to_index(file_path: String,cliente: String) -> Result<(), GitrError> {
+    match path_is_ignored(vec![file_path.clone()], cliente.clone()){
+        Ok(r) => if r{
+            return Ok(())
+        }
+        Err (e) => return Err(e),
+    }
+    println!("agrego este path: {}",file_path);
     let raw_data = file_manager::read_file(file_path.clone())?;
     let blob = Blob::new(raw_data)?;
     blob.save(cliente.clone())?;
@@ -1349,7 +1296,7 @@ pub fn create_annotated_tag(tag_name: String, tag_message: String, cliente: Stri
     if Path::new(&tag_path).exists() {
         return Err(GitrError::TagAlreadyExistsError(tag_name.clone()));
     }
-    let tag = Tag::new(tag_name, tag_message, current_commit,cliente.clone())?;
+    let tag = Tag::new(tag_name, tag_message, current_commit, cliente.clone())?;
     tag.save(cliente.clone())?;
     file_manager::write_file(tag_path, tag.get_hash())?;
     Ok(())
@@ -1361,7 +1308,7 @@ pub fn get_tags_str(cliente: String) -> Result<String,GitrError>{
     for t in tags {
         tag_str.push_str(&(t+"\n"))
     }
-    Ok(tag_str.strip_suffix("\n").unwrap_or("").to_string())
+    Ok(tag_str.strip_suffix('\n').unwrap_or("").to_string())
 }
 /***************************
  *************************** 
@@ -1496,7 +1443,7 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
         println!("cliente al día");
         return Ok(false)
     }
-    let _ = stream.write(&(0 as usize).to_be_bytes());
+    let _ = stream.write(&0_usize.to_be_bytes());
     
     let mut buffer = [0;1024];
     match stream.read(&mut buffer) { // Leo si huvo error
@@ -1563,7 +1510,7 @@ pub fn reference_update_request(stream: &mut TcpStream,hash_n_references: Vec<(S
 
 pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_references: Vec<(String,String)>,cliente: String) -> Result<(),GitrError> {
     let repo = file_manager::get_current_repo(cliente.clone())? + "/gitr";
-    let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|(*t).0.clone()).collect(),repo.clone())?;
+    let all_pkt_commits = Commit::get_parents(pkt_ids.clone(),hash_n_references.iter().map(|t|t.0.clone()).collect(),repo.clone())?;
     let ids = Commit::get_objects_from_commits(all_pkt_commits,vec![],repo.clone())?;
     let mut contents: Vec<Vec<u8>> = Vec::new();
     for id in ids {
@@ -1577,6 +1524,120 @@ pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_referenc
     };
     Ok(())
 }
+/*******************
+ * REBASE FUNCTIONS
+ * *****************/
+
+fn check_conflicts_and_get_tree(origin_commit: String, branch_commit: String, base_commit:String, cliente:String)->Result<String,GitrError>{
+    println!("Origin ( o master): {}", origin_commit);
+    println!("Branch (o topic): {}", branch_commit);
+    println!("Base: {}", base_commit);
+
+    let hubo_conflict = three_way_merge(base_commit, branch_commit, origin_commit, cliente.clone())?;
+    while hubo_conflict{
+        println!("conflicts detected, please resolve them and then run '--continue'");
+        print!("$ ");
+        let mut input = String::new();
+        match io::stdin().read_line(&mut input){
+            Ok(_) => (),
+            Err(_e) => return Err(GitrError::InputError),
+        }
+        if input.trim() == "--continue"{
+            break
+        }
+    }
+    commands::add(vec![".".to_string()],cliente.clone())?;
+    let (tree_map, tree_order) = get_hashmap_for_checkout(cliente.clone())?;
+    let final_tree = create_trees(tree_map, tree_order[0].clone(),cliente.clone())?;
+    Ok(final_tree.get_hash())
+}
+
+pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, cliente:String, commit_base: String)->Result<(),GitrError>{
+    let mut last_commit: String = get_commit(origin_name, cliente.clone())?;
+    let head = get_head(cliente.clone())?;
+    let path = get_current_repo(cliente.clone())? + "/gitr/" + &head;
+    file_manager::write_file(path, last_commit.clone())?; 
+    for commit_old in to_rebase_commits.iter().rev(){
+        let main_tree = check_conflicts_and_get_tree(last_commit.clone(), commit_old.to_string(), commit_base.clone(),cliente.clone())?;
+        let message = file_manager::get_commit_message(commit_old.clone(),cliente.clone())?;
+        let commit = Commit::new(main_tree.clone(), vec![last_commit.clone()], cliente.clone(), cliente.clone(), message.clone(), cliente.clone())?;
+        commit.save(cliente.clone())?;
+        let dir = get_current_repo(cliente.clone())?+ "/gitr/" + &get_head(cliente.clone())?;
+        file_manager::write_file(dir, commit.get_hash())?;
+        last_commit = commit.get_hash();
+    }
+    Ok(())
+}
+
+/*******************
+ * CHECK-IGNORE FUNCTIONS
+ * *****************/
+fn path_is_ignored(paths: Vec<String>, client: String)->Result<bool, GitrError>{
+    let ignored_paths = match check_ignore_(paths, client){
+        Ok(paths) => paths,
+        Err(e) => return Err(e),
+    };
+    if ignored_paths.is_empty(){
+        return Ok(false)
+    }
+    return Ok(true);
+}
+
+pub fn check_ignore_(paths: Vec<String>, client: String)->Result<Vec<String>, GitrError>{
+    let path = armar_path("gitrignore".to_string(),client.clone())?;
+    println!("path: {}", path);
+    let gitignore = file_manager::read_file(path)?;
+    println!("gitignore: {}", gitignore);
+    let lineas_ignore:Vec<&str> = gitignore.split("\n").collect();
+    let mut lineas_full:Vec<String> = vec![];
+    let repo = file_manager::get_current_repo(client.clone())?;
+    for linea in lineas_ignore{
+        lineas_full.push(repo.to_owned()+linea);
+    }
+    println!("lineas_ignore: {:?}", lineas_full);
+    let mut ignored_paths = vec![];
+    for path in paths{
+        if lineas_full.contains(&path){
+            ignored_paths.push(path);
+        }
+    }
+    Ok(ignored_paths)
+}
+
+pub fn armar_path(path: String, cliente: String)->Result<String,GitrError>{
+    let full_path = vec![
+        file_manager::get_current_repo(cliente)?,
+        "/".to_string(),
+        path
+    ];
+    println!("full_path: {:?}", full_path);
+    Ok(full_path.concat())
+}
+
+// --continue
+// $ bruno/test/archivo1.txt
+// bruno/test/archivo3.txt
+// Origin ( o master): 4c3d6c134408a3fc165681794e797b8af508b662
+// Branch (o topic): f2bd6ae76b7c845323bea2cdbd72b923608b41bd
+// Base: e98c777743a79d0716955f143b7590c423eb8691
+// Origin ( o master): 4c3d6c134408a3fc165681794e797b8af508b662
+// Branch (o topic): f2bd6ae76b7c845323bea2cdbd72b923608b41bd
+// Base: e98c777743a79d0716955f143b7590c423eb8691
+// get_commit_hashmap(): entre al if que los commits son iguales
+// branch_hashmap:{"bruno/test/archivo1.txt": "efa759ef048e873b000597bdf29137925e39d994", "bruno/test/archivo3.txt": "32a46284c7e10892d1855144b604b335e49880e6"}
+// Entre al if
+// Hashes
+// Origin file hash: 32a46284c7e10892d1855144b604b335e49880e6
+// Branch file hash: 32a46284c7e10892d1855144b604b335e49880e6
+// entro al if 1
+// branch_hashmap:{"bruno/test/archivo1.txt": "efa759ef048e873b000597bdf29137925e39d994", "bruno/test/archivo3.txt": "32a46284c7e10892d1855144b604b335e49880e6"}
+// Entre al if
+// Hashes
+// Origin file hash: efa759ef048e873b000597bdf29137925e39d994
+// Branch file hash: efa759ef048e873b000597bdf29137925e39d994
+// entro al if 1
+// bruno/test/archivo1.txt
+// bruno/test/archivo3.txt
 
 /*******************
  *   LOG FUNCTIONS
@@ -1652,15 +1713,12 @@ pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Resu
     Ok(())
 }
 
-#[cfg(test)]
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
-mod diffs_tests{
-   
-    
+//#[cfg(test)]
+// mod clone_tests {
+//  use super::*;
 
-    use super::*;
-    
-    // #[test]
+ // #[test]
     // fn test00_clone_connects_to_daemon_correctly(){
     //     assert!(clone_connect_to_server("localhost:9418".to_string()).is_ok());
     // }
@@ -1696,8 +1754,24 @@ mod diffs_tests{
     //     let references = ref_discovery::discover_references(ref_disc).unwrap();
     //     socket.write(assemble_want_message(&references,vec![]).unwrap().as_bytes()).unwrap();
     // }
+
+     // fn test04_clone_sends_wants_correctly(){
+    //     let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
+    //     clone_send_git_upload_pack(&mut socket).unwrap();
+    //     let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
+    //     let references = ref_discovery::discover_references(ref_disc).unwrap();
+    //     socket.write(assemble_want_message(&references,vec![],"Test".to_string()).unwrap().as_bytes()).unwrap();
+    // }
+//}
+
+#[cfg(test)]
+mod comparar_diffs_tests{
+   
+    use super::*;
+    
+   
     #[test]
-    fn test03_diffs_sin_conflicts_desde_origin(){
+    fn comparar_diffs_test_01_diffs_sin_conflicts_desde_origin(){
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\nque\nestas\nbien\ny\nvos\n".to_string();
         let str_new = "hola\nque\nestas\n".to_string();
@@ -1710,10 +1784,10 @@ mod diffs_tests{
             (1,true,"que".to_string()),
             (3,true, "bien\ny\nvos".to_string()),
         ];
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
     }
     #[test]
-    fn test04_diffs_sin_conflicts_desde_new(){
+    fn comparar_diffs_test_02_diffs_sin_conflicts_desde_new(){
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\nque\nestas\n".to_string();
         let str_new = "hola\nque\nestas\nbien\ny\nvos\n".to_string();
@@ -1726,11 +1800,11 @@ mod diffs_tests{
             (1,true,"que".to_string()),
             (3,true, "bien\ny\nvos".to_string()),
         ];
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
     }
 
     #[test]
-    fn test05_diffs_con_conflict(){
+    fn comparar_diffs_test_03_diffs_con_conflict(){
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\nque\ntal\n".to_string();
         let str_new = "hola\nque\ntal\nbien\ny\nvos\n".to_string();
@@ -1747,16 +1821,11 @@ mod diffs_tests{
             
             
         ];
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
     }
-    //tests posibles
-    // conflict de una linea (3 casos: en la primera, en la ultima y al medio)
-    // varios conflict de una linea (se tienen que ver las cosas en el medio)
-    // conflict de varias lineas (3 casos: en la primera, en la ultima y al medio)
-    // varios conflict de varias lineas (se tienen que ver las cosas en el medio (contemplar un conflict de 5 lineas y otro de 3 x ejemplo))
-    //conflict del medio dejando una sola linea arriba, una sola linea abajo, varias arriba, varias abajo
+
     #[test]
-    fn test06_diffs_con_1_conflict_en_primera_linea(){
+    fn comparar_diffs_test_04_diffs_con_1_conflict_en_primera_linea(){
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "buenas\ncomo\nestas\n".to_string();
         let str_new = "nihao\ncomo\nestas\n".to_string();
@@ -1769,11 +1838,11 @@ mod diffs_tests{
             (0,true,"<<<<<<< HEAD\nbuenas\n=======\nnihao\n>>>>>>> BRANCH".to_string()),
         ];
         println!("\x1b[mtest06_diffs_con_1_conflict_en_primera_linea OK\x1b[0m");
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
     }   
 
     #[test]
-    fn test07_diffs_con_1_conflict_en_la_ultima_linea(){
+    fn comparar_diffs_test_05_diffs_con_1_conflict_en_la_ultima_linea(){
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\ncomo\nandas\n".to_string();
         let str_new = "hola\ncomo\ntas\n".to_string();
@@ -1785,13 +1854,13 @@ mod diffs_tests{
             (2,false,"estas".to_string()),
             (2,true,"<<<<<<< HEAD\nandas\n=======\ntas\n>>>>>>> BRANCH".to_string()),
         ];
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
         println!("\x1b[test07_diffs_con_1_conflict_en_la_ultima_linea OK\x1b[0m");
 
     }
 
     #[test]
-    fn test08_diffs_con_1_conflict_en_3_lineas(){
+    fn comparar_diffs_test_06_diffs_con_1_conflict_en_3_lineas(){
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\nromo\nestas\n".to_string();
         let str_new = "hola\nfomo\nestas\n".to_string();
@@ -1803,13 +1872,13 @@ mod diffs_tests{
             (1,false,"como".to_string()),
             (1,true,"<<<<<<< HEAD\nromo\n=======\nfomo\n>>>>>>> BRANCH".to_string()),
         ];
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
         println!("\x1b[test08_diffs_con_1_conflict_en_3_lineas OK\x1b[0m");
 
     }
 
     #[test]
-    fn test09_conflicts_en_archivo_de_una_sola_linea(){
+    fn comparar_diffs_test_07_conflicts_en_archivo_de_una_sola_linea(){
         let str_base = "hola\n".to_string();
         let str_origin = "origin\n".to_string();
         let str_new = "new\n".to_string();
@@ -1821,20 +1890,12 @@ mod diffs_tests{
             (0,false,"hola".to_string()),
             (0,true,"<<<<<<< HEAD\norigin\n=======\nnew\n>>>>>>> BRANCH".to_string()),
         ];
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
         println!("\x1b[test09_conflicts_en_archivo_de_una_sola_linea OK\x1b[0m");
     }
 
-    // fn test04_clone_sends_wants_correctly(){
-    //     let mut socket = clone_connect_to_server("localhost:9418".to_string()).unwrap();
-    //     clone_send_git_upload_pack(&mut socket).unwrap();
-    //     let ref_disc = clone_read_reference_discovery(&mut socket).unwrap();
-    //     let references = ref_discovery::discover_references(ref_disc).unwrap();
-    //     socket.write(assemble_want_message(&references,vec![],"Test".to_string()).unwrap().as_bytes()).unwrap();
-    // }
-
     #[test]
-    fn test10_conflicts_en_todas_las_lineas_de_archivo_de_dos_lineas(){
+    fn comparar_diffs_test_08_conflicts_en_todas_las_lineas_de_archivo_de_dos_lineas(){
         let str_base = "hola\ncomo\n".to_string();
         let str_origin = "origin1\norigin2\n".to_string();
         let str_new = "new1\nnew2\n".to_string();
@@ -1847,11 +1908,11 @@ mod diffs_tests{
             (0,true,"<<<<<<< HEAD\norigin1\norigin2\n=======\nnew1\nnew2\n>>>>>>> BRANCH".to_string()),
             (1,false,"como".to_string()),
         ];
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
     }
 
     #[test]
-    fn test11_conflicts_en_todas_las_lineas_de_archivo_de_cinco_lineas(){
+    fn comparar_diffs_test_09_conflicts_en_todas_las_lineas_de_archivo_de_cinco_lineas(){
         let str_base = "hola\ncomo\nestas\npepe\ngrillo".to_string();
         let str_origin = "origin1\norigin2\norigin3\norigin4\norigin5".to_string();
         let str_new = "new1\nnew2\nnew3\nnew4\nnew5\n".to_string();
@@ -1867,38 +1928,27 @@ mod diffs_tests{
             (3,false,"pepe".to_string()),
             (4,false,"grillo".to_string()),
         ];
-        assert_eq!(diff_final.unwrap().lineas,lineas_esperadas);
+        assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
 
     }
 
     #[test]
-    fn test12_conflicts_con_diffs_de_distinto_tamanio_mas_lineas_en_branch(){
+    fn comparar_diffs_test_10_conflicts_con_diffs_de_distinto_tamanio_mas_lineas_en_branch(){
         let str_base = "hola\n".to_string();
         let str_origin = "hola\norigin1\n".to_string();
         let str_new = "hola\ncomo\nnew3\n".to_string();
         let diff_base_origin = Diff::new(str_base.clone(), str_origin);
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
-        let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,0).unwrap();
+        let (diff_final, _) = comparar_diffs(diff_base_origin, diff_base_branch,0).unwrap();
         let lineas_esperadas = vec![
             (1,true,"<<<<<<< HEAD\norigin1\n=======\ncomo\nnew3\n>>>>>>> BRANCH".to_string()),
         ];
 
-      
-        
-
-        // print diff_final.lineas vs lineas_esperadas character by character
-        
-
-        //assert_eq!(diff_final.unwrap().lineas[0].0,lineas_esperadas[0].0);
-        //assert_eq!(diff_final.unwrap().lineas[0].1,lineas_esperadas[0].1);
-        //println!("diff_final: {:?}", diff_final.unwrap().lineas);
         assert_eq!(diff_final.lineas,lineas_esperadas);
-
-
     }
     #[test]
-    fn test13_conflicts_con_diffs_de_distinto_tamanio_mas_lineas_en_origin() {
+    fn comparar_diffs_test_11_conflicts_con_diffs_de_distinto_tamanio_mas_lineas_en_origin() {
         let str_base = "hola\n".to_string();
         let str_origin = "hola\ncomo\norigin\n".to_string();
         let str_new = "hola\nnew\n".to_string();
@@ -1910,15 +1960,12 @@ mod diffs_tests{
             (1,true,"<<<<<<< HEAD\ncomo\norigin\n=======\nnew\n>>>>>>> BRANCH".to_string()),
         ];
 
-        assert_eq!(diff_final.lineas,lineas_esperadas);
+        assert_eq!(diff_final.0.lineas,lineas_esperadas);
 
     }
 
     #[test]
-    fn test14_conflicts_con_diffs_varios_largos_en_distintos_lugares() {
-        // No estoy seguro si es una falla o estoy interpretando mal el diff esperado
-        // capaz conviene ya mandarse a hacer tests con el archivo reconstruido
-        // que se puede chequear contra git real
+    fn comparar_diffs_test_12_conflicts_con_diffs_varios_largos_en_distintos_lugares() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\nori4\niguales\nori5\niguales para cerrar".to_string(); 
         let str_new = "hola\ncomo\nnew1\nestas\nnew2\nnew3\niguales\nnew4\niguales para cerrar".to_string();
@@ -1931,16 +1978,15 @@ mod diffs_tests{
             (2,true,"<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH".to_string()),
             (4,true,"<<<<<<< HEAD\nori4\niguales\nori5\niguales para cerrar\n=======\nnew2\nnew3\niguales\nnew4\niguales para cerrar\n>>>>>>> BRANCH".to_string()),
         ];
-        assert_eq!(diff_final.lineas,lineas_esperadas);
+        assert_eq!(diff_final.0.lineas,lineas_esperadas);
     }
        
     
     #[test]
-    fn test15_comparar_diffs_distinto_largo_simple() {
+    fn comparar_diffs_test_13_comparar_diffs_distinto_largo_simple() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\n".to_string(); 
         let str_new = "hola\ncomo\nnew1\nestas\n".to_string();
-
 
         let diff_base_origin = Diff::new(str_base.clone(), str_origin);
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
@@ -1950,7 +1996,7 @@ mod diffs_tests{
             (2,true,"<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH".to_string()),
         ];
 
-        assert_eq!(diff_final.lineas, diff_esperado);
+        assert_eq!(diff_final.0.lineas, diff_esperado);
     }
 
 }
@@ -1961,7 +2007,19 @@ mod aplicar_diffs_tests {
     use super::*;
 
     #[test]
-    fn test15_aplicar_diff_cambio_en_el_medio() {
+    fn aplicar_diff_test_01_cambio_al_inicio() {
+        let str_base = "hola\ncomo\nestas\n".to_string();
+        let str_new = "new1\ncomo\nestas\n".to_string();
+
+        let diff_base_branch = Diff::new(str_base.clone(), str_new);
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_base_branch).unwrap();
+        let archivo_esperado = vec!["new1\n", "como\n", "estas\n"];
+
+        assert_eq!(_archivo_reconstruido, archivo_esperado);
+    }
+
+    #[test]
+    fn aplicar_diff_test_02_cambio_en_el_medio() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_new = "hola\nnew1\nestas\n".to_string();
 
@@ -1973,7 +2031,7 @@ mod aplicar_diffs_tests {
     }
 
     #[test]
-    fn test16_aplicar_diff_cambio_al_final() {
+    fn aplicar_diff_test_03_cambio_al_final() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_new = "hola\ncomo\nnew1\n".to_string();
 
@@ -1984,21 +2042,9 @@ mod aplicar_diffs_tests {
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
 
-    #[test]
-    fn test17_aplicar_diff_cambio_al_inicio() {
-        let str_base = "hola\ncomo\nestas\n".to_string();
-        let str_new = "new1\ncomo\nestas\n".to_string();
-
-        let diff_base_branch = Diff::new(str_base.clone(), str_new);
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_base_branch).unwrap();
-        let archivo_esperado = vec!["new1\n", "como\n", "estas\n"];
-
-        assert_eq!(_archivo_reconstruido, archivo_esperado);
-    }
-
 
     #[test]
-    fn test18_aplicar_diff_conflict_al_inicio() {
+    fn aplicar_diff_test_04_conflict_al_inicio() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "origin1\ncomo\nestas\n".to_string();
         let str_new = "new1\ncomo\nestas\n".to_string();
@@ -2007,14 +2053,14 @@ mod aplicar_diffs_tests {
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,2).unwrap();
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final.0).unwrap();
         let archivo_esperado = vec!["<<<<<<< HEAD\norigin1\n=======\nnew1\n>>>>>>> BRANCH\n", "como\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
 
     #[test]
-    fn test19_aplicar_diff_conflict_al_medio() {
+    fn aplicar_diff_test_05_conflict_al_medio() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\norigin1\nestas\n".to_string();
         let str_new = "hola\nnew1\nestas\n".to_string();
@@ -2023,14 +2069,14 @@ mod aplicar_diffs_tests {
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,2).unwrap();
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final.0).unwrap();
         let archivo_esperado = vec!["hola\n", "<<<<<<< HEAD\norigin1\n=======\nnew1\n>>>>>>> BRANCH\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
 
     #[test]
-    fn test20_aplicar_diff_conflict_al_final() {
+    fn aplicar_diff_test_06_conflict_al_final() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\ncomo\norigin1\n".to_string();
         let str_new = "hola\ncomo\nnew1\n".to_string();
@@ -2039,14 +2085,14 @@ mod aplicar_diffs_tests {
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,2).unwrap();
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final.0).unwrap();
         let archivo_esperado = vec!["hola\n", "como\n", "<<<<<<< HEAD\norigin1\n=======\nnew1\n>>>>>>> BRANCH\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
 
     #[test]
-    fn test21_aplicar_diff_conflict_multilinea_al_inicio() {
+    fn aplicar_diff_test_07_conflict_multilinea_al_inicio() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_new = "new1\nnew2\ncomo\nestas\n".to_string();
         let str_origin = "origin1\norigin2\ncomo\nestas\n".to_string();
@@ -2055,14 +2101,14 @@ mod aplicar_diffs_tests {
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,2).unwrap();
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final.0).unwrap();
         let archivo_esperado = vec!["<<<<<<< HEAD\norigin1\norigin2\n=======\nnew1\nnew2\n>>>>>>> BRANCH\n", "como\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
 
     #[test]
-    fn test22_aplicar_diff_conflict_multiniea_al_medio() {
+    fn aplicar_diff_test_08_conflict_multiniea_al_medio() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_new = "hola\nnew1\nnew2\nestas\n".to_string();
         let str_origin = "hola\norigin1\norigin2\nestas\n".to_string();
@@ -2071,14 +2117,14 @@ mod aplicar_diffs_tests {
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,2).unwrap();
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final.0).unwrap();
         let archivo_esperado = vec!["hola\n", "<<<<<<< HEAD\norigin1\norigin2\n=======\nnew1\nnew2\n>>>>>>> BRANCH\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
 
     #[test]
-    fn test23_aplicar_diff_conflict_multilinea_al_final() {
+    fn aplicar_diff_test_09_conflict_multilinea_al_final() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_new = "hola\ncomo\nnew1\nnew2\n".to_string();
         let str_origin = "hola\ncomo\norigin1\norigin2\n".to_string();
@@ -2087,14 +2133,14 @@ mod aplicar_diffs_tests {
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,2).unwrap();
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final.0).unwrap();
         let archivo_esperado = vec!["hola\n", "como\n", "<<<<<<< HEAD\norigin1\norigin2\n=======\nnew1\nnew2\n>>>>>>> BRANCH\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
     }
 
     #[test]
-    fn test24_aplicar_conflicts_con_diffs_varios_largos_en_distintos_lugares() { //Lo esperado es sacado de replicar el conflict en git real
+    fn aplicar_diff_test_10_conflicts_con_diffs_varios_largos_en_distintos_lugares() { //Lo esperado es sacado de replicar el conflict en git real
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\nori4\niguales\nori5\niguales para cerrar".to_string(); 
         let str_new = "hola\ncomo\nnew1\nestas\nnew2\nnew3\niguales\nnew4\niguales para cerrar".to_string();
@@ -2104,7 +2150,7 @@ mod aplicar_diffs_tests {
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,2).unwrap();
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final.0).unwrap();
         let archivo_esperado = vec!["hola\n",
         "como\n",
         "<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH\n",
@@ -2112,8 +2158,6 @@ mod aplicar_diffs_tests {
         "<<<<<<< HEAD\nori4\niguales\nori5\niguales para cerrar\n=======\nnew2\nnew3\niguales\nnew4\niguales para cerrar\n>>>>>>> BRANCH\n",
         ];
 
-        //assert_eq!(_archivo_reconstruido, archivo_esperado);
-        // assert line by line
         for i in 0..archivo_esperado.len(){
             assert_eq!(_archivo_reconstruido[i], archivo_esperado[i]);
         }
@@ -2122,7 +2166,7 @@ mod aplicar_diffs_tests {
 
 
     #[test]
-    fn test25_aplicar_conflicts_con_diffs_varios_largos_en_distintos_lugares() { //Lo esperado es sacado de replicar el conflict en git real
+    fn aplicar_diff_test_11_conflicts_con_diffs_varios_largos_en_distintos_lugares() { //Lo esperado es sacado de replicar el conflict en git real
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_origin = "hola\ncomo\nori1\nori2\nori3\nestas\n".to_string(); 
         let str_new = "hola\ncomo\nnew1\nestas\n".to_string();
@@ -2132,7 +2176,7 @@ mod aplicar_diffs_tests {
         let diff_base_branch = Diff::new(str_base.clone(), str_new);
 
         let diff_final = comparar_diffs(diff_base_origin, diff_base_branch,2).unwrap();
-        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final).unwrap();
+        let _archivo_reconstruido = _aplicar_diffs(str_base, diff_final.0).unwrap();
         let archivo_esperado = vec!["hola\n",
             "como\n",
             "<<<<<<< HEAD\nori1\nori2\nori3\n=======\nnew1\n>>>>>>> BRANCH\n",
@@ -2143,7 +2187,7 @@ mod aplicar_diffs_tests {
     }
 
     #[test]
-    fn test26_aplicar_diff_agregando_una_linea_al_medio() {
+    fn aplicar_diff_test_12_diff_agregando_una_linea_al_medio() {
         let str_base = "hola\ncomo\nestas\n".to_string();
         let str_new = "hola\ncomo\nnew1\nestas\n".to_string();
 
@@ -2152,10 +2196,9 @@ mod aplicar_diffs_tests {
         let archivo_esperado = vec!["hola\n","como\n", "new1\n", "estas\n"];
 
         assert_eq!(_archivo_reconstruido, archivo_esperado);
-    }  
+    }
 
 }
-
 
 #[cfg(test)]
 mod juntar_consecutivos_tests {
@@ -2163,7 +2206,7 @@ mod juntar_consecutivos_tests {
         use super::*;
     
         #[test]
-        fn test27_juntar_consecutivos() {
+        fn juntar_consec_test_01() {
             let str_base = "hola\ncomo\nestas\n".to_string();
             let str_new = "hola\ncomo\nnew1\nnew2\nestas\n".to_string();
     
@@ -2179,7 +2222,7 @@ mod juntar_consecutivos_tests {
 
         } 
         #[test]
-        fn test28_juntar_consecutivos_mezclados() {
+        fn juntar_consec_test_02_mezclados() {
             let str_base = "hola\ncomo\nestas\n".to_string();
             let str_new = "hola\ncomo\nnew1\nnew2\nestas\nnew3\nnew4\n".to_string();
     
@@ -2197,7 +2240,7 @@ mod juntar_consecutivos_tests {
         }
 
         #[test]
-        fn test28_juntar_consecutivos_de_3() {
+        fn juntar_consec_test_03_juntar_de_3() {
             let str_base = "hola\ncomo\nestas\n".to_string();
             let str_new = "hola\ncomo\nnew1\nnew2\nnew3\nnew4\nestas\nnew5\n".to_string();
     
@@ -2215,7 +2258,7 @@ mod juntar_consecutivos_tests {
         }  
 
         #[test]
-        fn test29_juntar_consecutivos_desde_inicio_mismo_len() {
+        fn juntar_consec_test_04_desde_inicio_mismo_len() {
             let str_base = "hola\ncomo\nestas\n".to_string();
             let str_new = "new1\nnew2\nnew3".to_string();
     
@@ -2234,101 +2277,201 @@ mod juntar_consecutivos_tests {
 
 
         }  
-    
-    
+
 }
 
-//0 hola
-//1 como
-//2 +origin1\norigin2\norigin3
-//3 estas
-//4 +ori4
-//5 iguales
-//6 +ori5
-//7 iguales para cerrar
+#[cfg(test)]
+mod merge_con_archivos{
+    // use crate::commands::commands;
+    // use super::*;
+
+   
 
 
-//0 hola
-//1 como
-//2 +new1
-//3 estas
-//4 +new2\nnew3
-//5 iguales
-//6 +new4
-//7 iguales para cerrar
+}
 
+fn delete_repo(repo_path: String){
+        let path = Path::new(&repo_path);
+        println!("path: {:?}", path);
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+}
 
+#[cfg(test)]
+mod rebase_tests{
+    use crate::commands::commands;
+    use super::*;
+    #[test]
+    fn crear_archivos_1(){ //esto así anda
+        delete_repo("bruno/test".to_string());
+        let cliente = "bruno".to_string();
+        fs::create_dir_all(Path::new(&cliente)).unwrap();
+        commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
+        let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
 
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
-/*
-    base:
-    hola
-    como
-    estas
-    base
-    linea base
-    linea base
+        
+        commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
 
+        file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
-    origin:
-    hola
-    como
-    ori1
-    estas
-    ori2
-    ori3
-    ori4
-    linea base
-    linea base
-    ori5
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
 
-    new:
-    hola
-    como
-    new1
-    estas
-    new2
-    linea base
-    linea base
+        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::rebase(vec!["master".to_string()], cliente).unwrap();
+    }
 
-    diff base new:
-    2. +new1
-    3. -base
-    4. +new2
+    #[test]
+    fn crear_archivos_2(){ //
+        delete_repo("bruno/test".to_string());
+        let cliente = "bruno".to_string();
+        fs::create_dir_all(Path::new(&cliente)).unwrap();
+        commands::init(vec!["test".to_string()],cliente.clone()).unwrap();
+        let _ = file_manager::write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail = test@gmail.com".to_string());
+
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 1".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        
+        commands::branch(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 1\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1 ahora topic 2\n estoy en topic 2 q onda".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo3.txt".to_string(),"sigo en topic 2 ".to_string()).unwrap();
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"topic 1, topic2, ahora topic 3".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"ahora topic 3".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"topic 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+        
+        commands::checkout(vec!["master".to_string()],cliente.clone()).unwrap();
+
+        file_manager::write_file("bruno/test/archivo2.txt".to_string(),"master 2".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 2, otro archivo".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 2\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        file_manager::write_file("bruno/test/archivo1.txt".to_string(),"master 3".to_string()).unwrap();
+        file_manager::write_file("bruno/test/archivo4.txt".to_string(),"master 3\n estoy en master 3".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        commands::commit(vec!["-m".to_string(),"\"master 3\"".to_string()],"None".to_string(),cliente.clone()).unwrap();
+
+        commands::checkout(vec!["topic".to_string()],cliente.clone()).unwrap();
+        commands::rebase(vec!["master".to_string()], cliente).unwrap();
+    }
+
     
+    #[test]
+    fn destruir_archivos(){
+        delete_repo("bruno/test".to_string());
+    }
+}
 
-    diff base origin:
-    2. +ori1
-    3. -base
-    4. +ori2
-    5. +ori3
-    6. +ori4
-    9. +ori5
+#[cfg(test)]
+mod check_ignore_tests{
+    use std::{fs, path::Path};
 
+    use serial_test::serial;
 
-    Archivo salida:
-    hola
-    como
-    2+ >>>HEAD
-    ori1
-    ===
-    new1
-    <<<<
-    estas
-    4+>>>HEAD
-    ori2
-    ori3
-    ori4
-    ======
-    new2
-    <<<<new
-    linea base
-    linea base
-    5+ori5
+    use crate::commands::commands;
 
+    use super::*;
+    #[serial]
+    #[test]
+    fn test00_check_ignore_encuentra_gitignore(){
+        let cliente = "cliente".to_string();
+        let gitignore = file_manager::read_file(armar_path("gitrignore".to_string(),cliente).unwrap());
+        assert!(gitignore.is_ok());
+    }
 
-    res posible 1:
-    2. +ori1\nori2\nori3\nori4
-    4. -base
+    #[serial]
+    #[test]
+    fn test01_check_ignore_lee_correctamente_una_linea(){
+        let cliente = "cliente".to_string();
+        let paths = vec!["/target".to_string()];
+        let vec_match = vec![
+            "/target".to_string()
+        ];
+        assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
+    }
 
-*/
+    #[serial]
+    #[test]
+    fn test02_check_ignore_lee_correctamente_varias_lineas_desde_archivo(){
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
+        let cliente = "cliente".to_string();
+        let flags = vec!["repo_ignore".to_string()];
+        commands::init(flags, cliente.clone()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/gitrignore".to_string(), "/target\n/target2\n".to_string()).unwrap();
+        let paths = vec!["/target".to_string(), "/target2".to_string()];
+        let vec_match = vec![
+            "/target".to_string(),
+            "/target2".to_string()
+        ];
+        assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
+    }
+
+    #[serial]
+    #[test]
+    fn test03_add_ignora_archivos_en_gitingore(){
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
+        let cliente = "cliente".to_string();
+        let flags = vec!["repo_ignore".to_string()];
+        commands::init(flags, cliente.clone()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/gitrignore".to_string(), "/file1\n/folder/file3\n".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/file1".to_string(), "file1".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/file2".to_string(), "file2".to_string()).unwrap();
+
+        file_manager::create_directory(&"cliente/repo_ignore/folder".to_string()).unwrap();
+
+        file_manager::write_file("cliente/repo_ignore/folder/file3".to_string(), "file3".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/folder/file4".to_string(), "file3".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        let index = file_manager::read_index(cliente.clone()).unwrap();
+        assert!(!index.contains(&"cliente/repo_ignore/file1".to_string()));
+        assert!(!index.contains(&"cliente/repo_ignore/folder/file3".to_string()));
+    }
+}

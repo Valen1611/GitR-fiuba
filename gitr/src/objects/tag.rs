@@ -14,9 +14,9 @@ use crate::{commands::command_utils::{get_user_mail_from_config, get_current_use
 pub struct Tag{
     data: Vec<u8>,
     hash: String,
-    tag_name: String,
-    tag_message: String,
     commit_hash: String,
+    //tag_name: String,
+    //tag_message: String,
 }
 
 /*
@@ -30,7 +30,7 @@ tagger <author-with-timestamp>\n
 */
 
 impl Tag{
-    pub fn new(tag_name: String, tag_message: String, commit_hash: String,cliente: String) -> Result<Self, GitrError>{
+    pub fn new(tag_name: String, tag_message: String, commit_hash: String, cliente: String) -> Result<Self, GitrError>{
         let mut format_data = String::new();
         format_data.push_str(&format!("object {}\n", commit_hash));
         format_data.push_str("type commit\n");
@@ -43,7 +43,7 @@ impl Tag{
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        Ok(Tag {data:compressed_file,hash: hashed_file_str, tag_name: tag_name, tag_message: tag_message,commit_hash: commit_hash })
+        Ok(Tag {data:compressed_file,hash: hashed_file_str, commit_hash: commit_hash/*tag_name: tag_name, tag_message: tag_message,commit_hash: commit_hash */})
     }
     
     pub fn new_tag_from_data(data: String) -> Result<Tag, GitrError>{
@@ -83,7 +83,7 @@ impl Tag{
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        Ok(Tag {data:compressed_file,hash: hashed_file_str, tag_name: tag_name, tag_message: tag_message,commit_hash: commit })
+        Ok(Tag {data:compressed_file,hash: hashed_file_str,commit_hash:commit})
     }
 
     pub fn save(&self,cliente: String) -> Result<(), GitrError>{
@@ -104,10 +104,7 @@ impl Tag{
 }
 
 
-/*
 
-cargo test --package gitr --lib -- tag::tests::test_tag_save --exact --color always
-*/
 
 //1700847004 -0300
 #[cfg(test)]
@@ -134,7 +131,7 @@ mod tests{
     fn test_tag_save() {
         let tag_name = "nuevo".to_string();
         let tag_message = "mensajeeee".to_string();
-        let commit_object = "5a80a3efc93f00c9143f0a7ed4888780a777e6e".to_string();
+        //let commit_object = "5a80a3efc93f00c9143f0a7ed4888780a777e6e".to_string();
         //let tag = Tag::new(tag_name, tag_message, commit_object).unwrap();
         //tag.save("gianni".to_string()).unwrap();
         

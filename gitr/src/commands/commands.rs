@@ -1,10 +1,10 @@
 use std::path::Path;
 use crate::file_manager::{get_current_repo, delete_tag, get_current_commit, update_working_directory};
 use crate::file_manager::commit_log;
-use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
+use crate::{file_manager, gitr_errors::GitrError};
 use crate::git_transport::ref_discovery;
 
-use super::command_utils::*;
+use super::command_utils::{*, self};
 
 /***************************
  *************************** 
@@ -41,18 +41,9 @@ pub fn hash_object(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
         file_path = flags[1].clone();
         write = true;
     } 
-    file_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/" + &file_path;
-    let raw_data = file_manager::read_file(file_path)?;  
-    let blob = Blob::new(raw_data)?;
-    println!("{}", blob.get_hash());
-    if write {
-        blob.save(cliente)?;
-    }
+    println!("{}", get_object_hash(cliente, &mut file_path, write)?);
     Ok(())
 }
-
-
-
 
 pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     //cat-file -p <object-hash>
@@ -106,7 +97,9 @@ pub fn commit(flags: Vec<String>, second_parent: String, cliente: String)-> Resu
         return status(flags,cliente.clone());
     }
     let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone())?;
-    let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    let (new, mut modified) = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    let mut to_be_commited = new;
+    to_be_commited.append(&mut modified);
     println!("to be commited: {to_be_commited:?}");
     if to_be_commited.is_empty() {
         println!("nothing to commit, working tree clean");
@@ -164,7 +157,7 @@ pub fn branch(flags: Vec<String>,cliente: String)->Result<(), GitrError>{
     //branch -l
     //branch <new-branch-name>
     if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l") || (flags.len() == 1 && flags[0] == "--list"){
-        print_branches(cliente.clone())?;
+        println!("{}", print_branches(cliente.clone())?);
         return Ok(())
     }
     commit_existing(cliente.clone())?;
@@ -182,7 +175,7 @@ pub fn branch(flags: Vec<String>,cliente: String)->Result<(), GitrError>{
 
 pub fn ls_files(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     //ls-files --stage
-    if flags.len() == 0 || flags[0] == "--cached" || flags[0] == "-c" {
+    if flags.is_empty() || flags[0] == "--cached" || flags[0] == "-c" {
         let ls_files_res = get_ls_files_cached(cliente.clone())?;
         print!("{}", ls_files_res);
         return Ok(())
@@ -216,18 +209,18 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     status_print_current_branch(cliente.clone())?;
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
-    let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
-    print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
+    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    print!("{}", get_status_files_to_be_comited(&new_files, &modified_files)?);
     print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
     print!("{}",get_status_files_untracked(&untracked_files, hayindex));
-    if to_be_commited.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
+    if new_files.is_empty() && modified_files.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
         println!("nothing to commit, working tree clean");
     }
     Ok(())
 }
 
 pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
-    if flags.len() == 0 || (flags.len() == 1 && flags[0] == "-l"){
+    if flags.is_empty() || (flags.len() == 1 && flags[0] == "-l"){
         println!("{}",get_tags_str(cliente.clone())?);
         return Ok(());
     }
@@ -262,10 +255,17 @@ pub fn fetch(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 }
 
 pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
+    match merge_(_flags,cliente.clone()) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(e),
+    }
+}
+
+pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<bool, GitrError>{
     if _flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(_flags.join(" "), "merge <branch-name>".to_string()))
     }
-
+    let mut hubo_conflict = false;
     let branch_name = _flags[0].clone();
     let origin_name = file_manager::get_head(cliente.clone())?.split('/').collect::<Vec<&str>>()[2].to_string();
 
@@ -279,11 +279,13 @@ pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
                 fast_forward_merge(branch_name,cliente.clone())?;
                 break;
             }
-            three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), branch_name, cliente.clone())?;
+            hubo_conflict = command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), cliente.clone())?;
+            add(vec![".".to_string()], cliente.clone())?;
+            command_utils::create_merge_commit(branch_name,branch_commits[0].clone(), cliente)?;
             break;
         }
     }
-    Ok(())
+    Ok(hubo_conflict)
 }
 
 pub fn remote(flags: Vec<String>,cliente: String) -> Result<(), GitrError> {
@@ -375,11 +377,12 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
 
 
 pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
-    if flags.len() == 0 {
+    if flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
     }
     _ls_tree(flags, "".to_string(), cliente)
 }
+
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));
 }
@@ -405,16 +408,70 @@ pub fn print_current_repo(cliente: String) -> Result<(), GitrError> {
     Ok(())
 }
 
-#[cfg(test)]
-mod tests{
 
-    use super::*;
-    #[test]
-    fn test00_clone_from_daemon(){
-        let mut flags = vec![];
-        flags.push("localhost:9418".to_string());
-        flags.push("repo_clonado".to_string());
-        assert!(clone(flags,"test".to_string()).is_ok());
+pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
+    if flags.is_empty() {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "echo <string> > <file>".to_string()));   
     }
 
+    let mut texto = String::new();
+
+    let mut hay_separador = false;
+    for palabra in flags.iter() {
+        if palabra == ">" {
+            hay_separador = true;
+            break;
+        }
+        texto.push_str(palabra);
+        texto.push(' ');        
+    }
+    texto = texto.trim_end().to_string();
+    if !hay_separador {
+        return Err(GitrError::InvalidArgumentError(flags.join(" "), "echo <string> > <file>".to_string()));   
+    }
+
+    let repo_path = file_manager::get_current_repo(cliente.clone())?.to_string();
+
+    let file_path = format!("{}/{}", repo_path, flags[flags.len()-1]);
+    println!("escribo {} en {}", texto, file_path);
+    file_manager::write_file(file_path, texto)
+}
+
+
+
+
+pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
+    let origin_name = flags[0].clone();
+    let branch_name = file_manager::get_head(cliente.clone())?.split('/').collect::<Vec<&str>>()[2].to_string();
+    let branch_commits = command_utils::branch_commits_list(branch_name.clone(),cliente.clone())?;
+    let origin_commits = command_utils::branch_commits_list(origin_name.clone(),cliente.clone())?;
+    let mut to_rebase_commits: Vec<String> = vec![];
+    for commit in branch_commits.clone() {
+        if origin_commits.contains(&commit) {
+            if commit == origin_commits[0] {
+                println!("nothing to rebase");
+                return Ok(());
+            }
+            create_rebase_commits(to_rebase_commits, origin_name, cliente.clone(), commit)?;
+            break;
+        }
+        to_rebase_commits.push(commit);
+    }
+    Ok(())
+}
+// -- 1 -- 2 -- 3 -- 4 - 5 - 6 master 
+        //                    \      
+        //                      - 7 - 8 - 9 topic  git rebase master
+
+        //git diff $indexbase $file1
+//        the diff in the patch # equivalent to git diff $indexbase $file2
+
+pub fn check_ignore(paths: Vec<String>, client: String)->Result<(), GitrError>{
+    if paths.is_empty(){
+        return Err(GitrError::InvalidArgumentError(paths.join(" "), "check-ignore <path>".to_string()));
+    }
+    match command_utils::check_ignore_(paths, client){
+        Ok(_) => Ok(()),
+        Err(e) => Err(e)
+    }
 }

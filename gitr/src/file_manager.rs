@@ -340,7 +340,7 @@ fn parse_object_hash(object: &String,path: String, add_gitr: bool) -> Result<Str
 
     let mut repo = path;
     if add_gitr {
-        repo = repo + "/gitr";
+        repo += "/gitr";
     }
     let dir = repo + "/objects/";  
     let folder_dir = dir.clone() + &folder_name;
@@ -373,6 +373,7 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/refs/remotes/daemon"))?;
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
         write_file(name.clone() + "/gitr/remote", "".to_string())?;
+        write_file(name.clone() + "/gitrignore", "".to_string())?;
     Ok(())
 }
 
@@ -541,8 +542,7 @@ pub fn delete_branch(branch:String, moving: bool,cliente: String)-> Result<(), G
     }
     let current_head = repo + "/gitr/" + &head;
     if current_head== path || head == "None"{
-        println!("cannot delete branch '{}': HEAD points to it", branch);
-        return Ok(())
+        return Err(GitrError::DeleteCurrentBranchError(branch));
     }
     let _ = fs::remove_file(path);
     println!("Deleted branch {}", branch);
@@ -811,7 +811,7 @@ pub fn get_repos(cliente: String) -> Vec<String> {
                 continue;
             }
             if entry.file_type().unwrap().is_dir() {
-                let p = entry.path().display().to_string().split("/").collect::<Vec<&str>>()[2].to_string();
+                let p = entry.path().display().to_string().split('/').collect::<Vec<&str>>()[2].to_string();
                 repos.push(p.to_string());
             }
         }
