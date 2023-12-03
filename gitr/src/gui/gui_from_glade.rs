@@ -5,9 +5,9 @@ use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBox
 
 use gtk::{Builder,Window, Button, FileChooserButton};
 
-use crate::commands::commands::{self, remote};
+use crate::commands::commands::{self};
 use crate::file_manager;
-use crate::gitr_errors::GitrError;
+
 
 fn get_commits(cliente:String) -> String{
     let mut commits = match  file_manager::commit_log("-1".to_string(),cliente) {
@@ -241,13 +241,13 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         match commands::add(vec![".".to_string()],cliente_.clone()){
             Ok(_)=> (),
             Err(e)=> {
-                if e == GitrError::FileReadError(cliente_.clone()+"/.head_repo"){
-                    remote_error_label_clone.set_text("No hay un repositorio asociado, busque o cree uno.");
-                }
-                else{
-                    remote_error_label_clone.set_text(format!("Error al hacer add: {:?}",e).as_str());
-                }
-                remote_error_dialog_clone.show();
+                // if e == GitrError::FileReadError(cliente_.clone()+"/.head_repo"){
+                //     remote_error_label_clone.set_text("No hay un repositorio asociado, busque o cree uno.");
+                // }
+                // else{
+                //     remote_error_label_clone.set_text(format!("Error al hacer add: {:?}",e).as_str());
+                // }
+                // remote_error_dialog_clone.show();
             },
         };
         let message = format!("\"{}\"",commit_message.text());

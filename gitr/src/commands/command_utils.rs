@@ -439,7 +439,7 @@ pub fn branch_commits_list(branch_name: String,cliente: String)->Result<Vec<Stri
     let mut commit = file_manager::get_commit(branch_name,cliente.clone())?;
     commits.push(commit.clone());
     loop {
-        let parent = file_manager::get_parent_commit(commit.clone(),cliente.clone())?;
+        let parent = file_manager::get_parent_commit(commit.clone(),cliente.clone())?[0].clone();
 
         if parent == "None" {
             break;
@@ -875,6 +875,20 @@ pub fn create_merge_commit(branch_name: String, branch_commit: String, cliente: 
  **************************
  **************************/
 
+
+ pub fn get_status(cliente:String)-> Result<String, GitrError>{
+    let mut res = String::new();
+    res.push_str(&(status_print_current_branch(cliente.clone())? + "\n"));
+    let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
+    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    res.push_str(&get_status_files_to_be_comited(&new_files, &modified_files)?);
+    res.push_str(&get_status_files_not_staged(&not_staged,cliente.clone())?);
+    res.push_str(&get_status_files_untracked(&untracked_files, hayindex));
+    if new_files.is_empty() && modified_files.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
+        res.push_str("nothing to commit, working tree clean\n");
+    }
+    Ok(res)
+ }
  pub fn get_working_dir_hashmap(cliente: String) -> Result<HashMap<String, String>, GitrError>{
     let mut working_dir_hashmap = HashMap::new();
     let repo = file_manager::get_current_repo(cliente.clone())?;
@@ -972,14 +986,15 @@ pub fn get_status_files_untracked(untracked_files: &Vec<String>, hayindex: bool)
 }
 
 
-pub fn status_print_current_branch(cliente: String) -> Result<(), GitrError> {
+pub fn status_print_current_branch(cliente: String) -> Result<String, GitrError> {
+    let mut res = String::new();
     let head = file_manager::get_head(cliente.clone())?;
     let current_branch = head.split('/').collect::<Vec<&str>>()[2];
-    println!("On branch {}", current_branch);
+    res.push_str(&format!("On branch {}\n\n", current_branch));
     if commit_existing(cliente).is_err(){
-        println!("No commits yet");
+        res.push_str(&format!("No commits yet\n"));
     }
-    Ok(())
+    Ok(res)
 }
 
 
@@ -1645,13 +1660,13 @@ pub fn armar_path(path: String, cliente: String)->Result<String,GitrError>{
  *   LOG FUNCTIONS
  * *****************/
 
-pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Result<(),GitrError> {
+pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Result<String,GitrError> {
     let tree_hash = flags[flags.len()-1].clone();
     let data = _cat_file(vec!["-p".to_string(), tree_hash.clone()], cliente.clone())?;
     
     if flags.len() == 1 { // mismo comportamiento que cat-file
-        println!("{}", data);
-        return Ok(())
+        print!("{}", data);
+        return Ok(data)
     }
 
     let entries = data.split('\n').collect::<Vec<&str>>();
@@ -1712,7 +1727,7 @@ pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Resu
     }
 
     print!("{}", result);
-    Ok(())
+    Ok(result)
 }
 
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
