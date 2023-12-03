@@ -45,6 +45,7 @@ pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError
         "tag" => commands::tag(flags,client)?,
         "ls-tree" => commands::ls_tree(flags,client)?,
         "rebase" => commands::rebase(flags,client)?,
+        "check-ignore" => commands::check_ignore(flags,client)?,
         "q" => return Ok(()),
         "l" => logger::log(flags)?,
         "list-repos" | "lr" => commands::list_repos(client),

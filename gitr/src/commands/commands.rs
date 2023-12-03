@@ -458,16 +458,12 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
         //git diff $indexbase $file1
 //        the diff in the patch # equivalent to git diff $indexbase $file2
 
-#[cfg(test)]
-mod tests{
-
-    use super::*;
-    // #[test]
-    // fn test00_clone_from_daemon(){
-    //     let mut flags = vec![];
-    //     flags.push("localhost:9418".to_string());
-    //     flags.push("repo_clonado".to_string());
-    //     assert!(clone(flags,"test".to_string()).is_ok());
-    // }
-
+pub fn check_ignore(paths: Vec<String>, client: String)->Result<(), GitrError>{
+    if paths.is_empty(){
+        return Err(GitrError::InvalidArgumentError(paths.join(" "), "check-ignore <path>".to_string()));
+    }
+    match command_utils::check_ignore_(paths, client){
+        Ok(_) => Ok(()),
+        Err(e) => Err(e)
+    }
 }
