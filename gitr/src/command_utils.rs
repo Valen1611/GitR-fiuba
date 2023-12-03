@@ -1174,6 +1174,13 @@ pub fn get_tobe_commited_files(not_staged: &Vec<String>,cliente: String)->Result
 
 
 pub fn save_and_add_blob_to_index(file_path: String,cliente: String) -> Result<(), GitrError> {
+    match path_is_ignored(vec![file_path.clone()], cliente.clone()){
+        Ok(r) => if r{
+            return Ok(())
+        }
+        Err (e) => return Err(e),
+    }
+    println!("agrego este path: {}",file_path);
     let raw_data = file_manager::read_file(file_path.clone())?;
     let blob = Blob::new(raw_data)?;
     blob.save(cliente.clone())?;
@@ -1569,20 +1576,37 @@ pub fn create_rebase_commits(to_rebase_commits:Vec<String>, origin_name:String, 
 /*******************
  * CHECK-IGNORE FUNCTIONS
  * *****************/
- pub fn check_ignore_(paths: Vec<String>, client: String)->Result<Vec<String>, GitrError>{
+fn path_is_ignored(paths: Vec<String>, client: String)->Result<bool, GitrError>{
+    let mut ignored_paths = match check_ignore_(paths, client){
+        Ok(paths) => paths,
+        Err(e) => return Err(e),
+    };
+    if ignored_paths.is_empty(){
+        return Ok(false)
+    }
+    return Ok(true);
+}
+
+pub fn check_ignore_(paths: Vec<String>, client: String)->Result<Vec<String>, GitrError>{
     let path = armar_path("gitrignore".to_string(),client.clone())?;
     println!("path: {}", path);
     let gitignore = file_manager::read_file(path)?;
     println!("gitignore: {}", gitignore);
     let lineas_ignore:Vec<&str> = gitignore.split("\n").collect();
+    let mut lineas_full:Vec<String> = vec![];
+    let repo = file_manager::get_current_repo(client.clone())?;
+    for linea in lineas_ignore{
+        lineas_full.push(repo.to_owned()+linea);
+    }
+    println!("lineas_ignore: {:?}", lineas_full);
     let mut ignored_paths = vec![];
     for path in paths{
-        if lineas_ignore.contains(&path.as_str()){
+        if lineas_full.contains(&path){
             ignored_paths.push(path);
         }
     }
     Ok(ignored_paths)
- }
+}
 
 pub fn armar_path(path: String, cliente: String)->Result<String,GitrError>{
     let full_path = vec![
@@ -2260,11 +2284,6 @@ mod juntar_consecutivos_tests {
 
 }
 
-    
-    
-
-
-
 #[cfg(test)]
 mod merge_con_archivos{
     use crate::commands::commands;
@@ -2432,5 +2451,31 @@ mod check_ignore_tests{
             "/target2".to_string()
         ];
         assert_eq!(check_ignore_(paths,cliente).unwrap(), vec_match);
+    }
+
+    #[serial]
+    #[test]
+    fn test03_add_ignora_archivos_en_gitingore(){
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
+        let cliente = "cliente".to_string();
+        let flags = vec!["repo_ignore".to_string()];
+        commands::init(flags, cliente.clone()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/gitrignore".to_string(), "/file1\n/folder/file3\n".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/file1".to_string(), "file1".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/file2".to_string(), "file2".to_string()).unwrap();
+
+        file_manager::create_directory(&"cliente/repo_ignore/folder".to_string()).unwrap();
+
+        file_manager::write_file("cliente/repo_ignore/folder/file3".to_string(), "file3".to_string()).unwrap();
+        file_manager::write_file("cliente/repo_ignore/folder/file4".to_string(), "file3".to_string()).unwrap();
+
+        commands::add(vec![".".to_string()],cliente.clone()).unwrap();
+        let index = file_manager::read_index(cliente.clone()).unwrap();
+        assert!(!index.contains(&"cliente/repo_ignore/file1".to_string()));
+        assert!(!index.contains(&"cliente/repo_ignore/folder/file3".to_string()));
     }
 }

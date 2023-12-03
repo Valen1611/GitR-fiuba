@@ -467,17 +467,3 @@ pub fn check_ignore(paths: Vec<String>, client: String)->Result<(), GitrError>{
         Err(e) => Err(e)
     }
 }
-
-#[cfg(test)]
-mod tests{
-
-    use super::*;
-    // #[test]
-    // fn test00_clone_from_daemon(){
-    //     let mut flags = vec![];
-    //     flags.push("localhost:9418".to_string());
-    //     flags.push("repo_clonado".to_string());
-    //     assert!(clone(flags,"test".to_string()).is_ok());
-    // }
-
-}
