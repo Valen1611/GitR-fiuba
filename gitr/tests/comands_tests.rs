@@ -458,6 +458,7 @@ fn merge_con_archivos_test_1_conflict_trivial(){
     let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
 }
 
 #[test]
@@ -539,6 +540,7 @@ fn merge_con_archivos_test_2_conflict_sin_archivo_base(){
     let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
 }
 
 #[test]
@@ -634,6 +636,7 @@ fn merge_con_archivos_test_3_conflict_multilinea(){
     let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
 }
 
 #[test]
@@ -743,6 +746,7 @@ fn merge_con_archivos_test_4_multiples_conflicts_multilinea(){
 
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
 }
 
 #[test]
@@ -843,4 +847,64 @@ fn merge_con_archivos_test_5_ejemplo_de_codigo(){
     //file_manager::write_file("esperado".to_string(), archivo_esperado.clone()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
+    delete_repo("cliente/test".to_string());
+}
+
+// /*********************
+//   COMMIT TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_commit(){
+    let cliente = "cliente_commit".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_commit".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail =test@gmail.com".to_string());
+    let _ = write_file((cliente.clone() + "/test_commit/blob1").to_string(), "Hello, im blob 1".to_string());
+    let _ = write_file((cliente.clone() + "/test_commit/blob2").to_string(), "Hello, im blob 2".to_string());
+    commands::add(vec![".".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+    let res = file_manager::read_file(cliente.clone() + "/test_commit/gitr/refs/heads/master").unwrap();
+    let current_commit = file_manager::get_current_commit(cliente.clone()).unwrap();
+    assert_eq!(res, current_commit);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+// /*********************
+//   CHECKOUT TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_checkout(){
+    let cliente = "cliente_checkout".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_checkout".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail =test@gmail.com".to_string());
+    let _ = write_file((cliente.clone() + "/test_checkout/blob1").to_string(), "Hello, im blob 1".to_string());
+    commands::add(vec![".".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+    commands::branch(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    commands::checkout(vec!["branch1".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/test_checkout/blob1").to_string(), "Hello, im blob 1 in branch1".to_string());
+    commands::add(vec![".".to_string()], cliente.clone()).unwrap();
+    commands::commit(vec!["-m".to_string(), "\"commit 2\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+    commands::checkout(vec!["master".to_string()], cliente.clone()).unwrap();
+    let res = file_manager::read_file(cliente.clone() + "/test_checkout/blob1").unwrap();
+    let correct_res = String::from("Hello, im blob 1");
+    assert_eq!(res, correct_res);
+    fs::remove_dir_all(cliente.clone()).unwrap();
+}
+
+// /*********************
+//   STATUS TESTS
+// *********************/
+#[test]
+#[serial]
+fn test_status(){
+    let cliente = "cliente_status".to_string();
+    fs::create_dir_all(Path::new(&cliente)).unwrap();
+    commands::init(vec!["test_status".to_string()], cliente.clone()).unwrap();
+    let _ = write_file((cliente.clone() + "/gitrconfig").to_string(), "[user]\n\tname = test\n\temail =test@gmail.com".to_string());
+    let _ = write_file((cliente.clone() + "/test_status/blob1").to_string(), "Hello, im blob 1".to_string());
+    
 }

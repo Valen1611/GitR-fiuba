@@ -873,6 +873,20 @@ pub fn create_merge_commit(branch_name: String, branch_commit: String, cliente: 
  **************************
  **************************/
 
+
+ pub fn get_status(cliente:String)-> Result<String, GitrError>{
+    let mut res = String::new();
+    res.push_str(&status_print_current_branch(cliente.clone())?);
+    let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
+    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone())?;
+    res.push_str(&get_status_files_to_be_comited(&new_files, &modified_files)?);
+    res.push_str(&get_status_files_not_staged(&not_staged,cliente.clone())?);
+    res.push_str(&get_status_files_untracked(&untracked_files, hayindex));
+    if new_files.is_empty() && modified_files.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
+        res.push_str("nothing to commit, working tree clean");
+    }
+    Ok(res)
+ }
  pub fn get_working_dir_hashmap(cliente: String) -> Result<HashMap<String, String>, GitrError>{
     let mut working_dir_hashmap = HashMap::new();
     let repo = file_manager::get_current_repo(cliente.clone())?;
@@ -970,14 +984,15 @@ pub fn get_status_files_untracked(untracked_files: &Vec<String>, hayindex: bool)
 }
 
 
-pub fn status_print_current_branch(cliente: String) -> Result<(), GitrError> {
+pub fn status_print_current_branch(cliente: String) -> Result<String, GitrError> {
+    let mut res = String::new();
     let head = file_manager::get_head(cliente.clone())?;
     let current_branch = head.split('/').collect::<Vec<&str>>()[2];
-    println!("On branch {}", current_branch);
+    res.push_str(&format!("On branch {}", current_branch));
     if commit_existing(cliente).is_err(){
-        println!("No commits yet");
+        res.push_str(&format!("No commits yet"));
     }
-    Ok(())
+    Ok(res)
 }
 
 

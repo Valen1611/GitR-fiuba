@@ -671,10 +671,15 @@ pub fn get_main_tree(commit:String, cliente:String)->Result<String, GitrError>{
 pub fn get_parent_commit(commit: String, cliente: String)->Result<String, GitrError>{
     let commit = read_object(&commit, file_manager::get_current_repo(cliente.clone())?, true)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent"{
+    if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent" {
         return Ok("None".to_string());
     }
-    let parent = commit[1].split(' ').collect::<Vec<&str>>()[1];
+
+    let mut parent = commit[1].split(' ').collect::<Vec<&str>>()[1].to_string();
+    
+    if commit[2].starts_with("parent"){
+        parent.push_str(commit[2].split(' ').collect::<Vec<&str>>()[1]);
+    }
     Ok(parent.to_string())
 }
 

@@ -206,15 +206,8 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 
 // Show the working tree status
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
-    command_utils::status_print_current_branch(cliente.clone())?;
-    let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
-    let (new_files, modified_files) = get_tobe_commited_files(&not_staged,cliente.clone())?;
-    print!("{}", get_status_files_to_be_comited(&new_files, &modified_files)?);
-    print!("{}", get_status_files_not_staged(&not_staged,cliente.clone())?);
-    print!("{}",get_status_files_untracked(&untracked_files, hayindex));
-    if new_files.is_empty() && modified_files.is_empty() && not_staged.is_empty() && untracked_files.is_empty() {
-        println!("nothing to commit, working tree clean");
-    }
+    let status = get_status(cliente.clone())?;
+    println!("{}", status);
     Ok(())
 }
 
@@ -278,11 +271,13 @@ pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<bool, GitrError>{
                 break;
             }
             hubo_conflict = command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), cliente.clone())?;
-            add(vec![".".to_string()], cliente.clone())?;
-            command_utils::create_merge_commit(branch_name,branch_commits[0].clone(), cliente)?;
+            if !hubo_conflict {
+                add(vec![".".to_string()], cliente.clone())?;
+                command_utils::create_merge_commit(branch_name,branch_commits[0].clone(), cliente)?;
+            }
             break;
         }
-    }
+    } 
     Ok(hubo_conflict)
 }
 

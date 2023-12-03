@@ -6,10 +6,10 @@ pub fn parse_input(input: String) -> Vec<String> {
 }
 
 /// ["command", "flag1", "flag2", ...]
-pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError> {
+pub fn command_handler(argv: Vec<String>,  hubo_conflict: &mut bool , branch_name: &mut String, client: String) -> Result<bool, GitrError> {
 
     if argv.is_empty() {
-        return Ok(())
+        return Ok(false)
     }
 
     let command = argv[0].clone();
@@ -30,12 +30,23 @@ pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError
         "status" => commands::status(flags,client)?,
         "add" => commands::add(flags,client)?,
         "rm" => commands::rm(flags,client)?,
-        "commit" => commands::commit(flags, "None".to_string(), client)?,
+        "commit" => {
+        if *hubo_conflict {
+            println!("hubo conflict, branch name: {}", branch_name);
+            commands::commit(flags, branch_name.clone(), client)?;
+            *hubo_conflict = false;
+            *branch_name = "".to_string();
+            
+        } else {
+            commands::commit(flags, "None".to_string(), client)?;
+        }
+
+        },
         "checkout" => commands::checkout(flags,client)?,
         "log" => commands::log(flags,client)?,
         "clone" => commands::clone(flags,client)?,
         "fetch" => commands::fetch(flags,client)?,
-        "merge" => commands::merge(flags,client)?,
+        "merge" => return Ok(commands::merge_(flags,client)?),
         "remote" =>commands::remote(flags,client)?,
         "pull" => commands::pull(flags,client)?,
         "push" => commands::push(flags,client)?,
@@ -45,7 +56,7 @@ pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError
         "tag" => commands::tag(flags,client)?,
         "ls-tree" => commands::ls_tree(flags,client)?,
         "rebase" => commands::rebase(flags,client)?,
-        "q" => return Ok(()),
+        "q" => return Ok(false),
         "l" => logger::log(flags)?,
         "list-repos" | "lr" => commands::list_repos(client),
         "go-to-repo" | "gtr" => commands::go_to_repo(flags,client)?,
@@ -57,6 +68,6 @@ pub fn command_handler(argv: Vec<String>,client: String) -> Result<(), GitrError
         }
     }
 
-    Ok(())
+    Ok(false)
 
 }

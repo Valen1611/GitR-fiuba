@@ -83,8 +83,12 @@ fn main() {
     while !existe_config(cliente.clone()) {
         setup_config_file(cliente.clone());
     }        
-
+    let mut hubo_conflict = false;
+    let mut branch_name = "".to_string();
     loop {
+        if hubo_conflict {
+            println!("Hubo un conflicto, por favor resuelvalo antes de continuar");
+        }
 
         let input = match get_input() {
             Ok(input) => input,
@@ -100,7 +104,7 @@ fn main() {
         let argv: Vec<String> = commands::handler::parse_input(input);
         
         // argv = ["command", "flag1", "flag2", ...]
-        match commands::handler::command_handler(argv,cliente.clone()) {
+        match commands::handler::command_handler(argv, &mut hubo_conflict, &mut branch_name, cliente.clone()) {
             Ok(_) => (),
             Err(e) => {
                 println!("{}", e);
