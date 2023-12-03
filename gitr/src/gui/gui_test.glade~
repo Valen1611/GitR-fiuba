@@ -653,6 +653,7 @@ Presione el botón "Connect" para proveer esta información.</property>
                                 <property name="can-focus">True</property>
                                 <property name="hexpand">True</property>
                                 <property name="vexpand">True</property>
+                                <property name="editable">False</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -780,7 +781,7 @@ Presione el botón "Connect" para proveer esta información.</property>
         <property name="can-focus">False</property>
         <property name="title" translatable="yes">GitR</property>
         <property name="subtitle" translatable="yes">LaLigaDeLaRusticia</property>
-        <property name="spacing">12</property>
+        <property name="spacing">10</property>
         <property name="show-close-button">True</property>
         <child>
           <object class="GtkFileChooserButton" id="repo_selector">
@@ -930,7 +931,7 @@ Presione el botón "Connect" para proveer esta información.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkLabel" id="remote_error_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="margin-start">8</property>
