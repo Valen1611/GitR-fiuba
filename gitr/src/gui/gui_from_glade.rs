@@ -358,11 +358,14 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let cliente_ = cliente.clone();
 
     clone_pull.connect_clicked(move|_|{
-        let flags = vec![String::from("")];
-        if commands::pull(flags,cliente_.clone()).is_err(){
-            println!("Error al hacer pull");
-            clone_error.show();
-            return;
+        let flags = vec![];
+        match commands::pull(flags,cliente_.clone()){
+            Ok(_) => (),
+            Err(e) => {
+                println!("Error al hacer pull: {:?}",e);
+                clone_error.show();
+                return;
+            },
         };
         println!("Pull button clicked");
     });
