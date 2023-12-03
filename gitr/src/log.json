@@ -5185,3 +5185,222 @@
 {"type": "FileOperation","timestamp": "02-12-2023 20:09:26","message": "reading data from: Gianni/s/gitr/index"}
 {"type": "FileOperation","timestamp": "02-12-2023 20:09:26","message": "writing data to: Gianni/s/gitr/index"}
 {"type": "FileOperation","timestamp": "02-12-2023 20:09:26","message": "writing data to: Gianni/s/carpeta_daemon/archivito"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:04","message": "creating dir: Gianni"}
+{"type": "Action","timestamp": "02-12-2023 20:29:31","message": "calling r with flags: []"}
+{"type": "Error","timestamp": "02-12-2023 20:29:31","message": "Argumentos invalidos.
+    Recibi: invalid command: r
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "02-12-2023 20:29:33","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:33","message": "reading data from: Gianni/.head_repo"}
+{"type": "Action","timestamp": "02-12-2023 20:29:44","message": "calling clone with flags: ["s", "clonadooooo"]"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/clonadooooo/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 87dfcb68e160c76580502e3abbbe73da2fe00e26"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/87"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/87/dfcb68e160c76580502e3abbbe73da2fe00e26"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 2d6b8ed860a685aa6ab32616aa47c414b18fc990"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/2d"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/2d/6b8ed860a685aa6ab32616aa47c414b18fc990"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object c4ae607dfb09a5dc848bf74325bda388908163fc"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/c4"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/c4/ae607dfb09a5dc848bf74325bda388908163fc"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object e001ca38e221b0fbb55d7a6fb77da6891c0f5f09"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/e0"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/e0/01ca38e221b0fbb55d7a6fb77da6891c0f5f09"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 9142ef42bc4ff378224c2bc5b552a78bf5031a90"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/91"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/91/42ef42bc4ff378224c2bc5b552a78bf5031a90"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 7bbff86b4ea79d97b6e7fd0fab2d7ee740a1ff29"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/7b"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/7b/bff86b4ea79d97b6e7fd0fab2d7ee740a1ff29"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 494db753a07096501ad627471f54bdb405637990"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/49"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/49/4db753a07096501ad627471f54bdb405637990"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 47d79db01c4410be219299342515ebcf88b2012d"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/47"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/47/d79db01c4410be219299342515ebcf88b2012d"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 57e0bf3986d24801e9f438979ee87d2d81c098f8"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/57"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/57/e0bf3986d24801e9f438979ee87d2d81c098f8"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 51aa7a5360117b2f18eb37ee2f6626c1ff5bda0e"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/51"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/51/aa7a5360117b2f18eb37ee2f6626c1ff5bda0e"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object e51f37de5576205920767e6e90037375a90a129d"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/e5"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/e5/1f37de5576205920767e6e90037375a90a129d"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 6e89b11367a4394445353f8b64f9276bc5226174"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/6e"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/6e/89b11367a4394445353f8b64f9276bc5226174"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 89113ff8da66c86f58c013bb92ca2a95ec865e67"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/89"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/89/113ff8da66c86f58c013bb92ca2a95ec865e67"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing object 431be703e184e7dcfc6b45db5b328573b821ce2a"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/gitr/objects/43"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/objects/43/1be703e184e7dcfc6b45db5b328573b821ce2a"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/refs/heads/ramarda"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/clonadooooo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/clonadooooo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/index"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/index"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/base"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "creating dir: Gianni/clonadooooo/carpeta_daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "reading data from: Gianni/clonadooooo/gitr/index"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/gitr/index"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:29:44","message": "writing data to: Gianni/clonadooooo/carpeta_daemon/archivito"}
+{"type": "FileOperation","timestamp": "02-12-2023 22:20:20","message": "creating dir: Gianni"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:51","message": "creating dir: Gianni"}
+{"type": "Action","timestamp": "02-12-2023 23:11:55","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/clonadooooo/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/clonadooooo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/clonadooooo/gitr/refs/heads/ramarda"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:11:55","message": "reading data from: Gianni/.head_repo"}
+{"type": "Action","timestamp": "02-12-2023 23:12:46","message": "calling clone with flags: ["s", "cloni"]"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/cloni/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object e001ca38e221b0fbb55d7a6fb77da6891c0f5f09"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/e0"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/e0/01ca38e221b0fbb55d7a6fb77da6891c0f5f09"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 9142ef42bc4ff378224c2bc5b552a78bf5031a90"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/91"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/91/42ef42bc4ff378224c2bc5b552a78bf5031a90"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 431be703e184e7dcfc6b45db5b328573b821ce2a"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/43"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/43/1be703e184e7dcfc6b45db5b328573b821ce2a"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 494db753a07096501ad627471f54bdb405637990"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/49"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/49/4db753a07096501ad627471f54bdb405637990"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 6e89b11367a4394445353f8b64f9276bc5226174"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/6e"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/6e/89b11367a4394445353f8b64f9276bc5226174"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 51aa7a5360117b2f18eb37ee2f6626c1ff5bda0e"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/51"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/51/aa7a5360117b2f18eb37ee2f6626c1ff5bda0e"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 87dfcb68e160c76580502e3abbbe73da2fe00e26"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/87"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/87/dfcb68e160c76580502e3abbbe73da2fe00e26"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 89113ff8da66c86f58c013bb92ca2a95ec865e67"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/89"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/89/113ff8da66c86f58c013bb92ca2a95ec865e67"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 2d6b8ed860a685aa6ab32616aa47c414b18fc990"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/2d"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/2d/6b8ed860a685aa6ab32616aa47c414b18fc990"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object e51f37de5576205920767e6e90037375a90a129d"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/e5"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/e5/1f37de5576205920767e6e90037375a90a129d"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 47d79db01c4410be219299342515ebcf88b2012d"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/47"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/47/d79db01c4410be219299342515ebcf88b2012d"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object c4ae607dfb09a5dc848bf74325bda388908163fc"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/c4"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/c4/ae607dfb09a5dc848bf74325bda388908163fc"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 7bbff86b4ea79d97b6e7fd0fab2d7ee740a1ff29"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/7b"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/7b/bff86b4ea79d97b6e7fd0fab2d7ee740a1ff29"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing object 57e0bf3986d24801e9f438979ee87d2d81c098f8"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/gitr/objects/57"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/objects/57/e0bf3986d24801e9f438979ee87d2d81c098f8"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/refs/heads/ramarda"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/cloni/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/cloni/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/index"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/index"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/base"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "creating dir: Gianni/cloni/carpeta_daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "reading data from: Gianni/cloni/gitr/index"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/gitr/index"}
+{"type": "FileOperation","timestamp": "02-12-2023 23:12:46","message": "writing data to: Gianni/cloni/carpeta_daemon/archivito"}

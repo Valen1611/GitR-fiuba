@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use crate::gitr_errors::GitrError;
-use crate::{file_manager, command_utils};
+use crate::{file_manager, commands};
 use super::blob::TreeEntry;
 
 #[derive(Debug)]
@@ -81,8 +81,8 @@ impl Tree{
             &objs_entries.concat(),
         ].concat();
 
-        let compressed_file2 = command_utils::flate2compress2(data.clone())?;
-        let hashed_file2 = command_utils::sha1hashing2(data.clone());
+        let compressed_file2 = commands::command_utils::flate2compress2(data.clone())?;
+        let hashed_file2 = commands::command_utils::sha1hashing2(data.clone());
 
         let hashed_file_str = hashed_file2.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
@@ -101,8 +101,8 @@ impl Tree{
             b"\0",
             raw_data].concat();
 
-        let compressed_data = command_utils::flate2compress2(tree_raw_file.clone())?;
-        let hash = command_utils::sha1hashing2(tree_raw_file.clone());
+        let compressed_data = commands::command_utils::flate2compress2(tree_raw_file.clone())?;
+        let hash = commands::command_utils::sha1hashing2(tree_raw_file.clone());
         let tree_hash = hash.iter().map(|b| format!("{:02x}", b)).collect::<String>();
 
         let tree = Tree{/*entries: vec![],*/ data: compressed_data, hash: tree_hash};

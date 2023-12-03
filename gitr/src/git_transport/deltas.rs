@@ -99,3 +99,9 @@ pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<Vec<u8>,GitrError>{
     }
     Ok(final_data)
 }
+
+pub fn deltify(origin: Vec<u8>, base: Vec<u8>) -> Result<Vec<u8>,GitrError> {
+    let mut final_data: Vec<u8> = Vec::new();
+    
+    Ok(final_data)
+}

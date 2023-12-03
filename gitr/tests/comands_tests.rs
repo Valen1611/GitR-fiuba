@@ -1,6 +1,6 @@
 use std::{path::Path, fs};
 
-use gitr::{command_utils, file_manager};
+use gitr::{commands::command_utils, file_manager};
 
 use gitr::commands::commands;
 use gitr::file_manager::{write_file, read_index};

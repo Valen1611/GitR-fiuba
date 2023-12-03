@@ -1,9 +1,10 @@
 use std::path::Path;
 use crate::file_manager::{get_current_repo, delete_tag, get_current_commit, update_working_directory};
-use crate::command_utils::{*, self};
 use crate::file_manager::commit_log;
 use crate::{objects::blob::Blob, file_manager, gitr_errors::GitrError};
 use crate::git_transport::ref_discovery;
+
+use super::command_utils::*;
 
 /***************************
  *************************** 
@@ -61,7 +62,7 @@ pub fn cat_file(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         let flags_str = flags.join(" ");
         return Err(GitrError::InvalidArgumentError(flags_str,"cat-file <[-t/-s/-p]> <object hash>".to_string()));
     }
-    let data_to_print = command_utils::_cat_file(flags, cliente)?;
+    let data_to_print = _cat_file(flags, cliente)?;
     println!("{}", data_to_print);
     
     Ok(())
@@ -213,7 +214,7 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
 
 // Show the working tree status
 pub fn status(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
-    command_utils::status_print_current_branch(cliente.clone())?;
+    status_print_current_branch(cliente.clone())?;
     let (not_staged, untracked_files, hayindex) = get_untracked_notstaged_files(cliente.clone())?;
     let to_be_commited = get_tobe_commited_files(&not_staged,cliente.clone())?;
     print!("{}", get_status_files_to_be_comited(&to_be_commited)?);
@@ -268,17 +269,17 @@ pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     let branch_name = _flags[0].clone();
     let origin_name = file_manager::get_head(cliente.clone())?.split('/').collect::<Vec<&str>>()[2].to_string();
 
-    let branch_commits = command_utils::branch_commits_list(branch_name.clone(),cliente.clone())?;
-    let origin_commits = command_utils::branch_commits_list(origin_name,cliente.clone())?;
+    let branch_commits = branch_commits_list(branch_name.clone(),cliente.clone())?;
+    let origin_commits = branch_commits_list(origin_name,cliente.clone())?;
     for commit in branch_commits.clone() {
         if origin_commits.contains(&commit) {
             if commit == origin_commits[0] {
                 println!("Updating {}..{}" ,&origin_commits[0][..7], &branch_commits[0][..7]);
                 println!("Fast-forward");
-                command_utils::fast_forward_merge(branch_name,cliente.clone())?;
+                fast_forward_merge(branch_name,cliente.clone())?;
                 break;
             }
-            command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), branch_name, cliente.clone())?;
+            three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), branch_name, cliente.clone())?;
             break;
         }
     }
@@ -377,7 +378,7 @@ pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
     if flags.len() == 0 {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
     }
-    command_utils::_ls_tree(flags, "".to_string(), cliente)
+    _ls_tree(flags, "".to_string(), cliente)
 }
 pub fn list_repos(cliente: String) {
     println!("{:?}", file_manager::get_repos(cliente.clone()));

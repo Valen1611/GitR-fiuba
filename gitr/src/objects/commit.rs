@@ -4,7 +4,7 @@ use chrono::Utc;
 
 use crate::file_manager::{self};
 use crate::gitr_errors::GitrError;
-use crate::command_utils::{flate2compress, sha1hashing, get_user_mail_from_config};
+use crate::commands::command_utils::{flate2compress, sha1hashing, get_user_mail_from_config};
 
 use super::tag::Tag;
 use super::tree::Tree;

@@ -10,7 +10,11 @@ use std::io::Write;
 use std::net::{TcpListener, TcpStream};
 use std::str::from_utf8;
 
+use std::sync::mpsc;
 use std::thread;
+use gtk::glib::Receiver;
+use gtk::glib::Sender;
+
 use crate::file_manager;
 use crate::git_transport::pack_file::PackFile;
 use crate::git_transport::pack_file::create_packfile;
@@ -19,18 +23,34 @@ use crate::git_transport::pack_file::prepare_contents;
 use crate::git_transport::ref_discovery;
 use crate::objects::commit::Commit;
 use crate::objects::git_object::GitObject;
-use crate::objects::tag;
 
 
 pub fn server_init (s_addr: &str) -> std::io::Result<()>  {
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
-
+    
+    thread::spawn(move || {
+        let mut input = String::new();
+        loop {
+            std::io::stdin().read_line(&mut input).expect("Failed to read line");
+            let trimmed = input.trim().to_lowercase();
+            if trimmed == "q" {
+                // Envia un mensaje al hilo principal para indicar que debe salir
+                TcpStream::connect("localhost:9418").unwrap().write("q".as_bytes()).unwrap();
+                break;
+            }
+            input.clear();
+        }
+    });
     for stream in listener.incoming() {
         match stream {
-            Ok(stream) => {                
-                let builder = thread::Builder::new().name("cliente_random".to_string());
-
+            Ok(stream) => {  
+                let mut buf: [u8; 1] = [0; 1];
+                let n = stream.peek(&mut buf)?;          
+                if n == 0 || buf[0] == b'q'{
+                    break;
+                } 
+                let builder = thread::Builder::new().name("cliente".to_string());
                 childs.push(builder.spawn(|| {handle_client(stream)})?);
             }
             Err(e) => {

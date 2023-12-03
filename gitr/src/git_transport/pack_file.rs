@@ -6,7 +6,7 @@ use std::io::Write;
 
 use flate2::{Decompress, Compression};
 use flate2::write::ZlibEncoder;
-use crate::command_utils;
+use crate::commands::command_utils::*;
 use crate::gitr_errors::{GitrError, self};
 use crate::objects::git_object::GitObject;
 use crate::objects::commit::Commit;
@@ -238,7 +238,7 @@ pub fn create_packfile(contents: Vec<(String,String,Vec<u8>)>) -> Result<Vec<u8>
     }
     
     // ########## CHECKSUM ##########
-    let hasheado = command_utils::sha1hashing2(final_data.clone());
+    let hasheado = sha1hashing2(final_data.clone());
     final_data.extend(&hasheado);
 
 

@@ -7,7 +7,7 @@
 
 use chrono::Utc;
 
-use crate::{command_utils::{get_user_mail_from_config, get_current_username, flate2compress, sha1hashing}, gitr_errors::GitrError};
+use crate::{commands::command_utils::{get_user_mail_from_config, get_current_username, flate2compress, sha1hashing}, gitr_errors::GitrError};
 
 #[derive(Debug)]
 
@@ -112,7 +112,7 @@ cargo test --package gitr --lib -- tag::tests::test_tag_save --exact --color alw
 //1700847004 -0300
 #[cfg(test)]
 mod tests{
-    use crate::command_utils::create_annotated_tag;
+    use crate::commands::command_utils::create_annotated_tag;
 
     use super::*;
     
