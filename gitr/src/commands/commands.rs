@@ -203,7 +203,7 @@ pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
     remote(vec![flags[0].clone()],cliente.clone())?;
     
     pullear(vec![],true,cliente)?;
-    panic!("post pull");
+    panic!("pre pull");
     Ok(())
 }
 
@@ -313,7 +313,7 @@ fn pullear(flags: Vec<String>, actualizar_work_dir: bool,cliente: String) -> Res
         pull_packfile(&mut stream, cliente.clone())?;
     }
     if actualizar_work_dir {
-        file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
+        file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?,cliente.clone())?;
         update_working_directory(get_current_commit(cliente.clone())?,cliente.clone())?;
     }
     

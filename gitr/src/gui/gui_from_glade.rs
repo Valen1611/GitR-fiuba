@@ -324,9 +324,12 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         let url = clone_url.text();
         println!("Clonando repo: {:?}", url);
         clone_dialog_.hide();
-        if commands::clone(vec![url.to_string(),"repo_clonado".to_string()],cliente_.clone()).is_err(){
-            println!("Error al clonar");
-            return;
+        match commands::clone(vec![url.to_string(),"repo_clonado".to_string()],cliente_.clone()){
+            Ok(_)=>(),
+            Err(e) => {
+                println!("Error al clonar: {}",e);
+                return;
+            }
         };
         //Aca habria que setear el repo actual al recien con el selector y el file explorer
     });
