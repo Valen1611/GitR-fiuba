@@ -552,7 +552,9 @@ fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     let string_archivo = file_manager::read_file(path.clone())?;
     let archivo_reconstruido = _aplicar_diffs(string_archivo.clone(), diff.clone())?;
 
-    file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
+    //file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
+    file_manager::write_file(path, archivo_reconstruido.concat().to_string())?;
+
     Ok(())
 }
 
