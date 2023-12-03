@@ -6,10 +6,10 @@ pub fn parse_input(input: String) -> Vec<String> {
 }
 
 /// ["command", "flag1", "flag2", ...]
-pub fn command_handler(argv: Vec<String>,  hubo_conflict: &mut bool , branch_name: &mut String, client: String) -> Result<bool, GitrError> {
+pub fn command_handler(argv: Vec<String>,  hubo_conflict:  bool , branch_hash: String, client: String) -> Result<(bool, String), GitrError> {
 
     if argv.is_empty() {
-        return Ok(false)
+        return Ok((false, "".to_string()))
     }
 
     let command = argv[0].clone();
@@ -28,15 +28,15 @@ pub fn command_handler(argv: Vec<String>,  hubo_conflict: &mut bool , branch_nam
         "cat-file" | "c" => commands::cat_file(flags,client)?,
         "init" => commands::init(flags,client)?,
         "status" => commands::status(flags,client)?,
-        "add" => commands::add(flags,client)?,
+        "add" => {
+            commands::add(flags,client)?;
+            return Ok((hubo_conflict, branch_hash));
+        },
         "rm" => commands::rm(flags,client)?,
         "commit" => {
-        if *hubo_conflict {
-            println!("hubo conflict, branch name: {}", branch_name);
-            commands::commit(flags, branch_name.clone(), client)?;
-            *hubo_conflict = false;
-            *branch_name = "".to_string();
-            
+        if hubo_conflict {
+            commands::commit(flags, branch_hash.clone(), client)?;
+            return Ok((false, "".to_string()));
         } else {
             commands::commit(flags, "None".to_string(), client)?;
         }
@@ -46,7 +46,13 @@ pub fn command_handler(argv: Vec<String>,  hubo_conflict: &mut bool , branch_nam
         "log" => commands::log(flags,client)?,
         "clone" => commands::clone(flags,client)?,
         "fetch" => commands::fetch(flags,client)?,
-        "merge" => return Ok(commands::merge_(flags,client)?),
+        "merge" => {
+            let (hubo_conflict_res, branch_hash_res) = commands::merge_(flags,client)?;
+            if hubo_conflict_res {
+                println!("\x1b[33mHubo un conflicto, por favor resuelvalo antes de continuar\x1b[0m");
+            }
+            return Ok((true, branch_hash_res));
+        },
         "remote" =>commands::remote(flags,client)?,
         "pull" => commands::pull(flags,client)?,
         "push" => commands::push(flags,client)?,
@@ -56,7 +62,7 @@ pub fn command_handler(argv: Vec<String>,  hubo_conflict: &mut bool , branch_nam
         "tag" => commands::tag(flags,client)?,
         "ls-tree" => commands::ls_tree(flags,client)?,
         "rebase" => commands::rebase(flags,client)?,
-        "q" => return Ok(false),
+        "q" => return Ok((false, "".to_string())),
         "l" => logger::log(flags)?,
         "list-repos" | "lr" => commands::list_repos(client),
         "go-to-repo" | "gtr" => commands::go_to_repo(flags,client)?,
@@ -68,6 +74,6 @@ pub fn command_handler(argv: Vec<String>,  hubo_conflict: &mut bool , branch_nam
         }
     }
 
-    Ok(false)
+    Ok((false, "".to_string()))
 
 }

@@ -168,7 +168,7 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 }
 
 //reads and object and returns raw data
-pub fn read_object(object: &String,path: String, add_gitr: bool)->Result<String, GitrError>{
+pub fn read_object(object: &String, path: String, add_gitr: bool)->Result<String, GitrError>{
     let path = parse_object_hash(object, path, add_gitr)?;
     let bytes = deflate_file(path.clone())?;
     let object_data: Vec<u8> = get_object_data_with_bytes(bytes)?;
@@ -332,12 +332,13 @@ fn deflate_file(path: String) -> Result<Bytes<ZlibDecoder<File>>, GitrError> {
 //podríamos recibir el path aca así es una funcion sola
 //además la funcion _w_path no necesita el gitr y el del cliente si
 fn parse_object_hash(object: &String,path: String, add_gitr: bool) -> Result<String, GitrError>{
+
     if object.len() < 3{
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
     let folder_name = object[0..2].to_string();
     let file_name = object[2..].to_string();
-
+    
     let mut repo = path;
     if add_gitr {
         repo += "/gitr";
@@ -556,7 +557,7 @@ pub fn move_branch(old_branch: String, new_branch: String) -> Result<(), GitrErr
     Ok(())
 }   
 
-//returns the current commit hash
+///returns the current commit hash
 pub fn get_current_commit(cliente: String)->Result<String, GitrError>{
     let head_path = get_head(cliente.clone())?;
     if head_path == "None"{
@@ -668,19 +669,20 @@ pub fn get_main_tree(commit:String, cliente:String)->Result<String, GitrError>{
 
 
 //receives a commit and returns its parent commit hash
-pub fn get_parent_commit(commit: String, cliente: String)->Result<String, GitrError>{
+pub fn get_parent_commit(commit: String, cliente: String)->Result<Vec<String>, GitrError>{
     let commit = read_object(&commit, file_manager::get_current_repo(cliente.clone())?, true)?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent" {
-        return Ok("None".to_string());
+        return Ok(vec!["None".to_string()]);
     }
 
-    let mut parent = commit[1].split(' ').collect::<Vec<&str>>()[1].to_string();
+    let mut parents: Vec<String> = Vec::new(); 
+    parents.push(commit[1].split(' ').collect::<Vec<&str>>()[1].to_string());
     
     if commit[2].starts_with("parent"){
-        parent.push_str(commit[2].split(' ').collect::<Vec<&str>>()[1]);
+        parents.push(commit[2].split(' ').collect::<Vec<&str>>()[1].to_string());
     }
-    Ok(parent.to_string())
+    Ok(parents)
 }
 
 //receives a commit and returns its author
@@ -786,19 +788,25 @@ pub fn commit_log(quantity: String,cliente: String)-> Result<String, GitrError>{
     let mut counter = 0;
     loop{
         counter += 1;
+        let parents = get_parent_commit(current_commit.clone(),cliente.clone())?;
+        if parents.len() == 2{
+            let parent_1 = parents[0].split_at(7).0;
+            let parent_2 = parents[1].split_at(7).0;
+            let format_merge = format!("Merge: {} {}\n", parent_1, parent_2);
+            res.push_str(&format_merge);
+        }
         let format_commit = format!("commit: {}\n", current_commit);
         res.push_str(&format_commit);
-        let parent = get_parent_commit(current_commit.clone(),cliente.clone())?;
         let date = get_commit_date(current_commit.clone(),cliente.clone())?;
         let author = get_commit_author(current_commit.clone(),cliente.clone())?;
         let message = get_commit_message(current_commit.clone(),cliente.clone())?;
         res.push_str(&format!("Author: {}\n", author));
         res.push_str(&format!("Date: {}\n", date));
         res.push_str(&format!("\t{}\n\n", message));
-        if parent == "None" || counter == limit{
+        if parents[0] == "None" || counter == limit{
             break;
         }
-        current_commit = parent;
+        current_commit = parents[0].clone();
     }
     Ok(res.to_string())
 }

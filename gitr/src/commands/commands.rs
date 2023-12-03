@@ -252,7 +252,7 @@ pub fn merge(_flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     }
 }
 
-pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<bool, GitrError>{
+pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<(bool, String), GitrError>{
     if _flags.is_empty(){
         return Err(GitrError::InvalidArgumentError(_flags.join(" "), "merge <branch-name>".to_string()))
     }
@@ -273,12 +273,12 @@ pub fn merge_(_flags: Vec<String>,cliente: String) -> Result<bool, GitrError>{
             hubo_conflict = command_utils::three_way_merge(commit, origin_commits[0].clone(), branch_commits[0].clone(), cliente.clone())?;
             if !hubo_conflict {
                 add(vec![".".to_string()], cliente.clone())?;
-                command_utils::create_merge_commit(branch_name,branch_commits[0].clone(), cliente)?;
+                command_utils::create_merge_commit(branch_name, branch_commits[0].clone(), cliente)?;
             }
             break;
         }
     } 
-    Ok(hubo_conflict)
+    Ok((hubo_conflict, branch_commits[0].clone()))
 }
 
 pub fn remote(flags: Vec<String>,cliente: String) -> Result<(), GitrError> {
@@ -362,12 +362,13 @@ pub fn show_ref(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     Ok(())
 }
 
-
 pub fn ls_tree(flags: Vec<String>, cliente: String) -> Result<(),GitrError> {
     if flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(flags.join(" "), "ls-tree [options] <tree-hash>".to_string()));
     }
-    command_utils::_ls_tree(flags, "".to_string(), cliente)
+    let res = command_utils::_ls_tree(flags, "".to_string(), cliente)?;
+    println!("{}", res);
+    Ok(())
 }
 
 pub fn list_repos(cliente: String) {

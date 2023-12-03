@@ -245,13 +245,13 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         match commands::add(vec![".".to_string()],cliente_.clone()){
             Ok(_)=> (),
             Err(e)=> {
-                if e == GitrError::FileReadError(cliente_.clone()+"/.head_repo"){
-                    remote_error_label_clone.set_text("No hay un repositorio asociado, busque o cree uno.");
-                }
-                else{
-                    remote_error_label_clone.set_text(format!("Error al hacer add: {:?}",e).as_str());
-                }
-                remote_error_dialog_clone.show();
+                // if e == GitrError::FileReadError(cliente_.clone()+"/.head_repo"){
+                //     remote_error_label_clone.set_text("No hay un repositorio asociado, busque o cree uno.");
+                // }
+                // else{
+                //     remote_error_label_clone.set_text(format!("Error al hacer add: {:?}",e).as_str());
+                // }
+                // remote_error_dialog_clone.show();
             },
         };
         let message = format!("\"{}\"",commit_message.text());
