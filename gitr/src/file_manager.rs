@@ -443,15 +443,28 @@ pub fn get_head(cliente: String) ->  Result<String, GitrError>{
 pub fn update_head(head: &String,cliente: String) -> Result<(), GitrError>{
     let repo = get_current_repo(cliente.clone())?;
     let path = repo + "/gitr/HEAD";
-    write_file(path, format!("ref: {}", head))?;
+    println!("HEAD en path: {} actualizado a {}",path, head);
+    write_file(path.clone(), format!("ref: {}", head))?;
     Ok(())
 }
 
+fn find_new_path(hash: String, sec_vec: Vec<(String,String)>) -> String {
+    for (h,r) in sec_vec {
+        if h == hash && r.clone() != "HEAD" {
+            println!("encontre el path: {} para este hash {}", r,h);
+            return r;
+        }
+    }
+    "".to_string()
+}
 // recibe el vector de los hashes de las referencias que sacas del ref discovery, y actualiza el gitr en base a eso
-pub fn update_client_refs(hash_n_refs: Vec<(String,String)>, r_path: String) -> Result<(),GitrError> {
+pub fn update_client_refs(hash_n_refs: Vec<(String,String)>, r_path: String, cliente:String) -> Result<(),GitrError> {
     let path = r_path + "/gitr/";
+    let sec_vec = hash_n_refs.clone();
     for (h,r) in hash_n_refs {
         if r.clone() == "HEAD" {
+            let path_head = find_new_path(h.clone(), sec_vec.clone());
+            file_manager::update_head(&path_head, cliente.clone())?;
             continue;
         }
         let path_ref = path.clone() + &r.replace('\\', "/"); //esto se borra?
@@ -566,8 +579,8 @@ pub fn get_current_commit(cliente: String)->Result<String, GitrError>{
     }
     let repo = get_current_repo(cliente)?;
     let path = repo + "/gitr/" + &head_path;
-
-
+    
+    
     let head = read_file(path)?;
     Ok(head)
 }
