@@ -373,6 +373,7 @@ pub fn init_repository(name: &String) ->  Result<(),GitrError>{
         create_directory(&(name.clone() + "/gitr/refs/remotes/daemon"))?;
         write_file(name.clone() + "/gitr/HEAD", "ref: refs/heads/master".to_string())?;
         write_file(name.clone() + "/gitr/remote", "".to_string())?;
+        write_file(name.clone() + "/gitrignore", "".to_string())?;
     Ok(())
 }
 

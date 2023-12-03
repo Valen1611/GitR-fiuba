@@ -1,0 +1,183 @@
+{"type": "FileOperation","timestamp": "02-12-2023 19:51:47","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 19:51:47","message": "reading data from: bruno/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 19:51:47","message": "No se pudo leer: bruno/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:07:48","message": "reading data from: cliente/.head_repo"}
+{"type": "Error","timestamp": "02-12-2023 20:07:48","message": "No se pudo leer: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:13:13","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:15:28","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:31","message": "creating dir: bruno"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:31","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 20:45:45","message": "reading data from: cliente/repo_ignore/gitr/gitrignore"}
+{"type": "Error","timestamp": "02-12-2023 20:45:45","message": "No se pudo leer: cliente/repo_ignore/gitr/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:16:53","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:38:18","message": "reading data from: cliente/repo_ignore/gitr/gitrignore"}
+{"type": "Error","timestamp": "02-12-2023 21:38:18","message": "No se pudo leer: cliente/repo_ignore/gitr/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "writing data to: cliente/repo_ignoregitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:40:08","message": "reading data from: cliente/repo_ignore/gitr/gitrignore"}
+{"type": "Error","timestamp": "02-12-2023 21:40:08","message": "No se pudo leer: cliente/repo_ignore/gitr/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "writing data to: cliente/repo_ignoregitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:48:58","message": "reading data from: cliente/repo_ignore/gitrignore"}
+{"type": "Error","timestamp": "02-12-2023 21:48:58","message": "No se pudo leer: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "writing data to: gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:50:31","message": "reading data from: cliente/repo_ignore/gitrignore"}
+{"type": "Error","timestamp": "02-12-2023 21:50:31","message": "No se pudo leer: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "writing data to: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:54:19","message": "reading data from: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "writing data to: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "writing data to: cliente/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:56:16","message": "reading data from: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "writing data to: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "writing data to: cliente/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:01","message": "reading data from: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "writing data to: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "writing data to: cliente/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:57:56","message": "reading data from: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "writing data to: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "writing data to: cliente/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:58:58","message": "reading data from: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente/repo_ignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente/repo_ignore/gitr"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente/repo_ignore/gitr/objects"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente/repo_ignore/gitr/refs"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente/repo_ignore/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente/repo_ignore/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "creating dir: cliente/repo_ignore/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "writing data to: cliente/repo_ignore/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "writing data to: cliente/repo_ignore/gitr/remote"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "writing data to: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "writing data to: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "writing data to: cliente/repo_ignore/gitrignore"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "02-12-2023 21:59:49","message": "reading data from: cliente/repo_ignore/gitrignore"}
