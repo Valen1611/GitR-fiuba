@@ -1392,7 +1392,6 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
         Err(e) => return Err(GitrError::SocketError("read_socket()".to_string(), e.to_string())),
     };
     let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
-    println!("String recibido de tamaño {}: {:?}", bytes_read, received_data);
     Ok(())
 }
 
@@ -1440,7 +1439,6 @@ pub fn protocol_reference_discovery(stream: &mut TcpStream) -> Result<Vec<(Strin
         buffer.extend(aux);
     }
     let ref_disc = String::from_utf8_lossy(&buffer).to_string();
-    println!("ref_discovery:\n{}",ref_disc);
     let hash_n_references = ref_discovery::discover_references(ref_disc)?;
     Ok(hash_n_references)
 }
@@ -1449,7 +1447,6 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
     let mut refs_ids = file_manager::get_refs_ids("heads",cliente.clone())?;
     refs_ids.append(file_manager::get_refs_ids("tags", cliente.clone())?.as_mut());
     let want_message = ref_discovery::assemble_want_message(&hash_n_references,refs_ids,cliente.clone())?;
-    //file_manager::update_client_refs(hash_n_references.clone(), file_manager::get_current_repo(cliente.clone())?)?;
     match stream.write(want_message.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -1457,7 +1454,6 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
             return Err(GitrError::ConnectionError);
         }
     };
-    println!("wants:\n{want_message}");
     if want_message == "0000" {
         println!("cliente al día");
         return Ok(false)

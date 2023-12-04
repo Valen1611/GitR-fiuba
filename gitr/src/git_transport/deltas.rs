@@ -1,6 +1,5 @@
 use crate::gitr_errors::GitrError;
 
-/// en el pack-file vienen asi:
 /// HEADER:
 ///     * tipo de objeto (3 primeros bits)
 ///     * largo encodeado del objeto
@@ -45,10 +44,8 @@ fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize,usize),Gi
     let tamanio = (activator.count_ones() - 1) as usize;
     let mut i: usize = 0;
     let mut j: usize = 0;
-    println!("activator: {:b}",activator);
     while i < 7 {
         if i < 3 {
-            // println!("va al size, bit: {:08b}",(64>>i));
             if (activator & (64 >> i)) != 0 {
                 size = (size << 8) | instruction[tamanio-j] as usize;
                 j += 1;
@@ -56,7 +53,6 @@ fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize,usize),Gi
                 size <<= 8;
             }
         } else if i >= 3 {
-            // println!("va al ofs, bit: {:08b}",(64>>i));
             if (activator & (64 >> i)) != 0 {
                 ofs = (ofs << 8) | instruction[tamanio-j] as usize;
                 j +=1;
@@ -73,8 +69,6 @@ fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize,usize),Gi
 pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<Vec<u8>,GitrError>{
     let mut final_data: Vec<u8> = Vec::new();
     let mut i: usize = 1;
-    println!("base: {:?}",String::from_utf8_lossy(base));
-    println!("data: {:?}",String::from_utf8_lossy(data));
     for b in base {
         if vec![*b] == ("\0".as_bytes()) {
             break;
@@ -97,11 +91,5 @@ pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<Vec<u8>,GitrError>{
             i += 1+tamanio;
         }
     }
-    Ok(final_data)
-}
-
-pub fn deltify(_origin: Vec<u8>, _base: Vec<u8>) -> Result<Vec<u8>,GitrError> {
-    let final_data: Vec<u8> = Vec::new();
-    
     Ok(final_data)
 }

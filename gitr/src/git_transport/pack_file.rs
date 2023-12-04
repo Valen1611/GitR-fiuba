@@ -122,13 +122,10 @@ pub fn read_pack_file(buffer: &mut[u8]) -> Result<Vec<GitObject>, GitrError> {
 pub fn read_object(buffer: &[u8], index: usize, objects_dir: &mut HashMap<String,(u8,Vec<u8>)>) -> Result<(GitObject,usize),GitrError>{
     match parse_git_object(&buffer[index..]) {
         Ok((object_type, _length, object_content,cursor)) => {
-            println!("tipo:{object_type}");    
             let (obj,leidos): (GitObject,usize);       
             if object_type == 6 {
-                println!("======LLEGO UN DELTA OFS=======");
                 (obj,leidos) = delta_ofs_from_packfile(object_content, buffer, index, objects_dir)?;
             }else if object_type == 7{
-                println!("======LLEGO UN DELTA REF=======");
                 (obj,leidos) = delta_ref_from_packfile(object_content,objects_dir)?;
             } else {
                 let (decodeado, l) = decode(object_content)?;
