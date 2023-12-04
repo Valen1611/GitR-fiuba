@@ -1349,6 +1349,7 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
 
 pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
     let repo = file_manager::get_current_repo(cliente.clone())?;
+
     let remote = file_manager::get_remote(cliente.clone())?;
     let msj = format!("{} /{}\0host={}\0",orden,remote, repo);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
