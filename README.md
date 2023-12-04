@@ -4,8 +4,8 @@ Repo for Rust Taller De Programacion 1 FIUBA
 ## Como correr el proyecto
 Clonar el repo:
 ```bash
-git clone git@github.com:rovifran/aninfo2C23.git
-cd aninfo2C23/src
+git clone git@github.com:taller-1-fiuba-rust/23C2-La-Liga-De-La-Rusticia.git rusticia
+cd rusticia/gitr
 ```
 Iniciar el Server:
 ```bash
