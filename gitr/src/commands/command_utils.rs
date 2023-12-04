@@ -1349,9 +1349,9 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
 
 pub fn handshake(orden: String,cliente: String)->Result<TcpStream,GitrError> {
     let repo = file_manager::get_current_repo(cliente.clone())?;
-    let _repo_para_daemon = "repo_repo".to_string();
+    let repo_para_daemon = "repo_clonado".to_string();
     let remote = file_manager::get_remote(cliente.clone())?;
-    let msj = format!("{} /{}\0host={}\0",orden,repo, remote);
+    let msj = format!("{} /{}\0host={}\0",orden,repo_para_daemon, remote);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
     let mut stream = match TcpStream::connect("localhost:9418") {
         Ok(s) => s,
