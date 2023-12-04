@@ -61,8 +61,8 @@ pub fn flate2compress(input: String) -> Result<Vec<u8>, GitrError>{
  **************************
  **************************/
 
+ // obtain the hash of an object
 pub fn get_object_hash(cliente: String, file_path:&mut  String, write: bool)->Result<String, GitrError>{
-    
     *file_path = file_manager::get_current_repo(cliente.clone())?.to_string() + "/" + file_path;
     let raw_data = file_manager::read_file(file_path.to_string())?;  
     let blob = Blob::new(raw_data)?;
@@ -128,6 +128,7 @@ pub fn print_blob_data(raw_data: &str) {
     println!("{}", raw_data);
 }
 
+// receives the raw data and returns the tree data
 pub fn get_tree_data(raw_data: &str) -> String{
     let files = raw_data.split('\n').collect::<Vec<&str>>();
     let mut tree_data = String::new();
