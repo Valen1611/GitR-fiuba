@@ -19,7 +19,7 @@ cargo run --bin client <nombre-cliente>
 
 ## Problemas conocidos
 En caso de tener problemas con Gtk, "version `GLIBCXX_3.4.29' not found" 
-o similares, es  necesario ejecutar el siguiente comando 
+o similares, es  necesario ejecutar el siguiente comando, 
 y luego volver a iniciar el cliente:
 ```bash
 unset GTK_PATH
