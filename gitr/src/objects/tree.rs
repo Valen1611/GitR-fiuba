@@ -6,7 +6,6 @@ use super::blob::TreeEntry;
 
 #[derive(Debug)]
 pub struct Tree{
-    //entries: Vec<(String,TreeEntry)>,
     data: Vec<u8>,
     hash: String,
 }

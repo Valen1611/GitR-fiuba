@@ -85,9 +85,7 @@ pub fn get_object_properties(flags:Vec<String>,cliente: String)->Result<(String,
 
 //Output the contents or other properties such as size, type or delta information of an object 
 pub fn _cat_file(flags: Vec<String>,cliente: String) -> Result<String,GitrError> {
-
     let (object_hash, res_output, size, object_type) = get_object_properties(flags.clone(),cliente)?;
-    //print_cat_file_command(&flags[0].clone(), &object_hash, &object_type, res_output.clone(), &size)?;
     let data_requested = &flags[0];
     if data_requested == "-t"{
         return Ok(object_type);
@@ -228,10 +226,8 @@ pub fn get_hashmap_for_checkout(cliente: String)->Result<CheckoutHashMap,GitrErr
     let mut tree_order: Vec<String> = Vec::new(); 
     let index_files = read_index(cliente.clone())?;
     for file_info in index_files.split('\n') {
-        ///// ojo aca
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
         let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
-        //println!("{}",file_path);
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
             if let Some(last_element) = splitted_file_path.last() {
                 if dir == last_element {
@@ -291,15 +287,8 @@ pub fn get_branch_to_checkout(args_received: Vec<String>,cliente: String) -> Res
 /// returns the username
 pub fn get_current_username(cliente: String) -> String{
     cliente
-    // if let Some(username) = std::env::var_os("USER") {
-    //     match username.to_str(){
-    //         Some(username) => username.to_string(),
-    //         None => String::from("User"),
-    //     }
-    // } else{
-    //     String::from("User")
-    // }
 }
+
 /// returns the mail from config
 pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError>{
     let config_data = match file_manager::read_file(cliente + "/gitrconfig") {
@@ -556,8 +545,6 @@ fn _aplicar_diffs(string_archivo: String, diff: Diff) -> Result<Vec<String>, Git
 fn aplicar_difs(path: String, diff: Diff)-> Result<(), GitrError> {
     let string_archivo = file_manager::read_file(path.clone())?;
     let archivo_reconstruido = _aplicar_diffs(string_archivo.clone(), diff.clone())?;
-
-    //file_manager::write_file(path+"_mergeado", archivo_reconstruido.concat().to_string())?;
     file_manager::write_file(path, archivo_reconstruido.concat().to_string())?;
 
     Ok(())
@@ -652,14 +639,11 @@ fn preparar_lineas_para_comparar(diff_base_origin: Diff, diff_base_branch: Diff)
 
     let mut vistos = HashSet::new();
     let mut unicos = Vec::new();
-    // necesitamos filtrar duplicados con diccionario porque
-    // hay que ingnorar el ultimo elemento de la tupla, porque ese si
-    // puede ser diferente
+ 
     for tupla in joined_diffs {
         let key = (tupla.0, tupla.1, tupla.2.clone());
 
         if vistos.insert(key.clone()) {
-            // si no existe, agregamos con las 4 cosas
             unicos.push(tupla);
         }
     }
@@ -1027,12 +1011,6 @@ pub fn get_subtrees_data(hash_of_tree_to_read: String, file_path: String, tree_h
 
 pub fn get_commit_hashmap(commit: String,cliente: String) -> Result<HashMap<String, String>, GitrError> {
     let mut tree_hashmap = HashMap::new();
-    // let current_commit = get_current_commit(cliente.clone())?;
-    // if current_commit == commit{
-    //     println!("get_commit_hashmap(): entre al if que los commits son iguales");
-    //     let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
-    //     return Ok(index_hashmap);
-    // }
       if !commit.is_empty() {
         let repo = file_manager::get_current_repo(cliente.clone())?;
         let tree = file_manager::get_main_tree(commit,cliente.clone())?;
@@ -1134,7 +1112,6 @@ pub fn get_current_commit_hashmap(cliente: String) -> Result<HashMap<String, Str
       Ok(tree_hashmap)
 }
 pub fn get_tobe_commited_files(not_staged: &[String],cliente: String)->Result<(Vec<String>, Vec<String>), GitrError>{
-    //let working_dir_hashmap = get_working_dir_hashmap(cliente.clone())?;
     let (index_hashmap, _) = get_index_hashmap(cliente.clone())?;
     let current_commit_hashmap = get_current_commit_hashmap(cliente.clone())?;
     let mut new_files_to_be_commited = Vec::new();
@@ -1359,7 +1336,7 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8])->Result<(),GitrErr
         Ok(bytes) => bytes,
         Err(e) => return Err(GitrError::SocketError("read_socket()".to_string(), e.to_string())),
     };
-    let received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
+    let _received_data = String::from_utf8_lossy(&buffer[..bytes_read]);
     Ok(())
 }
 
@@ -1446,7 +1423,7 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
 }
 
 pub fn pull_packfile(stream: &mut TcpStream, cliente: String) -> Result<(),GitrError> {
-    let mut buf = match ref_discovery::read_long_stream(stream) { // Leo Packfile
+    let mut buf = match ref_discovery::read_long_stream(stream) { 
         Ok(buf) => buf,
         Err(e) => {
             println!("Error: {}", e);
@@ -2254,7 +2231,7 @@ mod rebase_tests{
     use crate::commands::commands_fn;
     use super::*;
     #[test]
-    fn crear_archivos_1(){ //esto así anda
+    fn crear_archivos_1(){ 
         delete_repo("bruno/test".to_string());
         let cliente = "bruno".to_string();
         fs::create_dir_all(Path::new(&cliente)).unwrap();
@@ -2297,7 +2274,7 @@ mod rebase_tests{
     }
 
     #[test]
-    fn crear_archivos_2(){ //
+    fn crear_archivos_2(){ 
         delete_repo("bruno/test".to_string());
         let cliente = "bruno".to_string();
         fs::create_dir_all(Path::new(&cliente)).unwrap();

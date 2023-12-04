@@ -201,7 +201,6 @@ pub fn ls_files(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
 pub fn clone(flags: Vec<String>,cliente: String)->Result<(),GitrError>{
     init(vec![flags[1].clone()],cliente.clone())?;
     remote(vec![flags[0].clone()],cliente.clone())?;
-    
     pullear(vec![],true,cliente)?;
     Ok(())
 }
@@ -455,12 +454,6 @@ pub fn rebase(flags: Vec<String>,cliente: String) -> Result<(), GitrError>{
     }
     Ok(())
 }
-// -- 1 -- 2 -- 3 -- 4 - 5 - 6 master 
-        //                    \      
-        //                      - 7 - 8 - 9 topic  git rebase master
-
-        //git diff $indexbase $file1
-//        the diff in the patch # equivalent to git diff $indexbase $file2
 
 pub fn check_ignore(paths: Vec<String>, client: String)->Result<(), GitrError>{
     if paths.is_empty(){

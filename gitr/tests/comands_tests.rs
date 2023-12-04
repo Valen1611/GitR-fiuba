@@ -843,7 +843,6 @@ fn merge_con_archivos_test_5_ejemplo_de_codigo(){
     let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
 
     file_manager::write_file("obtuve".to_string(), archivo_mergeado.clone()).unwrap();
-    //file_manager::write_file("esperado".to_string(), archivo_esperado.clone()).unwrap();
 
     assert_eq!(archivo_mergeado, archivo_esperado);
     delete_repo("cliente/test".to_string());
