@@ -220,7 +220,7 @@ pub fn tag(flags: Vec<String>,cliente: String) -> Result<(),GitrError> {
     }
     if flags.len() >= 4 && flags[0] == "-a" && flags[2] == "-m" {
         let mut message = "".to_string();
-        if flags[3].starts_with("\""){
+        if flags[3].starts_with('\"'){
             let aux = &flags[3..];
             message = aux.join(" ");
             if !message.chars().any(|c| c!= ' ' && c != '\"'){

@@ -103,12 +103,12 @@ impl Commit{
     }
 
     pub fn new_commit_from_data(data: String) -> Result<Commit, GitrError>{
-        let commit_elems = data.split("\0").collect::<Vec<&str>>();
+        let commit_elems = data.split('\0').collect::<Vec<&str>>();
         if commit_elems.len() != 2 || !commit_elems[0].contains("commit"){
             return Err(GitrError::InvalidCommitError)
         }
         let commit_string = commit_elems[1].to_string();
-        Ok(Self::new_commit_from_string(commit_string)?)
+        Self::new_commit_from_string(commit_string)
     }
 
     pub fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> Result<Vec<String>,GitrError> {

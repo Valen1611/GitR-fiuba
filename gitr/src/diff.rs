@@ -27,7 +27,7 @@ fn empty_diff()->Diff{
     }
 }
 
-fn valor_match(matriz: &Vec<Vec<Celda>>, i: usize,j:usize)->usize{
+fn valor_match(matriz: &[Vec<Celda>], i: usize,j:usize)->usize{
     if i == 0 || j == 0 || (i,j) == (0,0){
         1
     }
@@ -36,7 +36,7 @@ fn valor_match(matriz: &Vec<Vec<Celda>>, i: usize,j:usize)->usize{
     }
 }
 
-fn valor_unmatch(matriz: &Vec<Vec<Celda>>, i: usize,j:usize)->usize{
+fn valor_unmatch(matriz: &[Vec<Celda>], i: usize,j:usize)->usize{
     if i == 0 && j == 0{
         0
     }

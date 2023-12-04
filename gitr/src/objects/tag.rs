@@ -43,22 +43,22 @@ impl Tag{
         let compressed_file = flate2compress(format_data_entera.clone())?;
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file.iter().map(|b| format!("{:02x}", b)).collect::<String>();
-        Ok(Tag {data:compressed_file,hash: hashed_file_str, commit_hash: commit_hash/*tag_name: tag_name, tag_message: tag_message,commit_hash: commit_hash */})
+        Ok(Tag {data:compressed_file,hash: hashed_file_str, commit_hash/*tag_name: tag_name, tag_message: tag_message,commit_hash: commit_hash */})
     }
     
     pub fn new_tag_from_data(data: String) -> Result<Tag, GitrError>{
-        let tag_elems = data.split("\0").collect::<Vec<&str>>();
+        let tag_elems = data.split('\0').collect::<Vec<&str>>();
         if tag_elems.len() != 2 || !tag_elems[0].contains("tag"){
          return Err(GitrError::InvalidTagError)
         }
         let tag_string = tag_elems[1].to_string();
-        Ok(Self::new_tag_from_string(tag_string)?)
+        Self::new_tag_from_string(tag_string)
     }
 
     pub fn new_tag_from_string(data: String)->Result<Tag,GitrError>{
         let (mut name,mut message,mut commit ,mut tagger) = (String::new(), String::new(), String::new(), String::new());
         for line in data.lines() {
-            let elems = line.split_once(" ").unwrap_or((line,""));
+            let elems = line.split_once(' ').unwrap_or((line,""));
             match elems.0 {
                 "object" => commit = elems.1.to_string(),
                 "tag" => name = elems.1.to_string(),
@@ -76,7 +76,7 @@ impl Tag{
         format_data.push_str("type commit\n");
         format_data.push_str(&format!("tag {}\n", tag_name));
         format_data.push_str(&format!("tagger {}",tagger));
-        format_data.push_str("\n");
+        format_data.push('\n');
         format_data.push_str(&format!("{}\n", tag_message));
         let size = format_data.as_bytes().len();
         let format_data_entera = format!("tag {}\0{}", size, format_data);

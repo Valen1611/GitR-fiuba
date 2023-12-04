@@ -37,7 +37,7 @@ pub fn server_init (s_addr: &str) -> std::io::Result<()>  {
             let trimmed = input.trim().to_lowercase();
             if trimmed == "q" {
                 // Envia un mensaje al hilo principal para indicar que debe salir
-                TcpStream::connect("localhost:9418").unwrap().write("q".as_bytes()).unwrap();
+                let _ = TcpStream::connect("localhost:9418").unwrap().write("q".as_bytes()).unwrap();
                 break;
             }
             input.clear();
@@ -166,13 +166,11 @@ fn update_contents(ids: Vec<String>, content: Vec<Vec<u8>>, r_path: String) -> s
     if ids.len() != content.len() {
         return Err(Error::new(std::io::ErrorKind::Other, "Error: no coinciden los ids con los contenidos"))
     }
-    let mut i = 0;
-    for id in ids {
+    for (i, id) in ids.into_iter().enumerate() {
         let dir_path = format!("{}/objects/{}",r_path.clone(),id.split_at(2).0);
         let _ = fs::create_dir(dir_path.clone()); 
         let mut archivo = File::create(&format!("{}/{}",dir_path,id.split_at(2).1))?;
         archivo.write_all(&content[i])?;
-        i += 1;
     }
     Ok(())
 }
@@ -285,9 +283,7 @@ fn pkt_needed(old: Vec<String>, new: Vec<String>) -> bool {
     for i in 0..old.len() {
         if old[i] == nul_obj  && new[i] != nul_obj{ // crear referencia
             return true
-        } else if new[i] == nul_obj && old[i] != nul_obj { // borrar referencia
-            continue;
-        } else if old[i] == new[i] { // no hubo cambios
+        } else if (new[i] == nul_obj && old[i] != nul_obj) || old[i] == new[i] { // borrar referencia o ref sin cambios
             continue;
         } else { // Modificacion de referencia
             return true
@@ -425,7 +421,7 @@ fn wants_n_haves(requests: String, mut wants: Vec<String>, mut haves: Vec<String
 /// # Devuelve
 /// Ok(()) si la linea es valida o un Error si no lo es.
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
-    if !pkt_line.is_empty() && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || (pkt_line.starts_with("0000") && (pkt_line.split_at(4).1 == "\n" || pkt_line.split_at(4).1 == "" || is_valid_pkt_line(pkt_line.split_at(4).1).is_ok()))) {
+    if !pkt_line.is_empty() && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || (pkt_line.starts_with("0000") && (pkt_line.split_at(4).1 == "\n" || pkt_line.split_at(4).1.is_empty() || is_valid_pkt_line(pkt_line.split_at(4).1).is_ok()))) {
         return Ok(())
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))

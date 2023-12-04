@@ -53,7 +53,7 @@ fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize,usize),Gi
                 size = (size << 8) | instruction[tamanio-j] as usize;
                 j += 1;
             } else {
-                size = (size << 8) | 0 as usize;
+                size <<= 8;
             }
         } else if i >= 3 {
             // println!("va al ofs, bit: {:08b}",(64>>i));
@@ -61,7 +61,7 @@ fn parse_copy_instruction(instruction: Vec<u8>) -> Result<(usize,usize,usize),Gi
                 ofs = (ofs << 8) | instruction[tamanio-j] as usize;
                 j +=1;
             } else {
-                ofs = (ofs << 8) | 0 as usize;
+                ofs <<= 8;
             }
         }
         i += 1;
@@ -100,8 +100,8 @@ pub fn transform_delta(data: &[u8], base: &[u8]) -> Result<Vec<u8>,GitrError>{
     Ok(final_data)
 }
 
-pub fn deltify(origin: Vec<u8>, base: Vec<u8>) -> Result<Vec<u8>,GitrError> {
-    let mut final_data: Vec<u8> = Vec::new();
+pub fn deltify(_origin: Vec<u8>, _base: Vec<u8>) -> Result<Vec<u8>,GitrError> {
+    let final_data: Vec<u8> = Vec::new();
     
     Ok(final_data)
 }
