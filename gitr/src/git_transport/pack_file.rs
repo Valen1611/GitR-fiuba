@@ -20,7 +20,7 @@ pub struct PackFile{
     pub objects: Vec<GitObject>,
 }
 
-fn decode(input: &[u8]) -> Result<(Vec<u8>,u64), GitrError> {
+pub fn decode(input: &[u8]) -> Result<(Vec<u8>,u64), GitrError> {
     let mut decoder = Decompress::new(true);
     let mut output:[u8; 1024] = [0;1024];
     if decoder.decompress(input, &mut output, flate2::FlushDecompress::Finish).is_err() {
@@ -32,7 +32,7 @@ fn decode(input: &[u8]) -> Result<(Vec<u8>,u64), GitrError> {
     Ok((output_return, cant_leidos))
 }
 
-fn code(input: &[u8]) -> Result<Vec<u8>, GitrError> {
+pub fn code(input: &[u8]) -> Result<Vec<u8>, GitrError> {
     let mut encoder = ZlibEncoder::new(Vec::new(), Compression::default());
     if encoder.write_all(input).is_err(){
         return Err(GitrError::CompressionError);

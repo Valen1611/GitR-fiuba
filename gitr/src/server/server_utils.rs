@@ -286,9 +286,9 @@ fn pkt_needed(old: Vec<String>, new: Vec<String>) -> bool {
         if old[i] == nul_obj  && new[i] != nul_obj{ // crear referencia
             return true
         } else if new[i] == nul_obj && old[i] != nul_obj { // borrar referencia
-            return true
+            continue;
         } else if old[i] == new[i] { // no hubo cambios
-            return false
+            continue;
         } else { // Modificacion de referencia
             return true
         }
@@ -425,7 +425,7 @@ fn wants_n_haves(requests: String, mut wants: Vec<String>, mut haves: Vec<String
 /// # Devuelve
 /// Ok(()) si la linea es valida o un Error si no lo es.
 fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
-    if !pkt_line.is_empty() && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || pkt_line.starts_with("0000")) {
+    if !pkt_line.is_empty() && pkt_line.len() >= 4 && (usize::from_str_radix(pkt_line.split_at(4).0,16) == Ok(pkt_line.len()) || (pkt_line.starts_with("0000") && (pkt_line.split_at(4).1 == "\n" || pkt_line.split_at(4).1 == "" || is_valid_pkt_line(pkt_line.split_at(4).1).is_ok()))) {
         return Ok(())
     }
     Err(Error::new(std::io::ErrorKind::ConnectionRefused, "Error: No se sigue el estandar de PKT-LINE"))
@@ -487,11 +487,12 @@ fn write_file(path: String, text: String) -> std::io::Result<()> {
 #[cfg(test)]
 mod tests{
 
+    use crate::git_transport::pack_file;
+
     use super::*;
 
     #[test]
-    #[ignore = "Hay que frenarlo manualmente"]
-    fn inicializo_el_server_correctamente(){
+    fn test01_inicializo_el_server_correctamente(){
         let address =  "localhost:9418";
         let builder_s = thread::Builder::new().name("server".to_string());
         let builder_c = thread::Builder::new().name("cliente".to_string());
@@ -505,13 +506,14 @@ mod tests{
             socket.write(&"Hola server".as_bytes()).unwrap();
             let mut buffer = [0; 1024];
             
-            socket.read(&mut buffer).unwrap();
-            assert_eq!(from_utf8(&file_manager::decode(&buffer).unwrap()), Ok("Error: no se respeta el formato pkt-line"));
+            let n = socket.read(&mut buffer).unwrap();
+            assert_eq!(from_utf8(&buffer[..n]), Ok("Error: no se respeta el formato pkt-line"));
             return ;
         }).unwrap();
 
-        server.join().unwrap();
         client.join().unwrap();
+        TcpStream::connect("localhost:9418").unwrap().write("q".as_bytes()).unwrap();
+        server.join().unwrap();
     }
 
     #[test]
@@ -520,21 +522,20 @@ mod tests{
         let elems = split_n_validate_elems(&pkt_line).unwrap();
         assert_eq!(elems[0], "git-upload-pack");
         assert_eq!(elems[1], "/project.git");
-        assert_eq!(elems[2], "host=myserver.com");
+        assert_eq!(elems[2], "myserver.com");
     }
 
     #[test]
     fn test03_is_valid_pkt_line(){
-        is_valid_pkt_line("")
-            .expect_err("Error: No se sigue el estandar de PKT-LINE");
-        is_valid_pkt_line("132")
-            .expect_err("Error: No se sigue el estandar de PKT-LINE");
-        is_valid_pkt_line("0000hola")
-            .expect_err("Error: No se sigue el estandar de PKT-LINE");
-        is_valid_pkt_line("kkkkhola")
-            .expect_err("Error: No se sigue el estandar de PKT-LINE");
+        assert!(is_valid_pkt_line("").is_err());
+        assert!(is_valid_pkt_line("132").is_err());
+        assert!(is_valid_pkt_line("0000hola").is_err());
+        assert!(is_valid_pkt_line("kkkkhola").is_err());
         assert!(is_valid_pkt_line("0000").is_ok());
         assert!(is_valid_pkt_line("000ahola:)").is_ok());
+        assert!(is_valid_pkt_line("0000").is_ok());
+        assert!(is_valid_pkt_line("0032have 0123456789012345678901234567890123456789\n").is_ok());
+        assert!(is_valid_pkt_line("00000032have 0123456789012345678901234567890123456789\n").is_ok());
         assert!(is_valid_pkt_line("0033git-upload-pack /project.git\0host=myserver.com\0").is_ok());
     }
 
@@ -557,17 +558,8 @@ mod tests{
         assert!(haves.is_empty());
     }
 
-    // #[test]
-    // fn test05_ref_discovery() {
-    //     let (refs_string,_guardados) = ref_discovery("remote_repo").unwrap();
-    //     print!("{}\n",refs_string);
-    //     let ref_lines: Vec<&str> = refs_string.lines().collect();
-    //     assert_eq!(ref_lines.first(), Some(&"00327217a7c7e582c46cec22a130adf4b9d7d950fba0 HEAD"));
-    //     assert_eq!(ref_lines.last(),Some(&"0000"))
-    // }
-
     #[test]
-    fn test06_get_changes() {
+    fn test05_get_changes() {
         let input = {
             "00677d1665144a3a975c05f1f43902ddaf084e784dbe 74730d410fcb6603ace96f1dc55ea6196122532d refs/heads/debug
 006874730d410fcb6603ace96f1dc55ea6196122532d 5a3f6be755bbb7deae50065988cbfa1ffa9ab68a refs/heads/master
@@ -582,7 +574,7 @@ mod tests{
     }
 
     #[test]
-    fn test07_update_refs() {
+    fn test06_update_refs() {
         let r_path = "remote_repo";
         let _ = create_dirs(r_path);
         assert!(fs::metadata(format!("{}/refs/heads/debug",r_path)).is_err());
@@ -619,11 +611,11 @@ mod tests{
     }
 
     #[test]
-    fn test08_update_contents_n_get_object() {
+    fn test07_update_contents_n_get_object() {
         let r_path = "remote_repo";
         let _ = create_dirs(r_path);
         let ids = vec!["74730d410fcb6603ace96f1dc55ea6196122532d".to_string(),"5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string()];
-        let content: Vec<Vec<u8>> = vec!["Hola mundo".to_string().as_bytes().to_vec(),"Chau mundo".to_string().as_bytes().to_vec()];
+        let content: Vec<Vec<u8>> = vec![pack_file::code("Hola mundo".to_string().as_bytes()).unwrap(),pack_file::code("Chau mundo".to_string().as_bytes()).unwrap()];
         update_contents(ids, content, r_path.to_string()).unwrap();
         assert_eq!(file_manager::get_object("74730d410fcb6603ace96f1dc55ea6196122532d".to_string(), r_path.to_string()).unwrap(), "Hola mundo");
         assert_eq!(file_manager::get_object("5a3f6be755bbb7deae50065988cbfa1ffa9ab68a".to_string(), r_path.to_string()).unwrap(), "Chau mundo");         
