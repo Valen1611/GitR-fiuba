@@ -36,7 +36,7 @@ impl Tag{
         format_data.push_str("type commit\n");
         format_data.push_str(&format!("tag {}\n", tag_name));
         format_data.push_str(&format!("tagger {} <{}> {} -0300\n", get_current_username(cliente.clone()), get_user_mail_from_config(cliente.clone())?, Utc::now().timestamp()));
-        format_data.push_str("\n");
+        format_data.push_str('\n'.to_string().as_str());
         format_data.push_str(&format!("{}\n", tag_message));
         let size = format_data.as_bytes().len();
         let format_data_entera = format!("tag {}\0{}", size, format_data);

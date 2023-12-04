@@ -52,7 +52,6 @@ impl fmt::Display for GitrError{
             Self::NoRepository => write!(f, "ERROR: No se encontro el repositorio"),
             Self::NoCommitExisting(brch)=> write! (f, "ERROR: nombre de objeto no valido: '{}'", brch),
             Self::LogError => write!(f, "ERROR: No se pudo escribir en el log"),
-
             Self::CompressionError => write!(f, "ERROR: No se pudo comprimir el archivo"),
             Self::InvalidArgumentError(got, usage) => write!(f, "ERROR: Argumentos invalidos.\n    Recibi: {}\n    Uso: {}\n", got, usage),
             Self::TimeError => write!(f, "ERROR: No se pudo obtener el tiempo actual"),

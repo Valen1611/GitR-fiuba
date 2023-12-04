@@ -742,9 +742,6 @@ fn merge_con_archivos_test_4_multiples_conflicts_multilinea(){
 
     let archivo_mergeado = file_manager::read_file("cliente/test/archivo1.txt_mergeado".to_string()).unwrap();
 
-    for linea in archivo_mergeado.lines(){
-        println!("{}", linea);
-    }
 
 
     assert_eq!(archivo_mergeado, archivo_esperado);

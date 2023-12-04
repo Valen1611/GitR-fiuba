@@ -25,7 +25,7 @@ fn get_commits(cliente:String) -> String{
         //println!("\x1b[34mCommit: \x1b[0m {:?}",commit);
         commit = commit.trim_start();
         let hash = commit.split('\n').collect::<Vec<&str>>()[0].split_at(8).1;
-        let author = commit.split('\n').collect::<Vec<&str>>()[1].split_at(8).1;
+        let author = commit.split('\n').collect::<Vec<&str>>()[1].split_at(7).1;
         let date = commit.split('\n').collect::<Vec<&str>>()[2].split_at(5).1.trim_start();
         let message = commit.split('\n').collect::<Vec<&str>>()[3].trim_start();
 
@@ -49,12 +49,14 @@ fn get_commits(cliente:String) -> String{
         fecha_actual = day;
         let spaces_needed_first_line = max_string_len - short_message.len() - hash_digits.len();
         let spaces_needed_second_line = max_string_len - author.len() - time.len() - 3;
-        res.push_str("█    ╔══════════════════════════════════════════════════════════════╗\n");
-        res.push_str(&format!("█    ║ {}{: <width$}{} ║\n", short_message,"",  hash_digits, width = spaces_needed_first_line));
-        res.push_str(&format!("█    ║ {}    {}{: <width$}║\n", author, time, "", width = spaces_needed_second_line));
-        res.push_str("█    ╚══════════════════════════════════════════════════════════════╝\n");
-    }
 
+        res.push_str("█    ╔══════════════════════════════════════════════════════════════╗\n");
+        res.push_str(&format!("█    ║ {}{:<width$}{} ║\n", short_message,"",  hash_digits, width = spaces_needed_first_line));
+        res.push_str(&format!("█    ║ {}    {}{:<width$}║\n", author, time, "", width = spaces_needed_second_line));
+        res.push_str("█    ╚══════════════════════════════════════════════════════════════╝\n");
+        
+    }
+    println!("{}", res);
     res
 }
 
@@ -240,7 +242,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         commit_dialog_clone.hide();
         match commands::add(vec![".".to_string()],cliente_.clone()){
             Ok(_)=> (),
-            Err(e)=> {
+            Err(_)=> {
                 // if e == GitrError::FileReadError(cliente_.clone()+"/.head_repo"){
                 //     remote_error_label_clone.set_text("No hay un repositorio asociado, busque o cree uno.");
                 // }
@@ -426,7 +428,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         };
         let flags = vec![branch.to_string()];
         match commands::merge_(flags,cliente_.clone()){
-            Ok(hubo_conflict) => {
+            Ok(_) => {
                 remote_error_label_clone.set_text("Surgieron conflicts al hacer merge, por favor arreglarlos y commitear el resultado.");
                 remote_error_dialog_clone.show();
             },
