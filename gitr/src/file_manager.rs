@@ -465,7 +465,7 @@ pub fn update_client_refs(hash_n_refs: Vec<(String,String)>, r_path: String, cli
     for (h,r) in hash_n_refs {
         if r.clone() == "HEAD" {
             let path_head = find_new_path(h.clone(), sec_vec.clone());
-            file_manager::update_head(&path_head, cliente.clone())?;
+            file_manager::update_head(&path_head.replace("\\", "/"), cliente.clone())?;
             continue;
         }
         let path_ref = path.clone() + &r.replace('\\', "/"); //esto se borra?
