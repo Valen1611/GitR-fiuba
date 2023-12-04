@@ -220,8 +220,9 @@ pub fn write_new_commit_and_branch(final_tree:Tree, message: String, second_pare
 }
 
 /// returns a hashmap to create trees (using the index)
+type CheckoutHashMap = (HashMap<String, Vec<String>>,Vec<String>);
 
-pub fn get_hashmap_for_checkout(cliente: String)->Result<(HashMap<String, Vec<String>>,Vec<String>),GitrError>{
+pub fn get_hashmap_for_checkout(cliente: String)->Result<CheckoutHashMap,GitrError>{
     let mut tree_map: HashMap<String, Vec<String>> = HashMap::new();
     let mut tree_order: Vec<String> = Vec::new(); 
     let index_files = read_index(cliente.clone())?;
