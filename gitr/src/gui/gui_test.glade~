@@ -530,6 +530,7 @@ Presione el botón "Connect" para proveer esta información.</property>
                                 <property name="left-margin">5</property>
                                 <property name="right-margin">5</property>
                                 <property name="top-margin">5</property>
+                                <property name="input-purpose">terminal</property>
                               </object>
                             </child>
                           </object>
@@ -707,56 +708,6 @@ Presione el botón "Connect" para proveer esta información.</property>
                     <property name="name">conflicts</property>
                     <property name="title" translatable="yes">conflicts</property>
                     <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="rebase_box">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Seleccione la branch sobre la cual se hará el rebase</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="rebase_branch_selector">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="rebase_button">
-                        <property name="label" translatable="yes">Rebase</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="halign">end</property>
-                        <property name="valign">end</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="name">page0</property>
-                    <property name="title" translatable="yes">rebase</property>
-                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>

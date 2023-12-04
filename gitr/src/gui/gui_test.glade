@@ -530,6 +530,7 @@ Presione el botón "Connect" para proveer esta información.</property>
                                 <property name="left-margin">5</property>
                                 <property name="right-margin">5</property>
                                 <property name="top-margin">5</property>
+                                <property name="input-purpose">terminal</property>
                               </object>
                             </child>
                           </object>
@@ -653,7 +654,6 @@ Presione el botón "Connect" para proveer esta información.</property>
                                 <property name="can-focus">True</property>
                                 <property name="hexpand">True</property>
                                 <property name="vexpand">True</property>
-                                <property name="editable">False</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
