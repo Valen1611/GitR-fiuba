@@ -1149,11 +1149,6 @@ pub fn get_tobe_commited_files(not_staged: &[String],cliente: String)->Result<(V
             }
         }
     }
-    // for (path, _) in current_commit_hashmap.clone().into_iter() {
-    //     if !working_dir_hashmap.contains_key(path.as_str()) {
-    //         to_be_commited.push(path);
-    //     }
-    // }
     Ok((new_files_to_be_commited, modified_files_to_be_commited))
 }
 
@@ -1172,7 +1167,6 @@ pub fn save_and_add_blob_to_index(file_path: String,cliente: String) -> Result<(
         }
         Err (e) => return Err(e),
     }
-    // println!("agrego este path: {}",file_path);
     let raw_data = file_manager::read_file(file_path.clone())?;
     let blob = Blob::new(raw_data)?;
     blob.save(cliente.clone())?;
@@ -1311,12 +1305,12 @@ pub fn get_tags_str(cliente: String) -> Result<String,GitrError>{
 pub fn write_reference_from_cloning(references: Vec<(String, String)>, _ref_disc:String,cliente: String)-> Result<(), GitrError>{
     let repo = file_manager::get_current_repo(cliente.clone())?;
     for reference in &references[1..]{
-        let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); //ref path
+        let path_str = repo.clone() + "/gitr/"+ &reference.1.clone(); 
         if references[0].0 == reference.0{
-            file_manager::update_head(&reference.1.clone(),cliente.clone())?; //actualizo el head
+            file_manager::update_head(&reference.1.clone(),cliente.clone())?; 
         }
-        let into_hash = reference.0.clone(); //hash a escribir en el archivo
-        file_manager::write_file(path_str, into_hash)?; //escribo el hash en el archivo
+        let into_hash = reference.0.clone(); 
+        file_manager::write_file(path_str, into_hash)?; 
     }
     Ok(())
 }
@@ -1435,7 +1429,7 @@ pub fn protocol_wants_n_haves(hash_n_references: Vec<(String, String)>, stream: 
     let _ = stream.write(&0_usize.to_be_bytes());
     
     let mut buffer = [0;1024];
-    match stream.read(&mut buffer) { // Leo si huvo error
+    match stream.read(&mut buffer) {
         Ok(_n) => {
             if String::from_utf8_lossy(&buffer).contains("Error") {
                 println!("Error: {}", String::from_utf8_lossy(&buffer));
@@ -1507,7 +1501,7 @@ pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_referenc
     }
     let cont: Vec<(String, String, Vec<u8>)> = crate::git_transport::pack_file::prepare_contents(contents.clone());
     let pk = crate::git_transport::pack_file::create_packfile(cont.clone())?;
-    if let Err(e) = stream.write(&pk) { // Mando el Packfile
+    if let Err(e) = stream.write(&pk) { 
         println!("Error: {}", e);
         return Err(GitrError::ConnectionError);
     };
@@ -1518,9 +1512,6 @@ pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_referenc
  * *****************/
 
 fn check_conflicts_and_get_tree(origin_commit: String, branch_commit: String, base_commit:String, cliente:String)->Result<String,GitrError>{
-    // println!("Origin ( o master): {}", origin_commit);
-    // println!("Branch (o topic): {}", branch_commit);
-    // println!("Base: {}", base_commit);
 
     let hubo_conflict = three_way_merge(base_commit, branch_commit, origin_commit, cliente.clone())?;
     if hubo_conflict{
@@ -1602,30 +1593,6 @@ pub fn armar_path(path: String, cliente: String)->Result<String,GitrError>{
     Ok(full_path.concat())
 }
 
-// --continue
-// $ bruno/test/archivo1.txt
-// bruno/test/archivo3.txt
-// Origin ( o master): 4c3d6c134408a3fc165681794e797b8af508b662
-// Branch (o topic): f2bd6ae76b7c845323bea2cdbd72b923608b41bd
-// Base: e98c777743a79d0716955f143b7590c423eb8691
-// Origin ( o master): 4c3d6c134408a3fc165681794e797b8af508b662
-// Branch (o topic): f2bd6ae76b7c845323bea2cdbd72b923608b41bd
-// Base: e98c777743a79d0716955f143b7590c423eb8691
-// get_commit_hashmap(): entre al if que los commits son iguales
-// branch_hashmap:{"bruno/test/archivo1.txt": "efa759ef048e873b000597bdf29137925e39d994", "bruno/test/archivo3.txt": "32a46284c7e10892d1855144b604b335e49880e6"}
-// Entre al if
-// Hashes
-// Origin file hash: 32a46284c7e10892d1855144b604b335e49880e6
-// Branch file hash: 32a46284c7e10892d1855144b604b335e49880e6
-// entro al if 1
-// branch_hashmap:{"bruno/test/archivo1.txt": "efa759ef048e873b000597bdf29137925e39d994", "bruno/test/archivo3.txt": "32a46284c7e10892d1855144b604b335e49880e6"}
-// Entre al if
-// Hashes
-// Origin file hash: efa759ef048e873b000597bdf29137925e39d994
-// Branch file hash: efa759ef048e873b000597bdf29137925e39d994
-// entro al if 1
-// bruno/test/archivo1.txt
-// bruno/test/archivo3.txt
 
 /*******************
  *   LOG FUNCTIONS
@@ -1635,7 +1602,7 @@ pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Resu
     let tree_hash = flags[flags.len()-1].clone();
     let data = _cat_file(vec!["-p".to_string(), tree_hash.clone()], cliente.clone())?;
     
-    if flags.len() == 1 { // mismo comportamiento que cat-file
+    if flags.len() == 1 { 
         print!("{}", data);
         return Ok(data)
     }
@@ -1650,7 +1617,7 @@ pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Resu
         
         let mut res_entry = Vec::new();
 
-        if flags[0].contains('r') { // mostrar archivos recursivamente
+        if flags[0].contains('r') { 
             if entry[1] == "tree" {
                 let new_father = if father_dir.is_empty() {
                     entry[3].to_string()
@@ -1658,24 +1625,24 @@ pub fn _ls_tree(flags: Vec<String>, father_dir: String, cliente: String) -> Resu
                     father_dir.clone() + "/" + entry[3]
                 };
                 _ls_tree(vec![flags[0].clone(), entry[2].to_string().clone()], new_father.clone(), cliente.clone())?;
-                if !flags[0].contains('t') { // incluir trees en el caso recursivo
+                if !flags[0].contains('t') { 
                     continue;
                 }
 
             }
         }
 
-        if flags[0].contains('d') { // mostrar solo trees
+        if flags[0].contains('d') {
             if entry[1] != "tree" {
                 continue;
             }
         }
 
-        res_entry.push(entry[0].to_string()); // modo
-        res_entry.push(entry[1].to_string()); // tipo
-        res_entry.push(entry[2].to_string()); // hash
+        res_entry.push(entry[0].to_string()); 
+        res_entry.push(entry[1].to_string());
+        res_entry.push(entry[2].to_string());
 
-        if flags[0].contains('l') { // incluir tamaño
+        if flags[0].contains('l') {
             let size = _cat_file(vec!["-s".to_string(), entry[2].to_string().clone()], cliente.clone())?;
             res_entry.push(size);
         }
