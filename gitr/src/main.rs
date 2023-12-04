@@ -11,13 +11,11 @@ fn get_input() -> Result<String, GitrError> {
             Ok(_) => (),
             Err(e) => return Err(GitrError::InvalidArgumentError(e.to_string(), "Usage: TODO".to_string())),
         }
-    
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
             Ok(_) => (),
             Err(e) => return Err(GitrError::InvalidArgumentError(e.to_string(), "Usage: TODO".to_string())),
         }
-    
         Ok(input)
     }
 
@@ -27,13 +25,10 @@ fn email_valido(email_recibido: String) -> bool {
         if email_parts.len() != 2 {
             return false; 
         }
-        
         let domain = email_parts[1];
-
         if !domain.contains('.') {
             return false
         }
-
         true
     }
 
@@ -47,7 +42,7 @@ fn setup_config_file(client_path: String){
             Err(_) => "user@mail.com".to_string(),
         };
     }
-    println!("El email es valido, ya puede comenzar a usar Gitr");
+    println!("El email es valido, ya puede comenzar a usar Gitr\n");
     let name = client_path.clone();
     let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", email_recibido, name);
     file_manager::write_file(client_path + "/gitrconfig", config_file_data).unwrap();
@@ -114,8 +109,6 @@ fn main() {
                 };
             }
         };
-
-        
 
     }
     match child.join(){

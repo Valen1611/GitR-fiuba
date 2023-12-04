@@ -429,7 +429,7 @@ pub fn echo(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     let repo_path = file_manager::get_current_repo(cliente.clone())?.to_string();
 
     let file_path = format!("{}/{}", repo_path, flags[flags.len()-1]);
-    println!("escribo {} en {}", texto, file_path);
+    println!("escribo \"{}\" en {}", texto, file_path);
     file_manager::write_file(file_path, texto)
 }
 

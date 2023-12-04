@@ -229,7 +229,7 @@ pub fn get_hashmap_for_checkout(cliente: String)->Result<(HashMap<String, Vec<St
         ///// ojo aca
         let file_path = file_info.split(' ').collect::<Vec<&str>>()[3];
         let splitted_file_path = file_path.split('/').collect::<Vec<&str>>();
-        println!("{}",file_path);
+        //println!("{}",file_path);
         for (i, dir) in (splitted_file_path.clone()).iter().enumerate() {
             if let Some(last_element) = splitted_file_path.last() {
                 if dir == last_element {
@@ -497,7 +497,7 @@ pub fn get_blobs_from_commit(commit_hash: String,cliente: String)->Result<(),Git
     //entro al commit
     let path_and_hash_hashmap = get_commit_hashmap(commit_hash,cliente.clone())?;
     
-    println!("hashmap: {:?}", path_and_hash_hashmap);
+    //println!("hashmap: {:?}", path_and_hash_hashmap);
     
     Ok(())
 }
@@ -755,9 +755,9 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo
 }
 
 pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, cliente: String) -> Result<bool, GitrError> {
-    println!("Origin ( o master): {}", origin_commit);
-    println!("Branch (o topic): {}", branch_commit);
-    println!("Base: {}", base_commit);
+    //println!("Origin ( o master): {}", origin_commit);
+    //println!("Branch (o topic): {}", branch_commit);
+    //println!("Base: {}", base_commit);
     let branch_hashmap = get_commit_hashmap(branch_commit.clone(),cliente.clone())?;
     let mut origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
     file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone(),cliente.clone())?;
@@ -766,20 +766,20 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
     let mut hubo_conflict= false;
     for (path, origin_file_hash) in origin_hashmap.iter(){
         let origin_file_data: String =file_manager::read_file_data_from_blob_hash(origin_file_hash.clone(), cliente.clone())?; 
-        println!("branch_hashmap:{:?}", branch_hashmap);
+        //println!("branch_hashmap:{:?}", branch_hashmap);
         if branch_hashmap.contains_key(&path.clone()){
-            println!("Entre al if");
+            //println!("Entre al if");
             let branch_file_hash = branch_hashmap[path].clone(); //aax
             let branch_file_data = file_manager::read_file_data_from_blob_hash(branch_file_hash.clone(),cliente.clone())?;
 
-            println!("Hashes");
-            println!("Origin file hash: {}", origin_file_hash);
-            println!("Branch file hash: {}", branch_file_hash);
+            //println!("Hashes");
+            //println!("Origin file hash: {}", origin_file_hash);
+            //println!("Branch file hash: {}", branch_file_hash);
             
             
             
             if origin_file_hash == &branch_file_hash{
-                println!("entro al if 1");
+                //println!("entro al if 1");
                 continue;
             }
             
@@ -797,21 +797,21 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
             
             //println!("Base file hash: {}", base_file_hash);
             if &base_file_hash == origin_file_hash {
-                println!("entro al if 2");
+                //println!("entro al if 2");
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
                 aplicar_difs(path.clone(), diff_base_branch)?;
                 continue;
             }
             
             if base_file_hash == branch_file_hash {     
-                println!("entro al if 3");
+                //println!("entro al if 3");
                 continue;
            
             }
     
-            println!("base_file_data: {:?}", base_file_data);
-            println!("origin_file_data: {:?}", origin_file_data);
-            println!("branch_file_data: {:?}", branch_file_data);
+            //println!("base_file_data: {:?}", base_file_data);
+            //println!("origin_file_data: {:?}", origin_file_data);
+            //println!("branch_file_data: {:?}", branch_file_data);
 
             let mut len_archivo = base_file_data.len();
             if len_archivo == 0{
@@ -823,24 +823,24 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
                 }
             }
 
-            println!("Origin ( o master): {}", origin_commit);
-            println!("Branch (o topic): {}", branch_commit);
-            println!("Base: {}", base_commit);
+            // println!("Origin ( o master): {}", origin_commit);
+            // println!("Branch (o topic): {}", branch_commit);
+            // println!("Base: {}", base_commit);
 
             let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
             let diff_base_branch = Diff::new(base_file_data.clone(), branch_file_data.clone());
             let union_diffs;
             (union_diffs,hubo_conflict) = comparar_diffs(diff_base_origin, diff_base_branch, len_archivo-1)?; //une los diffs o da el conflict
-            println!("union_diffs: {:?}", union_diffs);
+            // println!("union_diffs: {:?}", union_diffs);
             
             if base_file_data.is_empty() || base_file_data.len() == 0{
-                println!("entro al if base empty");
+                // println!("entro al if base empty");
                 let archivo_reconstruido = _aplicar_diffs("".to_string(), union_diffs)?;
-                println!("archivo_reconstruido: {:?}", archivo_reconstruido);
+                // println!("archivo_reconstruido: {:?}", archivo_reconstruido);
                 file_manager::write_file(path.to_string()+"_mergeado", archivo_reconstruido.concat().to_string())?;
             }
             else{
-                println!("entro al else base lleno");
+                // println!("entro al else base lleno");
                 aplicar_difs(path.clone(), union_diffs)?;
             }
         }
@@ -1197,7 +1197,7 @@ pub fn save_and_add_blob_to_index(file_path: String,cliente: String) -> Result<(
         }
         Err (e) => return Err(e),
     }
-    println!("agrego este path: {}",file_path);
+    // println!("agrego este path: {}",file_path);
     let raw_data = file_manager::read_file(file_path.clone())?;
     let blob = Blob::new(raw_data)?;
     blob.save(cliente.clone())?;
@@ -1547,9 +1547,9 @@ pub fn push_packfile(stream: &mut TcpStream,pkt_ids: Vec<String>,hash_n_referenc
  * *****************/
 
 fn check_conflicts_and_get_tree(origin_commit: String, branch_commit: String, base_commit:String, cliente:String)->Result<String,GitrError>{
-    println!("Origin ( o master): {}", origin_commit);
-    println!("Branch (o topic): {}", branch_commit);
-    println!("Base: {}", base_commit);
+    // println!("Origin ( o master): {}", origin_commit);
+    // println!("Branch (o topic): {}", branch_commit);
+    // println!("Base: {}", base_commit);
 
     let hubo_conflict = three_way_merge(base_commit, branch_commit, origin_commit, cliente.clone())?;
     while hubo_conflict{
@@ -1852,7 +1852,6 @@ mod comparar_diffs_tests{
             (0,false,"hola".to_string()),
             (0,true,"<<<<<<< HEAD\nbuenas\n=======\nnihao\n>>>>>>> BRANCH".to_string()),
         ];
-        println!("\x1b[mtest06_diffs_con_1_conflict_en_primera_linea OK\x1b[0m");
         assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
     }   
 
@@ -1870,7 +1869,6 @@ mod comparar_diffs_tests{
             (2,true,"<<<<<<< HEAD\nandas\n=======\ntas\n>>>>>>> BRANCH".to_string()),
         ];
         assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
-        println!("\x1b[test07_diffs_con_1_conflict_en_la_ultima_linea OK\x1b[0m");
 
     }
 
@@ -1888,7 +1886,6 @@ mod comparar_diffs_tests{
             (1,true,"<<<<<<< HEAD\nromo\n=======\nfomo\n>>>>>>> BRANCH".to_string()),
         ];
         assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
-        println!("\x1b[test08_diffs_con_1_conflict_en_3_lineas OK\x1b[0m");
 
     }
 
@@ -1906,7 +1903,6 @@ mod comparar_diffs_tests{
             (0,true,"<<<<<<< HEAD\norigin\n=======\nnew\n>>>>>>> BRANCH".to_string()),
         ];
         assert_eq!(diff_final.unwrap().0.lineas,lineas_esperadas);
-        println!("\x1b[test09_conflicts_en_archivo_de_una_sola_linea OK\x1b[0m");
     }
 
     #[test]

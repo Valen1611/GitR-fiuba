@@ -135,15 +135,8 @@ fn get_diff(matriz_coincidencias: Vec<Vec<Celda>>, len_columna: usize, len_fila:
                         k = k.saturating_sub(1);
                     }
                 }
-                
-                
-               
             }
-
-
         }
-       
-
     }
     let base_numbers = stack.iter().map(|x| x.fila).collect::<Vec<usize>>();
     let new_numbers = stack.iter().map(|x| x.columna).collect::<Vec<usize>>();
@@ -172,14 +165,14 @@ impl Diff{
         if base == new {
             return empty_diff();
         }
-        if base.len() == 0{
+        if base.is_empty(){
             let mut only_add_diff = Diff{
                 lineas_eliminadas: vec![],
                 lineas_agregadas: vec![],
                 lineas: vec![],
                 lineas_extra: 0,
             };
-            let new_lines = new.split("\n").collect::<Vec<&str>>();
+            let new_lines = new.split('\n').collect::<Vec<&str>>();
             for (i, line) in new_lines.iter().enumerate() {
                 only_add_diff.lineas.push((i, true, line.to_string()));
             }
@@ -239,20 +232,20 @@ impl Diff{
             }
         } 
         lineas.sort_by(|a, b| a.0.cmp(&b.0)); //ordeno ascendente
-        println!("Lineas {:?}", lineas);
+        //println!("Lineas {:?}", lineas);
 
         
 
         // solo sirven los prints, por ahora quedan porque me ayudan a debuggear
         for (i, line) in base_lines.iter().enumerate() {
             if indices_lineas_eliminadas.contains(&i) {
-                println!("{}. -{}",i, line);
+                //println!("{}. -{}",i, line);
                 lineas_eliminadas.push((i, line.to_string()));
             }
         }
         for (i, line) in new_lines.iter().enumerate() {
             if indices_lineas_agregadas.contains(&i) {
-                println!("{}. +{}",i, line);
+                //println!("{}. +{}",i, line);
                 lineas_agregadas.push((i, line.to_string()));
             }
         }
@@ -283,11 +276,9 @@ impl Diff{
         }
         linea
     }
-
 }
 
 #[cfg(test)]
-
 mod tests{
     use super::*;
 
@@ -298,41 +289,5 @@ mod tests{
         let diff = Diff::new(base,new);
         assert!(diff.lineas_eliminadas.is_empty());
     }
-
-    // #[test]
-    // fn test01_diff_entre_strings_diferentes_no_esta_vacio(){
-    //     let base = "A\nB\nC\nD\nE\nF\nK".to_string();
-    //     let new = "B\nH\nD\nE\nF\nC\nK".to_string();
-    //     let diff = Diff::new(base,new);
-    //     let lineas_esperadas = vec![
-    //         (0,false,"A".to_string()),
-    //         (1,true,"H".to_string()),
-    //         (2,false,"C".to_string()),
-    //         (3,false,"D".to_string()),
-    //         (4,false,"E".to_string()),
-    //         (5,false,"F".to_string()),
-    //         (6,true,"K".to_string())
-    //     ];
-
-    //    // assert!(diff.lineas, lineas_esperadas);
-    // }
-
-    // #[test]
-    // fn test02_diff_con_codigo_elimino_linea(){
-    //     let base = format!("fn main () {{\tprintln!(\"hello word!\");}}\n");
-
-    //     let new = format!("fn main () {{\tprintln!(\"hello word!\");}}\na");
-        
-    //     let diff = Diff::new(base,new);
-    // }
-
-    // #[test]
-    // fn test03_diff_agregando_al_medio(){
-    //     let base = format!("hola\nsoy\nbase\n");
-
-    //     let new = format!("hola\nsoy\npepe\nbase\n");
-        
-    //     let diff = Diff::new(base,new);
-    // }
 
 }
