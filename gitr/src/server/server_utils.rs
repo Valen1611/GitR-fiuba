@@ -37,7 +37,7 @@ pub fn server_init (s_addr: &str) -> std::io::Result<()>  {
             let trimmed = input.trim().to_lowercase();
             if trimmed == "q" {
                 // Envia un mensaje al hilo principal para indicar que debe salir
-                TcpStream::connect("localhost:9418").unwrap().write("q".as_bytes()).unwrap();
+                let _ = TcpStream::connect("localhost:9418").unwrap().write("q".as_bytes()).unwrap();
                 break;
             }
             input.clear();
@@ -285,9 +285,7 @@ fn pkt_needed(old: Vec<String>, new: Vec<String>) -> bool {
     for i in 0..old.len() {
         if old[i] == nul_obj  && new[i] != nul_obj{ // crear referencia
             return true
-        } else if new[i] == nul_obj && old[i] != nul_obj { // borrar referencia
-            continue;
-        } else if old[i] == new[i] { // no hubo cambios
+        } else if (new[i] == nul_obj && old[i] != nul_obj) || old[i] == new[i] { // borrar referencia o ref sin cambios
             continue;
         } else { // Modificacion de referencia
             return true

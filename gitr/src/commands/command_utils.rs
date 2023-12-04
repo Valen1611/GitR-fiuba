@@ -1552,16 +1552,18 @@ fn check_conflicts_and_get_tree(origin_commit: String, branch_commit: String, ba
     // println!("Base: {}", base_commit);
 
     let hubo_conflict = three_way_merge(base_commit, branch_commit, origin_commit, cliente.clone())?;
-    while hubo_conflict{
-        println!("conflicts detected, please resolve them and then run '--continue'");
-        print!("$ ");
-        let mut input = String::new();
-        match io::stdin().read_line(&mut input){
-            Ok(_) => (),
-            Err(_e) => return Err(GitrError::InputError),
-        }
-        if input.trim() == "--continue"{
-            break
+    if hubo_conflict{
+        loop {
+            println!("conflicts detected, please resolve them and then run '--continue'");
+            print!("$ ");
+            let mut input = String::new();
+            match io::stdin().read_line(&mut input){
+                Ok(_) => (),
+                Err(_e) => return Err(GitrError::InputError),
+            }
+            if input.trim() == "--continue"{
+                break
+            }
         }
     }
     commands::add(vec![".".to_string()],cliente.clone())?;
