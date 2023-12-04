@@ -1,4 +1,4 @@
-use::chrono;
+use ::chrono;
 
 use crate::{file_manager, gitr_errors::GitrError};
 
@@ -8,8 +8,6 @@ enum EntryType {
     Action,
     FileOperation,
 }
-
-
 
 struct Logger {
     entry_type: EntryType,
@@ -28,7 +26,6 @@ impl Logger {
         }
     }
 
-
     pub fn save(&self) -> Result<(), GitrError> {
         let entry = format!(
             "{{\"type\": \"{:?}\",\"timestamp\": \"{}\",\"message\": \"{}\"}}",
@@ -39,9 +36,7 @@ impl Logger {
             Err(_) => Err(GitrError::LogError),
         }
     }
-
 }
-
 
 pub fn log_error(message: String) -> Result<(), GitrError> {
     let logger = Logger::new(EntryType::Error, message);
@@ -62,25 +57,27 @@ pub fn log_file_operation(message: String) -> Result<(), GitrError> {
     Ok(())
 }
 
-pub fn log (flags: Vec<String>) -> Result<(), GitrError>{
+pub fn log(flags: Vec<String>) -> Result<(), GitrError> {
     let n = match flags[0].parse::<usize>() {
         Ok(n) => n,
-        Err(_) => return Err(GitrError::InvalidArgumentError(flags[0].clone(), "log <n>".to_string())),
+        Err(_) => {
+            return Err(GitrError::InvalidArgumentError(
+                flags[0].clone(),
+                "log <n>".to_string(),
+            ))
+        }
     };
 
     let log = file_manager::read_file("src/log.json".to_string())?;
-    for line in log.lines().rev().take(n){
+    for line in log.lines().rev().take(n) {
         let msg = line.split("message\": ").collect::<Vec<&str>>()[1];
         if line.contains("Error") {
             println!("\x1b[31m{}\x1b[0m", msg);
-        }
-        else if line.contains("Action") {
+        } else if line.contains("Action") {
             println!("\x1b[34m{}\x1b[0m", msg);
-        }
-        else if line.contains("FileOperation") {
+        } else if line.contains("FileOperation") {
             println!("\x1b[93m{}\x1b[0m", msg);
-        }
-        else {
+        } else {
             println!("{}", msg);
         }
     }

@@ -1,9 +1,8 @@
 pub mod commands;
-pub mod git_transport;
-pub mod objects;
-pub mod gui;
 pub mod diff;
-
+pub mod git_transport;
+pub mod gui;
+pub mod objects;
 
 pub mod file_manager;
 pub mod gitr_errors;

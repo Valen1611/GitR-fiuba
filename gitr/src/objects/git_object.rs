@@ -1,15 +1,15 @@
 use super::blob::Blob;
-use super::tree::Tree;
 use super::commit::Commit;
 use super::tag::Tag;
+use super::tree::Tree;
 
 #[derive(Debug)]
 
-pub enum GitObject{
+pub enum GitObject {
     Blob(Blob),
     Commit(Commit),
     Tree(Tree),
-    Tag(Tag)
+    Tag(Tag),
 }
 impl GitObject {
     pub fn get_data(&self) -> Vec<u8> {
@@ -19,7 +19,7 @@ impl GitObject {
             GitObject::Tree(tree) => tree.get_data(),
             GitObject::Tag(tag) => tag.get_data(),
         }
-    }    
+    }
     pub fn get_hash(&self) -> String {
         match self {
             GitObject::Blob(blob) => blob.get_hash(),
@@ -36,5 +36,4 @@ impl GitObject {
             GitObject::Tag(_tag) => 4,
         }
     }
-    
 }
