@@ -82,7 +82,6 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         if n == 0 {
             return Ok(());
         }
-        
         // ########## HANDSHAKE ##########
         let pkt_line = String::from_utf8_lossy(&buffer[..n]).to_string(); 
         match is_valid_pkt_line(&pkt_line) {
@@ -91,7 +90,8 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             return Ok(())}
         }
         let elems = split_n_validate_elems(&pkt_line)?;
-        let r_path = elems[2].to_string();
+        println!("Comando: {}, Repo remoto: {}, host: {}", elems[0], elems[1], elems[2]);
+        let r_path = elems[1].to_string();
         let _ = create_dirs(&r_path);
         // ########## REFERENCE DISCOVERY ##########
         (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
@@ -443,7 +443,7 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
     let mut elems: Vec<&str> = vec![];
     if (div1.len() == 2) || div2.len() == 3 {
         elems.push(div1[0]);
-        elems.push(div2[0]);
+        elems.push(div2[0].strip_prefix("/").unwrap_or(div2[0]));
         elems.push(div2[1].strip_prefix("host=").unwrap_or(div2[1]));
         return Ok(elems)
 
