@@ -268,6 +268,7 @@ pub fn update_hashmap_tree_entry(tree_map:&mut  HashMap<String, Vec<String>>, pr
     }
 }
 
+// check if the branch exists and if its -b used it creates a branch
 pub fn get_branch_to_checkout(args_received: Vec<String>,cliente: String) -> Result<String, GitrError>{
     let mut branch_to_checkout: String = args_received[0].clone();
     if args_received.len() == 2 && args_received[0] == "-b"{
@@ -319,6 +320,8 @@ pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError>{
  *   LS-FILES FUNCTIONS
  **************************
  **************************/
+
+ /// returns cached ls-files
 pub fn get_ls_files_cached(cliente: String) -> Result<String, GitrError>{
     let mut string_res = String::new();
     let index = match read_index(cliente.clone()){
@@ -336,6 +339,7 @@ pub fn get_ls_files_cached(cliente: String) -> Result<String, GitrError>{
     Ok(string_res)
 }
 
+/// returns deleted files or modified files depending on bool received
 pub fn get_ls_files_deleted_modified(deleted: bool,cliente: String) -> Result<String, GitrError>{
     let mut res = String::new();
     let (not_staged, _, _) = get_untracked_notstaged_files(cliente.clone())?;
@@ -436,6 +440,7 @@ pub fn branch_newbranch_flag(branch:String,cliente: String) -> Result<(), GitrEr
     
 }
 
+/// receives a branch_name and returns the commit hash
 pub fn branch_commits_list(branch_name: String,cliente: String)->Result<Vec<String>, GitrError>{
     let mut commits = Vec::new();
     let mut commit = file_manager::get_commit(branch_name,cliente.clone())?;
@@ -458,13 +463,13 @@ pub fn branch_commits_list(branch_name: String,cliente: String)->Result<Vec<Stri
  **************************
  **************************/
 
+ /// prints the commit confirmation after commiting
 pub fn print_commit_confirmation(message:String,cliente: String)->Result<(), GitrError>{
     let branch = get_head(cliente.clone())?
             .split('/')
             .collect::<Vec<&str>>()[2]
             .to_string();
         let hash_recortado = &get_current_commit(cliente.clone())?[0..7];
-
         println!("[{} {}] {}", branch, hash_recortado, message);
         Ok(())
 }
@@ -485,6 +490,7 @@ pub fn commit_existing(cliente: String) -> Result<(), GitrError>{
  **************************
  **************************/
 
+ /// receives a branch name and makes fast forward merge
 pub fn fast_forward_merge(branch_name:String,cliente: String)->Result<(),GitrError> {
     let commit: String = file_manager::get_commit(branch_name,cliente.clone())?;
     let head = get_head(cliente.clone())?;
@@ -495,12 +501,9 @@ pub fn fast_forward_merge(branch_name:String,cliente: String)->Result<(),GitrErr
     Ok(())
 }
 
+
 pub fn get_blobs_from_commit(commit_hash: String,cliente: String)->Result<(),GitrError> {
-    //entro al commit
     let _path_and_hash_hashmap = get_commit_hashmap(commit_hash,cliente.clone())?;
-    
-    //println!("hashmap: {:?}", path_and_hash_hashmap);
-    
     Ok(())
 }
 
@@ -757,9 +760,6 @@ fn comparar_diffs(diff_base_origin: Diff, diff_base_branch: Diff, limite_archivo
 }
 
 pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit: String, cliente: String) -> Result<bool, GitrError> {
-    //println!("Origin ( o master): {}", origin_commit);
-    //println!("Branch (o topic): {}", branch_commit);
-    //println!("Base: {}", base_commit);
     let branch_hashmap = get_commit_hashmap(branch_commit.clone(),cliente.clone())?;
     let mut origin_hashmap = get_commit_hashmap(origin_commit.clone(),cliente.clone())?;
     file_manager::add_new_files_from_merge(origin_hashmap.clone(), branch_hashmap.clone(),cliente.clone())?;
@@ -768,20 +768,12 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
     let mut hubo_conflict= false;
     for (path, origin_file_hash) in origin_hashmap.iter(){
         let origin_file_data: String =file_manager::read_file_data_from_blob_hash(origin_file_hash.clone(), cliente.clone())?; 
-        //println!("branch_hashmap:{:?}", branch_hashmap);
         if branch_hashmap.contains_key(&path.clone()){
-            //println!("Entre al if");
             let branch_file_hash = branch_hashmap[path].clone(); //aax
             let branch_file_data = file_manager::read_file_data_from_blob_hash(branch_file_hash.clone(),cliente.clone())?;
 
-            //println!("Hashes");
-            //println!("Origin file hash: {}", origin_file_hash);
-            //println!("Branch file hash: {}", branch_file_hash);
-            
-            
             
             if origin_file_hash == &branch_file_hash{
-                //println!("entro al if 1");
                 continue;
             }
             
@@ -797,24 +789,17 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
             }
             
             
-            //println!("Base file hash: {}", base_file_hash);
             if &base_file_hash == origin_file_hash {
-                //println!("entro al if 2");
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
                 aplicar_difs(path.clone(), diff_base_branch)?;
                 continue;
             }
             
             if base_file_hash == branch_file_hash {     
-                //println!("entro al if 3");
                 continue;
            
             }
     
-            //println!("base_file_data: {:?}", base_file_data);
-            //println!("origin_file_data: {:?}", origin_file_data);
-            //println!("branch_file_data: {:?}", branch_file_data);
-
             let mut len_archivo = base_file_data.len();
             if len_archivo == 0{
                 if branch_file_data.len() > origin_file_data.len(){
@@ -825,24 +810,16 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
                 }
             }
 
-            // println!("Origin ( o master): {}", origin_commit);
-            // println!("Branch (o topic): {}", branch_commit);
-            // println!("Base: {}", base_commit);
-
             let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
             let diff_base_branch = Diff::new(base_file_data.clone(), branch_file_data.clone());
             let union_diffs;
             (union_diffs,hubo_conflict) = comparar_diffs(diff_base_origin, diff_base_branch, len_archivo-1)?; //une los diffs o da el conflict
-            // println!("union_diffs: {:?}", union_diffs);
             
             if base_file_data.is_empty() || base_file_data.is_empty(){
-                // println!("entro al if base empty");
                 let archivo_reconstruido = _aplicar_diffs("".to_string(), union_diffs)?;
-                // println!("archivo_reconstruido: {:?}", archivo_reconstruido);
                 file_manager::write_file(path.to_string()+"_mergeado", archivo_reconstruido.concat().to_string())?;
             }
             else{
-                // println!("entro al else base lleno");
                 aplicar_difs(path.clone(), union_diffs)?;
             }
         }
@@ -850,10 +827,6 @@ pub fn three_way_merge(base_commit: String, origin_commit: String, branch_commit
             continue;
         }
     }
-
-    // commands::add(vec![".".to_string()], cliente.clone())?;
-    // create_merge_commit(branch_name,branch_commit, cliente)?;
-    // aca crearse otro commit especial para poder tener 2 padre,s pero no tocar la funcion commit original
 
     Ok(hubo_conflict)
 }
