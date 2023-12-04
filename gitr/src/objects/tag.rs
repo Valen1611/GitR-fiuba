@@ -1,9 +1,3 @@
-// object <commit-sha1>
-// type commit
-// tag <tag-name>
-// tagger <author-with-timestamp>
-
-// <tag-message>
 
 use chrono::Utc;
 
@@ -15,19 +9,7 @@ pub struct Tag{
     data: Vec<u8>,
     hash: String,
     commit_hash: String,
-    //tag_name: String,
-    //tag_message: String,
 }
-
-/*
-tag <size>\0object <commit-sha1>\n
-type commit\n
-tag <tag-name>\n
-tagger <author-with-timestamp>\n
-\n
-<tag-message>\n
-
-*/
 
 impl Tag{
     pub fn new(tag_name: String, tag_message: String, commit_hash: String, cliente: String) -> Result<Self, GitrError>{

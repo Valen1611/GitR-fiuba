@@ -15,9 +15,6 @@ pub struct Commit{
     hash: String,
     tree: String,
     parents: Vec<String>,
-    // author: String,
-    // committer: String,
-    // message: String,
 }
 
 impl Commit{
@@ -112,7 +109,6 @@ impl Commit{
     }
 
     pub fn get_objects_from_commits(commits_id: Vec<String>,client_objects: Vec<String>, r_path: String) -> Result<Vec<String>,GitrError> {
-        // Voy metiendo en el objects todo lo que no haya que mandarle denuevo al cliente
         let mut object_ids: HashSet<String> = HashSet::new();
         for obj_id in client_objects.clone() {
             object_ids.insert(obj_id.clone());
@@ -184,33 +180,3 @@ impl Commit{
     }
 }
 
-
-#[cfg(test)]
-mod tests {
-    // hacer mismos tests que tag
-    // use crate::objects::commit::Commit;
-    // #[test]
-    // fn test01_new_commit_from_string() {
-
-    //     let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string()).unwrap();
-    //     let commit_string = format!("tree {}\nparent {}\nauthor {} {} {}\ncommitter {}\n\nmessage", commit.tree, commit.parent, commit.author, "timestamp", "Buenos Aires +3", commit.committer);
-    //     let commit_from_string = Commit::new_commit_from_string(commit_string).unwrap();
-    //     assert_eq!(commit_from_string.tree, commit.tree);
-    //     assert_eq!(commit_from_string.parent, commit.parent);
-    //     // assert_eq!(commit_from_string.author, commit.author);
-    //     // assert_eq!(commit_from_string.committer, commit.committer);
-    //     // assert_eq!(commit_from_string.message, commit.message);
-    // }
-
-    // #[test]
-    // fn new_commit_from_data() {
-    //     let commit = Commit::new("tree".to_string(), "parent".to_string(), "author".to_string(), "committer".to_string(), "message".to_string()).unwrap();
-    //     let commit_string = format!("commit <lenght>\0tree {}\nparent {}\nauthor {} {} {}\ncommitter {}\n\nmessage", commit.tree, commit.parent, commit.author, "timestamp", "Buenos Aires +3", commit.committer);
-    //     let commit_from_string = Commit::new_commit_from_data(commit_string).unwrap();
-    //     assert_eq!(commit_from_string.tree, commit.tree);
-    //     assert_eq!(commit_from_string.parent, commit.parent);
-    //     // assert_eq!(commit_from_string.author, commit.author);
-    //     // assert_eq!(commit_from_string.committer, commit.committer);
-    //     // assert_eq!(commit_from_string.message, commit.message);
-    // }
-}

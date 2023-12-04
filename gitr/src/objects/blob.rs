@@ -5,7 +5,7 @@ use crate::commands::command_utils::{flate2compress, sha1hashing};
 
 #[derive(Debug)]
 
-pub enum TreeEntry {// creo que esto es innecessario, se puede usar GitrObject
+pub enum TreeEntry {
     Blob(Blob),
     Tree(Tree),
 }

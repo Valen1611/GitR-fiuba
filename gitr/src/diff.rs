@@ -13,7 +13,6 @@ pub struct Diff{
 struct Celda{
     valor: usize,
     es_match: bool,
-    //valor_matcheado: String,
     fila: usize,
     columna: usize,
 }
@@ -201,7 +200,6 @@ impl Diff{
                         Celda {
                             valor: next_value, 
                             es_match: false,
-                            //valor_matcheado: "".to_string(),
                             fila: i, 
                             columna: j}
                         );
@@ -216,8 +214,8 @@ impl Diff{
 
         let (indices_lineas_eliminadas, indices_lineas_agregadas) = get_diff(matriz_coincidencias, base_lines.len()-1, new_lines.len()-1);
 
-        let mut lineas_eliminadas = Vec::new(); //las que tengo que sacar de base: push(i,false,base[i])
-        let mut lineas_agregadas = Vec::new(); //las que tengo que agrega a base: push(i,true,new[i])
+        let mut lineas_eliminadas = Vec::new(); 
+        let mut lineas_agregadas = Vec::new(); 
 
         let mut lineas = Vec::new();
 
@@ -232,20 +230,16 @@ impl Diff{
             }
         } 
         lineas.sort_by(|a, b| a.0.cmp(&b.0)); //ordeno ascendente
-        //println!("Lineas {:?}", lineas);
 
         
 
-        // solo sirven los prints, por ahora quedan porque me ayudan a debuggear
         for (i, line) in base_lines.iter().enumerate() {
             if indices_lineas_eliminadas.contains(&i) {
-                //println!("{}. -{}",i, line);
                 lineas_eliminadas.push((i, line.to_string()));
             }
         }
         for (i, line) in new_lines.iter().enumerate() {
             if indices_lineas_agregadas.contains(&i) {
-                //println!("{}. +{}",i, line);
                 lineas_agregadas.push((i, line.to_string()));
             }
         }
