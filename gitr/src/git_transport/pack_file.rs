@@ -136,11 +136,11 @@ pub fn read_object(buffer: &[u8], index: usize, objects_dir: &mut HashMap<String
                 obj = git_valid_object_from_packfile(object_type, &decodeado)?;
             }
             objects_dir.insert(obj.get_hash().to_string(),(obj.get_type(),obj.get_data()));
-            return Ok((obj,leidos + cursor));
+            Ok((obj,leidos + cursor))
         },
         Err(err) => {
             println!("Error: {}", err);
-            return Err(GitrError::PackFileError("read_pack_file".to_string(),"no se pudo parsear el objeto".to_string()));
+            Err(GitrError::PackFileError("read_pack_file".to_string(),"no se pudo parsear el objeto".to_string()))
         }
     }
 }
@@ -185,7 +185,7 @@ pub fn prepare_contents(datos: Vec<Vec<u8>>) -> Vec<(String,String,Vec<u8>)> {
         }
         let (header, raw_data) = data.split_at(i);
         let h_str = String::from_utf8_lossy(header).to_string();
-        let (obj_type, obj_len) = h_str.split_once(" ").unwrap_or(("", ""));
+        let (obj_type, obj_len) = h_str.split_once(' ').unwrap_or(("", ""));
         let (_, raw_data) = raw_data.split_at(1);
         contents.push((obj_type.to_string(), obj_len.to_string(), raw_data.to_vec()));
     }

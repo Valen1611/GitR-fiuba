@@ -5,7 +5,7 @@ use gtk::{prelude::*, Application, Dialog, Entry, TextView, TextBuffer, ComboBox
 
 use gtk::{Builder,Window, Button, FileChooserButton};
 
-use crate::commands::commands::{self};
+use crate::commands::commands_fn::{self};
 use crate::file_manager;
 use crate::gitr_errors::GitrError;
 
@@ -160,7 +160,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     branch_button.connect_clicked(move|_|{
         let branch_name = new_branch_name.text();
         let flags = vec![branch_name.to_string()];
-        match commands::branch(flags,cliente_.clone()){
+        match commands_fn::branch(flags,cliente_.clone()){
             Ok(_) => (),
             Err(e) => {
                 println!("Error al crear branch: {:?}",e);
@@ -241,7 +241,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     
     commit_confirm_clone.connect_clicked(move|_|{
         commit_dialog_clone.hide();
-        match commands::add(vec![".".to_string()],cliente_.clone()){
+        match commands_fn::add(vec![".".to_string()],cliente_.clone()){
             Ok(_)=> (),
             Err(e)=> {
                 if e == GitrError::FileReadError(cliente_.clone()+"/.head_repo"){
@@ -255,7 +255,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         };
         let message = format!("\"{}\"",commit_message.text());
         let cm_msg = vec!["-m".to_string(),message];
-        match commands::commit(cm_msg,"None".to_string(),cliente_.clone()){
+        match commands_fn::commit(cm_msg,"None".to_string(),cliente_.clone()){
             Ok(_) => (),
             Err(e) => {
                 println!("Error al hacer commit: {:?}",e);
@@ -281,7 +281,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
             None => return,
         };
         let flags = vec![String::from(branch)];
-        match commands::checkout(flags,cliente_.clone()){
+        match commands_fn::checkout(flags,cliente_.clone()){
             Ok(_) => (),
             Err(e) => {
                 println!("Error al cambiar de branch: {:?}",e);
@@ -300,7 +300,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
             update_branches(&branch_selector_clon, cliente_.clone());
             update_branches(&merge_branch_selector_clon, cliente_.clone());
             repo},
-        Err(e) => cliente_.clone(),
+        Err(_e) => cliente_.clone(),
     };
     repo_selector.set_current_folder(current_repo.clone());
     repo_selector.connect_file_set(move |data|{
@@ -327,13 +327,12 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
         let url = clone_url.text();
         println!("Clonando repo: {:?}", url);
         clone_dialog_.hide();
-        match commands::clone(vec![url.to_string(),"repo_clonado".to_string()],cliente_.clone()){
+        match commands_fn::clone(vec![url.to_string(),"repo_clonado".to_string()],cliente_.clone()){
             Ok(_)=>(),
             Err(e) => {
                 println!("Error al clonar: {}",e);
-                return;
             }
-        };
+        }
         //Aca habria que setear el repo actual al recien con el selector y el file explorer
     });
 
@@ -348,7 +347,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
 
     clone_push.connect_clicked(move|_|{
         let flags = vec![];
-        match commands::push(flags,cliente_.clone()){
+        match commands_fn::push(flags,cliente_.clone()){
             Ok(_) => (),
             Err(e) => {
                 println!("Error al hacer push: {:?}",e);
@@ -365,7 +364,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
 
     clone_pull.connect_clicked(move|_|{
         let flags = vec![];
-        match commands::pull(flags,cliente_.clone()){
+        match commands_fn::pull(flags,cliente_.clone()){
             Ok(_) => (),
             Err(e) => {
                 println!("Error al hacer pull: {:?}",e);
@@ -381,7 +380,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     let cliente_ = cliente.clone();
     clone_fetch.connect_clicked(move|_|{
         let flags = vec![String::from("")];
-        if commands::fetch(flags,cliente_.clone()).is_err(){
+        if commands_fn::fetch(flags,cliente_.clone()).is_err(){
             println!("Error al hacer fetch");
             clone_error.show();
             return;
@@ -414,7 +413,7 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
     init_accept_button.connect_clicked(move|_|{
         let repo_name = init_repo_name_clone.text();
         init_dialog_clone.hide();
-        if commands::init(vec![repo_name.to_string()],cliente_.clone()).is_err(){
+        if commands_fn::init(vec![repo_name.to_string()],cliente_.clone()).is_err(){
             println!("Error al inicializar repo");
             return;
         };
@@ -434,14 +433,13 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
             None => return,
         };
         let flags = vec![branch.to_string()];
-        match commands::merge_(flags,cliente_.clone()){
+        match commands_fn::merge_(flags,cliente_.clone()){
             Ok(_) => {
                 remote_error_label_clone.set_text("Surgieron conflicts al hacer merge, por favor arreglarlos y commitear el resultado.");
                 remote_error_dialog_clone.show();
             },
             Err(e) => {
                 println!("Error al hacer merge: {:?}",e);
-                return;
             },
         }
     });
@@ -474,8 +472,8 @@ fn build_ui(application: &gtk::Application, cliente: String)->Option<String>{
  pub fn initialize_gui(cliente: String){
     let app = Application::new(Some("test.test"), ApplicationFlags::HANDLES_OPEN);
     let cliente_clon = cliente.clone();
-    app.connect_open(move|app,files,_| {
-        build_ui(&app, cliente_clon.clone());
+    app.connect_open(move|app,_files,_| {
+        build_ui(app, cliente_clon.clone());
     });
 
     app.run();

@@ -30,10 +30,10 @@ impl GitObject {
     }
     pub fn get_type(&self) -> u8 {
         match self {
-            GitObject::Commit(commit) => 1,
-            GitObject::Tree(tree) => 2,
-            GitObject::Blob(blob) => 3,
-            GitObject::Tag(tag) => 4,
+            GitObject::Commit(_commit) => 1,
+            GitObject::Tree(_tree) => 2,
+            GitObject::Blob(_blob) => 3,
+            GitObject::Tag(_tag) => 4,
         }
     }
     

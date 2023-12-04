@@ -905,7 +905,7 @@ pub fn get_object(id: String, r_path: String) -> Result<String,GitrError> {
         Err(_) => return Err(GitrError::FileReadError(dir_path)),
     };
     let mut contenido: Vec<u8>= Vec::new();
-    if let Err(_) = archivo.read_to_end(&mut contenido) {
+    if archivo.read_to_end(&mut contenido).is_err() {
         return Err(GitrError::FileReadError(dir_path));
     }
     let descomprimido = String::from_utf8_lossy(&decode(&contenido)?).to_string();
@@ -919,7 +919,7 @@ pub fn get_object_bytes(id: String, r_path: String) -> Result<Vec<u8>,GitrError>
         Err(_) => return Err(GitrError::FileReadError(dir_path)),
     };
     let mut contenido: Vec<u8>= Vec::new();
-    if let Err(_) = archivo.read_to_end(&mut contenido) {
+    if archivo.read_to_end(&mut contenido).is_err() {
         return Err(GitrError::FileReadError(dir_path));
     }
     decode(&contenido)
@@ -928,7 +928,7 @@ pub fn get_object_bytes(id: String, r_path: String) -> Result<Vec<u8>,GitrError>
 pub fn decode(input: &[u8]) -> Result<Vec<u8>, GitrError> {
     let mut decoder = ZlibDecoder::new(input);
     let mut decoded_data = Vec::new();
-    if let Err(_) = decoder.read_to_end(&mut decoded_data) {
+    if decoder.read_to_end(&mut decoded_data).is_err() {
         return Err(GitrError::CompressionError);
     }
     Ok(decoded_data)

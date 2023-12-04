@@ -12,7 +12,7 @@ pub struct Tree{
 }
 
 
-pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrError>{
+pub fn get_formated_hash(hash: String, path: &str) -> Result<Vec<u8>, GitrError>{
     let mut formated_hash:  Vec<u8> = Vec::new();
     for i in (0..40).step_by(2) {
         let first_char = hash.as_bytes()[i] as char;
@@ -21,7 +21,7 @@ pub fn get_formated_hash(hash: String, path: &String) -> Result<Vec<u8>, GitrErr
         let byte = match u8::from_str_radix(&byte_as_str, 16)
         {
             Ok(byte) => byte,
-            Err(_) => return Err(GitrError::FileReadError(path.clone())),
+            Err(_) => return Err(GitrError::FileReadError(path.clone().to_string())),
         };
         formated_hash.push(byte);
     }
