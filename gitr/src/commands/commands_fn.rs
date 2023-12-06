@@ -560,3 +560,15 @@ pub fn check_ignore(paths: Vec<String>, client: String) -> Result<(), GitrError>
         Err(e) => Err(e),
     }
 }
+
+
+/********************
+ *  PULL REQUESTS   *
+ ********************/
+
+
+
+
+pub fn create_pr(cliente: String) -> Result<(), GitrError>{ 
+    _create_pr(cliente.clone())
+}

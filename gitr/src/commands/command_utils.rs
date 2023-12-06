@@ -1875,6 +1875,64 @@ pub fn _ls_tree(
     Ok(result)
 }
 
+/*****************
+ * PULL REQUESTS *
+ *****************/
+
+pub fn _create_pr(cliente: String) -> Result<(), GitrError> {
+    println!("create-pr");
+    let repo = file_manager::get_current_repo(cliente.clone())?;
+
+    let request_line = format!("POST /repos/{}/pulls HTTP/1.1\n", repo);
+    let header = format!("Host: localhost:9418\nUser-Agent: {}/1.0\nContent-Type: application/json\n", cliente);
+    let body = format!("{{\"title\":\"{}\",\"head\":\"{}\",\"base\":\"{}\"}}", "haciendo un pr", "branch", "master");
+
+    // Conectar
+    let mut stream = match TcpStream::connect("localhost:9418") {
+        Ok(s) => s,
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+
+    // Enviar Request
+    let request = request_line + &header + "\n" + &body;
+    println!("[CLIENT]: Sending request:\n[{}]", request);
+    match stream.write(request.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    let buf = &mut [0; 1024];
+    match stream.read(buf) {
+        Ok(n) => {
+            print!("[CLIENT]: Server response is: ");
+            let response = String::from_utf8_lossy(&buf[..n]);
+            if response.contains("201") {
+                print!("\x1b[0;32m")
+            }
+            else {
+                print!("\x1b[0;31m")
+            }
+            
+            println!("{}", response);
+            print!("\x1b[0m");
+        }
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+
+    Ok(())
+}
+
+
+
+
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
 //#[cfg(test)]
 // mod clone_tests {
@@ -2580,3 +2638,5 @@ mod check_ignore_tests {
         fs::remove_dir_all(path).unwrap();
     }
 }
+
+

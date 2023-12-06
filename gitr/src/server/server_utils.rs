@@ -77,57 +77,113 @@ pub fn server_init(s_addr: &str) -> std::io::Result<()> {
     Ok(())
 }
 
-/// Maneja una conexion con cada cliente llevando a cabo el protocolo Git Transport.
+/// Maneja una conexion con cada cliente llevando a cabo el protocolo Git Transport o HTTP.
 /// # Recibe
 /// * stream: TcpStream ya conectado con el Gitr cliente
 /// # Devuelve
 /// Err(std::Error) si no se pudo establecer bien la conexion o algun proceso interno tambien da error.
 fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
     let mut buffer = [0; 1024];
-    let guardados_id: HashSet<String>;
-    let refs_string: String;
+
 
     if let Ok(n) = stream.read(&mut buffer) {
         if n == 0 {
             return Ok(());
         }
         // ########## HANDSHAKE ##########
-        let pkt_line = String::from_utf8_lossy(&buffer[..n]).to_string();
-        match is_valid_pkt_line(&pkt_line) {
-            Ok(_) => {}
-            Err(_) => {
-                let _ = stream.write("Error: no se respeta el formato pkt-line".as_bytes());
-                return Ok(());
-            }
+        let request: String = String::from_utf8_lossy(&buffer[..n]).to_string();
+
+
+        if request.starts_with("0") {
+            return handle_pkt_line(request, stream);
         }
-        let elems = split_n_validate_elems(&pkt_line)?;
-        println!(
-            "Comando: {}, Repo remoto: {}, host: {}",
-            elems[0], elems[1], elems[2]
-        );
-        let r_path = elems[1].to_string();
-        let _ = create_dirs(&r_path);
-        // ########## REFERENCE DISCOVERY ##########
-        (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
-        let _ = stream.write(refs_string.as_bytes())?;
-        // ########## ELECCION DE COMANDO ##########
-        match elems[0] {
-            "git-upload-pack" => {
-                gitr_upload_pack(&mut stream, guardados_id, r_path)?;
-            } // Mandar al cliente
-            "git-receive-pack" => {
-                gitr_receive_pack(&mut stream, r_path)?;
-            } // Recibir del Cliente
-            _ => {
-                let _ = stream.write("Error: comando git no reconocido".as_bytes())?;
-            }
+        if request.starts_with("GET") {
+            println!("[SERVER]: GET request recieved");
+            /*
+            este caso puede ser
+            Listar PRs - GET /repos/{repo}/pulls
+            Obtener PR - GET /repos/{repo}/pulls/{pull_number}
+            Listar commits - repos/{repo}/pulls/{pull_number}/commits
+            */
+
+            //stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
         }
-        return Ok(());
+        if request.starts_with("POST") {
+            println!("[SERVER]: POST request recieved");
+            let route = request.split(' ').collect::<Vec<&str>>()[1];
+            let client = route.split('/').collect::<Vec<&str>>()[2];
+            let repo = route.split('/').collect::<Vec<&str>>()[3];
+
+            println!("route: {}", route);
+            println!("client: {}", client);
+            println!("repo: {}", repo);
+            // ahora que tengo el cliente y el repo, deberia buscar eso en el servidor
+            // y crearle el pr?
+     
+            stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+        }
+        if request.starts_with("PUT") {
+            println!("[SERVER]: PUT request recieved");
+            /*
+            Hacer el merge 💀💀💀
+            PUT /repos/{repo}/pulls/{pull_number}/merge
+            
+             */
+        }
+
+        // OPCIONAL
+        // if request.starts_with("PATCH") {
+        //     /*
+        //     Modificar el patch
+        //     PATCH /repos/{repo}/pulls/{pull_number}
+            
+        //      */
+        // }
+
+
+        return Ok(())
+        
     }
     Err(Error::new(
         std::io::ErrorKind::Other,
         "Error: no se pudo leer el stream",
     ))
+}
+
+
+fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()> {
+    let guardados_id: HashSet<String>;
+    let refs_string: String;
+    match is_valid_pkt_line(&request) {
+        Ok(_) => {}
+        Err(_) => {
+            let _ = stream.write("Error: no se respeta el formato pkt-line".as_bytes());
+            return Ok(());
+        }
+    }
+    let elems = split_n_validate_elems(&request)?;
+    println!(
+        "Comando: {}, Repo remoto: {}, host: {}",
+        elems[0], elems[1], elems[2]
+    );
+    let r_path = elems[1].to_string();
+    let _ = create_dirs(&r_path);
+    // ########## REFERENCE DISCOVERY ##########
+    (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
+    let _ = stream.write(refs_string.as_bytes())?;
+    // ########## ELECCION DE COMANDO ##########
+    match elems[0] {
+        "git-upload-pack" => {
+            gitr_upload_pack(&mut stream, guardados_id, r_path)?;
+        } // Mandar al cliente
+        "git-receive-pack" => {
+            gitr_receive_pack(&mut stream, r_path)?;
+        } // Recibir del Cliente
+        _ => {
+            let _ = stream.write("Error: comando git no reconocido".as_bytes())?;
+        }
+    }
+    return Ok(());
 }
 
 /// Lleva a cabo el protocolo Git Transport para el comando git-upload-pack, En el que se suben nuevos objetos al servidor.
