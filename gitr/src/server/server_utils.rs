@@ -19,6 +19,7 @@ use crate::git_transport::pack_file::PackFile;
 
 use crate::git_transport::ref_discovery;
 use crate::objects::commit::Commit;
+use crate::objects::pull_request::PullRequest;
 
 /// Pone en fucionamiento el Servidor Gitr en la direccion de socket provista. Maneja cada cliente de manera concurrente.
 /// # Recibe
@@ -94,9 +95,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         let request: String = String::from_utf8_lossy(&buffer[..n]).to_string();
 
 
-        if request.starts_with("0") {
-            return handle_pkt_line(request, stream);
-        }
+       
         if request.starts_with("GET") {
             println!("[SERVER]: GET request recieved");
             /*
@@ -106,11 +105,32 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             Listar commits - repos/{repo}/pulls/{pull_number}/commits
             */
 
+                /*
+                CLIENT]: Sending request:
+                [POST /repos/cliente/repo_clonado/pulls HTTP/1.1
+                Host: localhost:9418
+                User-Agent: cliente/1.0
+                Content-Type: application/json
+
+                {"title":"haciendo un pr","head":"branch","base":"master"}
+                
+                 */
+
+
             //stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
         }
         if request.starts_with("POST") {
             println!("[SERVER]: POST request recieved");
+            println!("\x1b[30mrequest:\x1b[0m {}", request);
+
             let route = request.split(' ').collect::<Vec<&str>>()[1];
+            if route == "/" {
+                println!("route: {}", route);
+                stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+
+                return Ok(());
+            }
+
             let client = route.split('/').collect::<Vec<&str>>()[2];
             let repo = route.split('/').collect::<Vec<&str>>()[3];
 
@@ -119,16 +139,22 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             println!("repo: {}", repo);
             // ahora que tengo el cliente y el repo, deberia buscar eso en el servidor
             // y crearle el pr?
-     
+
+            let id = 123;
+
+            let body = request.split('\n').collect::<Vec<&str>>()[5]; 
+            let mut pull_request: PullRequest = serde_json::from_str(&body).unwrap();
+            pull_request.id = id;
+            println!("pull_request: {:?}", pull_request);
             stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+            return Ok(());
         }
         if request.starts_with("PUT") {
             println!("[SERVER]: PUT request recieved");
             /*
             Hacer el merge 💀💀💀
             PUT /repos/{repo}/pulls/{pull_number}/merge
-            
-             */
+            */
         }
 
         // OPCIONAL
@@ -139,9 +165,13 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             
         //      */
         // }
-
-
-        return Ok(())
+        
+        
+        //            PACKETLINE
+        // ########## HANDSHAKE ##########
+        
+        return handle_pkt_line(request, stream)
+       
         
     }
     Err(Error::new(
@@ -152,6 +182,9 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
 
 
 fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()> {
+    println!("estoy en pktline y recibi:\n {}", request);
+    
+    
     let guardados_id: HashSet<String>;
     let refs_string: String;
     match is_valid_pkt_line(&request) {
@@ -167,6 +200,7 @@ fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()
         elems[0], elems[1], elems[2]
     );
     let r_path = elems[1].to_string();
+    println!("Ruta del repositorio: {}", r_path);
     let _ = create_dirs(&r_path);
     // ########## REFERENCE DISCOVERY ##########
     (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
@@ -638,6 +672,7 @@ fn create_dirs(r_path: &str) -> std::io::Result<()> {
     fs::create_dir(p_str.clone() + "/refs/heads")?;
     fs::create_dir(p_str.clone() + "/refs/tags")?;
     fs::create_dir(p_str.clone() + "/objects")?;
+    fs::create_dir(p_str.clone() + "/pulls")?;
     Ok(())
 }
 

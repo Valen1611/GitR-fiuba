@@ -1,5 +1,5 @@
 use crate::{
-    commands::commands_fn,
+    commands::{commands_fn, command_utils},
     diff::Diff,
     file_manager::{
         self, get_commit, get_current_commit, get_current_repo, get_head, read_index,
@@ -23,6 +23,7 @@ use crate::{
 };
 use flate2::write::ZlibEncoder;
 use flate2::Compression;
+use serde_json::json;
 use sha1::{Digest, Sha1};
 use std::{
     collections::{HashMap, HashSet},
@@ -1885,8 +1886,18 @@ pub fn _create_pr(cliente: String) -> Result<(), GitrError> {
 
     let request_line = format!("POST /repos/{}/pulls HTTP/1.1\n", repo);
     let header = format!("Host: localhost:9418\nUser-Agent: {}/1.0\nContent-Type: application/json\n", cliente);
-    let body = format!("{{\"title\":\"{}\",\"head\":\"{}\",\"base\":\"{}\"}}", "haciendo un pr", "branch", "master");
-
+    let commits = command_utils::branch_commits_list("new".to_string(), cliente)?;
+    //let body = format!(r#"{{"id":{},"title":"{}","description":"{}","head":"{}","base":"{}","commits":{:?},}}"#,"1", "haciendo un pr","desc", "branch", "master", commits);
+    let _body = json!({
+        "id": 1,
+        "title": "haciendo un pr",
+        "description": "desc",
+        "head": "branch",
+        "base": "master",
+        "status": "open",
+        "commits": commits
+    });
+    let body = _body.to_string();
     // Conectar
     let mut stream = match TcpStream::connect("localhost:9418") {
         Ok(s) => s,
