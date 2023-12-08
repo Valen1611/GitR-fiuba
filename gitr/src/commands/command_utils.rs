@@ -1886,7 +1886,7 @@ pub fn _create_pr(cliente: String) -> Result<(), GitrError> {
 
     let request_line = format!("POST /repos/{}/pulls HTTP/1.1\n", repo);
     let header = format!("Host: localhost:9418\nUser-Agent: {}/1.0\nContent-Type: application/json\n", cliente);
-    let commits = command_utils::branch_commits_list("new".to_string(), cliente)?;
+    let commits = command_utils::branch_commits_list("TestBranch".to_string(), cliente)?;
     //let body = format!(r#"{{"id":{},"title":"{}","description":"{}","head":"{}","base":"{}","commits":{:?},}}"#,"1", "haciendo un pr","desc", "branch", "master", commits);
     let _body = json!({
         "id": 1,

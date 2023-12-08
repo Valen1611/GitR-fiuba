@@ -28,6 +28,7 @@ pub enum GitrError {
     DeleteCurrentBranchError(String),
     TagAlreadyExistsError(String),
     TagNonExistsError(String),
+    PullRequestWriteError,
 }
 
 impl fmt::Display for GitrError {
@@ -89,6 +90,7 @@ impl fmt::Display for GitrError {
                 "ERROR: No se puede borrar branch '{}': HEAD apunta ahi",
                 branch
             ),
+            Self::PullRequestWriteError => write!(f, "ERROR: No se pudo escribir el PR en el server"),
         }
     }
 }

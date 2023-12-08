@@ -9967,3 +9967,411 @@
 {"type": "FileOperation","timestamp": "07-12-2023 19:02:32","message": "reading data from: cliente/repo33/gitr/refs/heads/new"}
 {"type": "FileOperation","timestamp": "07-12-2023 19:02:32","message": "reading data from: cliente/.head_repo"}
 {"type": "FileOperation","timestamp": "07-12-2023 19:02:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:27","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:37","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:38","message": "reading data from: cliente/.head_repo"}
+{"type": "Error","timestamp": "08-12-2023 15:45:38","message": "No se pudo leer: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:44","message": "writing data to: cliente/gitrconfig"}
+{"type": "Action","timestamp": "08-12-2023 15:45:52","message": "calling init with flags: ["repotest"]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "creating dir: cliente/repotest"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "creating dir: cliente/repotest/gitr"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "creating dir: cliente/repotest/gitr/objects"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "creating dir: cliente/repotest/gitr/refs"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "creating dir: cliente/repotest/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "creating dir: cliente/repotest/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "creating dir: cliente/repotest/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "creating dir: cliente/repotest/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "writing data to: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "writing data to: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "writing data to: cliente/repotest/gitrignore"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:45:52","message": "writing data to: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 15:46:01","message": "calling echo with flags: ["hola", ">", "hola"]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:01","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:01","message": "writing data to: cliente/repotest/hola"}
+{"type": "Action","timestamp": "08-12-2023 15:46:06","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "reading data from: cliente/repotest/gitrignore"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "reading data from: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "creating dir: cliente/repotest/gitr/objects/b8"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "writing data to: cliente/repotest/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:06","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "Action","timestamp": "08-12-2023 15:46:10","message": "calling commit with flags: ["-m", "\"mensaje\""]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitrignore"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "08-12-2023 15:46:10","message": "No se pudo leer: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "08-12-2023 15:46:10","message": "No se pudo leer: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "writing object a7ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "creating dir: cliente/repotest/gitr/objects/a7"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "writing data to: cliente/repotest/gitr/objects/a7/ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "writing object a7ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "writing data to: cliente/repotest/gitr/objects/a7/ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "writing data to: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/gitrconfig"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/gitrconfig"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "writing object daa4b9fb88501ed7bd3a87b459f6fd58f73a7b03"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "creating dir: cliente/repotest/gitr/objects/da"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "writing data to: cliente/repotest/gitr/objects/da/a4b9fb88501ed7bd3a87b459f6fd58f73a7b03"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "writing data to: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:10","message": "reading data from: cliente/repotest/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "08-12-2023 15:46:16","message": "calling remote with flags: ["sv"]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:16","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:16","message": "writing data to: cliente/repotest/gitr/remote"}
+{"type": "Action","timestamp": "08-12-2023 15:46:18","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:18","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 15:46:51","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:51","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:51","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:46:51","message": "reading data from: cliente/repotest/gitr/refs/heads/new"}
+{"type": "Error","timestamp": "08-12-2023 15:46:51","message": "No se pudo leer: cliente/repotest/gitr/refs/heads/new"}
+{"type": "Error","timestamp": "08-12-2023 15:46:51","message": "ERROR: No se pudo leer el archivo cliente/repotest/gitr/refs/heads/new"}
+{"type": "Action","timestamp": "08-12-2023 15:48:31","message": "calling checkout with flags: ["-b", "TestBranch"]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "writing data to: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "writing data to: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:31","message": "writing data to: cliente/repotest/gitr/HEAD"}
+{"type": "Action","timestamp": "08-12-2023 15:48:39","message": "calling echo with flags: ["otro", ">", "archivo"]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:39","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:39","message": "writing data to: cliente/repotest/archivo"}
+{"type": "Action","timestamp": "08-12-2023 15:48:40","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/gitrignore"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing data to: cliente/repotest/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/gitrignore"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/archivo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing object c1635cc8cc4cab8ac2874e730d70b6c841affaad"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "creating dir: cliente/repotest/gitr/objects/c1"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing data to: cliente/repotest/gitr/objects/c1/635cc8cc4cab8ac2874e730d70b6c841affaad"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/gitrignore"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing data to: cliente/repotest/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "Action","timestamp": "08-12-2023 15:48:40","message": "adding cliente/repotest/hola to index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:40","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "Action","timestamp": "08-12-2023 15:48:44","message": "calling commit with flags: ["-m", "\"desde", "branch\""]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/archivo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitrignore"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/archivo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "writing object fec477ebba55e119f3f65ea5858e89726a9b0bd2"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "creating dir: cliente/repotest/gitr/objects/fe"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "writing data to: cliente/repotest/gitr/objects/fe/c477ebba55e119f3f65ea5858e89726a9b0bd2"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "writing object fec477ebba55e119f3f65ea5858e89726a9b0bd2"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "writing data to: cliente/repotest/gitr/objects/fe/c477ebba55e119f3f65ea5858e89726a9b0bd2"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/gitrconfig"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/gitrconfig"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "writing object b55c0d7b192f76cfa221a67e24e77625fd6993a3"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "creating dir: cliente/repotest/gitr/objects/b5"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "writing data to: cliente/repotest/gitr/objects/b5/5c0d7b192f76cfa221a67e24e77625fd6993a3"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "writing data to: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:44","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "Action","timestamp": "08-12-2023 15:48:48","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:48:48","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 15:49:32","message": "calling checkout with flags: ["master"]"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "writing data to: cliente/repotest/gitr/index"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "writing data to: cliente/repotest/hola"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:32","message": "writing data to: cliente/repotest/gitr/HEAD"}
+{"type": "Action","timestamp": "08-12-2023 15:49:36","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:36","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:36","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:36","message": "reading data from: cliente/repotest/gitr/refs/heads/new"}
+{"type": "Error","timestamp": "08-12-2023 15:49:36","message": "No se pudo leer: cliente/repotest/gitr/refs/heads/new"}
+{"type": "Error","timestamp": "08-12-2023 15:49:36","message": "ERROR: No se pudo leer el archivo cliente/repotest/gitr/refs/heads/new"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:56","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:49:56","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 15:50:00","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:00","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:00","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:00","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 15:50:08","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:08","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:08","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:08","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:08","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:08","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:08","message": "writing data to: repotest/pulls/123"}
+{"type": "Action","timestamp": "08-12-2023 15:50:27","message": "calling log with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/repotest/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/repotest/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:50:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:39","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:39","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:39","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:39","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 15:51:46","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:46","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:46","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:46","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:46","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:46","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:51:46","message": "writing data to: repotest/pulls/123"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:04","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:05","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:05","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:05","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 15:53:06","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:06","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:06","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:06","message": "writing data to: repotest/pulls/123"}
+{"type": "Action","timestamp": "08-12-2023 15:53:17","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:17","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:17","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:17","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:17","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:17","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:53:17","message": "writing data to: repotest/pulls/123"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:55:40","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:55:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:55:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:55:40","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 15:56:40","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:56:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:56:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:56:40","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:56:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:56:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:56:40","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:56:40","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 15:56:40","message": "writing data to: sv/pulls/123"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:19","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:20","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:20","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:20","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:26","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:26","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:26","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:26","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "08-12-2023 16:07:38","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:38","message": "writing data to: sv/pulls/1"}
+{"type": "Action","timestamp": "08-12-2023 16:07:47","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:47","message": "writing data to: sv/pulls/2"}
+{"type": "Action","timestamp": "08-12-2023 16:07:56","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:07:56","message": "writing data to: sv/pulls/3"}
+{"type": "Action","timestamp": "08-12-2023 16:08:01","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 16:08:01","message": "writing data to: sv/pulls/4"}
+{"type": "Action","timestamp": "08-12-2023 17:27:43","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:43","message": "writing data to: sv/pulls/5"}
+{"type": "Action","timestamp": "08-12-2023 17:27:47","message": "calling cr-pr with flags: []"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/repotest/gitr/refs/heads/TestBranch"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "reading data from: cliente/repotest/gitr/remote"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:27:47","message": "writing data to: sv/pulls/6"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:41:59","message": "reading data from: repo/.head_repo"}
+{"type": "Error","timestamp": "08-12-2023 17:41:59","message": "No se pudo leer: repo/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:47:04","message": "reading data from: repo/.head_repo"}
+{"type": "Error","timestamp": "08-12-2023 17:47:04","message": "No se pudo leer: repo/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:48:09","message": "reading data from: repo/.head_repo"}
+{"type": "Error","timestamp": "08-12-2023 17:48:09","message": "No se pudo leer: repo/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 17:49:34","message": "reading data from: repo/.head_repo"}
+{"type": "Error","timestamp": "08-12-2023 17:49:34","message": "No se pudo leer: repo/.head_repo"}
+{"type": "FileOperation","timestamp": "08-12-2023 18:00:22","message": "reading data from: reponame/.head_repo"}
+{"type": "Error","timestamp": "08-12-2023 18:00:22","message": "No se pudo leer: reponame/.head_repo"}

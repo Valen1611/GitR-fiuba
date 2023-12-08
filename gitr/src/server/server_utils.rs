@@ -13,6 +13,7 @@ use std::str::from_utf8;
 use std::thread;
 
 use crate::file_manager;
+use crate::file_manager::contar_archivos_y_directorios;
 use crate::git_transport::pack_file::create_packfile;
 use crate::git_transport::pack_file::prepare_contents;
 use crate::git_transport::pack_file::PackFile;
@@ -98,6 +99,27 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
        
         if request.starts_with("GET") {
             println!("[SERVER]: GET request recieved");
+            println!("\x1b[30mrequest:\x1b[0m {}", request);
+            let route = request.split(' ').collect::<Vec<&str>>()[1];
+            let client = route.split('/').collect::<Vec<&str>>()[2];
+            let repo = route.split('/').collect::<Vec<&str>>()[3];
+
+            println!("route: {}", route);
+            println!("client: {}", client);
+            println!("repo: {}", repo);
+            // ahora que tengo el cliente y el repo, deberia buscar eso en el servidor
+            // y crearle el pr?
+
+            let remote = match file_manager::get_remote(client.to_string().clone()){
+                Ok(remote) => remote,
+                Err(_) => {
+                    println!("Error al obtener el remote");
+                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                    return Ok(());
+                }
+            };
+            let pulls_folder_path = format!("{}/pulls", remote);
+            
             /*
             este caso puede ser
             Listar PRs - GET /repos/{repo}/pulls
@@ -124,13 +146,22 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             println!("\x1b[30mrequest:\x1b[0m {}", request);
 
             let route = request.split(' ').collect::<Vec<&str>>()[1];
-            if route == "/" {
-                println!("route: {}", route);
-                stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+            /*
+            POST el body en la ruta
+            
 
-                return Ok(());
-            }
+            
+            POST /repos/reponame/pulls HTTP/1.1
+            Host: localhost:9418
+            User-Agent: curl/7.81.0
+            Accept: 
+            Content-Type: application/json
+            Content-Length: 41
 
+            {title:mensajito,head:branch,base:master}
+
+             */
+            
             let client = route.split('/').collect::<Vec<&str>>()[2];
             let repo = route.split('/').collect::<Vec<&str>>()[3];
 
@@ -140,12 +171,43 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             // ahora que tengo el cliente y el repo, deberia buscar eso en el servidor
             // y crearle el pr?
 
-            let id = 123;
+            let remote = match file_manager::get_remote(client.to_string().clone()){
+                Ok(remote) => remote,
+                Err(_) => {
+                    println!("Error al obtener el remote");
+                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                    return Ok(());
+                }
+            };
+            let pulls_folder_path = format!("{}/pulls", remote);
+            
+            let id = match contar_archivos_y_directorios(&pulls_folder_path){
+                Ok(id) => id,
+                Err(_) => {
+                    println!("Error al contar archivos y directorios");
+                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                    return Ok(());
+                }
+            };
 
             let body = request.split('\n').collect::<Vec<&str>>()[5]; 
             let mut pull_request: PullRequest = serde_json::from_str(&body).unwrap();
-            pull_request.id = id;
+            
+
+            
+            pull_request.id = id as u8;
             println!("pull_request: {:?}", pull_request);
+
+            match file_manager::create_pull_request(&client, pull_request) {
+                Ok(_) => println!("PR creado"),
+                Err(_) => {
+                    println!("Error al crear PR");
+                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                    return Ok(());
+                }
+                  
+            };
+
             stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
             return Ok(());
         }

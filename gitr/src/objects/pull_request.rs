@@ -1,6 +1,8 @@
 
 use serde::{Serialize, Deserialize};
 
+use crate::gitr_errors::GitrError;
+
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PullRequest {
@@ -40,5 +42,13 @@ impl PullRequest {
 
     pub fn get_commits(&self) -> Vec<String> {
         self.commits.clone()
+    }
+
+    pub fn to_string(&self) -> Result<String, GitrError> {
+            
+        match serde_json::to_string(&self) {
+            Ok(json) => Ok(json),
+            Err(_) => Err(GitrError::PullRequestWriteError),
+        }
     }
 }
