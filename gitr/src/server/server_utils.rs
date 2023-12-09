@@ -12,6 +12,7 @@ use std::str::from_utf8;
 
 use std::thread;
 
+use crate::commands::command_utils;
 use crate::file_manager;
 use crate::file_manager::contar_archivos_y_directorios;
 use crate::git_transport::pack_file::create_packfile;
@@ -97,9 +98,10 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         let request: String = String::from_utf8_lossy(&buffer[..n]).to_string();
 
 
-       
+        let ruta = request.split(' ').collect::<Vec<&str>>()[1].trim_start_matches('/');
+
         if request.starts_with("GET") {
-            return handler_get_request(&request, stream);
+            return handler_get_request(&ruta, stream);
         }
         if request.starts_with("POST") {
             println!("[SERVER]: POST request recieved:");
@@ -108,7 +110,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             Ejemplo para mandar con curl:
             curl -X POST -H "Content-Type: application/json" -d '{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"TestBranch2","base":"master","status":"open"}' localhost:9418/repos/sv/pulls
             */
-            return handle_post_request(&request, stream);
+            return handle_post_request(&ruta, &request, stream);
         }
         if request.starts_with("PUT") {
             println!("[SERVER]: PUT request recieved");
@@ -137,7 +139,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
     ))
 }
 
-fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<()> {
+fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()> {
     /*
     este caso puede ser
     Listar PRs - GET /repos/{repo}/pulls    ✅
@@ -150,16 +152,20 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
     */
 
     println!("[SERVER]: GET request recieved");
-    println!("\x1b[34m{}\x1b[0m", request);
-    let route = request.split(' ').collect::<Vec<&str>>()[1];
-
-    let route_provisoria = route.split('/').collect::<Vec<&str>>();
-    let route_provisoria = route_provisoria[2..].join("/");
     
-    let route_provisoria_pulls = route.split('/').collect::<Vec<&str>>()[2..4].join("/");
-    println!("route: {}", route_provisoria); // ruta entera (sin el /repos)
-    println!("route pulls: {}", route_provisoria_pulls); // sv/pulls para obtener todos los PRs
-    let prs: Vec<PullRequest> = match file_manager::get_pull_requests(route_provisoria_pulls.clone()) {
+    let ruta_vec = ruta.split('/').collect::<Vec<&str>>();
+    if ruta_vec.len() < 3 {
+        println!("Error al parsear la ruta");
+        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
+    let ruta_pulls = ruta_vec[..3].join("/");
+    let ruta_repo_server = ruta_vec[..2].join("/");
+
+
+    println!("route: {}", ruta); // ruta entera (sin el /repos)
+    println!("route pulls: {}", ruta_pulls); // sv/pulls para obtener todos los PRs
+    let prs: Vec<PullRequest> = match file_manager::get_pull_requests(ruta_pulls.clone()) {
         Ok(prs) => prs,
         Err(_) => {
             println!("Error al obtener PRs");
@@ -169,7 +175,7 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
     };
     println!("PRs: {:?}", prs);
     
-    let route_vec = route_provisoria.split('/').collect::<Vec<&str>>();
+    let route_vec = ruta.split('/').collect::<Vec<&str>>();
     println!("rut vec: {:?}", route_vec);
     
     let last_dentry = route_vec[route_vec.len()-1];
@@ -200,12 +206,12 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
         }
         if dentry.parse::<u8>().is_ok() {
             println!("estoy en el caso de obtener un PR");
-            let mut route_provisoria_corrected = route_provisoria.clone();
+            let mut route_provisoria_corrected = ruta.clone();
             if last_dentry == "commits" {
-                route_provisoria_corrected = route_provisoria.trim_end_matches("/commits").to_string();
+                route_provisoria_corrected = ruta.trim_end_matches("/commits");
             }
 
-            response_body = match file_manager::read_file(route_provisoria_corrected.clone()) {
+            response_body = match file_manager::read_file(route_provisoria_corrected.clone().to_string()) {
                 Ok(response_body) => response_body,
                 Err(_) => {
                     println!("Error al obtener PR");
@@ -216,10 +222,19 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
             if last_dentry == "commits" {
                 println!("estoy en el caso de listar los commits de un PR");
                 let pr = PullRequest::from_string(response_body.clone()).unwrap();
+                let branch_name = pr.get_branch_name();
+                println!("ruta_repo_server: {:?}", ruta_repo_server);
+                let commits = match command_utils::branch_commits_list(branch_name.to_string(), ruta_repo_server.clone()) {
+                    Ok(commits) => commits,
+                    Err(_) => {
+                        println!("Error al obtener commits");
+                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                        return Ok(());
+                    }
+                };
                 
                 
                 
-                let commits = pr.get_commits(); 
                 response_body = String::new();
                 response_body.push_str("{");
                 for commit in commits {
@@ -230,15 +245,14 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
                 response_body.push_str("}");
             }
         }
-    }
     
+    }
     let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", response_body);
     stream.write(response.as_bytes())?;
     return Ok(());
 }
 
-fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<()>{
-    let route = request.split(' ').collect::<Vec<&str>>()[1];
+fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()>{
     /*
     POST el body en la ruta
     
@@ -267,11 +281,10 @@ fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<
     // Y cuando tengamos esa carpeta, chequeemos que se esta
     // queriendo acceder a esa carpeta, si no, tiramos un
     // error 403 Forbidden
-    let route_provisoria = route.split('/').collect::<Vec<&str>>();
-    let route_provisoria = route_provisoria[2..].join("/");
+
     
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
-    let id = match contar_archivos_y_directorios(&route_provisoria){
+    let id = match contar_archivos_y_directorios(&ruta){
         Ok(id) => id,
         Err(_) => {
             println!("Error al contar archivos y directorios");
@@ -281,7 +294,7 @@ fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<
     };
 
     // Parseamos el body a un struct PullRequest 
-
+   
     if request.split('\n').collect::<Vec<&str>>().len() < 8 {
         println!("Error al parsear el body");
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
@@ -300,13 +313,13 @@ fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<
     };
     
     // A la ruta le agregamos el id del PR
-    let route_provisoria = route_provisoria + "/" + id.to_string().as_str();
+    let ruta = ruta.to_string() + "/" + id.to_string().as_str();
     
     // Le asignamos el id al PR
     pull_request.id = id as u8;
 
     // Creamos el PR            
-    match file_manager::create_pull_request(&route_provisoria, pull_request) {
+    match file_manager::create_pull_request(&ruta, pull_request) {
         Ok(_) => println!("PR creado"),
         Err(_) => {
             println!("Error al crear PR");

@@ -353,6 +353,7 @@ fn parse_object_hash(object: &String, path: String, add_gitr: bool) -> Result<St
     let dir = repo + "/objects/";
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name + "/" + &file_name;
+    println!("path: {}", path);
     if fs::metadata(folder_dir).is_err() {
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
@@ -389,6 +390,9 @@ pub fn init_repository(name: &String) -> Result<(), GitrError> {
 }
 
 pub fn get_current_repo(cliente: String) -> Result<String, GitrError> {
+    if cliente.contains('/') {
+        return Ok(cliente );
+    }
     let current_repo = read_file(cliente.clone() + "/.head_repo")?;
     Ok(cliente + "/" + &current_repo)
 }
@@ -599,9 +603,20 @@ pub fn get_current_commit(cliente: String) -> Result<String, GitrError> {
 
 //receives a branch and returns its commit hash
 pub fn get_commit(branch: String, cliente: String) -> Result<String, GitrError> {
-    let repo = get_current_repo(cliente.clone())?;
+    let repo = match get_current_repo(cliente.clone()) {
+        Ok(repo) => repo,
+        Err(_) => cliente.clone() //si no hay repo, es porque es un server
+    };
     let path = format!("{}/gitr/refs/heads/{}", repo, branch);
-    let commit = read_file(path.clone())?;
+
+    let commit = match read_file(path) {
+        Ok(commit) => commit,
+        Err(_) => {
+            let path_server = format!("{}/refs/heads/{}", repo, branch);
+            read_file(path_server)?
+        },
+    
+    };
     Ok(commit)
 }
 
@@ -714,11 +729,17 @@ pub fn get_main_tree(commit: String, cliente: String) -> Result<String, GitrErro
 
 //receives a commit and returns its parent commit hash
 pub fn get_parent_commit(commit: String, cliente: String) -> Result<Vec<String>, GitrError> {
+    let add_gitr = if cliente.contains('/') {
+        false
+    } else {
+        true
+    };
     let commit = read_object(
         &commit,
         file_manager::get_current_repo(cliente.clone())?,
-        true,
+        add_gitr,
     )?;
+    println!("commit: {}", commit);
     let commit = commit.split('\n').collect::<Vec<&str>>();
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent" {
         return Ok(vec!["None".to_string()]);

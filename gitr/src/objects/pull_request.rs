@@ -64,4 +64,8 @@ impl PullRequest {
         }    
     }
 
+    pub fn get_branch_name(&self) -> &String {
+        &self.head
+    }
+
 }

@@ -514,7 +514,9 @@ pub fn branch_newbranch_flag(branch: String, cliente: String) -> Result<(), Gitr
 /// receives a branch_name and returns the commit hash
 pub fn branch_commits_list(branch_name: String, cliente: String) -> Result<Vec<String>, GitrError> {
     let mut commits = Vec::new();
+
     let mut commit = file_manager::get_commit(branch_name, cliente.clone())?;
+    
     commits.push(commit.clone());
     loop {
         let parent = file_manager::get_parent_commit(commit.clone(), cliente.clone())?[0].clone();
