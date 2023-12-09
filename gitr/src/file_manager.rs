@@ -1044,3 +1044,11 @@ pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
         };
         Ok(entradas.count())
     }
+
+pub fn pull_request_exist(path: &str) -> bool {
+    let data = read_file(path.to_string());
+    match data {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}

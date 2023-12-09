@@ -118,14 +118,10 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             */
         }
 
-        // OPCIONAL
-        // if request.starts_with("PATCH") {
-        //     /*
-        //     Modificar el patch
-        //     PATCH /repos/{repo}/pulls/{pull_number}
-            
-        //      */
-        // }
+        if request.starts_with("PATCH"){
+            println!("[SERVER]: PATCH request recieved");
+            return handle_patch_request(&request, stream);
+        }
         
         
         //            PACKETLINE
@@ -319,6 +315,45 @@ fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<
 
     stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
     Ok(())
+}
+
+fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result<()>{
+    let route = request.split(' ').collect::<Vec<&str>>()[1];
+    let route_provisoria = route.split('/').collect::<Vec<&str>>();
+    let route_provisoria = route_provisoria[2..].join("/");
+    if request.split('\n').collect::<Vec<&str>>().len() < 8 {
+        println!("Error al parsear el body");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
+    let id = route_provisoria.split('/').collect::<Vec<&str>>()[2];
+    if !file_manager::pull_request_exist(&route_provisoria){
+        println!("No existe el pull request solicitado");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
+    let body = request.split('\n').collect::<Vec<&str>>()[7]; 
+    let mut pull_request: PullRequest = match serde_json::from_str(&body) {
+        Ok(pull_request) => pull_request,
+        Err(_) => {
+            println!("Error al parsear el body");
+            println!("body: {}", body);
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+    match file_manager::create_pull_request(&route_provisoria, pull_request) {
+        Ok(_) => println!("PR creado"),
+        Err(_) => {
+            println!("Error al crear PR");
+            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+          
+    };
+    stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+    Ok(())
+
 }
 
 fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()> {

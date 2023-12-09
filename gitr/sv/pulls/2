@@ -1,12 +1,1 @@
-{
-  "id": 2,
-  "title": "haciendo un pr",
-  "description": "desc",
-  "head": "branch",
-  "base": "master",
-  "status": "open",
-  "commits": [
-    "b55c0d7b192f76cfa221a67e24e77625fd6993a3",
-    "daa4b9fb88501ed7bd3a87b459f6fd58f73a7b03"
-  ]
-}
+{"id":2,"title":"titulo del pr","description":"descripcion del pr","head":"TestBranch2","base":"master","status":"open"}
