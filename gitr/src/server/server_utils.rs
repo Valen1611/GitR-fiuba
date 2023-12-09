@@ -20,6 +20,7 @@ use crate::git_transport::pack_file::PackFile;
 
 use crate::git_transport::ref_discovery;
 use crate::gitr_errors::GitrError;
+use crate::logger::log_error;
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
 
@@ -32,24 +33,7 @@ pub fn server_init(s_addr: &str) -> std::io::Result<()> {
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
 
-    thread::spawn(move || {
-        let mut input = String::new();
-        loop {
-            std::io::stdin()
-                .read_line(&mut input)
-                .expect("Failed to read line");
-            let trimmed = input.trim().to_lowercase();
-            if trimmed == "q" {
-                // Envia un mensaje al hilo principal para indicar que debe salir
-                let _ = TcpStream::connect("localhost:9418")
-                    .unwrap()
-                    .write("q".as_bytes())
-                    .unwrap();
-                break;
-            }
-            input.clear();
-        }
-    });
+    childs.push(thread::spawn(move || {get_input()}));
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
@@ -63,19 +47,43 @@ pub fn server_init(s_addr: &str) -> std::io::Result<()> {
             }
             Err(e) => {
                 eprintln!("Error al aceptar la conexión: {}", e);
+                let _ = log_error("Error al aceptar la conexión".to_string());
             }
         }
     }
     for child in childs {
         match child.join() {
-            Ok(result) => result?,
+            Ok(result) => match result {
+                Ok(_) => {}
+                Err(e) => {
+                    let err = format!("Error al manejar un cliente: {e}");
+                    eprintln!("{err}");
+                    let _ = log_error(err);
+                }
+            },
             Err(_e) => {
-                return Err(Error::new(
-                    std::io::ErrorKind::Other,
-                    "Error en alguno de los hilos",
-                ))
+                let _ = log_error("Se experimentó un Error con un Cliente".to_string());
             }
         }
+    }
+    Ok(())
+}
+
+/// get_input es una funcion que se encarga de leer la entrada del usuario por consola 
+/// y enviar un mensaje al hilo principal para indicar que debe salir
+/// # Devuelve
+/// Err(std::Error) si algun proceso interno tambien da error o no se pudo establecer bien la conexion.
+fn get_input() -> std::io::Result<()>{
+    let mut input = String::new();
+    loop {
+        std::io::stdin().read_line(&mut input)?;
+        let trimmed = input.trim().to_lowercase();
+        if trimmed == "q" {
+            // Envia un mensaje al hilo principal para indicar que debe salir
+            let _ = TcpStream::connect("localhost:9418")?.write("q".as_bytes())?;
+            break;
+        }
+        input.clear();
     }
     Ok(())
 }
@@ -127,7 +135,15 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         //            PACKETLINE
         // ########## HANDSHAKE ##########
         
-        return handle_pkt_line(request, stream)
+        match handle_pkt_line(request, stream.try_clone()?) {
+            Ok(_) => {}
+            Err(e) => {
+                println!("Error: {e}");
+                stream.write("Error: {e}".as_bytes())?;
+                stream.shutdown(std::net::Shutdown::Both)?;
+                return Ok(());
+            }
+        }
        
         
     }
@@ -362,13 +378,12 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
 fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()> {
     println!("estoy en pktline y recibi:\n {}", request);
     
-    
     let guardados_id: HashSet<String>;
     let refs_string: String;
     match is_valid_pkt_line(&request) {
         Ok(_) => {}
         Err(_) => {
-            let _ = stream.write("Error: no se respeta el formato pkt-line".as_bytes());
+            stream.write("Error: no se respeta el formato pkt-line".as_bytes())?;
             return Ok(());
         }
     }

@@ -1531,7 +1531,6 @@ pub fn handshake(orden: String, cliente: String) -> Result<TcpStream, GitrError>
             return Err(GitrError::ConnectionError);
         }
     };
-    print!("Handshake: {}", msj);
     match stream.write(msj.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -1547,6 +1546,7 @@ pub fn protocol_reference_discovery(
 ) -> Result<Vec<(String, String)>, GitrError> {
     let mut buffer = Vec::new();
     while !buffer.ends_with("0000".as_bytes()) {
+        
         let aux = match read_long_stream(stream) {
             Ok(buf) => buf,
             Err(e) => {

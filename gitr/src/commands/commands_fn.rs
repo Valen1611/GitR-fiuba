@@ -408,7 +408,7 @@ pub fn push(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         ));
     }
     // ########## HANDSHAKE ##########
-    let mut stream = handshake("git-receive-pack".to_string(), cliente.clone())?;
+    let mut stream = handshake("git-recive-pack".to_string(), cliente.clone())?;
 
     //  ########## REFERENCE DISCOVERY ##########
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
