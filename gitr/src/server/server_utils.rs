@@ -216,6 +216,9 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
             if last_dentry == "commits" {
                 println!("estoy en el caso de listar los commits de un PR");
                 let pr = PullRequest::from_string(response_body.clone()).unwrap();
+                
+                
+                
                 let commits = pr.get_commits(); 
                 response_body = String::new();
                 response_body.push_str("{");
@@ -374,7 +377,7 @@ fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()
         "Comando: {}, Repo remoto: {}, host: {}",
         elems[0], elems[1], elems[2]
     );
-    let r_path = elems[1].to_string();
+    let r_path = "repos/".to_string() + elems[1];
     println!("Ruta del repositorio: {}", r_path);
     let _ = create_dirs(&r_path);
     // ########## REFERENCE DISCOVERY ##########
@@ -838,7 +841,8 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
 /// Err(std::io::Error) si algun proceso interno tambien da error o el repositorio ya existe.
 fn create_dirs(r_path: &str) -> std::io::Result<()> {
     let p_str = r_path.to_string();
-    fs::create_dir(p_str.clone())?;
+    fs::create_dir_all(p_str.clone())?;
+
     write_file(
         p_str.clone() + "/HEAD",
         "ref: refs/heads/master".to_string(),
