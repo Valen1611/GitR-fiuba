@@ -99,128 +99,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
 
        
         if request.starts_with("GET") {
-            /*
-            este caso puede ser
-            Listar PRs - GET /repos/{repo}/pulls    ✅
-            Obtener PR - GET /repos/{repo}/pulls/{pull_number}  ✅
-            Listar commits - repos/{repo}/pulls/{pull_number}/commits
-            
-            en Curl:
-            curl -X GET localhost:9418/repos/sv/pulls
-            curl -X GET localhost:9418/repos/sv/pulls/1
-
-            No esta del todo bien hecho porque no importa el caso
-            yo agarro y me cargo todos los PRs, capaz si no estoy en 
-            caso de tener que listar todos, y solo me piden uno,
-            deberia entrar SOLO a ese, pero parece mas facil
-            hacerlo asi
-             */
-
-            println!("[SERVER]: GET request recieved");
-            println!("\x1b[34m{}\x1b[0m", request);
-            let route = request.split(' ').collect::<Vec<&str>>()[1];
-
-            let route_provisoria = route.split('/').collect::<Vec<&str>>();
-            let route_provisoria = route_provisoria[2..].join("/");
-            
-            let route_provisoria_pulls = route.split('/').collect::<Vec<&str>>()[2..4].join("/");
-
-            println!("route: {}", route_provisoria);
-            let prs: Vec<PullRequest> = match file_manager::get_pull_requests(route_provisoria_pulls.clone()) {
-                Ok(prs) => prs,
-                Err(_) => {
-                    println!("Error al obtener PRs");
-                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                    return Ok(());
-                }
-            };
-            println!("PRs: {:?}", prs);
-
-            let route_vec = route_provisoria.split('/').collect::<Vec<&str>>();
-            let last_dentry = route_vec[route_vec.len()-1];
-
-            // Listar PRs - GET /repos/{repo}/pulls
-            if last_dentry == "pulls" {
-                let mut prs_string = String::new();
-                prs_string.push_str("{");
-                for pr in prs {
-
-                    let pr_str = match pr.to_string() {
-                        Ok(pr_str) => pr_str,
-                        Err(_) => {
-                            println!("Error al parsear PR");
-                            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                            return Ok(());
-                        }
-                    }; 
-
-                    prs_string.push_str(&pr_str);
-                    prs_string.push_str(",");
-                }
-                prs_string.pop();
-                prs_string.push_str("}");
-
-                let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", prs_string);
-                stream.write(response.as_bytes())?;
-                
-                return Ok(());
-            }
-
-            // Obtener PR - GET /repos/{repo}/pulls/{pull_number}
-            if last_dentry.parse::<u8>().is_ok() {
-                let pull_number = match last_dentry.parse::<u8>() {
-                    Ok(pull_number) => pull_number as usize,
-                    Err(_) => {
-                        println!("Error al parsear el numero de PR");
-                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                        return Ok(());
-                    }
-                };
-                
-                if pull_number > prs.len() {
-                    println!("Error al parsear el numero de PR");
-                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                    return Ok(());
-                }
-
-                let requested_pull = prs[pull_number-1].clone();
-
-                let requested_pull_string = match requested_pull.to_string() {
-                    Ok(requested_pull_string) => requested_pull_string,
-                    Err(_) => {
-                        println!("Error al parsear el PR");
-                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                        return Ok(());
-                    }
-                };
-
-                let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", requested_pull_string);
-                stream.write(response.as_bytes())?;
-                println!("PR: {}", requested_pull_string);
-                return Ok(());
-            }
-            if last_dentry == "commits" {
-
-            }
-            /*
-            
-            /pulls/{pull_number}/commits
-
-            HACERLO ASI:
-            for dentry in path:
-                if dentry == pulls && estoy al final del path
-                    cargo toos los prs
-                    break
-                if dentry.is_number() &&
-                    cargo el pr que me piden
-                    continue
-                if dentry == commits
-                    cargo los commits del pr
-            
-             */
-               
-            //stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
-            return Ok(())
+            return handler_get_request(&request, stream);
         }
         if request.starts_with("POST") {
             println!("[SERVER]: POST request recieved:");
@@ -262,6 +141,102 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
     ))
 }
 
+fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<()> {
+    /*
+    este caso puede ser
+    Listar PRs - GET /repos/{repo}/pulls    ✅
+    Obtener PR - GET /repos/{repo}/pulls/{pull_number}  ✅
+    Listar commits - repos/{repo}/pulls/{pull_number}/commits ✅
+    
+    en Curl:
+    curl -X GET localhost:9418/repos/sv/pulls
+    curl -X GET localhost:9418/repos/sv/pulls/1
+    */
+
+    println!("[SERVER]: GET request recieved");
+    println!("\x1b[34m{}\x1b[0m", request);
+    let route = request.split(' ').collect::<Vec<&str>>()[1];
+
+    let route_provisoria = route.split('/').collect::<Vec<&str>>();
+    let route_provisoria = route_provisoria[2..].join("/");
+    
+    let route_provisoria_pulls = route.split('/').collect::<Vec<&str>>()[2..4].join("/");
+    println!("route: {}", route_provisoria); // ruta entera (sin el /repos)
+    println!("route pulls: {}", route_provisoria_pulls); // sv/pulls para obtener todos los PRs
+    let prs: Vec<PullRequest> = match file_manager::get_pull_requests(route_provisoria_pulls.clone()) {
+        Ok(prs) => prs,
+        Err(_) => {
+            println!("Error al obtener PRs");
+            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+    println!("PRs: {:?}", prs);
+    
+    let route_vec = route_provisoria.split('/').collect::<Vec<&str>>();
+    println!("rut vec: {:?}", route_vec);
+    
+    let last_dentry = route_vec[route_vec.len()-1];
+    let mut response_body = String::new();
+    for dentry in route_vec {
+        println!("dentry: {}", dentry);
+
+        if dentry == "pulls" && last_dentry == "pulls" {
+            println!("estoy en el caso de listar todos los PRs");
+
+            response_body.push_str("{");
+            for pr in prs {
+                let pr_str = match pr.to_string() {
+                    Ok(pr_str) => pr_str,
+                    Err(_) => {
+                        println!("Error al parsear PR");
+                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                        return Ok(());
+                    }
+                }; 
+
+                response_body.push_str(&pr_str);
+                response_body.push_str(",");
+            }
+            response_body.pop(); // saco la ultima coma
+            response_body.push_str("}");
+            break;
+        }
+        if dentry.parse::<u8>().is_ok() {
+            println!("estoy en el caso de obtener un PR");
+            let mut route_provisoria_corrected = route_provisoria.clone();
+            if last_dentry == "commits" {
+                route_provisoria_corrected = route_provisoria.trim_end_matches("/commits").to_string();
+            }
+
+            response_body = match file_manager::read_file(route_provisoria_corrected.clone()) {
+                Ok(response_body) => response_body,
+                Err(_) => {
+                    println!("Error al obtener PR");
+                    stream.write("HTTP/1.1 422 ERROR\r\n\r\nerror che".as_bytes())?;
+                    return Ok(());
+                }
+            };
+            if last_dentry == "commits" {
+                println!("estoy en el caso de listar los commits de un PR");
+                let pr = PullRequest::from_string(response_body.clone()).unwrap();
+                let commits = pr.get_commits(); 
+                response_body = String::new();
+                response_body.push_str("{");
+                for commit in commits {
+                    response_body.push_str(&commit);
+                    response_body.push_str(",");
+                }
+                response_body.pop(); // saco la ultima coma
+                response_body.push_str("}");
+            }
+        }
+    }
+    
+    let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", response_body);
+    stream.write(response.as_bytes())?;
+    return Ok(());
+}
 
 fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<()>{
     let route = request.split(' ').collect::<Vec<&str>>()[1];
