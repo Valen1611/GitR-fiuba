@@ -326,7 +326,12 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
-
+    let id = route_provisoria.split('/').collect::<Vec<&str>>()[2];
+    if !file_manager::pull_request_exist(&route_provisoria){
+        println!("No existe el pull request solicitado");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
     let mut pull_request: PullRequest = match serde_json::from_str(&body) {
         Ok(pull_request) => pull_request,
