@@ -19,6 +19,7 @@ use crate::git_transport::pack_file::prepare_contents;
 use crate::git_transport::pack_file::PackFile;
 
 use crate::git_transport::ref_discovery;
+use crate::gitr_errors::GitrError;
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
 
@@ -98,118 +99,137 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
 
        
         if request.starts_with("GET") {
-            println!("[SERVER]: GET request recieved");
-            println!("\x1b[30mrequest:\x1b[0m {}", request);
-            let route = request.split(' ').collect::<Vec<&str>>()[1];
-            let client = route.split('/').collect::<Vec<&str>>()[2];
-            let repo = route.split('/').collect::<Vec<&str>>()[3];
-
-            println!("route: {}", route);
-            println!("client: {}", client);
-            println!("repo: {}", repo);
-            // ahora que tengo el cliente y el repo, deberia buscar eso en el servidor
-            // y crearle el pr?
-
-            let remote = match file_manager::get_remote(client.to_string().clone()){
-                Ok(remote) => remote,
-                Err(_) => {
-                    println!("Error al obtener el remote");
-                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                    return Ok(());
-                }
-            };
-            let pulls_folder_path = format!("{}/pulls", remote);
-            
             /*
             este caso puede ser
-            Listar PRs - GET /repos/{repo}/pulls
-            Obtener PR - GET /repos/{repo}/pulls/{pull_number}
+            Listar PRs - GET /repos/{repo}/pulls    ✅
+            Obtener PR - GET /repos/{repo}/pulls/{pull_number}  ✅
             Listar commits - repos/{repo}/pulls/{pull_number}/commits
-            */
+            
+            en Curl:
+            curl -X GET localhost:9418/repos/sv/pulls
+            curl -X GET localhost:9418/repos/sv/pulls/1
 
-                /*
-                CLIENT]: Sending request:
-                [POST /repos/cliente/repo_clonado/pulls HTTP/1.1
-                Host: localhost:9418
-                User-Agent: cliente/1.0
-                Content-Type: application/json
+            No esta del todo bien hecho porque no importa el caso
+            yo agarro y me cargo todos los PRs, capaz si no estoy en 
+            caso de tener que listar todos, y solo me piden uno,
+            deberia entrar SOLO a ese, pero parece mas facil
+            hacerlo asi
+             */
 
-                {"title":"haciendo un pr","head":"branch","base":"master"}
+            println!("[SERVER]: GET request recieved");
+            println!("\x1b[34m{}\x1b[0m", request);
+            let route = request.split(' ').collect::<Vec<&str>>()[1];
+
+            let route_provisoria = route.split('/').collect::<Vec<&str>>();
+            let route_provisoria = route_provisoria[2..].join("/");
+            
+            let route_provisoria_pulls = route.split('/').collect::<Vec<&str>>()[2..4].join("/");
+
+            println!("route: {}", route_provisoria);
+            let prs: Vec<PullRequest> = match file_manager::get_pull_requests(route_provisoria_pulls.clone()) {
+                Ok(prs) => prs,
+                Err(_) => {
+                    println!("Error al obtener PRs");
+                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                    return Ok(());
+                }
+            };
+            println!("PRs: {:?}", prs);
+
+            let route_vec = route_provisoria.split('/').collect::<Vec<&str>>();
+            let last_dentry = route_vec[route_vec.len()-1];
+
+            // Listar PRs - GET /repos/{repo}/pulls
+            if last_dentry == "pulls" {
+                let mut prs_string = String::new();
+                prs_string.push_str("{");
+                for pr in prs {
+
+                    let pr_str = match pr.to_string() {
+                        Ok(pr_str) => pr_str,
+                        Err(_) => {
+                            println!("Error al parsear PR");
+                            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                            return Ok(());
+                        }
+                    }; 
+
+                    prs_string.push_str(&pr_str);
+                    prs_string.push_str(",");
+                }
+                prs_string.pop();
+                prs_string.push_str("}");
+
+                let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", prs_string);
+                stream.write(response.as_bytes())?;
                 
-                 */
+                return Ok(());
+            }
 
+            // Obtener PR - GET /repos/{repo}/pulls/{pull_number}
+            if last_dentry.parse::<u8>().is_ok() {
+                let pull_number = match last_dentry.parse::<u8>() {
+                    Ok(pull_number) => pull_number as usize,
+                    Err(_) => {
+                        println!("Error al parsear el numero de PR");
+                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                        return Ok(());
+                    }
+                };
+                
+                if pull_number > prs.len() {
+                    println!("Error al parsear el numero de PR");
+                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                    return Ok(());
+                }
 
+                let requested_pull = prs[pull_number-1].clone();
+
+                let requested_pull_string = match requested_pull.to_string() {
+                    Ok(requested_pull_string) => requested_pull_string,
+                    Err(_) => {
+                        println!("Error al parsear el PR");
+                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                        return Ok(());
+                    }
+                };
+
+                let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", requested_pull_string);
+                stream.write(response.as_bytes())?;
+                println!("PR: {}", requested_pull_string);
+                return Ok(());
+            }
+            if last_dentry == "commits" {
+
+            }
+            /*
+            
+            /pulls/{pull_number}/commits
+
+            HACERLO ASI:
+            for dentry in path:
+                if dentry == pulls && estoy al final del path
+                    cargo toos los prs
+                    break
+                if dentry.is_number() &&
+                    cargo el pr que me piden
+                    continue
+                if dentry == commits
+                    cargo los commits del pr
+            
+             */
+               
             //stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
+            return Ok(())
         }
         if request.starts_with("POST") {
-            println!("[SERVER]: POST request recieved");
-            println!("\x1b[30mrequest:\x1b[0m {}", request);
-
-            let route = request.split(' ').collect::<Vec<&str>>()[1];
+            println!("[SERVER]: POST request recieved:");
+            println!("\x1b[34m{}\x1b[0m", request);
             /*
-            POST el body en la ruta
-            
-
-            
-            POST /repos/reponame/pulls HTTP/1.1
-            Host: localhost:9418
-            User-Agent: curl/7.81.0
-            Accept: 
-            Content-Type: application/json
-            Content-Length: 41
-
-            {title:mensajito,head:branch,base:master}
-
-             */
-            
-            let client = route.split('/').collect::<Vec<&str>>()[2];
-            let repo = route.split('/').collect::<Vec<&str>>()[3];
-
-            println!("route: {}", route);
-            println!("client: {}", client);
-            println!("repo: {}", repo);
-            // ahora que tengo el cliente y el repo, deberia buscar eso en el servidor
-            // y crearle el pr?
-
-            let remote = match file_manager::get_remote(client.to_string().clone()){
-                Ok(remote) => remote,
-                Err(_) => {
-                    println!("Error al obtener el remote");
-                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                    return Ok(());
-                }
-            };
-            let pulls_folder_path = format!("{}/pulls", remote);
-            
-            let id = match contar_archivos_y_directorios(&pulls_folder_path){
-                Ok(id) => id,
-                Err(_) => {
-                    println!("Error al contar archivos y directorios");
-                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                    return Ok(());
-                }
-            };
-
-            let body = request.split('\n').collect::<Vec<&str>>()[5]; 
-            let mut pull_request: PullRequest = serde_json::from_str(&body).unwrap();
-            
-
-            
-            pull_request.id = id as u8;
-            println!("pull_request: {:?}", pull_request);
-
-            match file_manager::create_pull_request(&client, pull_request) {
-                Ok(_) => println!("PR creado"),
-                Err(_) => {
-                    println!("Error al crear PR");
-                    stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
-                    return Ok(());
-                }
-                  
-            };
-
-            stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
-            return Ok(());
+            Ejemplo para mandar con curl:
+            curl -X POST -H "Content-Type: application/json" -d '{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"TestBranch2","base":"master","status":"open"}' localhost:9418/repos/sv/pulls
+            */
+            return handle_post_request(&request, stream);
         }
         if request.starts_with("PUT") {
             println!("[SERVER]: PUT request recieved");
@@ -242,6 +262,89 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
     ))
 }
 
+
+fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<()>{
+    let route = request.split(' ').collect::<Vec<&str>>()[1];
+    /*
+    POST el body en la ruta
+    
+    Ejemplo de lo que se recibe, esto es el string request:
+
+    POST /repos/reponame/pulls HTTP/1.1
+    Host: localhost:9418
+    User-Agent: curl/7.81.0
+    Accept: 
+    Content-Type: application/json
+    Content-Length: 41
+
+    {title:mensajito,head:branch,base:master} en realidad es el body de arriba,con este fallaria
+
+
+    si quiseramos hacer que nuestro cliente mande un PR, deberia
+    o ejecutar el comando ese de curl, o mandar el string asi con el formato
+    como esta aca
+     */
+    
+
+    // esta es la ruta provisoria porque todavia no tenemos
+    // la carpeta /repos en el sv, cuano la tengamos
+    // se usa directamente route y deberia andar todo igual
+
+    // Y cuando tengamos esa carpeta, chequeemos que se esta
+    // queriendo acceder a esa carpeta, si no, tiramos un
+    // error 403 Forbidden
+    let route_provisoria = route.split('/').collect::<Vec<&str>>();
+    let route_provisoria = route_provisoria[2..].join("/");
+    
+    // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
+    let id = match contar_archivos_y_directorios(&route_provisoria){
+        Ok(id) => id,
+        Err(_) => {
+            println!("Error al contar archivos y directorios");
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
+    // Parseamos el body a un struct PullRequest 
+
+    if request.split('\n').collect::<Vec<&str>>().len() < 8 {
+        println!("Error al parsear el body");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
+
+    let body = request.split('\n').collect::<Vec<&str>>()[7]; 
+    let mut pull_request: PullRequest = match serde_json::from_str(&body) {
+        Ok(pull_request) => pull_request,
+        Err(_) => {
+            println!("Error al parsear el body");
+            println!("body: {}", body);
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+    
+    // A la ruta le agregamos el id del PR
+    let route_provisoria = route_provisoria + "/" + id.to_string().as_str();
+    
+    // Le asignamos el id al PR
+    pull_request.id = id as u8;
+
+    // Creamos el PR            
+    match file_manager::create_pull_request(&route_provisoria, pull_request) {
+        Ok(_) => println!("PR creado"),
+        Err(_) => {
+            println!("Error al crear PR");
+            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+          
+    };
+
+    stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+    Ok(())
+}
 
 fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()> {
     println!("estoy en pktline y recibi:\n {}", request);

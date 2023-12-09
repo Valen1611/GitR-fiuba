@@ -995,14 +995,14 @@ pub fn decode(input: &[u8]) -> Result<Vec<u8>, GitrError> {
     Ok(decoded_data)
 }
 
-pub fn create_pull_request(cliente: &str, pull_request: PullRequest) -> Result<(), GitrError> {
-    let remote = get_remote(cliente.to_string())?;
-    let path = format!("{}/pulls/{}", remote, pull_request.id);
+pub fn create_pull_request(server_path: &str, pull_request: PullRequest) -> Result<(), GitrError> {
+    // let remote = get_remote(cliente.to_string())?;
+    // let path = format!("{}/pulls/{}", remote, pull_request.id);
     
-    println!("\x1b[32mpath: {}", path);
-    println!("pull_request: {}\x1b[0m", pull_request.to_string()?);
+    // println!("\x1b[32mpath: {}", path);
+    // println!("pull_request: {}\x1b[0m", pull_request.to_string()?);
 
-    write_file(path, pull_request.to_string()?)?;
+    write_file(server_path.to_string(), pull_request.to_string()?)?;
     Ok(())
 }
 
@@ -1012,30 +1012,31 @@ pub fn get_pull_request(remote: &str, id: &str) -> Result<String, GitrError> {
     Ok(data)
 }
 
-pub fn get_pull_requests(repo: &str) -> Result<(), GitrError> {
-    // let mut pull_requests: Vec<PullRequest> = Vec::new();
-    // let dir = format!("{}/pulls", repo);
-    // let paths = match fs::read_dir(dir.clone()) {
-    //     Ok(paths) => paths,
-    //     Err(_) => return Err(GitrError::FileReadError(dir)),
-    // };
-    // for path in paths {
-    //     let path = match path {
-    //         Ok(path) => path,
-    //         Err(_) => return Err(GitrError::FileReadError(dir)),
-    //     };
-    //     let path = path.path();
-    //     let path = path.to_str();
-    //     let path = match path {
-    //         Some(path) => path,
-    //         None => return Err(GitrError::FileReadError(dir)),
-    //     };
-    //     let content = read_file(path.to_string())?;
-    //     let pull_request = PullRequest::from_string(content)?;
-    //     pull_requests.push(pull_request);
-    Ok(())
+pub fn get_pull_requests(dir: String) -> Result<Vec<PullRequest>, GitrError> {
+    let mut pull_requests: Vec<PullRequest> = Vec::new();
+    let paths = match fs::read_dir(dir.clone()) {
+        Ok(paths) => paths,
+        Err(_) => return Err(GitrError::FileReadError(dir)),
+    };
+    
+    for path in paths {
+        let path = match path {
+            Ok(path) => path,
+            Err(_) => return Err(GitrError::FileReadError(dir)),
+        };
+        let path = path.path();
+        let path = path.to_str();
+        let path = match path {
+            Some(path) => path,
+            None => return Err(GitrError::FileReadError(dir)),
+        };
+        let content = read_file(path.to_string())?;
+        let pull_request = PullRequest::from_string(content)?;
+        pull_requests.push(pull_request);
     }
-
+    pull_requests.sort_by(|a, b| a.id.cmp(&b.id));
+    Ok(pull_requests)
+}
 pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
         let entradas = match fs::read_dir(ruta){
             Ok(entradas) => entradas,

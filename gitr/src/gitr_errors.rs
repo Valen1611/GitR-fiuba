@@ -29,6 +29,7 @@ pub enum GitrError {
     TagAlreadyExistsError(String),
     TagNonExistsError(String),
     PullRequestWriteError,
+    PullRequestReadError,
 }
 
 impl fmt::Display for GitrError {
@@ -91,6 +92,7 @@ impl fmt::Display for GitrError {
                 branch
             ),
             Self::PullRequestWriteError => write!(f, "ERROR: No se pudo escribir el PR en el server"),
+            Self::PullRequestReadError => write!(f, "ERROR: No se pudo leer el PR del server"),
         }
     }
 }
