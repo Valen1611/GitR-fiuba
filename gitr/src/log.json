@@ -11546,3 +11546,13 @@
     Recibi: invalid command: [A[A
     Uso: usage: gitr <command> [<args>]
 "}
+{"type": "FileOperation","timestamp": "09-12-2023 20:50:32","message": "reading data from: repos/serversito/pulls/1"}
+{"type": "FileOperation","timestamp": "09-12-2023 20:50:32","message": "reading data from: repos/serversito/pulls/0"}
+{"type": "FileOperation","timestamp": "09-12-2023 20:50:32","message": "reading data from: repos/serversito/pulls/1"}
+{"type": "FileOperation","timestamp": "09-12-2023 20:50:32","message": "reading data from: repos/serversito/gitr/refs/heads/rama"}
+{"type": "Error","timestamp": "09-12-2023 20:50:32","message": "No se pudo leer: repos/serversito/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "09-12-2023 20:50:32","message": "reading data from: repos/serversito/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "09-12-2023 20:51:27","message": "writing data to: repos/serversito/pulls/2"}
+{"type": "FileOperation","timestamp": "09-12-2023 21:00:13","message": "writing data to: repos/serversito/pulls/3"}
+{"type": "FileOperation","timestamp": "09-12-2023 21:00:19","message": "writing data to: repos/serversito/pulls/4"}
+{"type": "FileOperation","timestamp": "09-12-2023 21:02:48","message": "writing data to: repos/serversito/pulls/5"}

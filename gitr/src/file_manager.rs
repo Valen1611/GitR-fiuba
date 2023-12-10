@@ -498,7 +498,11 @@ pub fn update_client_refs(
 pub fn get_branches(cliente: String) -> Result<Vec<String>, GitrError> {
     let mut branches: Vec<String> = Vec::new();
     let repo = get_current_repo(cliente.clone())?;
-    let dir = repo + "/gitr/refs/heads";
+    let dir = if cliente.contains('/') {
+        repo + "/refs/heads"
+    } else { 
+        repo + "/gitr/refs/heads/"
+    };
     let paths = match fs::read_dir(dir.clone()) {
         Ok(paths) => paths,
         Err(_) => return Err(GitrError::FileReadError(dir)),

@@ -294,7 +294,6 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     };
 
     // Parseamos el body a un struct PullRequest 
-   
     if request.split('\n').collect::<Vec<&str>>().len() < 8 {
         println!("Error al parsear el body");
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
@@ -312,6 +311,15 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         }
     };
     
+    match check_branches_exist(&pull_request, &ruta, &mut stream) {
+        Ok(_) => {}
+        Err(_) => {
+            println!("Error al validar branches");
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
     // A la ruta le agregamos el id del PR
     let ruta = ruta.to_string() + "/" + id.to_string().as_str();
     
@@ -330,6 +338,31 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     };
 
     stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+    Ok(())
+}
+
+fn check_branches_exist(pull_request: &PullRequest, ruta: &str, stream: &mut TcpStream) -> Result<(), GitrError> {
+    let branch_name = pull_request.get_branch_name();
+    let base_name = pull_request.get_base_name();
+    let ruta_repo_server = ruta.split('/').collect::<Vec<&str>>()[..2].join("/");
+    let branches = match file_manager::get_branches(ruta_repo_server.clone()) {
+        Ok(branches) => branches,
+        Err(_) => {
+            println!("Error al obtener branches");
+            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+            return Err(GitrError::BranchNotFound);
+        }
+    };
+    if !branches.contains(&branch_name) {
+        println!("No existe la branch head");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+        return Err(GitrError::BranchNotFound);
+    }
+    if !branches.contains(&base_name) {
+        println!("No existe la branch base");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+        return Err(GitrError::BranchNotFound);
+    }
     Ok(())
 }
 

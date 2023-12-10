@@ -68,4 +68,8 @@ impl PullRequest {
         &self.head
     }
 
+    pub fn get_base_name(&self) -> &String {
+        &self.base
+    }
+
 }
