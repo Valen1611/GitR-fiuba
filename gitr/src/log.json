@@ -61,3 +61,262 @@
 {"type": "FileOperation","timestamp": "09-12-2023 19:12:21","message": "reading data from: juanma/.head_repo"}
 {"type": "FileOperation","timestamp": "09-12-2023 19:12:21","message": "reading data from: juanma/.head_repo"}
 {"type": "FileOperation","timestamp": "09-12-2023 19:12:21","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:15","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:15","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:15","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:15","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:08:22","message": "calling cr with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:22","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:08:25","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:08:25","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:08:25","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:18:47","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:18:47","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:18:47","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:18:47","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:18:52","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:18:52","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:18:52","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:18:52","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:21:26","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:21:26","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:21:26","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:21:26","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:21:31","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:21:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:21:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:21:31","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:30","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:30","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:30","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:30","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:22:33","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:22:33","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:22:33","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:26:56","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:26:56","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:26:56","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:26:56","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:27:03","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:03","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:27:03","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:27:13","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:13","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:27:13","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:27:22","message": "calling [A with flags: []"}
+{"type": "Error","timestamp": "11-12-2023 15:27:22","message": "ERROR: Argumentos invalidos.
+    Recibi: invalid command: [A
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "11-12-2023 15:27:24","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:24","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:27:25","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:27:27","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:27","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:27:27","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:27:33","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:27:33","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:27:33","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Error","timestamp": "11-12-2023 15:28:07","message": "Error al manejar un cliente: Error: no se pudo leer el stream"}
+{"type": "Error","timestamp": "11-12-2023 15:28:07","message": "Error al manejar un cliente: Error: no se pudo leer el stream"}
+{"type": "Error","timestamp": "11-12-2023 15:28:07","message": "Error al manejar un cliente: Error: no se pudo leer el stream"}
+{"type": "Error","timestamp": "11-12-2023 15:28:07","message": "Error al manejar un cliente: Error: no se pudo leer el stream"}
+{"type": "Error","timestamp": "11-12-2023 15:28:07","message": "Error al manejar un cliente: Error: no se pudo leer el stream"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:51","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:51","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:51","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:51","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:35:54","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:35:54","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:35:54","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:37:31","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:37:31","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:37:31","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:44:38","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:38","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:44:38","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:44:45","message": "calling [A with flags: []"}
+{"type": "Error","timestamp": "11-12-2023 15:44:45","message": "ERROR: Argumentos invalidos.
+    Recibi: invalid command: [A
+    Uso: usage: gitr <command> [<args>]
+"}
+{"type": "Action","timestamp": "11-12-2023 15:44:48","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:44:48","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:44:48","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:31","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:31","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:31","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:45:34","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:45:34","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "11-12-2023 15:45:34","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:46:34","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:46:34","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:46:34","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:46:34","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:46:38","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:46:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:46:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:46:38","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 15:46:38","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:47:02","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:47:02","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:47:02","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:47:02","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:47:06","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:47:06","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:47:06","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:47:06","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 15:47:06","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:50","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:50","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:50","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:50","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:49:53","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:53","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:53","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:53","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 15:49:53","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:49:57","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:49:57","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 15:49:57","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:52:13","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:52:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:52:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:52:13","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:52:23","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:52:23","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:52:23","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:52:23","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 15:52:23","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:54:49","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:54:49","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:54:49","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:54:49","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 15:54:49","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 15:54:53","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:54:53","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:54:53","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:54:53","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 15:54:53","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:55:42","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:55:42","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:55:42","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:55:42","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 15:55:44","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:55:44","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:55:44","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 15:55:44","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 15:55:44","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:02:22","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:02:22","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:02:22","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:02:22","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "11-12-2023 16:02:25","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:02:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:02:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:02:25","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 16:02:25","message": "ERROR: No se pudo conectar al servidor"}
+{"type": "Action","timestamp": "11-12-2023 16:05:33","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:05:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:05:33","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "11-12-2023 16:05:33","message": "reading data from: juanma/repo/gitr/remote"}
+{"type": "Error","timestamp": "11-12-2023 16:05:33","message": "ERROR: No se pudo conectar al servidor"}

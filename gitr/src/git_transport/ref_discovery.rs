@@ -259,6 +259,12 @@ pub fn read_long_stream(stream: &mut TcpStream) -> Result<Vec<u8>, std::io::Erro
     while n == 1024 {
         buffer = [0; 1024];
         n = stream.read(&mut buffer)?;
+        if buffer.starts_with("Error".as_bytes()) {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                format!("{}", String::from_utf8_lossy(&buffer[..n]))),
+            );
+        }
         buf.append(&mut Vec::from(&buffer[..n]));
     }
     Ok(buf)

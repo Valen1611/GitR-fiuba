@@ -1546,11 +1546,14 @@ pub fn protocol_reference_discovery(
 ) -> Result<Vec<(String, String)>, GitrError> {
     let mut buffer = Vec::new();
     while !buffer.ends_with("0000".as_bytes()) {
-        
+        if buffer.starts_with("Error".as_bytes()) {
+            println!("{}", String::from_utf8_lossy(&buffer));
+            return Err(GitrError::ConnectionError);
+        }
         let aux = match read_long_stream(stream) {
             Ok(buf) => buf,
             Err(e) => {
-                println!("Error: {}", e);
+                println!("{}",e);
                 return Err(GitrError::ConnectionError);
             }
         };

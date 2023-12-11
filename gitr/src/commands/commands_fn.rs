@@ -412,7 +412,6 @@ pub fn push(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
 
     //  ########## REFERENCE DISCOVERY ##########
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
-
     // ########## REFERENCE UPDATE REQUEST ##########
     let (pkt_needed, pkt_ids) =
         reference_update_request(&mut stream, hash_n_references.clone(), cliente.clone())?;
