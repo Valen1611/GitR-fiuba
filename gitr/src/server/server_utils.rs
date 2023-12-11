@@ -144,7 +144,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
     este caso puede ser
     Listar PRs - GET /repos/{repo}/pulls    ✅
     Obtener PR - GET /repos/{repo}/pulls/{pull_number}  ✅
-    Listar commits - repos/{repo}/pulls/{pull_number}/commits ✅
+    Listar commits - GET repos/{repo}/pulls/{pull_number}/commits ✅
     
     en Curl:
     curl -X GET localhost:9418/repos/sv/pulls
@@ -286,8 +286,8 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
     let id = match contar_archivos_y_directorios(&ruta){
         Ok(id) => id,
-        Err(_) => {
-            println!("Error al contar archivos y directorios");
+        Err(e) => {
+            println!("Error al contar archivos y directorios: {:?}", e);
             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
@@ -303,8 +303,8 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
     let mut pull_request: PullRequest = match serde_json::from_str(&body) {
         Ok(pull_request) => pull_request,
-        Err(_) => {
-            println!("Error al parsear el body");
+        Err(e) => {
+            println!("Error al parsear el body: {:?}", e);
             println!("body: {}", body);
             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
@@ -337,7 +337,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
           
     };
 
-    stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+    stream.write("HTTP/1.1 201 Created\r\n\r\n".as_bytes())?;
     Ok(())
 }
 
@@ -1093,3 +1093,118 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+mod http_tests{
+    use std::{path::Path, fs};
+
+    use crate::file_manager;
+    use crate::commands::commands_fn;
+
+    use std::io::Write;
+    use std::process::{Command, Stdio};
+    use super::*;
+
+    fn reset_cliente_y_server() {
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
+        let cliente = "cliente".to_string();
+        let flags = vec!["repo_tests_http".to_string()];
+        commands_fn::init(flags, cliente.clone()).unwrap();
+        let _ = write_file(
+            (cliente.clone() + "/gitrconfig").to_string(),
+            "[user]\n\tname = test\n\temail = test@gmail.com".to_string(),
+        );
+        file_manager::write_file(
+            "cliente/repo_tests_http/hola".to_string(),
+            "hola\n".to_string(),
+        ).unwrap();
+
+
+        commands_fn::add(vec![".".to_string()], cliente.clone()).unwrap();
+        commands_fn::commit(vec!["-m".to_string(), "\"commit base\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+        
+        commands_fn::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
+
+        file_manager::write_file(
+            "cliente/repo_tests_http/hola".to_string(),
+            "cambios en branch\n".to_string(),
+        ).unwrap();
+
+        commands_fn::add(vec![".".to_string()], cliente.clone()).unwrap();
+        commands_fn::commit(vec!["-m".to_string(), "\"commit branch\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+        
+        
+        commands_fn::remote(vec!["server_test".to_string()], cliente.clone()).unwrap();
+
+
+        let _server = thread::spawn(move || {
+            server_init("localhost:9418").unwrap();
+        });
+        
+        println!("voy a hacer push");
+        commands_fn::push(vec![], cliente.clone()).unwrap();
+        println!("hice push");
+    }
+    
+    #[test]
+    #[serial_test::serial]
+    fn test00_crear_pr_retorna_422_cuando_el_repo_no_existe(){
+        reset_cliente_y_server();
+
+        let mut child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("POST")
+            .arg("-d")
+            .arg("{\"title\":\"prueba\",\"body\":\"prueba\",\"head\":\"branch\",\"base\":\"master\"}")
+            .arg("localhost:9418/repos/repo_que_no_existe/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = "HTTP/1.1 422 Validation failed\r\n\r\n";
+
+        assert_eq!(output, output_esperado);
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test01_crear_pr_retorna_201_cuando_esta_ok() {
+        reset_cliente_y_server();
+
+        let mut child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("POST")
+            .arg("-d")
+            .arg(r#"{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#)
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = "HTTP/1.1 201 Created\r\n\r\n";
+
+        assert_eq!(output, output_esperado);
+    }
+
+
+
+}
+
+/*
+curl -X POST -H "Content-Type: application/json" -d 
+'{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"masdaster","status":"open"}' localhost:9418/repos/serversito/pulls
+
+
+*/
