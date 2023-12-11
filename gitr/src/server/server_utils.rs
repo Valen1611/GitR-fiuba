@@ -156,7 +156,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
     let ruta_vec = ruta.split('/').collect::<Vec<&str>>();
     if ruta_vec.len() < 3 {
         println!("Error al parsear la ruta");
-        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
     let ruta_pulls = ruta_vec[..3].join("/");
@@ -167,9 +167,9 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
     println!("route pulls: {}", ruta_pulls); // sv/pulls para obtener todos los PRs
     let prs: Vec<PullRequest> = match file_manager::get_pull_requests(ruta_pulls.clone()) {
         Ok(prs) => prs,
-        Err(_) => {
-            println!("Error al obtener PRs");
-            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+        Err(e) => {
+            println!("Error al obtener PRs, {:?}",e);
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
@@ -186,13 +186,13 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
         if dentry == "pulls" && last_dentry == "pulls" {
             println!("estoy en el caso de listar todos los PRs");
 
-            response_body.push_str("{");
+            response_body.push_str("[");
             for pr in prs {
                 let pr_str = match pr.to_string() {
                     Ok(pr_str) => pr_str,
                     Err(_) => {
                         println!("Error al parsear PR");
-                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
                         return Ok(());
                     }
                 }; 
@@ -201,9 +201,10 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
                 response_body.push_str(",");
             }
             response_body.pop(); // saco la ultima coma
-            response_body.push_str("}");
+            response_body.push_str("]");
             break;
         }
+
         if dentry.parse::<u8>().is_ok() {
             println!("estoy en el caso de obtener un PR");
             let mut route_provisoria_corrected = ruta.clone();
@@ -213,9 +214,9 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
 
             response_body = match file_manager::read_file(route_provisoria_corrected.clone().to_string()) {
                 Ok(response_body) => response_body,
-                Err(_) => {
-                    println!("Error al obtener PR");
-                    stream.write("HTTP/1.1 422 ERROR\r\n\r\nerror che".as_bytes())?;
+                Err(e) => {
+                    println!("Error al obtener PR, {:?}",e);
+                    stream.write("HTTP/1.1 404 Resource not found\r\n\r\n".as_bytes())?;
                     return Ok(());
                 }
             };
@@ -228,26 +229,24 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
                     Ok(commits) => commits,
                     Err(_) => {
                         println!("Error al obtener commits");
-                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
                         return Ok(());
                     }
                 };
                 
-                
-                
                 response_body = String::new();
-                response_body.push_str("{");
+                response_body.push_str("[");
                 for commit in commits {
                     response_body.push_str(&commit);
                     response_body.push_str(",");
                 }
                 response_body.pop(); // saco la ultima coma
-                response_body.push_str("}");
+                response_body.push_str("]");
             }
         }
     
     }
-    let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", response_body);
+    let response = format!("HTTP/1.1 200 application/json\r\n\r\n{}", response_body);
     stream.write(response.as_bytes())?;
     return Ok(());
 }
@@ -331,7 +330,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         Ok(_) => println!("PR creado"),
         Err(_) => {
             println!("Error al crear PR");
-            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
           
@@ -1145,9 +1144,35 @@ mod http_tests{
             server_init("localhost:9418").unwrap();
         });
         
-        println!("voy a hacer push");
         commands_fn::push(vec![], cliente.clone()).unwrap();
-        println!("hice push");
+
+        let mut child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("POST")
+            .arg("-d")
+            .arg(r#"{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#)
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+        
+        child.wait().unwrap();
+        
+        let mut child2 = Command::new("curl")
+        .arg("-isS")
+        .arg("-X")
+        .arg("POST")
+        .arg("-d")
+        .arg(r#"{"id":1,"title":"titulo del otro pr","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#)
+        .arg("localhost:9418/repos/server_test/pulls")
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("failed to execute curl");
+
+        child2.wait().unwrap();
+        
+        
     }
     
     #[test]
@@ -1172,6 +1197,9 @@ mod http_tests{
         let output_esperado = "HTTP/1.1 422 Validation failed\r\n\r\n";
 
         assert_eq!(output, output_esperado);
+        
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
     }
 
     #[test]
@@ -1196,10 +1224,113 @@ mod http_tests{
         let output_esperado = "HTTP/1.1 201 Created\r\n\r\n";
 
         assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
     }
 
 
+    #[test]
+    #[serial_test::serial]
+    fn test02_get_pr_retorna_200_cuando_obtengo_un_pr(){
+        reset_cliente_y_server();
+        let body = r#"{"id":0,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
 
+        let mut child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls/0")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = format!("HTTP/1.1 200 application/json\r\n\r\n{}", body);
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test03_get_pr_retorna_404_cuando_no_existe_pr(){
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls/99")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = format!("HTTP/1.1 404 Resource not found\r\n\r\n");
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test04_listar_prs_devuelve_422_cuando_no_hay_prs(){
+        reset_cliente_y_server();
+        fs::remove_dir_all("repos/server_test/pulls").unwrap();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = format!("HTTP/1.1 422 Validation failed\r\n\r\n");
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test05_get_prs_retorna_200_esta_ok(){
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let body_1 = r#"{"id":0,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
+        let body_2 = r#"{"id":1,"title":"titulo del otro pr","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#;
+
+        let body_response = format!("[{},{}]", body_1, body_2);
+
+        let output_esperado = format!("HTTP/1.1 200 application/json\r\n\r\n{}", body_response);
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
 }
 
 /*
