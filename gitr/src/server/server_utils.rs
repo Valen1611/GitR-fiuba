@@ -100,9 +100,16 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
 
 
         let ruta = request.split(' ').collect::<Vec<&str>>()[1].trim_start_matches('/');
-
+        let mut response_from_get = String::new();
         if request.starts_with("GET") {
-            return handler_get_request(&ruta, stream);
+             response_from_get = match handler_get_request(&ruta, &stream) {
+                Ok(response_from_get) => response_from_get,
+                Err(e) => {
+                    println!("Error al manejar el GET: {:?}", e);
+                    stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                    return Ok(());
+                }
+             };
         }
         if request.starts_with("POST") {
             println!("[SERVER]: POST request recieved:");
@@ -119,6 +126,8 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             Hacer el merge 💀💀💀
             PUT /repos/{repo}/pulls/{pull_number}/merge
             */
+            
+            return handle_put_request(&response_from_get, &request, stream);
         }
 
         if request.starts_with("PATCH"){
@@ -182,7 +191,7 @@ fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo
     Ok(json_message)
 }
 
-fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()> {
+fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<String> {
     /*
     este caso puede ser
     Listar PRs - GET /repos/{repo}/pulls    ✅
@@ -200,7 +209,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
     if ruta_vec.len() < 3 {
         println!("Error al parsear la ruta");
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-        return Ok(());
+        return Ok("".to_string());
     }
     let ruta_pulls = ruta_vec[..3].join("/");
     let ruta_repo_server = ruta_vec[..2].join("/");
@@ -213,7 +222,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
         Err(e) => {
             println!("Error al obtener PRs, {:?}",e);
             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-            return Ok(());
+            return Ok("".to_string());
         }
     };
     println!("PRs: {:?}", prs);
@@ -236,7 +245,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
                     Err(_) => {
                         println!("Error al parsear PR");
                         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-                        return Ok(());
+                        return Ok("".to_string());
                     }
                 }; 
 
@@ -260,7 +269,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
                 Err(e) => {
                     println!("Error al obtener PR, {:?}",e);
                     stream.write("HTTP/1.1 404 Resource not found\r\n\r\n".as_bytes())?;
-                    return Ok(());
+                    return Ok("".to_string());
                 }
             };
             if last_dentry == "commits" {
@@ -273,7 +282,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
                     Err(_) => {
                         println!("Error al obtener commits");
                         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-                        return Ok(());
+                        return Ok("".to_string());
                     }
                 };
                 
@@ -287,7 +296,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
                         Err(_) => {
                             println!("Error al obtener commit data");
                             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-                            return Ok(());
+                            return Ok("".to_string());
                         }
                     };
 
@@ -296,7 +305,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
                         Err(e) => {
                             println!("Error al obtener json message = {:?}",e);
                             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-                            return Ok(());
+                            return Ok("".to_string());
                         }
                     };
 
@@ -313,7 +322,7 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
     }
     let response = format!("HTTP/1.1 200 application/json\r\n\r\n{}", response_body);
     stream.write(response.as_bytes())?;
-    return Ok(());
+    return Ok(response_body);
 }
 
 fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()>{
@@ -402,6 +411,46 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     };
 
     stream.write("HTTP/1.1 201 Created\r\n\r\n".as_bytes())?;
+    Ok(())
+}
+
+fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()> {
+    
+    
+
+    if pr_str.is_empty() {
+        println!("Error al parsear el body");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
+
+    let pr = match PullRequest::from_string(pr_str.to_string()) {
+        Ok(pr) => pr,
+        Err(_) => {
+            println!("Error al parsear el body");
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
+    let master_name = pr.get_base_name();
+    let branch_name = pr.get_branch_name();
+
+    
+    /*
+    parsear input
+
+    PUT /repos/{repo}/pulls/{pull_number}/merge
+
+
+    res = merge(master, branch)
+
+    if res == Ok:
+        stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?; y tmb devolver el hash del nuevo commit creado
+    else:
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?; o algo as
+    
+     */
     Ok(())
 }
 
@@ -1431,6 +1480,100 @@ mod http_tests{
     }
 }
 
+
+#[cfg(test)]
+mod merge_pr_tests{
+    /*PUT /repos/{repo}/pulls/{pull_number}/merge */
+
+    use std::{path::Path, fs};
+    use crate::file_manager;
+    use crate::commands::commands_fn;
+    use std::process::{Command, Stdio};
+    use super::*;
+
+
+    fn reset_cliente_y_server() {
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
+        let cliente = "cliente".to_string();
+        let flags = vec!["repo_tests_http".to_string()];
+        commands_fn::init(flags, cliente.clone()).unwrap();
+        let _ = write_file(
+            (cliente.clone() + "/gitrconfig").to_string(),
+            "[user]\n\tname = test\n\temail = test@gmail.com".to_string(),
+        );
+        file_manager::write_file(
+            "cliente/repo_tests_http/hola".to_string(),
+            "hola\n".to_string(),
+        ).unwrap();
+
+
+        commands_fn::add(vec![".".to_string()], cliente.clone()).unwrap();
+        commands_fn::commit(vec!["-m".to_string(), "\"commit base\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+        
+        commands_fn::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
+
+        file_manager::write_file(
+            "cliente/repo_tests_http/hola".to_string(),
+            "cambios en branch\n".to_string(),
+        ).unwrap();
+
+        commands_fn::add(vec![".".to_string()], cliente.clone()).unwrap();
+        commands_fn::commit(vec!["-m".to_string(), "\"commit branch1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+        
+        commands_fn::checkout(vec!["master".to_string()], cliente.clone()).unwrap();
+        file_manager::write_file(
+            "cliente/repo_tests_http/hola".to_string(),
+            "cambio en master 1\n".to_string(),
+        ).unwrap();
+        commands_fn::add(vec![".".to_string()], cliente.clone()).unwrap();
+        commands_fn::commit(vec!["-m".to_string(), "\"commit master1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+        
+        commands_fn::remote(vec!["server_test".to_string()], cliente.clone()).unwrap();
+
+
+        let _server = thread::spawn(move || {
+            server_init("localhost:9418").unwrap();
+        });
+        
+        commands_fn::push(vec![], cliente.clone()).unwrap();
+
+        let mut child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("POST")
+            .arg("-d")
+            .arg(r#"{"id":0,"title":"PR para testear merge","description":"Este PR se usa en los test de merge","head":"branch","base":"master","status":"open"}"#)
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+        
+        child.wait().unwrap();
+        
+    }
+
+    #[test]
+    fn test00_cuando_hay_conflicts_devuelve_error_405(){
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls/0/merge")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+        println!("{}", output);
+    }
+}
 /*
 curl -X POST -H "Content-Type: application/json" -d 
 '{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"masdaster","status":"open"}' localhost:9418/repos/serversito/pulls
