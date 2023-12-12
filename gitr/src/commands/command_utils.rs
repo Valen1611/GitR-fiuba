@@ -1032,7 +1032,7 @@ pub fn get_status_files_not_staged(
         res.push_str(&header3);
         for file in not_staged.clone() {
             let file_name = match file.clone().split_once('/') {
-                Some((_path, file)) => file.clone().to_string(),
+                Some((_path, file)) => file.to_string(),
                 None => file.clone(),
             };
             if hayindex

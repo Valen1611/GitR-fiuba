@@ -356,7 +356,6 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
     let dir = repo + "/objects/";
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name + "/" + &file_name;
-    println!("path: {}", path);
     if fs::metadata(folder_dir).is_err() {
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
@@ -746,7 +745,6 @@ pub fn get_parent_commit(commit: String, cliente: String) -> Result<Vec<String>,
         file_manager::get_current_repo(cliente.clone())?,
         add_gitr,
     )?;
-    println!("commit: {}", commit);
     let commit = commit.split('\n').collect::<Vec<&str>>();
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent" {
         return Ok(vec!["None".to_string()]);
@@ -769,7 +767,6 @@ pub fn get_commit_commiter_mail(commit: String, cliente: String) -> Result<Strin
         true,
     )?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    println!("COMMIT(mail): {:?}", commit);
 
     let mut idx = 3;
     if commit[3].split(' ').collect::<Vec<&str>>()[0] != "committer" {
@@ -790,7 +787,6 @@ pub fn get_commit_commiter(commit: String, cliente: String) -> Result<String, Gi
         true,
     )?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    println!("COMMIT(commiter): {:?}", commit);
 
     let mut idx = 3;
     if commit[3].split(' ').collect::<Vec<&str>>()[0] != "committer" {
@@ -811,15 +807,11 @@ pub fn get_commit_author_mail(commit: String, cliente: String) -> Result<String,
         true,
     )?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    println!("COMMIT(author mail): {:?}", commit);
 
     let mut idx = 2;
     if commit[2].split(' ').collect::<Vec<&str>>()[0] != "author" {
         idx -= 1;
     }
-
-    println!("COMMITTER (author mail): {:?}", commit[idx]);
-
     let mail = commit[idx].split(' ').collect::<Vec<&str>>()[2];
     Ok(mail.to_string())
 }
@@ -1029,7 +1021,7 @@ fn iterate_over_dirs_for_getting_objects_hashes(
         if dir_name == "Error" {
             return Err(GitrError::FileReadError(dir));
         }
-        let file_reader = match fs::read_dir(dir.clone() + "/" + dir_name.clone()) {
+        let file_reader = match fs::read_dir(dir.clone() + "/" + dir_name) {
             Ok(l) => l,
             Err(_) => return Err(GitrError::FileReadError(dir)),
         };

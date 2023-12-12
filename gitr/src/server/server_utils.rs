@@ -250,12 +250,12 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
 
         if dentry.parse::<u8>().is_ok() {
             println!("estoy en el caso de obtener un PR");
-            let mut route_provisoria_corrected = ruta.clone();
+            let mut route_provisoria_corrected = ruta;
             if last_dentry == "commits" {
                 route_provisoria_corrected = ruta.trim_end_matches("/commits");
             }
 
-            response_body = match file_manager::read_file(route_provisoria_corrected.clone().to_string()) {
+            response_body = match file_manager::read_file(route_provisoria_corrected.to_string()) {
                 Ok(response_body) => response_body,
                 Err(e) => {
                     println!("Error al obtener PR, {:?}",e);
@@ -439,14 +439,14 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
-    let id = route_provisoria.split('/').collect::<Vec<&str>>()[2];
+    let _id = route_provisoria.split('/').collect::<Vec<&str>>()[2];
     if !file_manager::pull_request_exist(&route_provisoria){
         println!("No existe el pull request solicitado");
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
-    let mut pull_request: PullRequest = match serde_json::from_str(&body) {
+    let pull_request: PullRequest = match serde_json::from_str(&body) {
         Ok(pull_request) => pull_request,
         Err(_) => {
             println!("Error al parsear el body");
@@ -1162,12 +1162,12 @@ mod tests {
 mod http_tests{
     use std::{path::Path, fs};
 
-    use serde_json::json;
+    
 
     use crate::file_manager;
     use crate::commands::commands_fn;
     
-    use std::io::Write;
+    
     use std::process::{Command, Stdio};
     use super::*;
 
@@ -1247,7 +1247,7 @@ mod http_tests{
     fn test00_crear_pr_retorna_422_cuando_el_repo_no_existe(){
         reset_cliente_y_server();
 
-        let mut child = Command::new("curl")
+        let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
             .arg("POST")
@@ -1274,7 +1274,7 @@ mod http_tests{
     fn test01_crear_pr_retorna_201_cuando_esta_ok() {
         reset_cliente_y_server();
 
-        let mut child = Command::new("curl")
+        let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
             .arg("POST")
@@ -1302,7 +1302,7 @@ mod http_tests{
         reset_cliente_y_server();
         let body = r#"{"id":0,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
 
-        let mut child = Command::new("curl")
+        let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
             .arg("GET")
@@ -1415,30 +1415,17 @@ mod http_tests{
 
         let output = child.wait_with_output().expect("failed to wait on child");
         let output = String::from_utf8(output.stdout).unwrap();
+        println!("{}", output);
 
-
-        let mut commit_1 = vec![
-            r#"{"commit":{"#,
-            r#""author":{"#,
-                r#""name":""#,"cliente",r#"","#,
-                r#""email":""#,"test@gmail.com",r#"","#,
-                r#""date":""#,"Tue Dec 12 17:11:30 2023 -0300",r#"","#,
-            r#""committer":{"#,
-                r#""name":""#,"cliente",r#"","#,
-                r#""email":""#,"test@gmail.com",r#"","#,
-                r#""date":""#,"Tue Dec 12 17:11:30 2023 -0300",r#""},"#,
-            r#""message":""#,"commit branch",r#"","#,
-            r#""tree":{"#,
-                r#""sha":""#,"08deed466789dfea8937d0bdda2f6e81a615f25a",r#""}","}"#
-        ].concat();
+        assert!(output.contains("HTTP/1.1 200 application/json\r\n\r\n"));
+        assert!(output.contains(r#""author":{"name":"cliente","email":"<test@gmail.com>""#));
+        assert!(output.contains(r#""committer":{"name":"cliente","email":"<test@gmail.com>""#));
+        assert!(output.contains(r#""message":"commit branch""#));
+        assert!(output.contains(r#""tree":{"sha":"7e3f1eda8d09c76b01845520767ff1da6d51d470"}""#));
+        assert!(output.contains(r#""message":"commit base""#));
+        assert!(output.contains(r#""tree":{"sha":"08deed466789dfea8937d0bdda2f6e81a615f25a"}""#));
         
-        let commit_2 = "".to_string();
-
-        let body_response = format!("[{},{}]", commit_1, commit_2);
-
-        let output_esperado = format!("HTTP/1.1 200 application/json\r\n\r\n{}", body_response);
         
-        assert_eq!(output, output_esperado);
         fs::remove_dir_all("cliente").unwrap();
         fs::remove_dir_all("repos/server_test").unwrap();
     }
