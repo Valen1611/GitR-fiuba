@@ -151,30 +151,32 @@ commit branch
 fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo_server: String) -> Result<String, GitrError>{
     println!("==============commit_raw_data: {:?}", commit_raw_data);
     let commit_vec = commit_raw_data.split('\n').collect::<Vec<&str>>();
+    
     let tree = commit_vec[0].split(' ').collect::<Vec<&str>>()[2];
-
     let date = file_manager::get_commit_date(commit_hash.clone(), ruta_repo_server.clone())?;
-    let name = file_manager::get_commit_author(commit_hash.clone(), ruta_repo_server.clone())?;
+    let author = file_manager::get_commit_author(commit_hash.clone(), ruta_repo_server.clone())?;
+    let author_mail = file_manager::get_commit_author_mail(commit_hash.clone(), ruta_repo_server.clone())?;
     let message = file_manager::get_commit_message(commit_hash.clone(), ruta_repo_server.clone())?;
     let message = message.trim_end();
     let commiter = file_manager::get_commit_commiter(commit_hash.clone(), ruta_repo_server.clone())?;
-    let commiter = commiter.trim_start_matches("committer ");
+    let commiter_mail = file_manager::get_commit_commiter_mail(commit_hash.clone(), ruta_repo_server.clone())?;
+    //let commiter = commiter.trim_start_matches("committer ");
 
-    println!("tree: {:?}, date: {:?}, author: {:?}, commiter: {:?}, message: {:?}", tree, date, name, commiter, message);
+    println!("tree: {:?}, date: {:?}, author: {:?}, commiter: {:?}, message: {:?}", tree, date, author, commiter, message);
 
     let mut json_message = vec![
         "{\"commit\":{",
             "\"author\":{",
-                "\"name\":\"",&name,"\",",
-                "\"email\":\"",&name,"\",",
+                "\"name\":\"",&author,"\",",
+                "\"email\":\"",&author_mail,"\",",
                 "\"date\":\"",&date,"\"},",
             "\"committer\":{",
                 "\"name\":\"",&commiter,"\",",
-                "\"email\":\"",&commiter,"\",",
+                "\"email\":\"",&commiter_mail,"\",",
                 "\"date\":\"",&date,"\"},",
             "\"message\":\"",&message,"\",",
             "\"tree\":{",
-                "\"sha\":\"",&tree,"\"}}"
+                "\"sha\":\"",&tree,"\"}}","}}"
     ].concat();
     println!("++++++++++=====json_message: {}", json_message);
     Ok(json_message)

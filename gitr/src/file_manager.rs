@@ -761,7 +761,28 @@ pub fn get_parent_commit(commit: String, cliente: String) -> Result<Vec<String>,
     Ok(parents)
 }
 
-//receives a commit and returns its commmiter
+//receives a commit and returns its commmiter mail
+pub fn get_commit_commiter_mail(commit: String, cliente: String) -> Result<String, GitrError> {
+    let commit = read_object(
+        &commit,
+        file_manager::get_current_repo(cliente.clone())?,
+        true,
+    )?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+    println!("COMMIT(mail): {:?}", commit);
+
+    let mut idx = 3;
+    if commit[3].split(' ').collect::<Vec<&str>>()[0] != "committer" {
+        idx -= 1;
+    }
+
+    println!("COMMITTER (mail): {:?}", commit[idx]);
+
+    let author = commit[idx].split(' ').collect::<Vec<&str>>()[2];
+    Ok(author.to_string())
+}
+
+//receives a commit and returns its commmiter name
 pub fn get_commit_commiter(commit: String, cliente: String) -> Result<String, GitrError> {
     let commit = read_object(
         &commit,
@@ -769,17 +790,41 @@ pub fn get_commit_commiter(commit: String, cliente: String) -> Result<String, Gi
         true,
     )?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
-    let mut idx = 2;
-    if commit[2].split(' ').collect::<Vec<&str>>()[0] != "parent" {
+    println!("COMMIT(commiter): {:?}", commit);
+
+    let mut idx = 3;
+    if commit[3].split(' ').collect::<Vec<&str>>()[0] != "committer" {
         idx -= 1;
-    } else if commit[3].starts_with("parent") {
-        idx += 1;
     }
+
+    println!("COMMITTER (name): {:?}", commit[idx]);
+
     let author = commit[idx].split(' ').collect::<Vec<&str>>()[1];
     Ok(author.to_string())
 }
 
 //receives a commit and returns its author
+pub fn get_commit_author_mail(commit: String, cliente: String) -> Result<String, GitrError> {
+    let commit = read_object(
+        &commit,
+        file_manager::get_current_repo(cliente.clone())?,
+        true,
+    )?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+    println!("COMMIT(author mail): {:?}", commit);
+
+    let mut idx = 2;
+    if commit[2].split(' ').collect::<Vec<&str>>()[0] != "author" {
+        idx -= 1;
+    }
+
+    println!("COMMITTER (author mail): {:?}", commit[idx]);
+
+    let mail = commit[idx].split(' ').collect::<Vec<&str>>()[2];
+    Ok(mail.to_string())
+}
+
+//receives a commit and returns its author name
 pub fn get_commit_author(commit: String, cliente: String) -> Result<String, GitrError> {
     let commit = read_object(
         &commit,
