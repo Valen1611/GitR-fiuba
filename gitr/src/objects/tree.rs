@@ -18,7 +18,7 @@ pub fn get_formated_hash(hash: String, path: &str) -> Result<Vec<u8>, GitrError>
         let byte_as_str = format!("{}{}", first_char, second_char);
         let byte = match u8::from_str_radix(&byte_as_str, 16) {
             Ok(byte) => byte,
-            Err(_) => return Err(GitrError::FileReadError(path.clone().to_string())),
+            Err(_) => return Err(GitrError::FileReadError(path.to_string())),
         };
         formated_hash.push(byte);
     }

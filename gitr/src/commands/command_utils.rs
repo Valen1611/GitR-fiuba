@@ -377,7 +377,7 @@ pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError> {
     };
 
     let lines = config_data.split('\n').collect::<Vec<&str>>();
-    let email = lines[1].split('=').collect::<Vec<&str>>()[1].trim_start();
+    let email = lines[2].split('=').collect::<Vec<&str>>()[1].trim_start();
     Ok(email.to_string())
 }
 
@@ -1032,7 +1032,7 @@ pub fn get_status_files_not_staged(
         res.push_str(&header3);
         for file in not_staged.clone() {
             let file_name = match file.clone().split_once('/') {
-                Some((_path, file)) => file.clone().to_string(),
+                Some((_path, file)) => file.to_string(),
                 None => file.clone(),
             };
             if hayindex
