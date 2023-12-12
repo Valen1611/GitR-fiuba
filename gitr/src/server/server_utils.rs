@@ -13,6 +13,7 @@ use std::str::from_utf8;
 
 use std::thread;
 
+use crate::commands::command_utils;
 use crate::file_manager;
 use crate::file_manager::contar_archivos_y_directorios;
 use crate::git_transport::pack_file::create_packfile;
@@ -23,6 +24,7 @@ use crate::git_transport::ref_discovery;
 use crate::logger::log_error;
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
+
 
 /// Pone en fucionamiento el Servidor Gitr en la direccion de socket provista. Maneja cada cliente de manera concurrente.
 /// # Recibe
@@ -105,9 +107,10 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         let request: String = String::from_utf8_lossy(&buffer[..n]).to_string();
 
 
-       
+        let ruta = request.split(' ').collect::<Vec<&str>>()[1].trim_start_matches('/');
+
         if request.starts_with("GET") {
-            return handler_get_request(&request, stream);
+            return handler_get_request(&ruta, stream);
         }
         if request.starts_with("POST") {
             println!("[SERVER]: POST request recieved:");
@@ -116,7 +119,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             Ejemplo para mandar con curl:
             curl -X POST -H "Content-Type: application/json" -d '{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"TestBranch2","base":"master","status":"open"}' localhost:9418/repos/sv/pulls
             */
-            return handle_post_request(&request, stream);
+            return handle_post_request(&ruta, &request, stream);
         }
         if request.starts_with("PUT") {
             println!("[SERVER]: PUT request recieved");
@@ -153,13 +156,55 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         ))
     }
 }
+/*
+commit 190tree 7e3f1eda8d09c76b01845520767ff1da6d51d470
+parent 681be5ea0583b311495a1f9ca62316cf4d8dceb4
+author cliente <test> 1702329287 -0300
+committer cliente <test> 1702329287 -0300
 
-fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<()> {
+commit branch
+
+*/
+fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo_server: String) -> Result<String, GitrError>{
+    println!("==============commit_raw_data: {:?}", commit_raw_data);
+    let commit_vec = commit_raw_data.split('\n').collect::<Vec<&str>>();
+    
+    let tree = commit_vec[0].split(' ').collect::<Vec<&str>>()[2];
+    let date = file_manager::get_commit_date(commit_hash.clone(), ruta_repo_server.clone())?;
+    let author = file_manager::get_commit_author(commit_hash.clone(), ruta_repo_server.clone())?;
+    let author_mail = file_manager::get_commit_author_mail(commit_hash.clone(), ruta_repo_server.clone())?;
+    let message = file_manager::get_commit_message(commit_hash.clone(), ruta_repo_server.clone())?;
+    let message = message.trim_end();
+    let commiter = file_manager::get_commit_commiter(commit_hash.clone(), ruta_repo_server.clone())?;
+    let commiter_mail = file_manager::get_commit_commiter_mail(commit_hash.clone(), ruta_repo_server.clone())?;
+    //let commiter = commiter.trim_start_matches("committer ");
+
+    println!("tree: {:?}, date: {:?}, author: {:?}, commiter: {:?}, message: {:?}", tree, date, author, commiter, message);
+
+    let json_message = vec![
+        r#"{"commit":{"#,
+            r#""author":{"#,
+                r#""name":""#,&author,r#"","#,
+                r#""email":""#,&author_mail,r#"","#,
+                r#""date":""#,&date,r#"","#,
+            r#""committer":{"#,
+                r#""name":""#,&commiter,r#"","#,
+                r#""email":""#,&commiter_mail,r#"","#,
+                r#""date":""#,&date,r#""},"#,
+            r#""message":""#,&message,r#"","#,
+            r#""tree":{"#,
+                r#""sha":""#,&tree,r#""}","}"#
+    ].concat();
+    println!("++++++++++=====json_message: {}", json_message);
+    Ok(json_message)
+}
+
+fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()> {
     /*
     este caso puede ser
     Listar PRs - GET /repos/{repo}/pulls    ✅
     Obtener PR - GET /repos/{repo}/pulls/{pull_number}  ✅
-    Listar commits - repos/{repo}/pulls/{pull_number}/commits ✅
+    Listar commits - GET repos/{repo}/pulls/{pull_number}/commits ✅
     
     en Curl:
     curl -X GET localhost:9418/repos/sv/pulls
@@ -167,26 +212,30 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
     */
 
     println!("[SERVER]: GET request recieved");
-    println!("\x1b[34m{}\x1b[0m", request);
-    let route = request.split(' ').collect::<Vec<&str>>()[1];
-
-    let route_provisoria = route.split('/').collect::<Vec<&str>>();
-    let route_provisoria = route_provisoria[2..].join("/");
     
-    let route_provisoria_pulls = route.split('/').collect::<Vec<&str>>()[2..4].join("/");
-    println!("route: {}", route_provisoria); // ruta entera (sin el /repos)
-    println!("route pulls: {}", route_provisoria_pulls); // sv/pulls para obtener todos los PRs
-    let prs: Vec<PullRequest> = match file_manager::get_pull_requests(route_provisoria_pulls.clone()) {
+    let ruta_vec = ruta.split('/').collect::<Vec<&str>>();
+    if ruta_vec.len() < 3 {
+        println!("Error al parsear la ruta");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
+    let ruta_pulls = ruta_vec[..3].join("/");
+    let ruta_repo_server = ruta_vec[..2].join("/");
+
+
+    println!("route: {}", ruta); // ruta entera (sin el /repos)
+    println!("route pulls: {}", ruta_pulls); // sv/pulls para obtener todos los PRs
+    let prs: Vec<PullRequest> = match file_manager::get_pull_requests(ruta_pulls.clone()) {
         Ok(prs) => prs,
-        Err(_) => {
-            println!("Error al obtener PRs");
-            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+        Err(e) => {
+            println!("Error al obtener PRs, {:?}",e);
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
     println!("PRs: {:?}", prs);
     
-    let route_vec = route_provisoria.split('/').collect::<Vec<&str>>();
+    let route_vec = ruta.split('/').collect::<Vec<&str>>();
     println!("rut vec: {:?}", route_vec);
     
     let last_dentry = route_vec[route_vec.len()-1];
@@ -197,13 +246,13 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
         if dentry == "pulls" && last_dentry == "pulls" {
             println!("estoy en el caso de listar todos los PRs");
 
-            response_body.push_str("{");
+            response_body.push_str("[");
             for pr in prs {
                 let pr_str = match pr.to_string() {
                     Ok(pr_str) => pr_str,
                     Err(_) => {
                         println!("Error al parsear PR");
-                        stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+                        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
                         return Ok(());
                     }
                 }; 
@@ -212,50 +261,79 @@ fn handler_get_request(request: &str, mut stream: TcpStream) -> std::io::Result<
                 response_body.push_str(",");
             }
             response_body.pop(); // saco la ultima coma
-            response_body.push_str("}");
+            response_body.push_str("]");
             break;
         }
+
         if dentry.parse::<u8>().is_ok() {
             println!("estoy en el caso de obtener un PR");
-            let mut route_provisoria_corrected = route_provisoria.clone();
+            let mut route_provisoria_corrected = ruta;
             if last_dentry == "commits" {
-                route_provisoria_corrected = route_provisoria.trim_end_matches("/commits").to_string();
+                route_provisoria_corrected = ruta.trim_end_matches("/commits");
             }
 
-            response_body = match file_manager::read_file(route_provisoria_corrected.clone()) {
+            response_body = match file_manager::read_file(route_provisoria_corrected.to_string()) {
                 Ok(response_body) => response_body,
-                Err(_) => {
-                    println!("Error al obtener PR");
-                    stream.write("HTTP/1.1 422 ERROR\r\n\r\nerror che".as_bytes())?;
+                Err(e) => {
+                    println!("Error al obtener PR, {:?}",e);
+                    stream.write("HTTP/1.1 404 Resource not found\r\n\r\n".as_bytes())?;
                     return Ok(());
                 }
             };
             if last_dentry == "commits" {
                 println!("estoy en el caso de listar los commits de un PR");
                 let pr = PullRequest::from_string(response_body.clone()).unwrap();
+                let branch_name = pr.get_branch_name();
+                println!("ruta_repo_server: {:?}", ruta_repo_server);
+                let commits = match command_utils::branch_commits_list(branch_name.to_string(), ruta_repo_server.clone()) {
+                    Ok(commits) => commits,
+                    Err(_) => {
+                        println!("Error al obtener commits");
+                        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                        return Ok(());
+                    }
+                };
                 
                 
-                
-                let commits = pr.get_commits(); 
+
                 response_body = String::new();
-                response_body.push_str("{");
+                response_body.push_str("[");
                 for commit in commits {
-                    response_body.push_str(&commit);
+                    let commit_data = match file_manager::read_object(&commit, ruta_repo_server.clone(), false) {
+                        Ok(commit_data) => commit_data,
+                        Err(_) => {
+                            println!("Error al obtener commit data");
+                            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                            return Ok(());
+                        }
+                    };
+
+                    let json_message = match build_json_from_commit(commit.clone(), commit_data.clone(), ruta_repo_server.clone()) {
+                        Ok(json_message) => json_message,
+                        Err(e) => {
+                            println!("Error al obtener json message = {:?}",e);
+                            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                            return Ok(());
+                        }
+                    };
+
+                    
+
+                    response_body.push_str(&json_message);
                     response_body.push_str(",");
                 }
                 response_body.pop(); // saco la ultima coma
-                response_body.push_str("}");
+                response_body.push_str("]");
             }
         }
-    }
     
-    let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", response_body);
+    }
+    let response = format!("HTTP/1.1 200 application/json\r\n\r\n{}", response_body);
     stream.write(response.as_bytes())?;
     return Ok(());
 }
 
-fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<()>{
-    let route = request.split(' ').collect::<Vec<&str>>()[1];
+fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()>{
     /*
     POST el body en la ruta
     
@@ -284,21 +362,19 @@ fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<
     // Y cuando tengamos esa carpeta, chequeemos que se esta
     // queriendo acceder a esa carpeta, si no, tiramos un
     // error 403 Forbidden
-    let route_provisoria = route.split('/').collect::<Vec<&str>>();
-    let route_provisoria = route_provisoria[2..].join("/");
+
     
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
-    let id = match contar_archivos_y_directorios(&route_provisoria){
+    let id = match contar_archivos_y_directorios(&ruta){
         Ok(id) => id,
-        Err(_) => {
-            println!("Error al contar archivos y directorios");
+        Err(e) => {
+            println!("Error al contar archivos y directorios: {:?}", e);
             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
 
     // Parseamos el body a un struct PullRequest 
-
     if request.split('\n').collect::<Vec<&str>>().len() < 8 {
         println!("Error al parsear el body");
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
@@ -308,32 +384,66 @@ fn handle_post_request(request: &str, mut stream: TcpStream) -> std::io::Result<
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
     let mut pull_request: PullRequest = match serde_json::from_str(&body) {
         Ok(pull_request) => pull_request,
-        Err(_) => {
-            println!("Error al parsear el body");
+        Err(e) => {
+            println!("Error al parsear el body: {:?}", e);
             println!("body: {}", body);
             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
     
+    match check_branches_exist(&pull_request, &ruta, &mut stream) {
+        Ok(_) => {}
+        Err(_) => {
+            println!("Error al validar branches");
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
     // A la ruta le agregamos el id del PR
-    let route_provisoria = route_provisoria + "/" + id.to_string().as_str();
+    let ruta = ruta.to_string() + "/" + id.to_string().as_str();
     
     // Le asignamos el id al PR
     pull_request.id = id as u8;
 
     // Creamos el PR            
-    match file_manager::create_pull_request(&route_provisoria, pull_request) {
+    match file_manager::create_pull_request(&ruta, pull_request) {
         Ok(_) => println!("PR creado"),
         Err(_) => {
             println!("Error al crear PR");
-            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
           
     };
 
-    stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+    stream.write("HTTP/1.1 201 Created\r\n\r\n".as_bytes())?;
+    Ok(())
+}
+
+fn check_branches_exist(pull_request: &PullRequest, ruta: &str, stream: &mut TcpStream) -> Result<(), GitrError> {
+    let branch_name = pull_request.get_branch_name();
+    let base_name = pull_request.get_base_name();
+    let ruta_repo_server = ruta.split('/').collect::<Vec<&str>>()[..2].join("/");
+    let branches = match file_manager::get_branches(ruta_repo_server.clone()) {
+        Ok(branches) => branches,
+        Err(_) => {
+            println!("Error al obtener branches");
+            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+            return Err(GitrError::BranchNotFound);
+        }
+    };
+    if !branches.contains(&branch_name) {
+        println!("No existe la branch head");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+        return Err(GitrError::BranchNotFound);
+    }
+    if !branches.contains(&base_name) {
+        println!("No existe la branch base");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+        return Err(GitrError::BranchNotFound);
+    }
     Ok(())
 }
 
@@ -346,14 +456,14 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
-    let id = route_provisoria.split('/').collect::<Vec<&str>>()[2];
+    let _id = route_provisoria.split('/').collect::<Vec<&str>>()[2];
     if !file_manager::pull_request_exist(&route_provisoria){
         println!("No existe el pull request solicitado");
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
-    let mut pull_request: PullRequest = match serde_json::from_str(&body) {
+    let pull_request: PullRequest = match serde_json::from_str(&body) {
         Ok(pull_request) => pull_request,
         Err(_) => {
             println!("Error al parsear el body");
@@ -1068,3 +1178,283 @@ mod tests {
         );
     }
 }
+
+#[cfg(test)]
+mod http_tests{
+    use std::{path::Path, fs};
+
+    
+
+    use crate::file_manager;
+    use crate::commands::commands_fn;
+    
+    
+    use std::process::{Command, Stdio};
+    use super::*;
+
+    fn reset_cliente_y_server() {
+        let path = Path::new(&"cliente");
+        if path.exists() {
+            fs::remove_dir_all(path).unwrap();
+        }
+        file_manager::create_directory(&"cliente".to_string()).unwrap();
+        let cliente = "cliente".to_string();
+        let flags = vec!["repo_tests_http".to_string()];
+        commands_fn::init(flags, cliente.clone()).unwrap();
+        let _ = write_file(
+            (cliente.clone() + "/gitrconfig").to_string(),
+            "[user]\n\tname = test\n\temail = test@gmail.com".to_string(),
+        );
+        file_manager::write_file(
+            "cliente/repo_tests_http/hola".to_string(),
+            "hola\n".to_string(),
+        ).unwrap();
+
+
+        commands_fn::add(vec![".".to_string()], cliente.clone()).unwrap();
+        commands_fn::commit(vec!["-m".to_string(), "\"commit base\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+        
+        commands_fn::checkout(vec!["-b".to_string(), "branch".to_string()], cliente.clone()).unwrap();
+
+        file_manager::write_file(
+            "cliente/repo_tests_http/hola".to_string(),
+            "cambios en branch\n".to_string(),
+        ).unwrap();
+
+        commands_fn::add(vec![".".to_string()], cliente.clone()).unwrap();
+        commands_fn::commit(vec!["-m".to_string(), "\"commit branch\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
+        
+        
+        commands_fn::remote(vec!["server_test".to_string()], cliente.clone()).unwrap();
+
+
+        let _server = thread::spawn(move || {
+            server_init("localhost:9418").unwrap();
+        });
+        
+        commands_fn::push(vec![], cliente.clone()).unwrap();
+
+        let mut child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("POST")
+            .arg("-d")
+            .arg(r#"{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#)
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+        
+        child.wait().unwrap();
+        
+        let mut child2 = Command::new("curl")
+        .arg("-isS")
+        .arg("-X")
+        .arg("POST")
+        .arg("-d")
+        .arg(r#"{"id":1,"title":"titulo del otro pr","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#)
+        .arg("localhost:9418/repos/server_test/pulls")
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("failed to execute curl");
+
+        child2.wait().unwrap();
+        
+        
+    }
+    
+    #[test]
+    #[serial_test::serial]
+    fn test00_crear_pr_retorna_422_cuando_el_repo_no_existe(){
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("POST")
+            .arg("-d")
+            .arg("{\"title\":\"prueba\",\"body\":\"prueba\",\"head\":\"branch\",\"base\":\"master\"}")
+            .arg("localhost:9418/repos/repo_que_no_existe/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = "HTTP/1.1 422 Validation failed\r\n\r\n";
+
+        assert_eq!(output, output_esperado);
+        
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test01_crear_pr_retorna_201_cuando_esta_ok() {
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("POST")
+            .arg("-d")
+            .arg(r#"{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#)
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = "HTTP/1.1 201 Created\r\n\r\n";
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+
+    #[test]
+    #[serial_test::serial]
+    fn test02_get_pr_retorna_200_cuando_obtengo_un_pr(){
+        reset_cliente_y_server();
+        let body = r#"{"id":0,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls/0")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = format!("HTTP/1.1 200 application/json\r\n\r\n{}", body);
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test03_get_pr_retorna_404_cuando_no_existe_pr(){
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls/99")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = format!("HTTP/1.1 404 Resource not found\r\n\r\n");
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test04_listar_prs_devuelve_422_cuando_no_hay_prs(){
+        reset_cliente_y_server();
+        fs::remove_dir_all("repos/server_test/pulls").unwrap();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let output_esperado = format!("HTTP/1.1 422 Validation failed\r\n\r\n");
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test05_get_prs_retorna_200_esta_ok(){
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+        let body_1 = r#"{"id":0,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
+        let body_2 = r#"{"id":1,"title":"titulo del otro pr","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#;
+
+        let body_response = format!("[{},{}]", body_1, body_2);
+
+        let output_esperado = format!("HTTP/1.1 200 application/json\r\n\r\n{}", body_response);
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test06_get_commits_retorna_200_y_listado_de_commits(){
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls/0/commits")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+        println!("{}", output);
+
+        assert!(output.contains("HTTP/1.1 200 application/json\r\n\r\n"));
+        assert!(output.contains(r#""author":{"name":"cliente","email":"<test@gmail.com>""#));
+        assert!(output.contains(r#""committer":{"name":"cliente","email":"<test@gmail.com>""#));
+        assert!(output.contains(r#""message":"commit branch""#));
+        assert!(output.contains(r#""tree":{"sha":"7e3f1eda8d09c76b01845520767ff1da6d51d470"}""#));
+        assert!(output.contains(r#""message":"commit base""#));
+        assert!(output.contains(r#""tree":{"sha":"08deed466789dfea8937d0bdda2f6e81a615f25a"}""#));
+        
+        
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+}
+
+/*
+curl -X POST -H "Content-Type: application/json" -d 
+'{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"masdaster","status":"open"}' localhost:9418/repos/serversito/pulls
+
+
+*/
