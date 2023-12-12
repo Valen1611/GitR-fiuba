@@ -100,6 +100,15 @@ pub fn reference_update_request(
     Ok((request, !pkt_ids.is_empty(), pkt_ids))
 }
 
+/// A check_push toma las referencias del server y el cliente y ve si se puede pushear sin perder datos.
+/// # Recibe:
+/// * hash_n_references: Vector de tuplas (hash, referencia) del servidor
+/// * heads_ids: Vector de ids de los heads del cliente
+/// * heads_refs: Vector de referencias de los heads del cliente
+/// * cliente: String que indica el nombre del cliente
+/// # Devuelve:
+/// * Ok(()) si se puede pushear
+/// * Err(GitrError::PushError) si no se puede pushear
 pub fn check_push( hash_n_references: Vec<(String, String)>, heads_ids: Vec<String>, heads_refs: Vec<String>, cliente: String) -> Result<(), GitrError> {
     for hash_n_ref in hash_n_references.clone() {
         if hash_n_ref.1 == "HEAD" {

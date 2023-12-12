@@ -452,17 +452,17 @@ pub fn show_ref(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         }
     };
     let refs = refs.strip_suffix("0000").unwrap_or(&refs);
-    if flags.contains(&"--head".to_string()) {
-        println!("{}", refs);
-        return Ok(());
-    }
-    let mut first = true;
-    for line in refs.lines() {
-        if first {
-            first = false;
+    let mut head = true;
+    for refer in refs.lines() {
+        let r = refer.split_at(4).1;
+        if head {
+            if flags.contains(&"--head".to_string()){
+                println!("{}", r);
+            }
+            head = false;
             continue;
         }
-        println!("{}", line);
+        println!("{}", r);
     }
     Ok(())
 }

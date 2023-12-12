@@ -932,3 +932,365 @@
 {"type": "FileOperation","timestamp": "12-12-2023 17:18:27","message": "reading data from: puller/r/gitr/refs/heads/master"}
 {"type": "FileOperation","timestamp": "12-12-2023 17:18:27","message": "reading data from: puller/.head_repo"}
 {"type": "Error","timestamp": "12-12-2023 17:18:27","message": "ERROR: No se pudo hacer push. Info: Cliente desactualizado"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:32","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:32","message": "reading data from: juanma/.head_repo"}
+{"type": "Error","timestamp": "12-12-2023 17:41:32","message": "No se pudo leer: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:39","message": "writing data to: juanma/gitrconfig"}
+{"type": "Action","timestamp": "12-12-2023 17:41:52","message": "calling init with flags: ["repo"]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "creating dir: juanma/repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "creating dir: juanma/repo/gitr"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "creating dir: juanma/repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "creating dir: juanma/repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "creating dir: juanma/repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "creating dir: juanma/repo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "creating dir: juanma/repo/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "creating dir: juanma/repo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "writing data to: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "writing data to: juanma/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "writing data to: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:41:52","message": "writing data to: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:42:01","message": "calling echo with flags: ["asldkas", ">", "archivp"]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:01","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:01","message": "writing data to: juanma/repo/archivp"}
+{"type": "Action","timestamp": "12-12-2023 17:42:04","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "writing object fb100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "creating dir: juanma/repo/gitr/objects/fb"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "writing data to: juanma/repo/gitr/objects/fb/100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:04","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "Action","timestamp": "12-12-2023 17:42:08","message": "calling commit with flags: ["-m", "\"asfas\""]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "12-12-2023 17:42:08","message": "No se pudo leer: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "12-12-2023 17:42:08","message": "No se pudo leer: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "writing object 026e1862ec34c94f6de6563dd501aa283843aca9"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "creating dir: juanma/repo/gitr/objects/02"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "writing data to: juanma/repo/gitr/objects/02/6e1862ec34c94f6de6563dd501aa283843aca9"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "writing object 026e1862ec34c94f6de6563dd501aa283843aca9"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "writing data to: juanma/repo/gitr/objects/02/6e1862ec34c94f6de6563dd501aa283843aca9"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "writing data to: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/gitrconfig"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/gitrconfig"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "writing object f3776405f6ee4ae4bcfb442a49dcf6d1bdcae097"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "creating dir: juanma/repo/gitr/objects/f3"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "writing data to: juanma/repo/gitr/objects/f3/776405f6ee4ae4bcfb442a49dcf6d1bdcae097"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "writing data to: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:08","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "12-12-2023 17:42:13","message": "calling checkout with flags: ["-b", "rama"]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "writing data to: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "writing data to: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:13","message": "writing data to: juanma/repo/gitr/HEAD"}
+{"type": "Action","timestamp": "12-12-2023 17:42:23","message": "calling echo with flags: ["laksjd", ">", "asd"]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:23","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:23","message": "writing data to: juanma/repo/asd"}
+{"type": "Action","timestamp": "12-12-2023 17:42:25","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing object fb100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing data to: juanma/repo/gitr/objects/fb/100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/asd"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing object 424d226b5163a901618cf09c9c1da7dea11d3846"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "creating dir: juanma/repo/gitr/objects/42"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing data to: juanma/repo/gitr/objects/42/4d226b5163a901618cf09c9c1da7dea11d3846"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing object fb100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing data to: juanma/repo/gitr/objects/fb/100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "Action","timestamp": "12-12-2023 17:42:25","message": "adding juanma/repo/archivp to index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:25","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "Action","timestamp": "12-12-2023 17:42:32","message": "calling commit with flags: ["-m", "\"arass\""]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/asd"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/asd"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "writing object 572cfd98093e393a15fb764bbb42e6586e15cbc7"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "creating dir: juanma/repo/gitr/objects/57"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "writing data to: juanma/repo/gitr/objects/57/2cfd98093e393a15fb764bbb42e6586e15cbc7"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "writing object 572cfd98093e393a15fb764bbb42e6586e15cbc7"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "writing data to: juanma/repo/gitr/objects/57/2cfd98093e393a15fb764bbb42e6586e15cbc7"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/gitrconfig"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/gitrconfig"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "writing object 9cf38840c574691cf1e7a9b48dcdad0ab5112e29"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "creating dir: juanma/repo/gitr/objects/9c"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "writing data to: juanma/repo/gitr/objects/9c/f38840c574691cf1e7a9b48dcdad0ab5112e29"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "writing data to: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:32","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "Action","timestamp": "12-12-2023 17:42:38","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:38","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:38","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:38","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:42:55","message": "calling echo with flags: ["aksdn", ">", "lalalala"]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:55","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:55","message": "writing data to: juanma/repo/lalalala"}
+{"type": "Action","timestamp": "12-12-2023 17:42:57","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing object fb100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/objects/fb/100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/asd"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing object 424d226b5163a901618cf09c9c1da7dea11d3846"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/objects/42/4d226b5163a901618cf09c9c1da7dea11d3846"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/asd"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing object 424d226b5163a901618cf09c9c1da7dea11d3846"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/objects/42/4d226b5163a901618cf09c9c1da7dea11d3846"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "Action","timestamp": "12-12-2023 17:42:57","message": "adding juanma/repo/asd to index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing object fb100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/objects/fb/100f55e2d3451f890dc22a70f0547c05dd548f"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "Action","timestamp": "12-12-2023 17:42:57","message": "adding juanma/repo/archivp to index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/lalalala"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing object 4da92f148183f4bcb077687075a50689f9911f01"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "creating dir: juanma/repo/gitr/objects/4d"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/objects/4d/a92f148183f4bcb077687075a50689f9911f01"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:42:57","message": "writing data to: juanma/repo/gitr/index"}
+{"type": "Action","timestamp": "12-12-2023 17:43:25","message": "calling commit with flags: ["-m", "\"asdas\""]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/asd"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/lalalala"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/archivp"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/asd"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/lalalala"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "writing object f1722594c3b31602007c6c6eedd5c39dcd921236"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "creating dir: juanma/repo/gitr/objects/f1"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "writing data to: juanma/repo/gitr/objects/f1/722594c3b31602007c6c6eedd5c39dcd921236"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "writing object f1722594c3b31602007c6c6eedd5c39dcd921236"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "writing data to: juanma/repo/gitr/objects/f1/722594c3b31602007c6c6eedd5c39dcd921236"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/gitrconfig"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/gitrconfig"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "writing object 9bc4e8f375e38ff282543c45fd55b69e971da883"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "creating dir: juanma/repo/gitr/objects/9b"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "writing data to: juanma/repo/gitr/objects/9b/c4e8f375e38ff282543c45fd55b69e971da883"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "writing data to: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:25","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "Action","timestamp": "12-12-2023 17:43:39","message": "calling tag with flags: ["-a", "tagcito", "-m", "\"qsfasfas\""]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "reading data from: juanma/repo/gitr/refs/heads/rama"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "reading data from: juanma/gitrconfig"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "writing object 52b2e640575989d02f7bca4fffa8bb80000a4de8"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "creating dir: juanma/repo/gitr/objects/52"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "writing data to: juanma/repo/gitr/objects/52/b2e640575989d02f7bca4fffa8bb80000a4de8"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:39","message": "writing data to: juanma/repo/gitr/refs/tags/tagcito"}
+{"type": "Action","timestamp": "12-12-2023 17:43:43","message": "calling tag with flags: []"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:43","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:43:48","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:48","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:43:55","message": "calling c with flags: ["-p", "9bc4e8f375e38ff282543c45fd55b69e971da883"]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:43:55","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:12","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:12","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:12","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:12","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:45:13","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:13","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:45:17","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:17","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:45:27","message": "calling branch with flags: []"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:27","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:27","message": "reading data from: juanma/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:27","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:53","message": "creating dir: juanma"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:53","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:53","message": "reading data from: juanma/.head_repo"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:53","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:45:56","message": "calling show-ref with flags: []"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:45:56","message": "reading data from: juanma/.head_repo"}
+{"type": "Action","timestamp": "12-12-2023 17:46:02","message": "calling show-ref with flags: ["--head"]"}
+{"type": "FileOperation","timestamp": "12-12-2023 17:46:02","message": "reading data from: juanma/.head_repo"}
