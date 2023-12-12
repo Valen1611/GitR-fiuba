@@ -100,6 +100,36 @@ pub fn reference_update_request(
     Ok((request, !pkt_ids.is_empty(), pkt_ids))
 }
 
+pub fn check_push(
+    hash_n_references: Vec<(String, String)>,
+    heads_ids: Vec<String>,
+    heads_refs: Vec<String>,
+    cliente: String
+) -> Result<(), GitrError> {
+    for hash_n_ref in hash_n_references.clone() {
+        if hash_n_ref.1 == "HEAD" {
+            continue;
+        }
+        for (j, h_refer) in heads_refs.iter().enumerate() {
+            if h_refer == &hash_n_ref.0 {
+                if !is_parent(heads_ids[j].clone(),hash_n_ref.0, cliente.clone())  {
+                    return Err(GitrError::PushError("Cliente desactualizado".to_string()));
+                }
+                break;
+            }
+        }
+    }
+    
+    Ok(())
+}
+
+fn is_parent(child: String, parent: String, cliente: String) -> bool {
+    let parents = match crate::objects::commit::Commit::get_parents(vec![child],vec![],cliente) {
+        Ok(parents) => parents,
+        Err(_) => return false,
+    };
+    parents.contains(&parent)
+}
 /// # Recibe:
 /// * hash_n_references: Vector de tuplas (hash, referencia) del servidor
 /// * refer: tupla (hash, referencia) de la referencia del cliente a analizar
