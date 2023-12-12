@@ -1,5 +1,5 @@
 use crate::{
-    commands::commands_fn,
+    commands::{commands_fn, command_utils},
     diff::Diff,
     file_manager::{
         self, get_commit, get_current_commit, get_current_repo, get_head, read_index,
@@ -23,6 +23,7 @@ use crate::{
 };
 use flate2::write::ZlibEncoder;
 use flate2::Compression;
+use serde_json::json;
 use sha1::{Digest, Sha1};
 use std::{
     collections::{HashMap, HashSet},
@@ -376,7 +377,7 @@ pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError> {
     };
 
     let lines = config_data.split('\n').collect::<Vec<&str>>();
-    let email = lines[1].split('=').collect::<Vec<&str>>()[1].trim_start();
+    let email = lines[2].split('=').collect::<Vec<&str>>()[1].trim_start();
     Ok(email.to_string())
 }
 
@@ -513,7 +514,9 @@ pub fn branch_newbranch_flag(branch: String, cliente: String) -> Result<(), Gitr
 /// receives a branch_name and returns the commit hash
 pub fn branch_commits_list(branch_name: String, cliente: String) -> Result<Vec<String>, GitrError> {
     let mut commits = Vec::new();
+
     let mut commit = file_manager::get_commit(branch_name, cliente.clone())?;
+    
     commits.push(commit.clone());
     loop {
         let parent = file_manager::get_parent_commit(commit.clone(), cliente.clone())?[0].clone();
@@ -1029,7 +1032,7 @@ pub fn get_status_files_not_staged(
         res.push_str(&header3);
         for file in not_staged.clone() {
             let file_name = match file.clone().split_once('/') {
-                Some((_path, file)) => file.clone().to_string(),
+                Some((_path, file)) => file.to_string(),
                 None => file.clone(),
             };
             if hayindex
@@ -1875,6 +1878,74 @@ pub fn _ls_tree(
     Ok(result)
 }
 
+/*****************
+ * PULL REQUESTS *
+ *****************/
+
+pub fn _create_pr(cliente: String) -> Result<(), GitrError> {
+    println!("create-pr");
+    let repo = file_manager::get_current_repo(cliente.clone())?;
+
+    let request_line = format!("POST /repos/{}/pulls HTTP/1.1\n", repo);
+    let header = format!("Host: localhost:9418\nUser-Agent: {}/1.0\nContent-Type: application/json\n", cliente);
+    let commits = command_utils::branch_commits_list("TestBranch".to_string(), cliente)?;
+    //let body = format!(r#"{{"id":{},"title":"{}","description":"{}","head":"{}","base":"{}","commits":{:?},}}"#,"1", "haciendo un pr","desc", "branch", "master", commits);
+    let _body = json!({
+        "id": 1,
+        "title": "haciendo un pr",
+        "description": "desc",
+        "head": "branch",
+        "base": "master",
+        "status": "open",
+        "commits": commits
+    });
+    let body = _body.to_string();
+    // Conectar
+    let mut stream = match TcpStream::connect("localhost:9418") {
+        Ok(s) => s,
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+
+    // Enviar Request
+    let request = request_line + &header + "\n" + &body;
+    println!("[CLIENT]: Sending request:\n[{}]", request);
+    match stream.write(request.as_bytes()) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+    let buf = &mut [0; 1024];
+    match stream.read(buf) {
+        Ok(n) => {
+            print!("[CLIENT]: Server response is: ");
+            let response = String::from_utf8_lossy(&buf[..n]);
+            if response.contains("201") {
+                print!("\x1b[0;32m")
+            }
+            else {
+                print!("\x1b[0;31m")
+            }
+            
+            println!("{}", response);
+            print!("\x1b[0m");
+        }
+        Err(e) => {
+            println!("Error: {}", e);
+            return Err(GitrError::ConnectionError);
+        }
+    };
+
+    Ok(())
+}
+
+
+
+
 // Esta suite solo corre bajo el Git Daemon que tiene Bruno, está hardcodeado el puerto y la dirección, además del repo remoto.
 //#[cfg(test)]
 // mod clone_tests {
@@ -2580,3 +2651,5 @@ mod check_ignore_tests {
         fs::remove_dir_all(path).unwrap();
     }
 }
+
+

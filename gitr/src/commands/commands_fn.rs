@@ -285,6 +285,11 @@ pub fn fetch(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
 }
 
 pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
+    // let origin_name = file_manager::get_head(cliente.clone())?
+    //     .split('/')
+    //     .collect::<Vec<&str>>()[2]
+    //     .to_string();
+
     match merge_(_flags, cliente.clone()) {
         Ok(_) => Ok(()),
         Err(e) => Err(e),
@@ -298,13 +303,15 @@ pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), Gi
             "merge <branch-name>".to_string(),
         ));
     }
+    
     let mut hubo_conflict = false;
     let branch_name = _flags[0].clone();
     let origin_name = file_manager::get_head(cliente.clone())?
-        .split('/')
-        .collect::<Vec<&str>>()[2]
-        .to_string();
+    .split('/')
+    .collect::<Vec<&str>>()[2]
+    .to_string();
 
+    
     let branch_commits = branch_commits_list(branch_name.clone(), cliente.clone())?;
     let origin_commits = branch_commits_list(origin_name, cliente.clone())?;
     for commit in branch_commits.clone() {
@@ -559,4 +566,15 @@ pub fn check_ignore(paths: Vec<String>, client: String) -> Result<(), GitrError>
         Ok(_) => Ok(()),
         Err(e) => Err(e),
     }
+}
+
+
+/********************
+ *  PULL REQUESTS   *
+ ********************/
+
+
+
+pub fn create_pr(cliente: String) -> Result<(), GitrError>{ 
+    _create_pr(cliente.clone())
 }

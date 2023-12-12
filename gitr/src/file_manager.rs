@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use crate::commands::command_utils::flate2compress;
 use crate::gitr_errors::GitrError;
+use crate::objects::pull_request::PullRequest;
 use crate::{file_manager, logger};
 use std::fs;
 use std::fs::{File, OpenOptions, ReadDir};
@@ -338,14 +339,17 @@ fn deflate_file(path: String) -> Result<Bytes<ZlibDecoder<File>>, GitrError> {
 // Le das un hash de objeto, se fija si existe y te devuelve el path completo de ese object
 //podríamos recibir el path aca así es una funcion sola
 //además la funcion _w_path no necesita el gitr y el del cliente si
-fn parse_object_hash(object: &String, path: String, add_gitr: bool) -> Result<String, GitrError> {
+fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Result<String, GitrError> {
     if object.len() < 3 {
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
     let folder_name = object[0..2].to_string();
     let file_name = object[2..].to_string();
 
-    let mut repo = path;
+    let mut repo = path.clone();
+    if path.starts_with("repos/") {
+        add_gitr = false;
+    }
     if add_gitr {
         repo += "/gitr";
     }
@@ -388,6 +392,9 @@ pub fn init_repository(name: &String) -> Result<(), GitrError> {
 }
 
 pub fn get_current_repo(cliente: String) -> Result<String, GitrError> {
+    if cliente.contains('/') {
+        return Ok(cliente );
+    }
     let current_repo = read_file(cliente.clone() + "/.head_repo")?;
     Ok(cliente + "/" + &current_repo)
 }
@@ -493,7 +500,11 @@ pub fn update_client_refs(
 pub fn get_branches(cliente: String) -> Result<Vec<String>, GitrError> {
     let mut branches: Vec<String> = Vec::new();
     let repo = get_current_repo(cliente.clone())?;
-    let dir = repo + "/gitr/refs/heads";
+    let dir = if cliente.contains('/') {
+        repo + "/refs/heads"
+    } else { 
+        repo + "/gitr/refs/heads/"
+    };
     let paths = match fs::read_dir(dir.clone()) {
         Ok(paths) => paths,
         Err(_) => return Err(GitrError::FileReadError(dir)),
@@ -598,9 +609,20 @@ pub fn get_current_commit(cliente: String) -> Result<String, GitrError> {
 
 //receives a branch and returns its commit hash
 pub fn get_commit(branch: String, cliente: String) -> Result<String, GitrError> {
-    let repo = get_current_repo(cliente.clone())?;
+    let repo = match get_current_repo(cliente.clone()) {
+        Ok(repo) => repo,
+        Err(_) => cliente.clone() //si no hay repo, es porque es un server
+    };
     let path = format!("{}/gitr/refs/heads/{}", repo, branch);
-    let commit = read_file(path.clone())?;
+
+    let commit = match read_file(path) {
+        Ok(commit) => commit,
+        Err(_) => {
+            let path_server = format!("{}/refs/heads/{}", repo, branch);
+            read_file(path_server)?
+        },
+    
+    };
     Ok(commit)
 }
 
@@ -713,10 +735,15 @@ pub fn get_main_tree(commit: String, cliente: String) -> Result<String, GitrErro
 
 //receives a commit and returns its parent commit hash
 pub fn get_parent_commit(commit: String, cliente: String) -> Result<Vec<String>, GitrError> {
+    let add_gitr = if cliente.contains('/') {
+        false
+    } else {
+        true
+    };
     let commit = read_object(
         &commit,
         file_manager::get_current_repo(cliente.clone())?,
-        true,
+        add_gitr,
     )?;
     let commit = commit.split('\n').collect::<Vec<&str>>();
     if commit[1].split(' ').collect::<Vec<&str>>()[0] != "parent" {
@@ -732,7 +759,64 @@ pub fn get_parent_commit(commit: String, cliente: String) -> Result<Vec<String>,
     Ok(parents)
 }
 
+//receives a commit and returns its commmiter mail
+pub fn get_commit_commiter_mail(commit: String, cliente: String) -> Result<String, GitrError> {
+    let commit = read_object(
+        &commit,
+        file_manager::get_current_repo(cliente.clone())?,
+        true,
+    )?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+
+    let mut idx = 3;
+    if commit[3].split(' ').collect::<Vec<&str>>()[0] != "committer" {
+        idx -= 1;
+    }
+
+    println!("COMMITTER (mail): {:?}", commit[idx]);
+
+    let author = commit[idx].split(' ').collect::<Vec<&str>>()[2];
+    Ok(author.to_string())
+}
+
+//receives a commit and returns its commmiter name
+pub fn get_commit_commiter(commit: String, cliente: String) -> Result<String, GitrError> {
+    let commit = read_object(
+        &commit,
+        file_manager::get_current_repo(cliente.clone())?,
+        true,
+    )?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+
+    let mut idx = 3;
+    if commit[3].split(' ').collect::<Vec<&str>>()[0] != "committer" {
+        idx -= 1;
+    }
+
+    println!("COMMITTER (name): {:?}", commit[idx]);
+
+    let author = commit[idx].split(' ').collect::<Vec<&str>>()[1];
+    Ok(author.to_string())
+}
+
 //receives a commit and returns its author
+pub fn get_commit_author_mail(commit: String, cliente: String) -> Result<String, GitrError> {
+    let commit = read_object(
+        &commit,
+        file_manager::get_current_repo(cliente.clone())?,
+        true,
+    )?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+
+    let mut idx = 2;
+    if commit[2].split(' ').collect::<Vec<&str>>()[0] != "author" {
+        idx -= 1;
+    }
+    let mail = commit[idx].split(' ').collect::<Vec<&str>>()[2];
+    Ok(mail.to_string())
+}
+
+//receives a commit and returns its author name
 pub fn get_commit_author(commit: String, cliente: String) -> Result<String, GitrError> {
     let commit = read_object(
         &commit,
@@ -937,7 +1021,7 @@ fn iterate_over_dirs_for_getting_objects_hashes(
         if dir_name == "Error" {
             return Err(GitrError::FileReadError(dir));
         }
-        let file_reader = match fs::read_dir(dir.clone() + "/" + dir_name.clone()) {
+        let file_reader = match fs::read_dir(dir.clone() + "/" + dir_name) {
             Ok(l) => l,
             Err(_) => return Err(GitrError::FileReadError(dir)),
         };
@@ -992,4 +1076,62 @@ pub fn decode(input: &[u8]) -> Result<Vec<u8>, GitrError> {
         return Err(GitrError::CompressionError);
     }
     Ok(decoded_data)
+}
+
+pub fn create_pull_request(server_path: &str, pull_request: PullRequest) -> Result<(), GitrError> {
+    // let remote = get_remote(cliente.to_string())?;
+    // let path = format!("{}/pulls/{}", remote, pull_request.id);
+    
+    // println!("\x1b[32mpath: {}", path);
+    // println!("pull_request: {}\x1b[0m", pull_request.to_string()?);
+
+    write_file(server_path.to_string(), pull_request.to_string()?)?;
+    Ok(())
+}
+
+pub fn get_pull_request(remote: &str, id: &str) -> Result<String, GitrError> {
+    let path = format!("{}/pulls/{}", remote, id);
+    let data = read_file(path)?;
+    Ok(data)
+}
+
+pub fn get_pull_requests(dir: String) -> Result<Vec<PullRequest>, GitrError> {
+    let mut pull_requests: Vec<PullRequest> = Vec::new();
+    let paths = match fs::read_dir(dir.clone()) {
+        Ok(paths) => paths,
+        Err(_) => return Err(GitrError::FileReadError(dir)),
+    };
+    
+    for path in paths {
+        let path = match path {
+            Ok(path) => path,
+            Err(_) => return Err(GitrError::FileReadError(dir)),
+        };
+        let path = path.path();
+        let path = path.to_str();
+        let path = match path {
+            Some(path) => path,
+            None => return Err(GitrError::FileReadError(dir)),
+        };
+        let content = read_file(path.to_string())?;
+        let pull_request = PullRequest::from_string(content)?;
+        pull_requests.push(pull_request);
+    }
+    pull_requests.sort_by(|a, b| a.id.cmp(&b.id));
+    Ok(pull_requests)
+}
+pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
+        let entradas = match fs::read_dir(ruta){
+            Ok(entradas) => entradas,
+            Err(_) => return Err(GitrError::FileReadError(ruta.to_string())),
+        };
+        Ok(entradas.count())
+    }
+
+pub fn pull_request_exist(path: &str) -> bool {
+    let data = read_file(path.to_string());
+    match data {
+        Ok(_) => true,
+        Err(_) => false,
+    }
 }
