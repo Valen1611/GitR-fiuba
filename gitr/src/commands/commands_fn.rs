@@ -4,6 +4,7 @@ use crate::file_manager::{
 };
 use crate::git_transport::ref_discovery::{self, check_push};
 use crate::{file_manager, gitr_errors::GitrError};
+use std::f32::consts::E;
 use std::path::Path;
 
 use super::command_utils::{self, *};
@@ -408,12 +409,23 @@ pub fn push(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         ));
     }
     // ########## HANDSHAKE ##########
-    let mut stream = handshake("git-recive-pack".to_string(), cliente.clone())?;
+    let mut stream = handshake("git-receive-pack".to_string(), cliente.clone())?;
 
     //  ########## REFERENCE DISCOVERY ##########
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
     // ########## REFERENCE UPDATE REQUEST ##########
-    check_push(hash_n_references.clone(), get_refs_ids("heads", cliente.clone())?,get_branches(cliente.clone())?, cliente.clone())?;
+    match check_push(hash_n_references.clone(), get_refs_ids("heads", cliente.clone())?,get_branches(cliente.clone())?, cliente.clone()) {
+        Ok(_) => {}
+        Err(e) => {
+            match std::io::Write::write(&mut stream, "0000".as_bytes()) {
+                Ok(_) => {}
+                Err(_) => {
+                    return Err(GitrError::ConnectionError);
+                }
+            }
+            return Err(e);
+        }
+    }
     let (pkt_needed, pkt_ids) =
         reference_update_request(&mut stream, hash_n_references.clone(), cliente.clone())?;
 
