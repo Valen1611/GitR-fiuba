@@ -164,19 +164,19 @@ fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo
 
     println!("tree: {:?}, date: {:?}, author: {:?}, commiter: {:?}, message: {:?}", tree, date, author, commiter, message);
 
-    let mut json_message = vec![
-        "{\"commit\":{",
-            "\"author\":{",
-                "\"name\":\"",&author,"\",",
-                "\"email\":\"",&author_mail,"\",",
-                "\"date\":\"",&date,"\"},",
-            "\"committer\":{",
-                "\"name\":\"",&commiter,"\",",
-                "\"email\":\"",&commiter_mail,"\",",
-                "\"date\":\"",&date,"\"},",
-            "\"message\":\"",&message,"\",",
-            "\"tree\":{",
-                "\"sha\":\"",&tree,"\"}}","}}"
+    let json_message = vec![
+        r#"{"commit":{"#,
+            r#""author":{"#,
+                r#""name":""#,&author,r#"","#,
+                r#""email":""#,&author_mail,r#"","#,
+                r#""date":""#,&date,r#"","#,
+            r#""committer":{"#,
+                r#""name":""#,&commiter,r#"","#,
+                r#""email":""#,&commiter_mail,r#"","#,
+                r#""date":""#,&date,r#""},"#,
+            r#""message":""#,&message,r#"","#,
+            r#""tree":{"#,
+                r#""sha":""#,&tree,r#""}","}"#
     ].concat();
     println!("++++++++++=====json_message: {}", json_message);
     Ok(json_message)
@@ -1416,30 +1416,28 @@ mod http_tests{
         let output = child.wait_with_output().expect("failed to wait on child");
         let output = String::from_utf8(output.stdout).unwrap();
 
-       
-        let commit_1 = json![r#"{
-        "commit":{
-            "author": {
-                "name":"valen1611",
-                "email": "vschneider@fi.uba.ar",
-                "date": "1701473029 -0300"
-            },
-            "committer": {
-                "name":"valen1611",
-                "email": "vschneider@fi.uba.ar",
-                "date": "1701473029 -0300"
-            },
-            "message": "listo con format",
-            "tree": {
-                "sha": "7596a07c85aa1aa19d8e706babc56665596d1224"
-            }
-        }"#];
+
+        let mut commit_1 = vec![
+            r#"{"commit":{"#,
+            r#""author":{"#,
+                r#""name":""#,"cliente",r#"","#,
+                r#""email":""#,"test@gmail.com",r#"","#,
+                r#""date":""#,"Tue Dec 12 17:11:30 2023 -0300",r#"","#,
+            r#""committer":{"#,
+                r#""name":""#,"cliente",r#"","#,
+                r#""email":""#,"test@gmail.com",r#"","#,
+                r#""date":""#,"Tue Dec 12 17:11:30 2023 -0300",r#""},"#,
+            r#""message":""#,"commit branch",r#"","#,
+            r#""tree":{"#,
+                r#""sha":""#,"08deed466789dfea8937d0bdda2f6e81a615f25a",r#""}","}"#
+        ].concat();
+        
         let commit_2 = "".to_string();
 
         let body_response = format!("[{},{}]", commit_1, commit_2);
 
         let output_esperado = format!("HTTP/1.1 200 application/json\r\n\r\n{}", body_response);
-
+        
         assert_eq!(output, output_esperado);
         fs::remove_dir_all("cliente").unwrap();
         fs::remove_dir_all("repos/server_test").unwrap();

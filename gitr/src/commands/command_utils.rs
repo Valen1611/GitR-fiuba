@@ -377,7 +377,7 @@ pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError> {
     };
 
     let lines = config_data.split('\n').collect::<Vec<&str>>();
-    let email = lines[1].split('=').collect::<Vec<&str>>()[1].trim_start();
+    let email = lines[2].split('=').collect::<Vec<&str>>()[1].trim_start();
     Ok(email.to_string())
 }
 
