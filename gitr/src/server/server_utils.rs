@@ -24,6 +24,7 @@ use crate::gitr_errors::GitrError;
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
 
+
 /// Pone en fucionamiento el Servidor Gitr en la direccion de socket provista. Maneja cada cliente de manera concurrente.
 /// # Recibe
 /// * s_addr: &str con la direccion del socket.
@@ -138,6 +139,46 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         "Error: no se pudo leer el stream",
     ))
 }
+/*
+commit 190tree 7e3f1eda8d09c76b01845520767ff1da6d51d470
+parent 681be5ea0583b311495a1f9ca62316cf4d8dceb4
+author cliente <test> 1702329287 -0300
+committer cliente <test> 1702329287 -0300
+
+commit branch
+
+*/
+fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo_server: String) -> Result<String, GitrError>{
+    println!("==============commit_raw_data: {:?}", commit_raw_data);
+    let commit_vec = commit_raw_data.split('\n').collect::<Vec<&str>>();
+    let tree = commit_vec[0].split(' ').collect::<Vec<&str>>()[2];
+
+    let date = file_manager::get_commit_date(commit_hash.clone(), ruta_repo_server.clone())?;
+    let name = file_manager::get_commit_author(commit_hash.clone(), ruta_repo_server.clone())?;
+    let message = file_manager::get_commit_message(commit_hash.clone(), ruta_repo_server.clone())?;
+    let message = message.trim_end();
+    let commiter = file_manager::get_commit_commiter(commit_hash.clone(), ruta_repo_server.clone())?;
+    let commiter = commiter.trim_start_matches("committer ");
+
+    println!("tree: {:?}, date: {:?}, author: {:?}, commiter: {:?}, message: {:?}", tree, date, name, commiter, message);
+
+    let mut json_message = vec![
+        "{\"commit\":{",
+            "\"author\":{",
+                "\"name\":\"",&name,"\",",
+                "\"email\":\"",&name,"\",",
+                "\"date\":\"",&date,"\"},",
+            "\"committer\":{",
+                "\"name\":\"",&commiter,"\",",
+                "\"email\":\"",&commiter,"\",",
+                "\"date\":\"",&date,"\"},",
+            "\"message\":\"",&message,"\",",
+            "\"tree\":{",
+                "\"sha\":\"",&tree,"\"}}"
+    ].concat();
+    println!("++++++++++=====json_message: {}", json_message);
+    Ok(json_message)
+}
 
 fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()> {
     /*
@@ -234,10 +275,32 @@ fn handler_get_request(ruta: &str, mut stream: TcpStream) -> std::io::Result<()>
                     }
                 };
                 
+                
+
                 response_body = String::new();
                 response_body.push_str("[");
                 for commit in commits {
-                    response_body.push_str(&commit);
+                    let commit_data = match file_manager::read_object(&commit, ruta_repo_server.clone(), false) {
+                        Ok(commit_data) => commit_data,
+                        Err(_) => {
+                            println!("Error al obtener commit data");
+                            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                            return Ok(());
+                        }
+                    };
+
+                    let json_message = match build_json_from_commit(commit.clone(), commit_data.clone(), ruta_repo_server.clone()) {
+                        Ok(json_message) => json_message,
+                        Err(e) => {
+                            println!("Error al obtener json message = {:?}",e);
+                            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                            return Ok(());
+                        }
+                    };
+
+                    
+
+                    response_body.push_str(&json_message);
                     response_body.push_str(",");
                 }
                 response_body.pop(); // saco la ultima coma
@@ -1097,9 +1160,11 @@ mod tests {
 mod http_tests{
     use std::{path::Path, fs};
 
+    use serde_json::json;
+
     use crate::file_manager;
     use crate::commands::commands_fn;
-
+    
     use std::io::Write;
     use std::process::{Command, Stdio};
     use super::*;
@@ -1324,6 +1389,52 @@ mod http_tests{
         let body_2 = r#"{"id":1,"title":"titulo del otro pr","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#;
 
         let body_response = format!("[{},{}]", body_1, body_2);
+
+        let output_esperado = format!("HTTP/1.1 200 application/json\r\n\r\n{}", body_response);
+
+        assert_eq!(output, output_esperado);
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("repos/server_test").unwrap();
+    }
+
+    #[test]
+    #[serial_test::serial]
+    fn test06_get_commits_retorna_200_y_listado_de_commits(){
+        reset_cliente_y_server();
+
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("GET")
+            .arg("localhost:9418/repos/server_test/pulls/0/commits")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+
+       
+        let commit_1 = json![r#"{
+        "commit":{
+            "author": {
+                "name":"valen1611",
+                "email": "vschneider@fi.uba.ar",
+                "date": "1701473029 -0300"
+            },
+            "committer": {
+                "name":"valen1611",
+                "email": "vschneider@fi.uba.ar",
+                "date": "1701473029 -0300"
+            },
+            "message": "listo con format",
+            "tree": {
+                "sha": "7596a07c85aa1aa19d8e706babc56665596d1224"
+            }
+        }"#];
+        let commit_2 = "".to_string();
+
+        let body_response = format!("[{},{}]", commit_1, commit_2);
 
         let output_esperado = format!("HTTP/1.1 200 application/json\r\n\r\n{}", body_response);
 

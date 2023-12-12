@@ -339,14 +339,17 @@ fn deflate_file(path: String) -> Result<Bytes<ZlibDecoder<File>>, GitrError> {
 // Le das un hash de objeto, se fija si existe y te devuelve el path completo de ese object
 //podríamos recibir el path aca así es una funcion sola
 //además la funcion _w_path no necesita el gitr y el del cliente si
-fn parse_object_hash(object: &String, path: String, add_gitr: bool) -> Result<String, GitrError> {
+fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Result<String, GitrError> {
     if object.len() < 3 {
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
     let folder_name = object[0..2].to_string();
     let file_name = object[2..].to_string();
 
-    let mut repo = path;
+    let mut repo = path.clone();
+    if path.starts_with("repos/") {
+        add_gitr = false;
+    }
     if add_gitr {
         repo += "/gitr";
     }
@@ -756,6 +759,24 @@ pub fn get_parent_commit(commit: String, cliente: String) -> Result<Vec<String>,
         parents.push(commit[2].split(' ').collect::<Vec<&str>>()[1].to_string());
     }
     Ok(parents)
+}
+
+//receives a commit and returns its commmiter
+pub fn get_commit_commiter(commit: String, cliente: String) -> Result<String, GitrError> {
+    let commit = read_object(
+        &commit,
+        file_manager::get_current_repo(cliente.clone())?,
+        true,
+    )?;
+    let commit = commit.split('\n').collect::<Vec<&str>>();
+    let mut idx = 2;
+    if commit[2].split(' ').collect::<Vec<&str>>()[0] != "parent" {
+        idx -= 1;
+    } else if commit[3].starts_with("parent") {
+        idx += 1;
+    }
+    let author = commit[idx].split(' ').collect::<Vec<&str>>()[1];
+    Ok(author.to_string())
 }
 
 //receives a commit and returns its author
