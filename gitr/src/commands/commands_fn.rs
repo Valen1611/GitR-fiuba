@@ -1,9 +1,10 @@
-use crate::file_manager::commit_log;
+use crate::file_manager::{commit_log, get_branches, get_refs_ids};
 use crate::file_manager::{
     delete_tag, get_current_commit, get_current_repo, update_working_directory,
 };
-use crate::git_transport::ref_discovery;
+use crate::git_transport::ref_discovery::{self, check_push};
 use crate::{file_manager, gitr_errors::GitrError};
+use std::f32::consts::E;
 use std::path::Path;
 
 use super::command_utils::{self, *};
@@ -412,8 +413,19 @@ pub fn push(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
 
     //  ########## REFERENCE DISCOVERY ##########
     let hash_n_references = protocol_reference_discovery(&mut stream)?;
-
     // ########## REFERENCE UPDATE REQUEST ##########
+    match check_push(hash_n_references.clone(), get_refs_ids("heads", cliente.clone())?,get_branches(cliente.clone())?, cliente.clone()) {
+        Ok(_) => {}
+        Err(e) => {
+            match std::io::Write::write(&mut stream, "0000".as_bytes()) {
+                Ok(_) => {}
+                Err(_) => {
+                    return Err(GitrError::ConnectionError);
+                }
+            }
+            return Err(e);
+        }
+    }
     let (pkt_needed, pkt_ids) =
         reference_update_request(&mut stream, hash_n_references.clone(), cliente.clone())?;
 
@@ -440,17 +452,17 @@ pub fn show_ref(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         }
     };
     let refs = refs.strip_suffix("0000").unwrap_or(&refs);
-    if flags.contains(&"--head".to_string()) {
-        println!("{}", refs);
-        return Ok(());
-    }
-    let mut first = true;
-    for line in refs.lines() {
-        if first {
-            first = false;
+    let mut head = true;
+    for refer in refs.lines() {
+        let r = refer.split_at(4).1;
+        if head {
+            if flags.contains(&"--head".to_string()){
+                println!("{}", r);
+            }
+            head = false;
             continue;
         }
-        println!("{}", line);
+        println!("{}", r);
     }
     Ok(())
 }

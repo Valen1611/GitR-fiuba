@@ -30,6 +30,7 @@ pub enum GitrError {
     TagNonExistsError(String),
     PullRequestWriteError,
     PullRequestReadError,
+    PushError(String),
     BranchNotFound,
 }
 
@@ -94,7 +95,9 @@ impl fmt::Display for GitrError {
             ),
             Self::PullRequestWriteError => write!(f, "ERROR: No se pudo escribir el PR en el server"),
             Self::PullRequestReadError => write!(f, "ERROR: No se pudo leer el PR del server"),
+            Self::PushError(info) => write!(f, "ERROR: No se pudo hacer push. Info: {}", info),
             Self::BranchNotFound => write!(f, "ERROR: No se encontro la branch"),
+
         }
     }
 }

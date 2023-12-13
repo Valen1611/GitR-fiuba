@@ -3,7 +3,7 @@ use crate::{
     diff::Diff,
     file_manager::{
         self, get_commit, get_current_commit, get_current_repo, get_head, read_index,
-        update_working_directory, visit_dirs,
+        update_working_directory, visit_dirs, get_tags,
     },
     git_transport::ref_discovery::read_long_stream,
 };
@@ -1533,7 +1533,6 @@ pub fn handshake(orden: String, cliente: String) -> Result<TcpStream, GitrError>
             return Err(GitrError::ConnectionError);
         }
     };
-    print!("Handshake: {}", msj);
     match stream.write(msj.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -1549,10 +1548,14 @@ pub fn protocol_reference_discovery(
 ) -> Result<Vec<(String, String)>, GitrError> {
     let mut buffer = Vec::new();
     while !buffer.ends_with("0000".as_bytes()) {
+        if buffer.starts_with("Error".as_bytes()) {
+            println!("{}", String::from_utf8_lossy(&buffer));
+            return Err(GitrError::ConnectionError);
+        }
         let aux = match read_long_stream(stream) {
             Ok(buf) => buf,
             Err(e) => {
-                println!("Error: {}", e);
+                println!("{}",e);
                 return Err(GitrError::ConnectionError);
             }
         };
@@ -1646,13 +1649,23 @@ pub fn reference_update_request(
     ); // esta sacando de gitr/refs/heads y tags
     let refs_propios = (
         get_branches(cliente.clone())?,
-        file_manager::get_tags(cliente.clone())?,
+        get_tags(cliente.clone())?,
     ); // tambien de gitr/refs/heads y tags
-    let (ref_upd, pkt_needed, pkt_ids) = ref_discovery::reference_update_request(
+    let (ref_upd, pkt_needed, pkt_ids) = match ref_discovery::reference_update_request(
         hash_n_references.clone(),
         ids_propios,
         refs_propios,
-    )?;
+    ) {
+        Ok((ref_upd, pkt_needed, pkt_ids)) => (ref_upd, pkt_needed, pkt_ids),
+        Err(e) => {
+            match stream.write("0000".as_bytes()) {
+                Ok(_) => (),
+                Err(_) => {return Err(GitrError::ConnectionError)}
+            }
+            return Err(e);
+        }
+    };
+    
     if let Err(e) = stream.write(ref_upd.as_bytes()) {
         println!("Error: {}", e);
         return Err(GitrError::ConnectionError);

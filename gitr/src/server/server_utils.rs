@@ -8,6 +8,7 @@ use std::io::Error;
 use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
+use std::path::Path;
 use std::str::from_utf8;
 
 use std::thread;
@@ -20,7 +21,7 @@ use crate::git_transport::pack_file::prepare_contents;
 use crate::git_transport::pack_file::PackFile;
 
 use crate::git_transport::ref_discovery;
-use crate::gitr_errors::GitrError;
+use crate::logger::log_error;
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
 
@@ -34,24 +35,7 @@ pub fn server_init(s_addr: &str) -> std::io::Result<()> {
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
 
-    thread::spawn(move || {
-        let mut input = String::new();
-        loop {
-            std::io::stdin()
-                .read_line(&mut input)
-                .expect("Failed to read line");
-            let trimmed = input.trim().to_lowercase();
-            if trimmed == "q" {
-                // Envia un mensaje al hilo principal para indicar que debe salir
-                let _ = TcpStream::connect("localhost:9418")
-                    .unwrap()
-                    .write("q".as_bytes())
-                    .unwrap();
-                break;
-            }
-            input.clear();
-        }
-    });
+    childs.push(thread::spawn(move || {get_input()}));
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
@@ -65,19 +49,43 @@ pub fn server_init(s_addr: &str) -> std::io::Result<()> {
             }
             Err(e) => {
                 eprintln!("Error al aceptar la conexión: {}", e);
+                let _ = log_error("Error al aceptar la conexión".to_string());
             }
         }
     }
     for child in childs {
         match child.join() {
-            Ok(result) => result?,
+            Ok(result) => match result {
+                Ok(_) => {}
+                Err(e) => {
+                    let err = format!("Error al manejar un cliente: {e}");
+                    eprintln!("{err}");
+                    let _ = log_error(err);
+                }
+            },
             Err(_e) => {
-                return Err(Error::new(
-                    std::io::ErrorKind::Other,
-                    "Error en alguno de los hilos",
-                ))
+                let _ = log_error("Se experimentó un Error con un Cliente".to_string());
             }
         }
+    }
+    Ok(())
+}
+
+/// get_input es una funcion que se encarga de leer la entrada del usuario por consola 
+/// y enviar un mensaje al hilo principal para indicar que debe salir
+/// # Devuelve
+/// Err(std::Error) si algun proceso interno tambien da error o no se pudo establecer bien la conexion.
+fn get_input() -> std::io::Result<()>{
+    let mut input = String::new();
+    loop {
+        std::io::stdin().read_line(&mut input)?;
+        let trimmed = input.trim().to_lowercase();
+        if trimmed == "q" {
+            // Envia un mensaje al hilo principal para indicar que debe salir
+            let _ = TcpStream::connect("localhost:9418")?.write("q".as_bytes())?;
+            break;
+        }
+        input.clear();
     }
     Ok(())
 }
@@ -130,14 +138,23 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         //            PACKETLINE
         // ########## HANDSHAKE ##########
         
-        return handle_pkt_line(request, stream)
+        match handle_pkt_line(request, stream.try_clone()?) {
+            Ok(_) => {println!("Conexion finalizada con exito"); return Ok(());}
+            Err(e) => {
+                let err = format!("Error: {e}");
+                println!("{}",err);
+                stream.write(err.as_bytes())?;
+                return Ok(());
+            }
+        }
        
         
+    } else {
+        Err(Error::new(
+            std::io::ErrorKind::Other,
+            "Error: no se pudo leer el stream",
+        ))
     }
-    Err(Error::new(
-        std::io::ErrorKind::Other,
-        "Error: no se pudo leer el stream",
-    ))
 }
 /*
 commit 190tree 7e3f1eda8d09c76b01845520767ff1da6d51d470
@@ -470,26 +487,23 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
 }
 
 fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()> {
-    println!("estoy en pktline y recibi:\n {}", request);
-    
     
     let guardados_id: HashSet<String>;
     let refs_string: String;
     match is_valid_pkt_line(&request) {
         Ok(_) => {}
         Err(_) => {
-            let _ = stream.write("Error: no se respeta el formato pkt-line".as_bytes());
-            return Ok(());
+            stream.write("Error: no se respeta el formato pkt-line".as_bytes())?;
+            println!("Error: no se respeta el formato pkt-line");
+            return Err(Error::new(
+                std::io::ErrorKind::Other,
+                "no se respeta el formato pkt-line",
+            ));
         }
     }
     let elems = split_n_validate_elems(&request)?;
-    println!(
-        "Comando: {}, Repo remoto: {}, host: {}",
-        elems[0], elems[1], elems[2]
-    );
     let r_path = "repos/".to_string() + elems[1];
-    println!("Ruta del repositorio: {}", r_path);
-    let _ = create_dirs(&r_path);
+    create_dirs(&r_path)?;
     // ########## REFERENCE DISCOVERY ##########
     (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
     let _ = stream.write(refs_string.as_bytes())?;
@@ -503,6 +517,10 @@ fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()
         } // Recibir del Cliente
         _ => {
             let _ = stream.write("Error: comando git no reconocido".as_bytes())?;
+            return Err(Error::new(
+                std::io::ErrorKind::Other,
+                "comando git no reconocido",
+            ));
         }
     }
     return Ok(());
@@ -931,7 +949,7 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
 
     let div2: Vec<&str> = div1[1].split('\0').collect();
     let mut elems: Vec<&str> = vec![];
-    if (div1.len() == 2) || div2.len() == 3 {
+    if (div1.len() == 2) && div2.len() == 3 && ["git-upload-pack", "git-receive-pack"].contains(&div1[0]){
         elems.push(div1[0]);
         elems.push(div2[0].strip_prefix('/').unwrap_or(div2[0]));
         elems.push(div2[1].strip_prefix("host=").unwrap_or(div2[1]));
@@ -940,7 +958,7 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
 
     Err(Error::new(
         std::io::ErrorKind::ConnectionRefused,
-        "Error: No se sigue el estandar de PKT-LINE",
+        "Comando Git no reconocido",
     ))
 }
 
@@ -951,6 +969,9 @@ fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
 /// Err(std::io::Error) si algun proceso interno tambien da error o el repositorio ya existe.
 fn create_dirs(r_path: &str) -> std::io::Result<()> {
     let p_str = r_path.to_string();
+    if Path::new(&p_str).exists() {
+        return Ok(())
+    }
     fs::create_dir_all(p_str.clone())?;
 
     write_file(

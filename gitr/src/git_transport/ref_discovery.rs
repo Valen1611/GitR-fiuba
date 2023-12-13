@@ -100,6 +100,41 @@ pub fn reference_update_request(
     Ok((request, !pkt_ids.is_empty(), pkt_ids))
 }
 
+/// A check_push toma las referencias del server y el cliente y ve si se puede pushear sin perder datos.
+/// # Recibe:
+/// * hash_n_references: Vector de tuplas (hash, referencia) del servidor
+/// * heads_ids: Vector de ids de los heads del cliente
+/// * heads_refs: Vector de referencias de los heads del cliente
+/// * cliente: String que indica el nombre del cliente
+/// # Devuelve:
+/// * Ok(()) si se puede pushear
+/// * Err(GitrError::PushError) si no se puede pushear
+pub fn check_push( hash_n_references: Vec<(String, String)>, heads_ids: Vec<String>, heads_refs: Vec<String>, cliente: String) -> Result<(), GitrError> {
+    for hash_n_ref in hash_n_references.clone() {
+        if hash_n_ref.1 == "HEAD" {
+            continue;
+        }
+        for (j, h_refer) in heads_refs.iter().enumerate() {
+            println!("refs\\heads\\{} == {}", h_refer, &hash_n_ref.1);
+            if hash_n_ref.1 == format!("refs\\heads\\{}",h_refer).as_str(){
+                println!("entra");
+                if !is_parent(heads_ids[j].clone(),hash_n_ref.0, cliente.clone())  {
+                    return Err(GitrError::PushError("Cliente desactualizado".to_string()));
+                }
+                break;
+            }
+        }
+    }
+    Ok(())
+}
+
+fn is_parent(child: String, parent: String, cliente: String) -> bool {
+    let parents = match crate::objects::commit::Commit::get_parents(vec![child],vec![],cliente) {
+        Ok(parents) => parents,
+        Err(_) => return false,
+    };
+    parents.contains(&parent)
+}
 /// # Recibe:
 /// * hash_n_references: Vector de tuplas (hash, referencia) del servidor
 /// * refer: tupla (hash, referencia) de la referencia del cliente a analizar
@@ -259,6 +294,12 @@ pub fn read_long_stream(stream: &mut TcpStream) -> Result<Vec<u8>, std::io::Erro
     while n == 1024 {
         buffer = [0; 1024];
         n = stream.read(&mut buffer)?;
+        if buffer.starts_with("Error".as_bytes()) {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                format!("{}", String::from_utf8_lossy(&buffer[..n]))),
+            );
+        }
         buf.append(&mut Vec::from(&buffer[..n]));
     }
     Ok(buf)
