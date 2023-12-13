@@ -21,6 +21,7 @@ use crate::git_transport::pack_file::prepare_contents;
 use crate::git_transport::pack_file::PackFile;
 
 use crate::git_transport::ref_discovery;
+use crate::gitr_errors::GitrError;
 use crate::logger::log_error;
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
@@ -34,8 +35,8 @@ use crate::objects::pull_request::PullRequest;
 pub fn server_init(s_addr: &str) -> std::io::Result<()> {
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
-
-    childs.push(thread::spawn(move || {get_input()}));
+    let adr2 = s_addr.clone().to_string();
+    childs.push(thread::spawn(move || {get_input(&adr2)}));
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
@@ -75,14 +76,14 @@ pub fn server_init(s_addr: &str) -> std::io::Result<()> {
 /// y enviar un mensaje al hilo principal para indicar que debe salir
 /// # Devuelve
 /// Err(std::Error) si algun proceso interno tambien da error o no se pudo establecer bien la conexion.
-fn get_input() -> std::io::Result<()>{
+fn get_input(s_addr: &str) -> std::io::Result<()>{
     let mut input = String::new();
     loop {
         std::io::stdin().read_line(&mut input)?;
         let trimmed = input.trim().to_lowercase();
         if trimmed == "q" {
             // Envia un mensaje al hilo principal para indicar que debe salir
-            let _ = TcpStream::connect("localhost:9418")?.write("q".as_bytes())?;
+            let _ = TcpStream::connect(s_addr)?.write("q".as_bytes())?;
             break;
         }
         input.clear();

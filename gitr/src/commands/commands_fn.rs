@@ -4,7 +4,6 @@ use crate::file_manager::{
 };
 use crate::git_transport::ref_discovery::{self, check_push};
 use crate::{file_manager, gitr_errors::GitrError};
-use std::f32::consts::E;
 use std::path::Path;
 
 use super::command_utils::{self, *};
@@ -352,6 +351,13 @@ pub fn remote(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         let remote = file_manager::read_file(get_current_repo(cliente.clone())? + "/gitr/remote")?;
         println!("remote: {}", remote);
     } else {
+        let parts: Vec<&str> = flags[0].split("/").collect();
+        if parts.len() != 2 {
+            return Err(GitrError::InvalidArgumentError(
+                flags.join(" "),
+                "remote <remote-name>/<remote-url>".to_string(),
+            ));
+        }
         file_manager::write_file(
             get_current_repo(cliente.clone())? + "/gitr/remote",
             flags[0].clone(),
