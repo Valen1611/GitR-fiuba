@@ -355,7 +355,7 @@ pub fn remote(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         if parts.len() != 2 {
             return Err(GitrError::InvalidArgumentError(
                 flags.join(" "),
-                "remote <remote-name>/<remote-url>".to_string(),
+                "remote <remote-url>/<remote-name>".to_string(),
             ));
         }
         file_manager::write_file(

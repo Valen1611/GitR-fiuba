@@ -377,7 +377,6 @@ pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError> {
     };
 
     let lines = config_data.split('\n').collect::<Vec<&str>>();
-    println!("{:?}", lines);
     let email = lines[1].split('=').collect::<Vec<&str>>()[1].trim_start();
     Ok(email.to_string())
 }
@@ -1524,10 +1523,10 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8]) -> Result<(), Gitr
 pub fn handshake(orden: String, cliente: String) -> Result<TcpStream, GitrError> {
 
     let remote = file_manager::get_remote(cliente.clone())?;
-    let name_n_url = remote.split("/").collect::<Vec<&str>>();
-    let msj = format!("{} /{}\0host={}\0", orden, name_n_url[0], name_n_url[1]);
+    let url_n_name = remote.split("/").collect::<Vec<&str>>();
+    let msj = format!("{} /{}\0host={}\0", orden, url_n_name[1], url_n_name[0]);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect(name_n_url[1]) {
+    let mut stream = match TcpStream::connect(url_n_name[0]) {
         Ok(s) => s,
         Err(e) => {
             println!("Error: {}", e);
