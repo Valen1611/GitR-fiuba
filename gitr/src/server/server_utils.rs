@@ -8,6 +8,7 @@ use std::io::Error;
 use std::io::Read;
 use std::io::Write;
 use std::net::{TcpListener, TcpStream};
+use std::path::Path;
 use std::str::from_utf8;
 
 use std::thread;
@@ -354,8 +355,13 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     // Y cuando tengamos esa carpeta, chequeemos que se esta
     // queriendo acceder a esa carpeta, si no, tiramos un
     // error 403 Forbidden
-
-    
+    let pulls_dir = Path::new("repos/server_test/pulls");
+    match fs::create_dir(pulls_dir){
+        Ok(_) => {}
+        Err(e) => {
+            println!("ERROR EN CREATE_DIR: {}",e);
+        }
+    }
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
     let id = match contar_archivos_y_directorios(&ruta){
         Ok(id) => id,
@@ -416,27 +422,40 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
 
 fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()> {
     
-    
+    println!("===estoy en el handle_put_request");
 
-    if pr_str.is_empty() {
-        println!("Error al parsear el body");
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-        return Ok(());
+    // Mepa que no tiene sentido pasar el pr_str si nadie lo manipula antes, llega un string vacío.
+    // if pr_str.is_empty() {
+    //     println!("Error al parsear el body");
+    //     stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+    //     return Ok(());
+    // }
+
+    // let pr = match PullRequest::from_string(pr_str.to_string()) {
+    //     Ok(pr) => pr,
+    //     Err(_) => {
+    //         println!("Error al parsear el body");
+    //         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+    //         return Ok(());
+    //     }
+    // };
+
+    // let master_name = pr.get_base_name();
+    // let branch_name = pr.get_branch_name();
+    
+    //========parseo input
+    let route = request.split(' ').collect::<Vec<&str>>()[1];
+    let route_vec = route.split('/').collect::<Vec<&str>>();
+    println!("route_vec: {:?}", route_vec);
+    let ruta_repo_server = route_vec[1..=4].join("/");
+    let path = Path::new(&ruta_repo_server);
+    println!("path: {:?}", path);
+    if !path.exists() {
+        println!("No existe el PR en ese path. (esto puede fallar porque cambiamos el path del server)");
+        stream.write("HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n".as_bytes())?;
+        return Ok(())
     }
 
-    let pr = match PullRequest::from_string(pr_str.to_string()) {
-        Ok(pr) => pr,
-        Err(_) => {
-            println!("Error al parsear el body");
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-            return Ok(());
-        }
-    };
-
-    let master_name = pr.get_base_name();
-    let branch_name = pr.get_branch_name();
-
-    
     /*
     parsear input
 
@@ -1485,7 +1504,7 @@ mod http_tests{
 mod merge_pr_tests{
     /*PUT /repos/{repo}/pulls/{pull_number}/merge */
 
-    use std::{path::Path, fs};
+    use std::{path::Path, fs::{self, remove_dir}};
     use crate::file_manager;
     use crate::commands::commands_fn;
     use std::process::{Command, Stdio};
@@ -1553,17 +1572,19 @@ mod merge_pr_tests{
             .expect("failed to execute curl");
         
         child.wait().unwrap();
-        
+        println!("FINISHED SETUP");
     }
 
+    #[serial_test::serial]
     #[test]
-    fn test00_cuando_hay_conflicts_devuelve_error_405(){
+    fn test00_cuando_no_encuentra_el_pr_devuelve_error_405(){
         reset_cliente_y_server();
-
+        //Borro el PR asi salta el error de que ese PR no existe
+        //fs::remove_dir_all("repos/server_test/pulls").unwrap();
         let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
-            .arg("GET")
+            .arg("PUT")
             .arg("localhost:9418/repos/server_test/pulls/0/merge")
             .stdout(Stdio::piped())
             .spawn()
@@ -1571,7 +1592,31 @@ mod merge_pr_tests{
 
         let output = child.wait_with_output().expect("failed to wait on child");
         let output = String::from_utf8(output.stdout).unwrap();
-        println!("{}", output);
+        println!("Output test00: {}", output);
+
+        assert_eq!(output, "HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n");
+    }
+
+    #[serial_test::serial]
+    #[test]
+    fn test01_si_hay_conflicts_devuelve_405(){
+        reset_cliente_y_server();
+        //Borro el PR asi salta el error de que ese PR no existe
+        //fs::remove_dir_all("repos/server_test/pulls").unwrap();
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("PUT")
+            .arg("localhost:9418/repos/server_test/pulls/0/merge")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+        println!("Output test00: {}", output);
+
+        assert_eq!(output, "PR.\r\n\r\n");
     }
 }
 /*

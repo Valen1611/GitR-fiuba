@@ -1083,7 +1083,7 @@ pub fn create_pull_request(server_path: &str, pull_request: PullRequest) -> Resu
     // let path = format!("{}/pulls/{}", remote, pull_request.id);
     
     // println!("\x1b[32mpath: {}", path);
-    // println!("pull_request: {}\x1b[0m", pull_request.to_string()?);
+    println!("pull_request: {}\x1b[0m", pull_request.to_string()?);
 
     write_file(server_path.to_string(), pull_request.to_string()?)?;
     Ok(())
@@ -1121,12 +1121,15 @@ pub fn get_pull_requests(dir: String) -> Result<Vec<PullRequest>, GitrError> {
     Ok(pull_requests)
 }
 pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
-        let entradas = match fs::read_dir(ruta){
-            Ok(entradas) => entradas,
-            Err(_) => return Err(GitrError::FileReadError(ruta.to_string())),
-        };
-        Ok(entradas.count())
-    }
+    println!("contar_archivos_y_directorios: path: {}", ruta);
+    let entradas = match fs::read_dir(ruta){
+        Ok(entradas) => entradas,
+        Err(_) => return Err(GitrError::FileReadError(ruta.to_string())),
+    }; 
+    let cuenta = entradas.count();
+    println!("cantidad de archivos contados: {}", cuenta);
+    Ok(cuenta)
+}
 
 pub fn pull_request_exist(path: &str) -> bool {
     let data = read_file(path.to_string());
