@@ -160,15 +160,16 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     let conflict_save_button: Button = builder.object("conflict_save_button")?;
     let remote_error_label: Label = builder.object("remote_error_label")?;
     let pr_list: ListBox = builder.object("pr_list")?;
-    let pr_box: Box = builder.object("pr_box")?;
-    let stacksidebar: StackSidebar = builder.object("stacksidebar")?;
     let pr_create_button: Button = builder.object("create_pr_button")?;
     let pr_open_button: Button = builder.object("open_pr_button")?;
     let pr_closed_button: Button = builder.object("closed_pr_button")?;
-
-
-
-
+    let creation_pr:Dialog = builder.object("creation_pr")?;
+    let pr_cancel_button: Button = builder.object("pr_cancel_button")?;
+    let pr_ok_button: Button = builder.object("pr_ok_button")?;
+    let pr_title: Entry = builder.object("pr_title")?;
+    let pr_descripcion: Entry = builder.object("pr_descripcion")?;
+    let base_branch: ComboBoxText = builder.object("base_branch")?;
+    let compare_branch: ComboBoxText = builder.object("compare_branch")?;
     
     //====Conexiones de señales====
     //====ADD BRANCH====
@@ -480,6 +481,35 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     let clone_error = remote_error_dialog.clone();
     let pr_list_clone = pr_list.clone();
     let pr_create_button_clone = pr_create_button.clone();
+    let creation_pr_clone = creation_pr.clone();
+    pr_create_button_clone.connect_clicked(move |_|{
+        if file_manager::get_remote(cliente_clone.clone()).is_err(){
+            clone_error.show();
+        }else{
+            creation_pr_clone.show();
+
+        }
+    });
+    let creation_pr_clone = creation_pr.clone();
+    let pr_ok_button_clone = pr_ok_button.clone();
+    pr_ok_button_clone.connect_clicked(move |_|{
+        let title = pr_title.clone().text();
+        let description = pr_descripcion.clone().text();
+        let base = base_branch.active_text().unwrap().to_string();
+        let compare = compare_branch.active_text().unwrap().to_string();
+        if title == "" || description == "" || base == "" || compare == ""{
+            return;
+        }
+        //crear el pr
+        creation_pr_clone.hide();
+    });
+    let pr_cancel_button_clone = pr_cancel_button.clone();
+    let creation_pr_clone = creation_pr.clone();
+    pr_cancel_button_clone.connect_clicked(move |_|{
+        creation_pr_clone.hide();
+    });
+    let cliente_clone = cliente.clone();
+    let clone_error = remote_error_dialog.clone();
     let pr_open_button = pr_open_button.clone();
     pr_open_button.connect_clicked(move |_|{
         if file_manager::get_remote(cliente_clone.clone()).is_err(){
@@ -506,7 +536,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         }
     });
     let cliente_clone = cliente.clone();
-    let pr_list_clone = pr_list.clone();
     let clone_error = remote_error_dialog.clone();
     let pr_closed_button = pr_closed_button.clone();
     let pr_list_clone = pr_list.clone();

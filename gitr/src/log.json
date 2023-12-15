@@ -768,3 +768,16 @@
 {"type": "FileOperation","timestamp": "14-12-2023 22:29:23","message": "reading data from: repos/serversito/pulls/5"}
 {"type": "FileOperation","timestamp": "14-12-2023 22:29:23","message": "reading data from: repos/serversito/pulls/4"}
 {"type": "FileOperation","timestamp": "14-12-2023 22:29:23","message": "reading data from: repos/serversito/pulls/2"}
+{"type": "FileOperation","timestamp": "14-12-2023 22:31:56","message": "creating dir: gianni"}
+{"type": "FileOperation","timestamp": "14-12-2023 22:31:57","message": "reading data from: gianni/.head_repo"}
+{"type": "Error","timestamp": "14-12-2023 22:31:57","message": "No se pudo leer: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "14-12-2023 22:32:03","message": "reading data from: gianni/.head_repo"}
+{"type": "Error","timestamp": "14-12-2023 22:32:03","message": "No se pudo leer: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "14-12-2023 22:32:06","message": "reading data from: gianni/.head_repo"}
+{"type": "Error","timestamp": "14-12-2023 22:32:06","message": "No se pudo leer: gianni/.head_repo"}
+{"type": "FileOperation","timestamp": "15-12-2023 00:02:25","message": "creating dir: cliente2"}
+{"type": "FileOperation","timestamp": "15-12-2023 00:02:25","message": "reading data from: cliente2/.head_repo"}
+{"type": "FileOperation","timestamp": "15-12-2023 00:02:25","message": "reading data from: cliente2/.head_repo"}
+{"type": "FileOperation","timestamp": "15-12-2023 00:02:25","message": "reading data from: cliente2/.head_repo"}
+{"type": "FileOperation","timestamp": "15-12-2023 00:02:31","message": "reading data from: cliente2/.head_repo"}
+{"type": "FileOperation","timestamp": "15-12-2023 00:02:31","message": "reading data from: cliente2/repobien/gitr/remote"}
