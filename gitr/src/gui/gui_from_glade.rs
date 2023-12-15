@@ -479,24 +479,48 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     // ====PULL REQUESTS====
     let cliente_clone = cliente.clone();
     let clone_error = remote_error_dialog.clone();
+    let base_branch_clone = base_branch.clone();
+    let compare_branch_clone = compare_branch.clone();
     let pr_list_clone = pr_list.clone();
+    let pr_title_clone = pr_title.clone();
+    let pr_descripcion_clone = pr_descripcion.clone();
     let pr_create_button_clone = pr_create_button.clone();
     let creation_pr_clone = creation_pr.clone();
     pr_create_button_clone.connect_clicked(move |_|{
         if file_manager::get_remote(cliente_clone.clone()).is_err(){
+            
             clone_error.show();
         }else{
+            update_branches(&base_branch_clone, cliente_clone.clone());
+            update_branches(&compare_branch_clone, cliente_clone.clone());
+            pr_title_clone.set_text("");
+            pr_descripcion_clone.set_text("");
+            pr_title_clone.set_placeholder_text(Some("Título"));
+            pr_descripcion_clone.set_placeholder_text(Some("Descripción"));
             creation_pr_clone.show();
 
         }
     });
     let creation_pr_clone = creation_pr.clone();
+    let base_branch_clone = base_branch.clone();
+    let cliente_clone = cliente.clone();
+    let compare_branch_clone = compare_branch.clone();
+    update_branches(&base_branch_clone, cliente_clone.clone());
+    update_branches(&compare_branch_clone, cliente_clone.clone());
+    let pr_title_clone = pr_title.clone();
+    let pr_descripcion_clone = pr_descripcion.clone();
     let pr_ok_button_clone = pr_ok_button.clone();
     pr_ok_button_clone.connect_clicked(move |_|{
-        let title = pr_title.clone().text();
-        let description = pr_descripcion.clone().text();
-        let base = base_branch.active_text().unwrap().to_string();
-        let compare = compare_branch.active_text().unwrap().to_string();
+        let title = pr_title_clone.clone().text();
+        let description = pr_descripcion_clone.clone().text();
+        let base = match base_branch_clone.active_text(){
+            Some(branch) => branch,
+            None => return,
+        };
+        let compare = match compare_branch_clone.active_text(){
+            Some(branch) => branch,
+            None => return,
+        };
         if title == "" || description == "" || base == "" || compare == ""{
             return;
         }
@@ -594,7 +618,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     });
 
     window.set_application(Some(application));
-    window.set_title("test");
+    window.set_title("HOLA");
     window.show_all();
     Some("Ok".to_string())
 }
