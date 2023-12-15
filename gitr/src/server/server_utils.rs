@@ -21,6 +21,7 @@ use crate::git_transport::pack_file::prepare_contents;
 use crate::git_transport::pack_file::PackFile;
 
 use crate::git_transport::ref_discovery;
+use crate::gitr_errors::GitrError;
 use crate::logger::log_error;
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;

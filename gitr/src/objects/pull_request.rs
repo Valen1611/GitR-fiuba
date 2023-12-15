@@ -11,7 +11,7 @@ pub struct PullRequest {
     pub description: String,
     pub head: String, // branch name (feature)
     pub base: String, // branch name (master casi siempre)
-    status: String, // open, closed
+    pub status: String, // open, closed
     //commits: Vec<String>,
 }
 

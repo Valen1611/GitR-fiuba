@@ -1,13 +1,14 @@
 use std::fs;
 
 use gtk::gio::ApplicationFlags;
-use gtk::{prelude::*, Application, ComboBoxText, Dialog, Entry, Label, TextBuffer, TextView};
+use gtk::{prelude::*, Application, ComboBoxText, Dialog, Entry, Label, TextBuffer, TextView, ListBox, ListBoxRow, Orientation};
 
-use gtk::{Builder, Button, FileChooserButton, Window};
+use gtk::{Builder, Button, FileChooserButton, Window, Box, StackSidebar};
 
 use crate::commands::commands_fn::{self};
 use crate::file_manager;
 use crate::gitr_errors::GitrError;
+use crate::objects::pull_request::PullRequest;
 
 fn get_commits(cliente: String) -> String {
     let mut commits = match file_manager::commit_log("-1".to_string(), cliente) {
@@ -158,6 +159,17 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     let conflict_buffer: TextBuffer = conflict_text_view.buffer()?;
     let conflict_save_button: Button = builder.object("conflict_save_button")?;
     let remote_error_label: Label = builder.object("remote_error_label")?;
+    let pr_list: ListBox = builder.object("pr_list")?;
+    let pr_box: Box = builder.object("pr_box")?;
+    let stacksidebar: StackSidebar = builder.object("stacksidebar")?;
+    let pr_create_button: Button = builder.object("create_pr_button")?;
+    let pr_open_button: Button = builder.object("open_pr_button")?;
+    let pr_closed_button: Button = builder.object("closed_pr_button")?;
+
+
+
+
+    
     //====Conexiones de señales====
     //====ADD BRANCH====
     let add_branch_dialog_clone = add_branch_dialog.clone();
@@ -463,6 +475,68 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         }
     });
 
+    // ====PULL REQUESTS====
+    let cliente_clone = cliente.clone();
+    let clone_error = remote_error_dialog.clone();
+    let pr_list_clone = pr_list.clone();
+    let pr_create_button_clone = pr_create_button.clone();
+    let pr_open_button = pr_open_button.clone();
+    pr_open_button.connect_clicked(move |_|{
+        if file_manager::get_remote(cliente_clone.clone()).is_err(){
+            clone_error.show();
+        }else{
+            pr_list_clone.foreach(|row|{
+                pr_list_clone.remove(row);
+            });
+            let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
+            let dir = "repos/".to_string() + &remote + "/pulls";
+            let prs = match file_manager::get_pull_requests(dir){
+                Ok(prs) => prs,
+                Err(e) => {
+                    println!("Error al obtener pull requests: {:?}",e);
+                    clone_error.show();
+                    return;
+                }
+            };
+            for pr in prs.iter().filter(|pr| pr.status == "open"){
+                let row = create_pull_request_row(pr);
+                pr_list_clone.add(&row);
+            }
+            pr_list_clone.show_all();  
+        }
+    });
+    let cliente_clone = cliente.clone();
+    let pr_list_clone = pr_list.clone();
+    let clone_error = remote_error_dialog.clone();
+    let pr_closed_button = pr_closed_button.clone();
+    let pr_list_clone = pr_list.clone();
+    pr_closed_button.connect_clicked(move |_|{
+        if file_manager::get_remote(cliente_clone.clone()).is_err(){
+            clone_error.show();
+        }else{
+            pr_list_clone.foreach(|row|{
+                pr_list_clone.remove(row);
+            });
+            let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
+            let dir = "repos/".to_string() + &remote + "/pulls";
+            let prs = match file_manager::get_pull_requests(dir){
+                Ok(prs) => prs,
+                Err(e) => {
+                    println!("Error al obtener pull requests: {:?}",e);
+                    clone_error.show();
+                    return;
+                }
+            };
+            for pr in prs.iter().filter(|pr| pr.status == "closed"){
+                let row = create_pull_request_row(pr);
+                pr_list_clone.add(&row);
+            }
+            pr_list_clone.show_all();  
+        }
+    });
+
+
+
     //====CONFLICTS====
     let conflict_file_chooser_clone = conflict_file_chooser.clone();
     let cliente_ = cliente.clone();
@@ -504,4 +578,21 @@ pub fn initialize_gui(cliente: String) {
     });
 
     app.run();
+}
+
+
+fn create_pull_request_row(pull_request: &PullRequest) -> ListBoxRow {
+    let id_label = Label::new(Some(&format!("ID: {}", pull_request.id)));
+    let title_label = Label::new(Some(&format!("Título: {}", pull_request.title)));
+    let description_label = Label::new(Some(&format!("Descripción: {}", pull_request.description)));
+
+    let row_box = gtk::Box::new(Orientation::Vertical, 5);
+    row_box.pack_start(&id_label, false, false, 0);
+    row_box.pack_start(&title_label, false, false, 0);
+    row_box.pack_start(&description_label, false, false, 0);
+
+    let row = ListBoxRow::new();
+    row.add(&row_box);
+
+    row
 }

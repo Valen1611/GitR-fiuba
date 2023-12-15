@@ -615,12 +615,12 @@ Presione el botón "Connect" para proveer esta información.</property>
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkHeaderBar">
+                      <object class="GtkHeaderBar" id="header_pr">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="title" translatable="yes">Pull Requests</property>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="create_pr_button">
                             <property name="label" translatable="yes">Create Pull Request</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
@@ -629,7 +629,7 @@ Presione el botón "Connect" para proveer esta información.</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="open_pr_button">
                             <property name="label" translatable="yes">Open</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
@@ -640,7 +640,7 @@ Presione el botón "Connect" para proveer esta información.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton">
+                          <object class="GtkButton" id="closed_pr_button">
                             <property name="label" translatable="yes">Closed</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
@@ -664,7 +664,7 @@ Presione el botón "Connect" para proveer esta información.</property>
                       <placeholder/>
                     </child>
                     <child>
-                      <object class="GtkListBox">
+                      <object class="GtkListBox" id="pr_list">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
