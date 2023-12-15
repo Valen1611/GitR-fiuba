@@ -478,18 +478,20 @@ fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std
     let branch_name = pr.get_branch_name();
     let ruta_repo_server = route_vec[1..=2].join("/");
     
-    let (hubo_conflict, _) = match commands_fn::merge_(master_name, branch_name, ruta_repo_server.clone()) {
-        Ok(hubo_conflict) => hubo_conflict,
+    let (hubo_conflict, _ , archivos_conflict) = match commands_fn::merge_(master_name, branch_name, ruta_repo_server.clone()) {
+        Ok((hubo_conflict, a,archivos_conflict)) => (hubo_conflict,a, archivos_conflict),
         Err(e) => {
             println!("Error al hacer merge: {:?}",e);
             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
-
+    println!("conflict en archivos: {:?}", archivos_conflict);
 
     if hubo_conflict == true {
-        stream.write("HTTP/1.1 405 \r\n\r\n".as_bytes())?; //////////////// CORREGIR, ESTO ES Q HUBO CONFLICT
+        let archivos = archivos_conflict.join(",");
+        let response_body = format!("HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{{\"conflicting_files\":[{}]}}",archivos);
+        stream.write(response_body.as_bytes())?;
     } else {
         stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
     }
@@ -1667,7 +1669,39 @@ mod merge_pr_tests{
         let output = String::from_utf8(output.stdout).unwrap();
         println!("Output test01: {}", output);
 
-        assert_eq!(output, "HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n");
+        assert_eq!(output, "HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{\"conflicting_files\":[hola]}");
+    }
+
+    #[serial_test::serial]
+    #[test]
+    fn test02_si_se_puede_mergear_devuelve_200_y_se_crea_el_commit(){
+        reset_cliente_y_server();
+        //Borro el PR asi salta el error de que ese PR no existe
+        //fs::remove_dir_all("repos/server_test/pulls").unwrap();
+        
+        file_manager::write_file(
+            "cliente/repo_tests_http/hola".to_string(),
+            "cambios en branch\n".to_string(),
+        ).unwrap();
+
+        commands_fn::add(vec![".".to_string()], "cliente".to_string()).unwrap();
+        commands_fn::commit(vec!["-m".to_string(), "\"commit para no conflict\"".to_string()], "None".to_string(), "cliente".to_string()).unwrap();
+        commands_fn::push(vec![], "cliente".to_string()).unwrap();
+        
+        let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("PUT")
+            .arg("localhost:9418/repos/server_test/pulls/0/merge")
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+
+        let output = child.wait_with_output().expect("failed to wait on child");
+        let output = String::from_utf8(output.stdout).unwrap();
+        println!("Output test02: {}", output);
+
+        assert_eq!(output, "HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{\"conflicting_files\":[hola]}");
     }
 }
 /*

@@ -453,7 +453,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         };
         let flags = vec![branch.to_string()];
         match commands_fn::merge(flags,cliente_.clone()){
-            Ok((hubo_conflict, _)) => {
+            Ok((hubo_conflict, _, _)) => {
                 if !hubo_conflict{
                     return;
                 }

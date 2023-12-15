@@ -284,7 +284,7 @@ pub fn fetch(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     pullear(flags, false, cliente)
 }
 
-pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(bool, String), GitrError> {
+pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(bool, String, Vec<String>), GitrError> {
     if _flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(
             _flags.join(" "),
@@ -300,14 +300,14 @@ pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(bool, String), Git
         .to_string();
 
     match merge_(&origin_name, &branch_name, cliente.clone()) {
-        Ok((hubo_conflict_res, branch_hash_res)) => Ok((hubo_conflict_res, branch_hash_res)),
+        Ok((hubo_conflict_res, branch_hash_res, archivos_conflict_res)) => Ok((hubo_conflict_res, branch_hash_res, archivos_conflict_res)),
         Err(e) => Err(e),
     }
 }
 
-pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Result<(bool, String), GitrError> {
+pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Result<(bool, String, Vec<String>), GitrError> {
     let mut hubo_conflict = false;
-
+    let mut archivos_conflict = vec![];
     
     let branch_commits = branch_commits_list(branch_name.clone(), cliente.clone())?;
     let origin_commits = branch_commits_list(origin_name.clone(), cliente.clone())?;
@@ -324,7 +324,7 @@ pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Re
                 fast_forward_merge(branch_name.clone(), cliente.clone())?;
                 break;
             }
-            hubo_conflict = command_utils::three_way_merge(
+            (hubo_conflict, archivos_conflict) = command_utils::three_way_merge(
                 commit,
                 origin_commits[0].clone(),
                 branch_commits[0].clone(),
@@ -341,7 +341,7 @@ pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Re
             break;
         }
     }
-    Ok((hubo_conflict, branch_commits[0].clone()))
+    Ok((hubo_conflict, branch_commits[0].clone(), archivos_conflict))
 }
 
 pub fn remote(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
