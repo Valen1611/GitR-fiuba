@@ -646,6 +646,5 @@ fn create_pull_request_row(pull_request: &PullRequest) -> ListBoxRow {
 
     let row = ListBoxRow::new();
     row.add(&row_box);
-
     row
 }
