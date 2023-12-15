@@ -80,7 +80,10 @@ pub fn add(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         ));
     }
     update_index_before_add(cliente.clone())?;
+    println!("no falla el update index");
     add_files_command(flags[0].clone(), cliente)?;
+    println!("no falla el add_files_command");
+
     Ok(())
 }
 //Remove files from the index
@@ -331,7 +334,13 @@ pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Re
                 cliente.clone(),
             )?;
             if !hubo_conflict {
+                println!("no hubo conflictos");
+                if cliente.contains("/"){
+                    return Ok((hubo_conflict, branch_commits[0].clone(), archivos_conflict));
+                }
                 add(vec![".".to_string()], cliente.clone())?;
+                println!("no fallo en el add.");
+
                 command_utils::create_merge_commit(
                     branch_name.clone(),
                     branch_commits[0].clone(),

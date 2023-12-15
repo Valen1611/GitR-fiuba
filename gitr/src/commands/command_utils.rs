@@ -1311,6 +1311,8 @@ pub fn save_and_add_blob_to_index(file_path: String, cliente: String) -> Result<
         Err(e) => return Err(e),
     }
     let raw_data = file_manager::read_file(file_path.clone())?;
+    println!("no falla el read file de save and add blobl");
+
     let blob = Blob::new(raw_data)?;
     blob.save(cliente.clone())?;
     let hash = blob.get_hash();
@@ -1350,11 +1352,14 @@ pub fn add_files_command(file_path: String, cliente: String) -> Result<(), GitrE
     let repo = get_current_repo(cliente.clone())?;
     if file_path == "." {
         let files = visit_dirs(std::path::Path::new(&repo));
+        println!("no falla visit dirs");
         for file in files {
-            if file.contains("gitr") {
+            if file.contains("gitr") || file.contains("gitrignore") {
                 continue;
             }
             save_and_add_blob_to_index(file.clone(), cliente.clone())?;
+            println!("no falla save blob en el for");
+
         }
     } else {
         let full_file_path = repo + "/" + &file_path;
@@ -1796,7 +1801,10 @@ fn path_is_ignored(paths: Vec<String>, client: String) -> Result<bool, GitrError
 
 pub fn check_ignore_(paths: Vec<String>, client: String) -> Result<Vec<String>, GitrError> {
     let path = armar_path("gitrignore".to_string(), client.clone())?;
-    let gitignore = file_manager::read_file(path)?;
+    let gitignore = match file_manager::read_file(path){
+        Ok(data) => data,
+        Err(_) => return Ok(vec![]),
+    };
     let lineas_ignore: Vec<&str> = gitignore.split('\n').collect();
     let mut lineas_full: Vec<String> = vec![];
     let repo = file_manager::get_current_repo(client.clone())?;

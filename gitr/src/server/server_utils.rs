@@ -474,9 +474,9 @@ fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std
         }
     };
 
+    let ruta_repo_server = route_vec[1..=2].join("/");
     let master_name = pr.get_base_name();
     let branch_name = pr.get_branch_name();
-    let ruta_repo_server = route_vec[1..=2].join("/");
     
     let (hubo_conflict, _ , archivos_conflict) = match commands_fn::merge_(master_name, branch_name, ruta_repo_server.clone()) {
         Ok((hubo_conflict, a,archivos_conflict)) => (hubo_conflict,a, archivos_conflict),
@@ -494,8 +494,12 @@ fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std
         stream.write(response_body.as_bytes())?;
     } else {
         stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
+        //1. clono el server
+        //2. merge dentro del cliente aux
+        //3. commiteo y pusheo
+        //4. borro el aux.
     }
-
+    
     //========fin parseo input
 
     // let res = match commands::merge_(master_name, branch_name, ruta_repo_server.clone()) {
@@ -1633,7 +1637,7 @@ mod merge_pr_tests{
     fn test00_cuando_no_encuentra_el_pr_devuelve_error_405(){
         reset_cliente_y_server();
         //Borro el PR asi salta el error de que ese PR no existe
-        //fs::remove_dir_all("repos/server_test/pulls").unwrap();
+        fs::remove_dir_all("repos/server_test/pulls").unwrap();
         let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
