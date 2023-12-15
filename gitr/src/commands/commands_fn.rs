@@ -284,19 +284,7 @@ pub fn fetch(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     pullear(flags, false, cliente)
 }
 
-pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
-    // let origin_name = file_manager::get_head(cliente.clone())?
-    //     .split('/')
-    //     .collect::<Vec<&str>>()[2]
-    //     .to_string();
-
-    match merge_(_flags, cliente.clone()) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e),
-    }
-}
-
-pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), GitrError> {
+pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(bool, String), GitrError> {
     if _flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(
             _flags.join(" "),
@@ -304,16 +292,26 @@ pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), Gi
         ));
     }
     
-    let mut hubo_conflict = false;
     let branch_name = _flags[0].clone();
+
     let origin_name = file_manager::get_head(cliente.clone())?
-    .split('/')
-    .collect::<Vec<&str>>()[2]
-    .to_string();
+        .split('/')
+        .collect::<Vec<&str>>()[2]
+        .to_string();
+
+    match merge_(&origin_name, &branch_name, cliente.clone()) {
+        Ok((hubo_conflict_res, branch_hash_res)) => Ok((hubo_conflict_res, branch_hash_res)),
+        Err(e) => Err(e),
+    }
+}
+
+pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Result<(bool, String), GitrError> {
+    let mut hubo_conflict = false;
 
     
     let branch_commits = branch_commits_list(branch_name.clone(), cliente.clone())?;
-    let origin_commits = branch_commits_list(origin_name, cliente.clone())?;
+    let origin_commits = branch_commits_list(origin_name.clone(), cliente.clone())?;
+
     for commit in branch_commits.clone() {
         if origin_commits.contains(&commit) {
             if commit == origin_commits[0] {
@@ -323,7 +321,7 @@ pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), Gi
                     &branch_commits[0][..7]
                 );
                 println!("Fast-forward");
-                fast_forward_merge(branch_name, cliente.clone())?;
+                fast_forward_merge(branch_name.clone(), cliente.clone())?;
                 break;
             }
             hubo_conflict = command_utils::three_way_merge(
@@ -335,7 +333,7 @@ pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), Gi
             if !hubo_conflict {
                 add(vec![".".to_string()], cliente.clone())?;
                 command_utils::create_merge_commit(
-                    branch_name,
+                    branch_name.clone(),
                     branch_commits[0].clone(),
                     cliente,
                 )?;

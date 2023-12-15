@@ -452,8 +452,11 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
             None => return,
         };
         let flags = vec![branch.to_string()];
-        match commands_fn::merge_(flags,cliente_.clone()){
-            Ok(_) => {
+        match commands_fn::merge(flags,cliente_.clone()){
+            Ok((hubo_conflict, _)) => {
+                if !hubo_conflict{
+                    return;
+                }
                 remote_error_label_clone.set_text("Surgieron conflicts al hacer merge, por favor arreglarlos y commitear el resultado.");
                 remote_error_dialog_clone.show();
             },

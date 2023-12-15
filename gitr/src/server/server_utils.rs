@@ -13,7 +13,8 @@ use std::str::from_utf8;
 
 use std::thread;
 
-use crate::commands::command_utils;
+
+use crate::commands::{command_utils, commands_fn};
 use crate::file_manager;
 use crate::file_manager::contar_archivos_y_directorios;
 use crate::git_transport::pack_file::create_packfile;
@@ -447,14 +448,64 @@ fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std
     let route = request.split(' ').collect::<Vec<&str>>()[1];
     let route_vec = route.split('/').collect::<Vec<&str>>();
     println!("route_vec: {:?}", route_vec);
-    let ruta_repo_server = route_vec[1..=4].join("/");
-    let path = Path::new(&ruta_repo_server);
+    let ruta_repo_pr = route_vec[1..=4].join("/");
+    let path = Path::new(&ruta_repo_pr);
     println!("path: {:?}", path);
     if !path.exists() {
         println!("No existe el PR en ese path. (esto puede fallar porque cambiamos el path del server)");
         stream.write("HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n".as_bytes())?;
         return Ok(())
     }
+    let pr_content = match file_manager::read_file(ruta_repo_pr.clone()) {
+        Ok(pr_content) => pr_content,
+        Err(_) => {
+            println!("Error al obtener PR");
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
+    let pr = match PullRequest::from_string(pr_content) {
+        Ok(pr) => pr,
+        Err(_) => {
+            println!("Error al parsear el PR");
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
+    let master_name = pr.get_base_name();
+    let branch_name = pr.get_branch_name();
+    let ruta_repo_server = route_vec[1..=2].join("/");
+    
+    let (hubo_conflict, _) = match commands_fn::merge_(master_name, branch_name, ruta_repo_server.clone()) {
+        Ok(hubo_conflict) => hubo_conflict,
+        Err(e) => {
+            println!("Error al hacer merge: {:?}",e);
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
+
+    if hubo_conflict == true {
+        stream.write("HTTP/1.1 405 \r\n\r\n".as_bytes())?; //////////////// CORREGIR, ESTO ES Q HUBO CONFLICT
+    } else {
+        stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
+    }
+
+    //========fin parseo input
+
+    // let res = match commands::merge_(master_name, branch_name, ruta_repo_server.clone()) {
+    //     Ok(res) => res,
+    //     Err(_) => {
+    //         println!("Error al hacer merge");
+    //         stream.write("HTTP/1.1 405 Validation failed\r\n\r\n".as_bytes())?; /////////////////////// REVISAR ERROR
+    //         return Ok(());
+    //     }
+    // };
+    
+
 
     /*
     parsear input
@@ -1286,7 +1337,7 @@ mod http_tests{
             .arg("-X")
             .arg("POST")
             .arg("-d")
-            .arg(r#"{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#)
+            .arg(r#"{"id":1,"title":"pr de create 1","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#)
             .arg("localhost:9418/repos/server_test/pulls")
             .stdout(Stdio::piped())
             .spawn()
@@ -1299,7 +1350,7 @@ mod http_tests{
         .arg("-X")
         .arg("POST")
         .arg("-d")
-        .arg(r#"{"id":1,"title":"titulo del otro pr","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#)
+        .arg(r#"{"id":1,"title":"pr de create 2","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#)
         .arg("localhost:9418/repos/server_test/pulls")
         .stdout(Stdio::piped())
         .spawn()
@@ -1359,8 +1410,8 @@ mod http_tests{
         let output_esperado = "HTTP/1.1 201 Created\r\n\r\n";
 
         assert_eq!(output, output_esperado);
-        fs::remove_dir_all("cliente").unwrap();
-        fs::remove_dir_all("repos/server_test").unwrap();
+        // fs::remove_dir_all("cliente").unwrap();
+        // fs::remove_dir_all("repos/server_test").unwrap();
     }
 
 
@@ -1565,7 +1616,7 @@ mod merge_pr_tests{
             .arg("-X")
             .arg("POST")
             .arg("-d")
-            .arg(r#"{"id":0,"title":"PR para testear merge","description":"Este PR se usa en los test de merge","head":"branch","base":"master","status":"open"}"#)
+            .arg(r#"{"id":1,"title":"PR para testear merge","description":"Este PR se usa en los test de merge","head":"branch","base":"master","status":"open"}"#)
             .arg("localhost:9418/repos/server_test/pulls")
             .stdout(Stdio::piped())
             .spawn()
@@ -1614,9 +1665,9 @@ mod merge_pr_tests{
 
         let output = child.wait_with_output().expect("failed to wait on child");
         let output = String::from_utf8(output.stdout).unwrap();
-        println!("Output test00: {}", output);
+        println!("Output test01: {}", output);
 
-        assert_eq!(output, "PR.\r\n\r\n");
+        assert_eq!(output, "HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n");
     }
 }
 /*
