@@ -26,6 +26,7 @@ use crate::git_transport::pack_file::PackFile;
 use crate::git_transport::ref_discovery;
 use crate::gitr_errors::GitrError;
 use crate::logger::log_error;
+use crate::objects::commit;
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
 
@@ -111,11 +112,21 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         let request: String = String::from_utf8_lossy(&buffer[..n]).to_string();
 
 
-        let ruta = request.split(' ').collect::<Vec<&str>>()[1].trim_start_matches('/');
-        let mut response_from_get = String::new();
+        let ruta = request.split(' ').collect::<Vec<&str>>()[1].trim_start();
+        
+        
         if request.starts_with("GET") {
-             response_from_get = match handler_get_request(&ruta, &stream) {
-                Ok(response_from_get) => response_from_get,
+            let mut ruta_full = "".to_string();
+            println!("request: {:?}", request);
+            let host = request.split("\n").collect::<Vec<&str>>()[1];
+            println!("==========host: {}", host);
+            if host.starts_with("Host:"){
+                ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+ruta;
+            }
+            println!("==========ruta_full: {}, request: {}", ruta_full, request);
+
+            match handler_get_request(&ruta_full, &stream) {
+                Ok(_) => return Ok(()),
                 Err(e) => {
                     println!("Error al manejar el GET: {:?}", e);
                     stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
@@ -138,7 +149,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             Hacer el merge 💀💀💀
             PUT /repos/{repo}/pulls/{pull_number}/merge
             */
-            match handle_put_request(&response_from_get, &request, stream){
+            match handle_put_request(&request, stream){
                 Ok(_) => println!("Merge realizado"),
                 Err(e)=>{
                     println!("Error al hacer merge: {:?}",e);
@@ -156,7 +167,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         
         //            PACKETLINE
         // ########## HANDSHAKE ##########
-        
+        println!("request: {:?}", request);
         match handle_pkt_line(request, stream.try_clone()?) {
             Ok(_) => {println!("Conexion finalizada con exito"); return Ok(());}
             Err(e) => {
@@ -185,7 +196,7 @@ commit branch
 
 */
 fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo_server: String) -> Result<String, GitrError>{
-    println!("==============commit_raw_data: {:?}", commit_raw_data);
+    println!("==============commit hash: {:?} +++ commit_raw_data: {:?}",commit_hash, commit_raw_data);
     let commit_vec = commit_raw_data.split('\n').collect::<Vec<&str>>();
     
     let tree = commit_vec[0].split(' ').collect::<Vec<&str>>()[2];
@@ -239,7 +250,7 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
         return Ok("".to_string());
     }
     let ruta_pulls = ruta_vec[..3].join("/");
-    let ruta_repo_server = ruta_vec[..2].join("/");
+    let ruta_repo_server = ruta_vec[..=2].join("/");
 
 
     println!("route: {}", ruta); // ruta entera (sin el /repos)
@@ -357,7 +368,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     let host = request.split('\n').collect::<Vec<&str>>()[1];
     println!("==========host: {}", host);
     if host.starts_with("Host:"){
-        ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+"/"+ruta;
+        ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+ruta;
     }
     println!("==========ruta_full: {}, request: {}", ruta_full, request);
     match fs::create_dir(ruta_full.clone()){
@@ -424,7 +435,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     Ok(())
 }
 
-fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()> {
+fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<()> {
     
     println!("===estoy en el handle_put_request");
 
@@ -454,12 +465,19 @@ fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std
     let ruta_repo_pr = route_vec[1..=4].join("/");
     let path = Path::new(&ruta_repo_pr);
     println!("path: {:?}", path);
-    if !path.exists() {
+    let mut ruta_full = "".to_string();
+    let host = request.split('\n').collect::<Vec<&str>>()[1];
+    println!("==========host: {}", host);
+    if host.starts_with("Host:"){
+        ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+"/"+ruta_repo_pr.as_str();
+    }
+    println!("==========ruta_full: {}, request: {}", ruta_full, request);
+    if !Path::new(&ruta_full).exists() {
         println!("No existe el PR en ese path. (esto puede fallar porque cambiamos el path del server)");
         stream.write("HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n".as_bytes())?;
         return Ok(())
     }
-    let pr_content = match file_manager::read_file(ruta_repo_pr.clone()) {
+    let pr_content = match file_manager::read_file(ruta_full.clone()) {
         Ok(pr_content) => pr_content,
         Err(_) => {
             println!("Error al obtener PR");
@@ -477,10 +495,13 @@ fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std
         }
     };
 
-    let ruta_repo_server = route_vec[1..=2].join("/");
+    
     let master_name = pr.get_base_name();
     let branch_name = pr.get_branch_name();
     
+    let ruta_repo_server = ruta_full.split('/').collect::<Vec<&str>>()[..=2].join("/");
+    println!("ruta_repo_server: {:?}", ruta_repo_server);
+
     let (hubo_conflict, _ , archivos_conflict) = match commands_fn::merge_(master_name, branch_name, ruta_repo_server.clone()) {
         Ok((hubo_conflict, a,archivos_conflict)) => (hubo_conflict,a, archivos_conflict),
         Err(e) => {
@@ -569,11 +590,11 @@ fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std
 fn check_branches_exist(pull_request: &PullRequest, ruta: &str, stream: &mut TcpStream) -> Result<(), GitrError> {
     let branch_name = pull_request.get_branch_name();
     let base_name = pull_request.get_base_name();
-    let ruta_repo_server = ruta.split('/').collect::<Vec<&str>>()[..2].join("/");
+    let ruta_repo_server = ruta.split('/').collect::<Vec<&str>>()[..=2].join("/");
     let branches = match file_manager::get_branches(ruta_repo_server.clone()) {
         Ok(branches) => branches,
-        Err(_) => {
-            println!("Error al obtener branches");
+        Err(e) => {
+            println!("Error al obtener branches: {:?}",e);
             stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
             return Err(GitrError::BranchNotFound);
         }
@@ -1338,6 +1359,11 @@ mod http_tests{
         if path.exists() {
             fs::remove_dir_all(path).unwrap();
         }
+
+        let path_sv = Path::new(&"server9418");
+        if path_sv.exists() {
+            fs::remove_dir_all(path_sv).unwrap();
+        }
         file_manager::create_directory(&"cliente".to_string()).unwrap();
         let cliente = "cliente".to_string();
         let flags = vec!["repo_tests_http".to_string()];
@@ -1427,8 +1453,8 @@ mod http_tests{
 
         assert_eq!(output, output_esperado);
         
-        // fs::remove_dir_all("cliente").unwrap();
-        // fs::remove_dir_all("repos/server_test").unwrap();
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
     #[test]
@@ -1454,7 +1480,7 @@ mod http_tests{
 
         assert_eq!(output, output_esperado);
         // fs::remove_dir_all("cliente").unwrap();
-        // fs::remove_dir_all("repos/server_test").unwrap();
+        // fs::remove_dir_all("server9418").unwrap();
     }
 
 
@@ -1462,7 +1488,7 @@ mod http_tests{
     #[serial_test::serial]
     fn test02_get_pr_retorna_200_cuando_obtengo_un_pr(){
         reset_cliente_y_server();
-        let body = r#"{"id":0,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
+        let body = r#"{"id":0,"title":"pr de create 1","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
 
         let child = Command::new("curl")
             .arg("-isS")
@@ -1480,7 +1506,7 @@ mod http_tests{
 
         assert_eq!(output, output_esperado);
         fs::remove_dir_all("cliente").unwrap();
-        fs::remove_dir_all("repos/server_test").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
     #[test]
@@ -1504,14 +1530,14 @@ mod http_tests{
 
         assert_eq!(output, output_esperado);
         fs::remove_dir_all("cliente").unwrap();
-        fs::remove_dir_all("repos/server_test").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
     #[test]
     #[serial_test::serial]
     fn test04_listar_prs_devuelve_422_cuando_no_hay_prs(){
         reset_cliente_y_server();
-        fs::remove_dir_all("repos/server_test/pulls").unwrap();
+        fs::remove_dir_all("server9418/repos/server_test/pulls").unwrap();
 
         let child = Command::new("curl")
             .arg("-isS")
@@ -1529,7 +1555,7 @@ mod http_tests{
 
         assert_eq!(output, output_esperado);
         fs::remove_dir_all("cliente").unwrap();
-        fs::remove_dir_all("repos/server_test").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
     #[test]
@@ -1549,8 +1575,8 @@ mod http_tests{
         let output = child.wait_with_output().expect("failed to wait on child");
         let output = String::from_utf8(output.stdout).unwrap();
 
-        let body_1 = r#"{"id":0,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
-        let body_2 = r#"{"id":1,"title":"titulo del otro pr","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#;
+        let body_1 = r#"{"id":0,"title":"pr de create 1","description":"descripcion del pr","head":"branch","base":"master","status":"open"}"#;
+        let body_2 = r#"{"id":1,"title":"pr de create 2","description":"este es al reves q el otro","head":"master","base":"branch","status":"open"}"#;
 
         let body_response = format!("[{},{}]", body_1, body_2);
 
@@ -1558,7 +1584,7 @@ mod http_tests{
 
         assert_eq!(output, output_esperado);
         fs::remove_dir_all("cliente").unwrap();
-        fs::remove_dir_all("repos/server_test").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
     #[test]
@@ -1577,7 +1603,7 @@ mod http_tests{
 
         let output = child.wait_with_output().expect("failed to wait on child");
         let output = String::from_utf8(output.stdout).unwrap();
-        println!("{}", output);
+        println!("OUTPUT TEST 06{:?}", output);
 
         assert!(output.contains("HTTP/1.1 200 application/json\r\n\r\n"));
         assert!(output.contains(r#""author":{"name":"cliente","email":"<test@gmail.com>""#));
@@ -1610,6 +1636,12 @@ mod merge_pr_tests{
         if path.exists() {
             fs::remove_dir_all(path).unwrap();
         }
+
+        let path_sv = Path::new(&"server9418");
+        if path_sv.exists() {
+            fs::remove_dir_all(path_sv).unwrap();
+        }
+
         file_manager::create_directory(&"cliente".to_string()).unwrap();
         let cliente = "cliente".to_string();
         let flags = vec!["repo_tests_http".to_string()];
@@ -1645,7 +1677,7 @@ mod merge_pr_tests{
         commands_fn::add(vec![".".to_string()], cliente.clone()).unwrap();
         commands_fn::commit(vec!["-m".to_string(), "\"commit master1\"".to_string()], "None".to_string(), cliente.clone()).unwrap();
         
-        commands_fn::remote(vec!["server_test".to_string()], cliente.clone()).unwrap();
+        commands_fn::remote(vec!["localhost:9418/server_test".to_string()], cliente.clone()).unwrap();
 
 
         let _server = thread::spawn(move || {
@@ -1674,7 +1706,7 @@ mod merge_pr_tests{
     fn test00_cuando_no_encuentra_el_pr_devuelve_error_405(){
         reset_cliente_y_server();
         //Borro el PR asi salta el error de que ese PR no existe
-        fs::remove_dir_all("repos/server_test/pulls").unwrap();
+        fs::remove_dir_all("server9418/repos/server_test/pulls").unwrap();
         let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
@@ -1689,14 +1721,14 @@ mod merge_pr_tests{
         println!("Output test00: {}", output);
 
         assert_eq!(output, "HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n");
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
     #[serial_test::serial]
     #[test]
     fn test01_si_hay_conflicts_devuelve_405(){
         reset_cliente_y_server();
-        //Borro el PR asi salta el error de que ese PR no existe
-        //fs::remove_dir_all("repos/server_test/pulls").unwrap();
         let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
@@ -1711,15 +1743,14 @@ mod merge_pr_tests{
         println!("Output test01: {}", output);
 
         assert_eq!(output, "HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{\"conflicting_files\":[hola]}");
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
     #[serial_test::serial]
     #[test]
     fn test02_si_se_puede_mergear_devuelve_200_y_se_crea_el_commit(){
-        reset_cliente_y_server();
-        //Borro el PR asi salta el error de que ese PR no existe
-        //fs::remove_dir_all("repos/server_test/pulls").unwrap();
-        
+        reset_cliente_y_server();        
         file_manager::write_file(
             "cliente/repo_tests_http/hola".to_string(),
             "cambios en branch\n".to_string(),

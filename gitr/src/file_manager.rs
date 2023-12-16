@@ -347,7 +347,7 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
     let file_name = object[2..].to_string();
 
     let mut repo = path.clone();
-    if path.starts_with("repos/") {
+    if path.starts_with("server") {
         add_gitr = false;
     }
     if add_gitr {
@@ -356,6 +356,8 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
     let dir = repo + "/objects/";
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name + "/" + &file_name;
+    println!("path: {}", path);
+    println!("folder_dir: {}", folder_dir);
     if fs::metadata(folder_dir).is_err() {
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
@@ -1096,7 +1098,8 @@ pub fn get_pull_request(remote: &str, id: &str) -> Result<String, GitrError> {
     Ok(data)
 }
 
-pub fn get_pull_requests(dir: String) -> Result<Vec<PullRequest>, GitrError> {
+pub fn get_pull_requests(mut dir: String) -> Result<Vec<PullRequest>, GitrError> {
+    dir = dir.to_owned() + "/pulls";
     let mut pull_requests: Vec<PullRequest> = Vec::new();
     let paths = match fs::read_dir(dir.clone()) {
         Ok(paths) => paths,
@@ -1121,6 +1124,7 @@ pub fn get_pull_requests(dir: String) -> Result<Vec<PullRequest>, GitrError> {
     pull_requests.sort_by(|a, b| a.id.cmp(&b.id));
     Ok(pull_requests)
 }
+
 pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
     println!("contar_archivos_y_directorios: path: {}", ruta);
     let entradas = match fs::read_dir(ruta){
