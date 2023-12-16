@@ -73,7 +73,6 @@ pub fn command_handler(
         "go-to-repo" | "gtr" => commands_fn::go_to_repo(flags, client)?,
         "cur-repo" | "cr" => commands_fn::print_current_repo(client)?,
         "echo" => commands_fn::echo(flags, client)?,
-        "cr-pr" => commands_fn::create_pr(client)?,
         _ => {
             let message = format!("invalid command: {}", command);
             return Err(GitrError::InvalidArgumentError(

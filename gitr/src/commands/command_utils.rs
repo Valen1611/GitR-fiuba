@@ -30,7 +30,7 @@ use std::{
     fs::{self},
     io::{self, Read, Write},
     net::TcpStream,
-    path::Path,
+    path::Path, process::{Command, Stdio},
 };
 
 /***************************
@@ -1553,6 +1553,12 @@ pub fn handshake(orden: String, cliente: String) -> Result<TcpStream, GitrError>
 
     let remote = file_manager::get_remote(cliente.clone())?;
     let url_n_name = remote.split("/").collect::<Vec<&str>>();
+    if url_n_name.len() != 2 {
+        return Err(GitrError::InvalidArgumentError(
+            "<no se recibio un remote>".to_string(),
+            "url/name".to_string(),
+        ));
+    }
     let msj = format!("{} /{}\0host={}\0", orden, url_n_name[1], url_n_name[0]);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
     let mut stream = match TcpStream::connect(url_n_name[0]) {
@@ -1927,63 +1933,29 @@ pub fn _ls_tree(
  * PULL REQUESTS *
  *****************/
 
-pub fn _create_pr(cliente: String) -> Result<(), GitrError> {
+pub fn _create_pr(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     println!("create-pr");
-    let repo = file_manager::get_current_repo(cliente.clone())?;
-
-    let request_line = format!("POST /repos/{}/pulls HTTP/1.1\n", repo);
-    let header = format!("Host: localhost:9418\nUser-Agent: {}/1.0\nContent-Type: application/json\n", cliente);
-    let commits = command_utils::branch_commits_list("TestBranch".to_string(), cliente)?;
-    //let body = format!(r#"{{"id":{},"title":"{}","description":"{}","head":"{}","base":"{}","commits":{:?},}}"#,"1", "haciendo un pr","desc", "branch", "master", commits);
-    let _body = json!({
-        "id": 1,
-        "title": "haciendo un pr",
-        "description": "desc",
-        "head": "branch",
-        "base": "master",
-        "status": "open",
-        "commits": commits
-    });
-    let body = _body.to_string();
-    // Conectar
-    let mut stream = match TcpStream::connect("localhost:9418") {
-        Ok(s) => s,
-        Err(e) => {
-            println!("Error: {}", e);
-            return Err(GitrError::ConnectionError);
-        }
-    };
-
-    // Enviar Request
-    let request = request_line + &header + "\n" + &body;
-    println!("[CLIENT]: Sending request:\n[{}]", request);
-    match stream.write(request.as_bytes()) {
-        Ok(_) => (),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Err(GitrError::ConnectionError);
-        }
-    };
-    let buf = &mut [0; 1024];
-    match stream.read(buf) {
-        Ok(n) => {
-            print!("[CLIENT]: Server response is: ");
-            let response = String::from_utf8_lossy(&buf[..n]);
-            if response.contains("201") {
-                print!("\x1b[0;32m")
-            }
-            else {
-                print!("\x1b[0;31m")
-            }
-            
-            println!("{}", response);
-            print!("\x1b[0m");
-        }
-        Err(e) => {
-            println!("Error: {}", e);
-            return Err(GitrError::ConnectionError);
-        }
-    };
+    let remote = file_manager::get_remote(cliente.clone())?;
+    let remote = remote.split("/").collect::<Vec<&str>>()[1];
+    let title = flags[0].clone();
+    let description = flags[1].clone();
+    let head = flags[2].clone();
+    let base = flags[3].clone();
+    let body = format!("{{\"id\":1,\"title\":\"{}\",\"description\":\"{}\",\"head\":\"{}\",\"base\":\"{}\",\"status\":\"open\"}}", title, description, head, base);
+    let server_addr = format!("/repos/{}/pulls HTTP/1.1\n", remote.clone());
+    let path = format!("localhost:9418/repos/{}/pulls", remote);
+    let child = Command::new("curl")
+            .arg("-isS")
+            .arg("-X")
+            .arg("POST")
+            .arg("-d")
+            .arg(body)
+            .arg(path)
+            .stdout(Stdio::piped())
+            .spawn()
+            .expect("failed to execute curl");
+        
+    let output = child.wait_with_output().expect("failed to wait on child");
 
     Ok(())
 }

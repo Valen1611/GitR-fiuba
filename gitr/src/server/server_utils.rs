@@ -374,9 +374,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     println!("==========ruta_full: {}, request: {}", ruta_full, request);
     match fs::create_dir(ruta_full.clone()){
         Ok(_) => {}
-        Err(e) => {
-            println!("ERROR EN CREATE_DIR: {}",e);
-        }
+        Err(_) => {}
     }
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
     let id = match contar_archivos_y_directorios(&ruta_full){
