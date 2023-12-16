@@ -125,7 +125,7 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         }
         if request.starts_with("POST") {
             println!("[SERVER]: POST request recieved:");
-            println!("\x1b[34m{}\x1b[0m", request);
+            println!("\x1b[34m{:?}\x1b[0m", request);
             /*
             Ejemplo para mandar con curl:
             curl -X POST -H "Content-Type: application/json" -d '{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"TestBranch2","base":"master","status":"open"}' localhost:9418/repos/sv/pulls
@@ -353,15 +353,21 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
 }
 
 fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()>{
-    println!("ruta: {}, request: {}", ruta, request);
-    match fs::create_dir(ruta){
+    let mut ruta_full = "".to_string();
+    let host = request.split('\n').collect::<Vec<&str>>()[1];
+    println!("==========host: {}", host);
+    if host.starts_with("Host:"){
+        ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+"/"+ruta;
+    }
+    println!("==========ruta_full: {}, request: {}", ruta_full, request);
+    match fs::create_dir(ruta_full.clone()){
         Ok(_) => {}
         Err(e) => {
             println!("ERROR EN CREATE_DIR: {}",e);
         }
     }
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
-    let id = match contar_archivos_y_directorios(&ruta){
+    let id = match contar_archivos_y_directorios(&ruta_full){
         Ok(id) => id,
         Err(e) => {
             println!("Error al contar archivos y directorios: {:?}", e);
@@ -388,7 +394,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         }
     };
     
-    match check_branches_exist(&pull_request, &ruta, &mut stream) {
+    match check_branches_exist(&pull_request, &ruta_full, &mut stream) {
         Ok(_) => {}
         Err(_) => {
             println!("Error al validar branches");
@@ -398,13 +404,13 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     };
 
     // A la ruta le agregamos el id del PR
-    let ruta = ruta.to_string() + "/" + id.to_string().as_str();
+    let ruta_full = ruta_full.to_string() + "/" + id.to_string().as_str();
     
     // Le asignamos el id al PR
     pull_request.id = id as u8;
 
     // Creamos el PR            
-    match file_manager::create_pull_request(&ruta, pull_request) {
+    match file_manager::create_pull_request(&ruta_full, pull_request) {
         Ok(_) => println!("PR creado"),
         Err(_) => {
             println!("Error al crear PR");
