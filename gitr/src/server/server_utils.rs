@@ -203,6 +203,7 @@ fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo
     let date = file_manager::get_commit_date(commit_hash.clone(), ruta_repo_server.clone())?;
     let author = file_manager::get_commit_author(commit_hash.clone(), ruta_repo_server.clone())?;
     let author_mail = file_manager::get_commit_author_mail(commit_hash.clone(), ruta_repo_server.clone())?;
+    println!("\x1b[34m{:?}\x1b[0m", author_mail);
     let message = file_manager::get_commit_message(commit_hash.clone(), ruta_repo_server.clone())?;
     let message = message.trim_end();
     let commiter = file_manager::get_commit_commiter(commit_hash.clone(), ruta_repo_server.clone())?;
@@ -521,8 +522,9 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
         let _ = file_manager::create_directory(&cliente);
         let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", "test@gmail.com".to_string(), "aux".to_string());
         file_manager::write_file(cliente.clone() + "/gitrconfig", config_file_data).unwrap();
-
-        match commands_fn::clone(vec!["server_test".to_string(),"repo_clonado".to_string()], cliente.clone()){
+        let remote_url = host.split(' ').collect::<Vec<&str>>()[1].trim_end().to_string();
+        println!("remote_url: {:?}", remote_url);
+        match commands_fn::clone(vec![remote_url + "/server_test" ,"repo_clonado".to_string()], cliente.clone()){
             Ok(_) => (),
             Err(e) =>{
                 stream.write("HTTP/1.1 422 Error clone\r\n\r\n".as_bytes())?;
@@ -1606,8 +1608,8 @@ mod http_tests{
         println!("OUTPUT TEST 06{:?}", output);
 
         assert!(output.contains("HTTP/1.1 200 application/json\r\n\r\n"));
-        assert!(output.contains(r#""author":{"name":"cliente","email":"<test@gmail.com>""#));
-        assert!(output.contains(r#""committer":{"name":"cliente","email":"<test@gmail.com>""#));
+        assert!(output.contains("\"author\":{\"name\":\"cliente\",\"email\":\"<test>\""));
+        assert!(output.contains(r#""committer":{"name":"cliente","email":"<test>""#));
         assert!(output.contains(r#""message":"commit branch""#));
         assert!(output.contains(r#""tree":{"sha":"7e3f1eda8d09c76b01845520767ff1da6d51d470"}""#));
         assert!(output.contains(r#""message":"commit base""#));
@@ -1615,7 +1617,7 @@ mod http_tests{
         
         
         fs::remove_dir_all("cliente").unwrap();
-        fs::remove_dir_all("repos/server_test").unwrap();
+        fs::remove_dir_all("server9418/repos/server_test").unwrap();
     }
 }
 
@@ -1701,8 +1703,9 @@ mod merge_pr_tests{
         println!("FINISHED SETUP");
     }
 
-    #[serial_test::serial]
+    
     #[test]
+    #[serial_test::serial]
     fn test00_cuando_no_encuentra_el_pr_devuelve_error_405(){
         reset_cliente_y_server();
         //Borro el PR asi salta el error de que ese PR no existe
@@ -1725,8 +1728,9 @@ mod merge_pr_tests{
         fs::remove_dir_all("server9418").unwrap();
     }
 
-    #[serial_test::serial]
+    
     #[test]
+    #[serial_test::serial]
     fn test01_si_hay_conflicts_devuelve_405(){
         reset_cliente_y_server();
         let child = Command::new("curl")
@@ -1747,8 +1751,9 @@ mod merge_pr_tests{
         fs::remove_dir_all("server9418").unwrap();
     }
 
-    #[serial_test::serial]
+    
     #[test]
+    #[serial_test::serial]
     fn test02_si_se_puede_mergear_devuelve_200_y_se_crea_el_commit(){
         reset_cliente_y_server();        
         file_manager::write_file(
@@ -1774,12 +1779,17 @@ mod merge_pr_tests{
         println!("Output test02: {}", output);
 
         assert_eq!(output, "HTTP/1.1 200 OK\r\n\r\n");
-        let id = read_file("repos/server_test/refs/heads/master".to_string()).unwrap();
+        let id = read_file("server9418/repos/server_test/refs/heads/master".to_string()).unwrap();
         assert!(
-            (file_manager::get_object(id.clone(), "repos/server_test".to_string()).unwrap().contains("Merge branch 'branch'"))
+            (file_manager::get_object(id.clone(), "server9418/repos/server_test".to_string()).unwrap().contains("Merge branch 'branch'"))
             &&
-            (file_manager::get_object(id.clone(), "repos/server_test".to_string()).unwrap().matches("parent").count() == 2)
+            (file_manager::get_object(id.clone(), "server9418/repos/server_test".to_string()).unwrap().matches("parent").count() == 2)
         );
+
+
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
+
     }
 }
 /*
