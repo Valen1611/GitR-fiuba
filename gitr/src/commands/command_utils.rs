@@ -3,7 +3,7 @@ use crate::{
     diff::Diff,
     file_manager::{
         self, get_commit, get_current_commit, get_current_repo, get_head, read_index,
-        update_working_directory, visit_dirs,
+        update_working_directory, visit_dirs, get_tags,
     },
     git_transport::ref_discovery::read_long_stream,
 };
@@ -377,7 +377,7 @@ pub fn get_user_mail_from_config(cliente: String) -> Result<String, GitrError> {
     };
 
     let lines = config_data.split('\n').collect::<Vec<&str>>();
-    let email = lines[2].split('=').collect::<Vec<&str>>()[1].trim_start();
+    let email = lines[1].split('=').collect::<Vec<&str>>()[1].trim_start();
     Ok(email.to_string())
 }
 
@@ -1550,19 +1550,18 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8]) -> Result<(), Gitr
  **************************/
 
 pub fn handshake(orden: String, cliente: String) -> Result<TcpStream, GitrError> {
-    let repo = file_manager::get_current_repo(cliente.clone())?;
 
     let remote = file_manager::get_remote(cliente.clone())?;
-    let msj = format!("{} /{}\0host={}\0", orden, remote, repo);
+    let url_n_name = remote.split("/").collect::<Vec<&str>>();
+    let msj = format!("{} /{}\0host={}\0", orden, url_n_name[1], url_n_name[0]);
     let msj = format!("{:04x}{}", msj.len() + 4, msj);
-    let mut stream = match TcpStream::connect("localhost:9418") {
+    let mut stream = match TcpStream::connect(url_n_name[0]) {
         Ok(s) => s,
         Err(e) => {
             println!("Error: {}", e);
             return Err(GitrError::ConnectionError);
         }
     };
-    print!("Handshake: {}", msj);
     match stream.write(msj.as_bytes()) {
         Ok(_) => (),
         Err(e) => {
@@ -1578,10 +1577,14 @@ pub fn protocol_reference_discovery(
 ) -> Result<Vec<(String, String)>, GitrError> {
     let mut buffer = Vec::new();
     while !buffer.ends_with("0000".as_bytes()) {
+        if buffer.starts_with("Error".as_bytes()) {
+            println!("{}", String::from_utf8_lossy(&buffer));
+            return Err(GitrError::ConnectionError);
+        }
         let aux = match read_long_stream(stream) {
             Ok(buf) => buf,
             Err(e) => {
-                println!("Error: {}", e);
+                println!("{}",e);
                 return Err(GitrError::ConnectionError);
             }
         };
@@ -1675,13 +1678,23 @@ pub fn reference_update_request(
     ); // esta sacando de gitr/refs/heads y tags
     let refs_propios = (
         get_branches(cliente.clone())?,
-        file_manager::get_tags(cliente.clone())?,
+        get_tags(cliente.clone())?,
     ); // tambien de gitr/refs/heads y tags
-    let (ref_upd, pkt_needed, pkt_ids) = ref_discovery::reference_update_request(
+    let (ref_upd, pkt_needed, pkt_ids) = match ref_discovery::reference_update_request(
         hash_n_references.clone(),
         ids_propios,
         refs_propios,
-    )?;
+    ) {
+        Ok((ref_upd, pkt_needed, pkt_ids)) => (ref_upd, pkt_needed, pkt_ids),
+        Err(e) => {
+            match stream.write("0000".as_bytes()) {
+                Ok(_) => (),
+                Err(_) => {return Err(GitrError::ConnectionError)}
+            }
+            return Err(e);
+        }
+    };
+    
     if let Err(e) = stream.write(ref_upd.as_bytes()) {
         println!("Error: {}", e);
         return Err(GitrError::ConnectionError);
