@@ -375,6 +375,7 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
 pub fn init_repository(name: &String) -> Result<(), GitrError> {
     println!("name:{}", name);
     create_directory(name)?;
+    println!("pase create directory");
     create_directory(&(name.clone() + "/gitr"))?;
     create_directory(&(name.clone() + "/gitr/objects"))?;
     create_directory(&(name.clone() + "/gitr/refs"))?;

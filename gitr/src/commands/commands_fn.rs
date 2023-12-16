@@ -237,6 +237,7 @@ pub fn ls_files(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
 pub fn clone(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     init(vec![flags[1].clone()], cliente.clone())?;
     remote(vec![flags[0].clone()], cliente.clone())?;
+
     pullear(vec![], true, cliente)?;
     Ok(())
 }

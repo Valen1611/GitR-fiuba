@@ -2,6 +2,8 @@ extern crate flate2;
 use std::collections::HashSet;
 use std::fs;
 use std::fs::File;
+use std::fs::remove_dir;
+use std::fs::remove_dir_all;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Error;
@@ -128,8 +130,14 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             Hacer el merge 💀💀💀
             PUT /repos/{repo}/pulls/{pull_number}/merge
             */
-            
-            return handle_put_request(&response_from_get, &request, stream);
+            match handle_put_request(&response_from_get, &request, stream){
+                Ok(_) => println!("Merge realizado"),
+                Err(e)=>{
+                    println!("Error al hacer merge: {:?}",e);
+                }
+
+            };
+            return Ok(())
         }
 
         if request.starts_with("PATCH"){
@@ -493,11 +501,44 @@ fn handle_put_request(pr_str: &str, request: &str, mut stream: TcpStream) -> std
         let response_body = format!("HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{{\"conflicting_files\":[{}]}}",archivos);
         stream.write(response_body.as_bytes())?;
     } else {
-        stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
+        let cliente = "cliente_aux".to_string();
+        let _ = file_manager::create_directory(&cliente);
+        let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", "test@gmail.com".to_string(), "aux".to_string());
+        file_manager::write_file(cliente.clone() + "/gitrconfig", config_file_data).unwrap();
+
+        match commands_fn::clone(vec!["server_test".to_string(),"repo_clonado".to_string()], cliente.clone()){
+            Ok(_) => (),
+            Err(e) =>{
+                stream.write("HTTP/1.1 422 Error clone\r\n\r\n".as_bytes())?;
+                println!("Error al clonar(AUX): {:?}",e);
+                return Err(Error::new(std::io::ErrorKind::Other,e.to_string()));
+            }
+        };
+        if commands_fn::checkout(vec![master_name.to_string()], cliente.clone()).is_err(){
+            stream.write("HTTP/1.1 422 Error checkout\r\n\r\n".as_bytes())?;
+            return Err(Error::new(std::io::ErrorKind::Other,"Error checkout a master (aux)"));
+        };
+        if commands_fn::merge(vec![branch_name.to_string()], cliente.clone()).is_err(){
+            stream.write("HTTP/1.1 422 Error merge\r\n\r\n".as_bytes())?;
+            return Err(Error::new(std::io::ErrorKind::Other,"Error merge (aux)"));
+        };
+        // if commands_fn::remote(vec!["server_test".to_string()], cliente.clone()).is_err(){ //aca esta hardcodeado el primer parametro, habria que buscarlo en el pr
+        //     return Err(Error::new(std::io::ErrorKind::Other,"Error al setear remote (aux)"));
+        // }
+        if commands_fn::push(vec![], cliente.clone()).is_err(){
+            stream.write("HTTP/1.1 422 Error push\r\n\r\n".as_bytes())?;
+            return Err(Error::new(std::io::ErrorKind::Other,"Error al pushear (aux)"));
+        }
+        
+        if remove_dir_all(cliente.clone()).is_err(){
+            return Err(Error::new(std::io::ErrorKind::Other,"Error al borrar el aux"));
+        }
+
         //1. clono el server
         //2. merge dentro del cliente aux
         //3. commiteo y pusheo
         //4. borro el aux.
+        stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
     }
     
     //========fin parseo input
@@ -1562,7 +1603,7 @@ mod merge_pr_tests{
     /*PUT /repos/{repo}/pulls/{pull_number}/merge */
 
     use std::{path::Path, fs::{self, remove_dir}};
-    use crate::file_manager;
+    use crate::file_manager::{self, read_file};
     use crate::commands::commands_fn;
     use std::process::{Command, Stdio};
     use super::*;
@@ -1705,7 +1746,13 @@ mod merge_pr_tests{
         let output = String::from_utf8(output.stdout).unwrap();
         println!("Output test02: {}", output);
 
-        assert_eq!(output, "HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{\"conflicting_files\":[hola]}");
+        assert_eq!(output, "HTTP/1.1 200 OK\r\n\r\n");
+        let id = read_file("repos/server_test/refs/heads/master".to_string()).unwrap();
+        assert!(
+            (file_manager::get_object(id.clone(), "repos/server_test".to_string()).unwrap().contains("Merge branch 'branch'"))
+            &&
+            (file_manager::get_object(id.clone(), "repos/server_test".to_string()).unwrap().matches("parent").count() == 2)
+        );
     }
 }
 /*
