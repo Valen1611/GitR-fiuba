@@ -12,7 +12,6 @@ use std::path::Path;
 use std::str::from_utf8;
 
 use std::thread;
-
 use crate::commands::command_utils;
 use crate::file_manager;
 use crate::file_manager::contar_archivos_y_directorios;
@@ -35,8 +34,8 @@ use crate::objects::pull_request::PullRequest;
 pub fn server_init(s_addr: &str) -> std::io::Result<()> {
     let listener = TcpListener::bind(s_addr)?;
     let mut childs = Vec::new();
-
-    childs.push(thread::spawn(move || {get_input()}));
+    let adr2 = s_addr.clone().to_string();
+    childs.push(thread::spawn(move || {get_input(&adr2)}));
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
@@ -76,14 +75,14 @@ pub fn server_init(s_addr: &str) -> std::io::Result<()> {
 /// y enviar un mensaje al hilo principal para indicar que debe salir
 /// # Devuelve
 /// Err(std::Error) si algun proceso interno tambien da error o no se pudo establecer bien la conexion.
-fn get_input() -> std::io::Result<()>{
+fn get_input(s_addr: &str) -> std::io::Result<()>{
     let mut input = String::new();
     loop {
         std::io::stdin().read_line(&mut input)?;
         let trimmed = input.trim().to_lowercase();
         if trimmed == "q" {
             // Envia un mensaje al hilo principal para indicar que debe salir
-            let _ = TcpStream::connect("localhost:9418")?.write("q".as_bytes())?;
+            let _ = TcpStream::connect(s_addr)?.write("q".as_bytes())?;
             break;
         }
         input.clear();
@@ -503,7 +502,8 @@ fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()
         }
     }
     let elems = split_n_validate_elems(&request)?;
-    let r_path = "repos/".to_string() + elems[1];
+    let direc = elems[2].split_once(":").unwrap_or(("",elems[2])).1;
+    let r_path = format!("server{direc}/repos/{}",elems[1]);
     create_dirs(&r_path)?;
     // ########## REFERENCE DISCOVERY ##########
     (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
@@ -937,7 +937,7 @@ fn is_valid_pkt_line(pkt_line: &str) -> std::io::Result<()> {
 /// # Recibe
 /// * pkt_line: &str con la linea de pkt-line recibida
 /// # Devuelve
-/// Una lista con los elementos de la linea de pkt-line: (comando, repo_local, repo_remoto)
+/// Una lista con los elementos de la linea de pkt-line: (comando, repo_remoto, url)
 fn split_n_validate_elems(pkt_line: &str) -> std::io::Result<Vec<&str>> {
     let line = pkt_line.split_at(4).1;
     let div1: Vec<&str> = line.split(' ').collect();
