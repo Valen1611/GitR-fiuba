@@ -80,7 +80,10 @@ pub fn add(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         ));
     }
     update_index_before_add(cliente.clone())?;
+    println!("no falla el update index");
     add_files_command(flags[0].clone(), cliente)?;
+    println!("no falla el add_files_command");
+
     Ok(())
 }
 //Remove files from the index
@@ -234,6 +237,7 @@ pub fn ls_files(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
 pub fn clone(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     init(vec![flags[1].clone()], cliente.clone())?;
     remote(vec![flags[0].clone()], cliente.clone())?;
+
     pullear(vec![], true, cliente)?;
     Ok(())
 }
@@ -284,19 +288,7 @@ pub fn fetch(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     pullear(flags, false, cliente)
 }
 
-pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
-    // let origin_name = file_manager::get_head(cliente.clone())?
-    //     .split('/')
-    //     .collect::<Vec<&str>>()[2]
-    //     .to_string();
-
-    match merge_(_flags, cliente.clone()) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e),
-    }
-}
-
-pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), GitrError> {
+pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(bool, String, Vec<String>), GitrError> {
     if _flags.is_empty() {
         return Err(GitrError::InvalidArgumentError(
             _flags.join(" "),
@@ -304,16 +296,26 @@ pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), Gi
         ));
     }
     
-    let mut hubo_conflict = false;
     let branch_name = _flags[0].clone();
-    let origin_name = file_manager::get_head(cliente.clone())?
-    .split('/')
-    .collect::<Vec<&str>>()[2]
-    .to_string();
 
+    let origin_name = file_manager::get_head(cliente.clone())?
+        .split('/')
+        .collect::<Vec<&str>>()[2]
+        .to_string();
+
+    match merge_(&origin_name, &branch_name, cliente.clone()) {
+        Ok((hubo_conflict_res, branch_hash_res, archivos_conflict_res)) => Ok((hubo_conflict_res, branch_hash_res, archivos_conflict_res)),
+        Err(e) => Err(e),
+    }
+}
+
+pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Result<(bool, String, Vec<String>), GitrError> {
+    let mut hubo_conflict = false;
+    let mut archivos_conflict = vec![];
     
     let branch_commits = branch_commits_list(branch_name.clone(), cliente.clone())?;
-    let origin_commits = branch_commits_list(origin_name, cliente.clone())?;
+    let origin_commits = branch_commits_list(origin_name.clone(), cliente.clone())?;
+
     for commit in branch_commits.clone() {
         if origin_commits.contains(&commit) {
             if commit == origin_commits[0] {
@@ -323,19 +325,25 @@ pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), Gi
                     &branch_commits[0][..7]
                 );
                 println!("Fast-forward");
-                fast_forward_merge(branch_name, cliente.clone())?;
+                fast_forward_merge(branch_name.clone(), cliente.clone())?;
                 break;
             }
-            hubo_conflict = command_utils::three_way_merge(
+            (hubo_conflict, archivos_conflict) = command_utils::three_way_merge(
                 commit,
                 origin_commits[0].clone(),
                 branch_commits[0].clone(),
                 cliente.clone(),
             )?;
             if !hubo_conflict {
+                println!("no hubo conflictos");
+                if cliente.contains("/"){
+                    return Ok((hubo_conflict, branch_commits[0].clone(), archivos_conflict));
+                }
                 add(vec![".".to_string()], cliente.clone())?;
+                println!("no fallo en el add.");
+
                 command_utils::create_merge_commit(
-                    branch_name,
+                    branch_name.clone(),
                     branch_commits[0].clone(),
                     cliente,
                 )?;
@@ -343,7 +351,7 @@ pub fn merge_(_flags: Vec<String>, cliente: String) -> Result<(bool, String), Gi
             break;
         }
     }
-    Ok((hubo_conflict, branch_commits[0].clone()))
+    Ok((hubo_conflict, branch_commits[0].clone(), archivos_conflict))
 }
 
 pub fn remote(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {

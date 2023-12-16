@@ -347,7 +347,7 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
     let file_name = object[2..].to_string();
 
     let mut repo = path.clone();
-    if path.starts_with("repos/") {
+    if path.starts_with("server") {
         add_gitr = false;
     }
     if add_gitr {
@@ -356,6 +356,8 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
     let dir = repo + "/objects/";
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name + "/" + &file_name;
+    println!("path: {}", path);
+    println!("folder_dir: {}", folder_dir);
     if fs::metadata(folder_dir).is_err() {
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
@@ -375,6 +377,7 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
 pub fn init_repository(name: &String) -> Result<(), GitrError> {
     println!("name:{}", name);
     create_directory(name)?;
+    println!("pase create directory");
     create_directory(&(name.clone() + "/gitr"))?;
     create_directory(&(name.clone() + "/gitr/objects"))?;
     create_directory(&(name.clone() + "/gitr/refs"))?;
@@ -1083,7 +1086,7 @@ pub fn create_pull_request(server_path: &str, pull_request: PullRequest) -> Resu
     // let path = format!("{}/pulls/{}", remote, pull_request.id);
     
     // println!("\x1b[32mpath: {}", path);
-    // println!("pull_request: {}\x1b[0m", pull_request.to_string()?);
+    println!("pull_request: {}\x1b[0m", pull_request.to_string()?);
 
     write_file(server_path.to_string(), pull_request.to_string()?)?;
     Ok(())
@@ -1095,7 +1098,8 @@ pub fn get_pull_request(remote: &str, id: &str) -> Result<String, GitrError> {
     Ok(data)
 }
 
-pub fn get_pull_requests(dir: String) -> Result<Vec<PullRequest>, GitrError> {
+pub fn get_pull_requests(mut dir: String) -> Result<Vec<PullRequest>, GitrError> {
+    dir = dir.to_owned() + "/pulls";
     let mut pull_requests: Vec<PullRequest> = Vec::new();
     let paths = match fs::read_dir(dir.clone()) {
         Ok(paths) => paths,
@@ -1120,13 +1124,17 @@ pub fn get_pull_requests(dir: String) -> Result<Vec<PullRequest>, GitrError> {
     pull_requests.sort_by(|a, b| a.id.cmp(&b.id));
     Ok(pull_requests)
 }
+
 pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
-        let entradas = match fs::read_dir(ruta){
-            Ok(entradas) => entradas,
-            Err(_) => return Err(GitrError::FileReadError(ruta.to_string())),
-        };
-        Ok(entradas.count())
-    }
+    println!("contar_archivos_y_directorios: path: {}", ruta);
+    let entradas = match fs::read_dir(ruta){
+        Ok(entradas) => entradas,
+        Err(_) => return Err(GitrError::FileReadError(ruta.to_string())),
+    }; 
+    let cuenta = entradas.count();
+    println!("cantidad de archivos contados: {}", cuenta);
+    Ok(cuenta)
+}
 
 pub fn pull_request_exist(path: &str) -> bool {
     let data = read_file(path.to_string());

@@ -626,12 +626,12 @@ fn _aplicar_diffs(string_archivo: String, diff: Diff) -> Result<Vec<String>, Git
     Ok(archivo_reconstruido)
 }
 
-fn aplicar_difs(path: String, diff: Diff) -> Result<(), GitrError> {
+fn aplicar_diffs(path: String, diff: Diff) -> Result<(), GitrError> {
     let string_archivo = file_manager::read_file(path.clone())?;
     let archivo_reconstruido = _aplicar_diffs(string_archivo.clone(), diff.clone())?;
     file_manager::write_file(path, archivo_reconstruido.concat().to_string())?;
 
-    Ok(())
+    Ok(()) 
 }
 
 fn armar_conflict2(origin_conflicts: String, new_conflicts: String) -> String {
@@ -847,7 +847,7 @@ pub fn three_way_merge(
     origin_commit: String,
     branch_commit: String,
     cliente: String,
-) -> Result<bool, GitrError> {
+) -> Result<(bool, Vec<String>), GitrError> {
     let branch_hashmap = get_commit_hashmap(branch_commit.clone(), cliente.clone())?;
     let mut origin_hashmap = get_commit_hashmap(origin_commit.clone(), cliente.clone())?;
     file_manager::add_new_files_from_merge(
@@ -858,6 +858,9 @@ pub fn three_way_merge(
     origin_hashmap = get_commit_hashmap(origin_commit.clone(), cliente.clone())?;
     let base_hashmap = get_commit_hashmap(base_commit.clone(), cliente.clone())?;
     let mut hubo_conflict = false;
+    let mut archivos_conflict = Vec::new();
+
+
     for (path, origin_file_hash) in origin_hashmap.iter() {
         let origin_file_data: String =
             file_manager::read_file_data_from_blob_hash(origin_file_hash.clone(), cliente.clone())?;
@@ -887,7 +890,11 @@ pub fn three_way_merge(
 
             if &base_file_hash == origin_file_hash {
                 let diff_base_branch = Diff::new(base_file_data, branch_file_data);
-                aplicar_difs(path.clone(), diff_base_branch)?;
+                if cliente.contains('/') {
+                    _aplicar_diffs(origin_file_data.clone(), diff_base_branch)?;
+                } else {
+                    aplicar_diffs(path.clone(), diff_base_branch)?;
+                }
                 continue;
             }
 
@@ -907,8 +914,21 @@ pub fn three_way_merge(
             let diff_base_origin = Diff::new(base_file_data.clone(), origin_file_data.clone());
             let diff_base_branch = Diff::new(base_file_data.clone(), branch_file_data.clone());
             let union_diffs;
+
+            println!("DIFF base origin: {:?}", diff_base_origin.lineas);
+            println!("DIFF base branch: {:?}", diff_base_branch.lineas);
+
             (union_diffs, hubo_conflict) =
                 comparar_diffs(diff_base_origin, diff_base_branch, len_archivo - 1)?; //une los diffs o da el conflict
+
+            println!("DIFF UNION: {:?}", union_diffs.lineas);
+
+            if hubo_conflict {
+                if let Some(nombre_archivo) = path.split('/').last() {
+                    archivos_conflict.push(nombre_archivo.to_string().clone());
+                }
+            }
+
 
             if base_file_data.is_empty() || base_file_data.is_empty() {
                 let archivo_reconstruido = _aplicar_diffs("".to_string(), union_diffs)?;
@@ -917,14 +937,18 @@ pub fn three_way_merge(
                     archivo_reconstruido.concat().to_string(),
                 )?;
             } else {
-                aplicar_difs(path.clone(), union_diffs)?;
+                if cliente.contains('/') {
+                    _aplicar_diffs(origin_file_data.clone(), union_diffs)?;
+                } else {
+                    aplicar_diffs(path.clone(), union_diffs)?;
+                }
             }
         } else {
             continue;
         }
     }
 
-    Ok(hubo_conflict)
+    Ok((hubo_conflict, archivos_conflict))
 }
 
 pub fn create_merge_commit(
@@ -1287,6 +1311,8 @@ pub fn save_and_add_blob_to_index(file_path: String, cliente: String) -> Result<
         Err(e) => return Err(e),
     }
     let raw_data = file_manager::read_file(file_path.clone())?;
+    println!("no falla el read file de save and add blobl");
+
     let blob = Blob::new(raw_data)?;
     blob.save(cliente.clone())?;
     let hash = blob.get_hash();
@@ -1326,11 +1352,14 @@ pub fn add_files_command(file_path: String, cliente: String) -> Result<(), GitrE
     let repo = get_current_repo(cliente.clone())?;
     if file_path == "." {
         let files = visit_dirs(std::path::Path::new(&repo));
+        println!("no falla visit dirs");
         for file in files {
-            if file.contains("gitr") {
+            if file.contains("gitr") || file.contains("gitrignore") {
                 continue;
             }
             save_and_add_blob_to_index(file.clone(), cliente.clone())?;
+            println!("no falla save blob en el for");
+
         }
     } else {
         let full_file_path = repo + "/" + &file_path;
@@ -1713,7 +1742,7 @@ fn check_conflicts_and_get_tree(
     base_commit: String,
     cliente: String,
 ) -> Result<String, GitrError> {
-    let hubo_conflict =
+    let (hubo_conflict, _) =
         three_way_merge(base_commit, branch_commit, origin_commit, cliente.clone())?;
     if hubo_conflict {
         loop {
@@ -1785,7 +1814,10 @@ fn path_is_ignored(paths: Vec<String>, client: String) -> Result<bool, GitrError
 
 pub fn check_ignore_(paths: Vec<String>, client: String) -> Result<Vec<String>, GitrError> {
     let path = armar_path("gitrignore".to_string(), client.clone())?;
-    let gitignore = file_manager::read_file(path)?;
+    let gitignore = match file_manager::read_file(path){
+        Ok(data) => data,
+        Err(_) => return Ok(vec![]),
+    };
     let lineas_ignore: Vec<&str> = gitignore.split('\n').collect();
     let mut lineas_full: Vec<String> = vec![];
     let repo = file_manager::get_current_repo(client.clone())?;

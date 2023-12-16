@@ -115,8 +115,8 @@ pub fn check_push( hash_n_references: Vec<(String, String)>, heads_ids: Vec<Stri
             continue;
         }
         for (j, h_refer) in heads_refs.iter().enumerate() {
-            println!("refs\\heads\\{} == {}", h_refer, &hash_n_ref.1);
-            if hash_n_ref.1 == format!("refs\\heads\\{}",h_refer).as_str(){
+            println!("refs/heads/{} == {}", h_refer, &hash_n_ref.1);
+            if hash_n_ref.1 == format!("refs/heads/{}",h_refer).as_str(){
                 println!("entra");
                 if !is_parent(heads_ids[j].clone(),hash_n_ref.0, cliente.clone())  {
                     return Err(GitrError::PushError("Cliente desactualizado".to_string()));

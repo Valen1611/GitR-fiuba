@@ -49,7 +49,7 @@ pub fn command_handler(
         "clone" => commands_fn::clone(flags, client)?,
         "fetch" => commands_fn::fetch(flags, client)?,
         "merge" => {
-            let (hubo_conflict_res, branch_hash_res) = commands_fn::merge_(flags, client)?;
+            let (hubo_conflict_res, branch_hash_res, _) = commands_fn::merge(flags, client)?;
             if hubo_conflict_res {
                 println!(
                     "\x1b[33mHubo un conflicto, por favor resuelvalo antes de continuar\x1b[0m"
