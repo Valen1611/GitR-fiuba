@@ -5,6 +5,7 @@ use gtk::{prelude::*, Application, ComboBoxText, Dialog, Entry, Label, TextBuffe
 
 use gtk::{Builder, Button, FileChooserButton, Window, Box, StackSidebar};
 
+use crate::commands::command_utils::_create_pr;
 use crate::commands::commands_fn::{self};
 use crate::file_manager;
 use crate::gitr_errors::GitrError;
@@ -508,8 +509,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     let base_branch_clone = base_branch.clone();
     let cliente_clone = cliente.clone();
     let compare_branch_clone = compare_branch.clone();
-    update_branches(&base_branch_clone, cliente_clone.clone());
-    update_branches(&compare_branch_clone, cliente_clone.clone());
     let pr_title_clone = pr_title.clone();
     let pr_descripcion_clone = pr_descripcion.clone();
     let pr_ok_button_clone = pr_ok_button.clone();
@@ -527,6 +526,8 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         if title == "" || description == "" || base == "" || compare == ""{
             return;
         }
+        let vec_pr = vec![title.to_string(),description.to_string(),base.to_string(),compare.to_string()];
+        _create_pr(vec_pr,cliente_clone.clone()).unwrap();
         //crear el pr
         creation_pr_clone.hide();
     });
@@ -546,7 +547,8 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 pr_list_clone.remove(row);
             });
             let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
-            let dir = "repos/".to_string() + &remote + "/pulls";
+            let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
+            let dir = "server9418/repos/".to_string() + &sv_name;
             let prs = match file_manager::get_pull_requests(dir){
                 Ok(prs) => prs,
                 Err(e) => {
@@ -574,7 +576,8 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 pr_list_clone.remove(row);
             });
             let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
-            let dir = "repos/".to_string() + &remote + "/pulls";
+            let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
+            let dir = "server9418/repos/".to_string() + &sv_name;
             let prs = match file_manager::get_pull_requests(dir){
                 Ok(prs) => prs,
                 Err(e) => {
