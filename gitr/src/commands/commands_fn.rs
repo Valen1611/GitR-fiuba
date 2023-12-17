@@ -80,9 +80,7 @@ pub fn add(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         ));
     }
     update_index_before_add(cliente.clone())?;
-    println!("no falla el update index");
     add_files_command(flags[0].clone(), cliente)?;
-    println!("no falla el add_files_command");
 
     Ok(())
 }

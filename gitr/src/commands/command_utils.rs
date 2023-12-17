@@ -1311,8 +1311,6 @@ pub fn save_and_add_blob_to_index(file_path: String, cliente: String) -> Result<
         Err(e) => return Err(e),
     }
     let raw_data = file_manager::read_file(file_path.clone())?;
-    println!("no falla el read file de save and add blobl");
-
     let blob = Blob::new(raw_data)?;
     blob.save(cliente.clone())?;
     let hash = blob.get_hash();
@@ -1352,13 +1350,11 @@ pub fn add_files_command(file_path: String, cliente: String) -> Result<(), GitrE
     let repo = get_current_repo(cliente.clone())?;
     if file_path == "." {
         let files = visit_dirs(std::path::Path::new(&repo));
-        println!("no falla visit dirs");
         for file in files {
             if file.contains("gitr") || file.contains("gitrignore") {
                 continue;
             }
             save_and_add_blob_to_index(file.clone(), cliente.clone())?;
-            println!("no falla save blob en el for");
 
         }
     } else {
