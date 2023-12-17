@@ -613,20 +613,32 @@ fn check_branches_exist(pull_request: &PullRequest, ruta: &str, stream: &mut Tcp
 }
 
 fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result<()>{
-    let route = request.split(' ').collect::<Vec<&str>>()[1];
-    let route_provisoria = route.split('/').collect::<Vec<&str>>();
-    let route_provisoria = route_provisoria[2..].join("/");
+    let mut ruta_full = "".to_string();
+    let host = request.split('\n').collect::<Vec<&str>>()[1];
+    println!("==========host: {}", host);
+    if host.starts_with("Host:"){
+        ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+"/"+request.split(' ').collect::<Vec<&str>>()[1].trim_start();
+    }
+    println!("==========ruta_full: {}, request: {}", ruta_full, request);
     if request.split('\n').collect::<Vec<&str>>().len() < 8 {
         println!("Error al parsear el body");
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
-    let _id = route_provisoria.split('/').collect::<Vec<&str>>()[2];
-    if !file_manager::pull_request_exist(&route_provisoria){
+    let _id = ruta_full.split('/').collect::<Vec<&str>>()[2];
+    if !file_manager::pull_request_exist(&ruta_full){
         println!("No existe el pull request solicitado");
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
+    match check_branches_exist(&PullRequest::from_string(file_manager::read_file(ruta_full.clone()).unwrap()).unwrap(), &ruta_full, &mut stream) {
+        Ok(_) => {}
+        Err(_) => {
+            println!("Error al validar branches");
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
     let pull_request: PullRequest = match serde_json::from_str(&body) {
         Ok(pull_request) => pull_request,
@@ -637,7 +649,7 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
             return Ok(());
         }
     };
-    match file_manager::create_pull_request(&route_provisoria, pull_request) {
+    match file_manager::create_pull_request(&ruta_full, pull_request) {
         Ok(_) => println!("PR creado"),
         Err(_) => {
             println!("Error al crear PR");
