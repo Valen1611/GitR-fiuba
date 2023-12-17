@@ -72,4 +72,8 @@ impl PullRequest {
         &self.base
     }
 
+    pub fn get_status(&self) -> &String {
+        &self.status
+    }
+
 }

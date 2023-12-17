@@ -8938,3 +8938,192 @@
 {"type": "FileOperation","timestamp": "16-12-2023 20:28:49","message": "reading data from: cliente_tag_delete/test_tag_delete/gitr/refs/tags/tag1"}
 {"type": "FileOperation","timestamp": "16-12-2023 20:28:49","message": "reading data from: cliente_tag_delete/test_tag_delete/gitr/refs/tags/tag1"}
 {"type": "Error","timestamp": "16-12-2023 20:28:49","message": "No se pudo leer: cliente_tag_delete/test_tag_delete/gitr/refs/tags/tag1"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:24","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:25","message": "reading data from: cliente/.head_repo"}
+{"type": "Error","timestamp": "16-12-2023 22:25:25","message": "No se pudo leer: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:33","message": "writing data to: cliente/gitrconfig"}
+{"type": "Action","timestamp": "16-12-2023 22:25:35","message": "calling init with flags: ["repo"]"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "creating dir: cliente/repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "creating dir: cliente/repo/gitr"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "creating dir: cliente/repo/gitr/objects"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "creating dir: cliente/repo/gitr/refs"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "creating dir: cliente/repo/gitr/refs/heads"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "creating dir: cliente/repo/gitr/refs/remotes"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "creating dir: cliente/repo/gitr/refs/tags"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "creating dir: cliente/repo/gitr/refs/remotes/daemon"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "writing data to: cliente/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "writing data to: cliente/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "writing data to: cliente/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:35","message": "writing data to: cliente/.head_repo"}
+{"type": "Action","timestamp": "16-12-2023 22:25:58","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "reading data from: cliente/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "reading data from: cliente/repo/hola"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "creating dir: cliente/repo/gitr/objects/b8"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "writing data to: cliente/repo/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "writing data to: cliente/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:25:58","message": "writing data to: cliente/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:03","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:03","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:03","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:03","message": "reading data from: cliente/.head_repo"}
+{"type": "Action","timestamp": "16-12-2023 22:27:07","message": "calling add with flags: ["."]"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/repo/hola"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "writing data to: cliente/repo/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "writing data to: cliente/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "writing data to: cliente/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/repo/hola"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "writing object b8b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "writing data to: cliente/repo/gitr/objects/b8/b4a4e2a5db3ebed5f5e02beb3e2d27bca9fc9a"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "reading data from: cliente/repo/gitr/index"}
+{"type": "Action","timestamp": "16-12-2023 22:27:07","message": "adding cliente/repo/hola to index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:07","message": "writing data to: cliente/repo/gitr/index"}
+{"type": "Action","timestamp": "16-12-2023 22:27:14","message": "calling commit with flags: ["-m", "\"primer", "commit\""]"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/hola"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitrignore"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "16-12-2023 22:27:14","message": "No se pudo leer: cliente/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/refs/heads/master"}
+{"type": "Error","timestamp": "16-12-2023 22:27:14","message": "No se pudo leer: cliente/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/index"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/hola"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "writing object a7ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "creating dir: cliente/repo/gitr/objects/a7"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "writing data to: cliente/repo/gitr/objects/a7/ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "writing object a7ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "writing data to: cliente/repo/gitr/objects/a7/ab19b2e9e7d1c1bb903289f046003ffb261443"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "writing data to: cliente/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/gitrconfig"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/gitrconfig"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "writing object 4095487aebd97744968763f1a07fe786913a150e"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "creating dir: cliente/repo/gitr/objects/40"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "writing data to: cliente/repo/gitr/objects/40/95487aebd97744968763f1a07fe786913a150e"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "writing data to: cliente/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/HEAD"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:14","message": "reading data from: cliente/repo/gitr/refs/heads/master"}
+{"type": "Action","timestamp": "16-12-2023 22:27:27","message": "calling remote with flags: ["localhost:9418/sv"]"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:27","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:27","message": "writing data to: cliente/repo/gitr/remote"}
+{"type": "Action","timestamp": "16-12-2023 22:27:30","message": "calling push with flags: []"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/repo/gitr/refs/heads/master"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:27:30","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:28:17","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:28:37","message": "reading data from: server9418//repos/sv/pulls"}
+{"type": "Error","timestamp": "16-12-2023 22:28:37","message": "No se pudo leer: server9418//repos/sv/pulls"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:29:20","message": "reading data from: server9418//repos/sv/pulls"}
+{"type": "Error","timestamp": "16-12-2023 22:29:20","message": "No se pudo leer: server9418//repos/sv/pulls"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:31:18","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:31:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:31:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:31:18","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:31:48","message": "reading data from: server9418/repos/sv/pulls"}
+{"type": "Error","timestamp": "16-12-2023 22:31:48","message": "No se pudo leer: server9418/repos/sv/pulls"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:32:51","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:32:51","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:33:45","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:33:45","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:33:45","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:34:21","message": "reading data from: server9418/repos/sv/pulls/1"}
+{"type": "Error","timestamp": "16-12-2023 22:34:21","message": "No se pudo leer: server9418/repos/sv/pulls/1"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:34:28","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:34:28","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:34:28","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:35:29","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:35:29","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:35:29","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:05","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:05","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:05","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:27","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:27","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:27","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:37","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:37","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:37","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:44","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:44","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:47","message": "reading data from: cliente/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:47","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:47","message": "reading data from: cliente/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:47","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:48","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:48","message": "reading data from: cliente/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:48","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:48","message": "reading data from: cliente/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:48","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:51","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:51","message": "reading data from: cliente/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:51","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:51","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:55","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:55","message": "reading data from: cliente/repo/gitr/remote"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:55","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:36:55","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:37:10","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:37:10","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:37:10","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:46:16","message": "creating dir: cliente"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:46:16","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:46:16","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:46:16","message": "reading data from: cliente/.head_repo"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:46:23","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:46:37","message": "reading data from: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:46:37","message": "writing data to: server9418/repos/sv/pulls/0"}
+{"type": "FileOperation","timestamp": "16-12-2023 22:48:30","message": "reading data from: server9418/repos/sv/pulls/0"}
