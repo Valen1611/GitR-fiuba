@@ -1,0 +1,3 @@
+este archivo
+aca avanzamos con master
+tener conflicts con otras ramas
