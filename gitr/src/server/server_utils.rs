@@ -19,6 +19,7 @@ use std::thread;
 use crate::commands::{command_utils, commands_fn};
 use crate::file_manager;
 use crate::file_manager::contar_archivos_y_directorios;
+use crate::file_manager::get_pull_request;
 use crate::git_transport::pack_file::create_packfile;
 use crate::git_transport::pack_file::prepare_contents;
 use crate::git_transport::pack_file::PackFile;
@@ -435,28 +436,6 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
 }
 
 fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<()> {
-    
-    println!("===estoy en el handle_put_request");
-
-    // Mepa que no tiene sentido pasar el pr_str si nadie lo manipula antes, llega un string vacío.
-    // if pr_str.is_empty() {
-    //     println!("Error al parsear el body");
-    //     stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-    //     return Ok(());
-    // }
-
-    // let pr = match PullRequest::from_string(pr_str.to_string()) {
-    //     Ok(pr) => pr,
-    //     Err(_) => {
-    //         println!("Error al parsear el body");
-    //         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-    //         return Ok(());
-    //     }
-    // };
-
-    // let master_name = pr.get_base_name();
-    // let branch_name = pr.get_branch_name();
-    
     //========parseo input
     let route = request.split(' ').collect::<Vec<&str>>()[1];
     let route_vec = route.split('/').collect::<Vec<&str>>();
@@ -485,7 +464,7 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
         }
     };
 
-    let pr = match PullRequest::from_string(pr_content) {
+    let mut pr = match PullRequest::from_string(pr_content) {
         Ok(pr) => pr,
         Err(_) => {
             println!("Error al parsear el PR");
@@ -493,6 +472,12 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
             return Ok(());
         }
     };
+
+    if pr.status != "open"{
+        println!("El PR no esta abierto");
+        stream.write("HTTP/1.1 422 Validation failed: El PR no está abierto\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
 
     
     let master_name = pr.get_base_name();
@@ -522,7 +507,7 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
         file_manager::write_file(cliente.clone() + "/gitrconfig", config_file_data).unwrap();
         let remote_url = host.split(' ').collect::<Vec<&str>>()[1].trim_end().to_string();
         println!("remote_url: {:?}", remote_url);
-        match commands_fn::clone(vec![remote_url + "/server_test" ,"repo_clonado".to_string()], cliente.clone()){
+        match commands_fn::clone(vec![remote_url + "/" +route_vec[2].trim_end() ,"repo_clonado".to_string()], cliente.clone()){
             Ok(_) => (),
             Err(e) =>{
                 stream.write("HTTP/1.1 422 Error clone\r\n\r\n".as_bytes())?;
@@ -530,22 +515,35 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
                 return Err(Error::new(std::io::ErrorKind::Other,e.to_string()));
             }
         };
+
         if commands_fn::checkout(vec![master_name.to_string()], cliente.clone()).is_err(){
             stream.write("HTTP/1.1 422 Error checkout\r\n\r\n".as_bytes())?;
             return Err(Error::new(std::io::ErrorKind::Other,"Error checkout a master (aux)"));
         };
+
         if commands_fn::merge(vec![branch_name.to_string()], cliente.clone()).is_err(){
             stream.write("HTTP/1.1 422 Error merge\r\n\r\n".as_bytes())?;
             return Err(Error::new(std::io::ErrorKind::Other,"Error merge (aux)"));
         };
-        // if commands_fn::remote(vec!["server_test".to_string()], cliente.clone()).is_err(){ //aca esta hardcodeado el primer parametro, habria que buscarlo en el pr
-        //     return Err(Error::new(std::io::ErrorKind::Other,"Error al setear remote (aux)"));
-        // }
-        if commands_fn::push(vec![], cliente.clone()).is_err(){
-            stream.write("HTTP/1.1 422 Error push\r\n\r\n".as_bytes())?;
-            return Err(Error::new(std::io::ErrorKind::Other,"Error al pushear (aux)"));
+
+        match commands_fn::push(vec![], cliente.clone()){
+            Ok(_) => (),
+            Err(e) => {
+                stream.write("HTTP/1.1 422 Error push\r\n\r\n".as_bytes())?;
+                println!("Error al PUSHEAR (AUX): {:?}",e);
+                return Err(Error::new(std::io::ErrorKind::Other,"Error al pushear (aux)"));
+            }
         }
-        
+
+        match pr.close(ruta_full.clone()){
+            Ok(_) => (),
+            Err(e) => {
+                stream.write("HTTP/1.1 422 Error al cerrar el PR\r\n\r\n".as_bytes())?;
+                println!("Error al cerrar PR (AUX): {:?}",e);
+                return Err(Error::new(std::io::ErrorKind::Other,"Error al cerrar PR (aux)"));
+            }
+        };
+
         if remove_dir_all(cliente.clone()).is_err(){
             return Err(Error::new(std::io::ErrorKind::Other,"Error al borrar el aux"));
         }

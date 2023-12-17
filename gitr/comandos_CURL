@@ -1,0 +1,11 @@
+curl -X POST -isS  -H "Content-Type: application/json" -d '{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"branch","base":"masdaster","status":"open"}' localhost:9418/repos/{reponame} <- chequear
+
+curl -X GET -isS  localhost:9410/repos/{repo}/pulls
+
+curl -X GET -isS  localhost:9410/repos/{repo}/pulls/{pull_number}
+
+curl -X GET -isS  localhost:9410/repos/{repo}/pulls/{pull_number}/commits
+
+curl -X PUT -isS  localhost:9410/repos/demo/pulls/0/merge
+
+curl -X PATCH -isS  -H "Content-Type: application/json" -d "{body modificado completo}" localhost:9410/repos/{reponame}/pulls/{pull_number} <- chequear

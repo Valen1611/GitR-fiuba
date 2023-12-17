@@ -1,7 +1,7 @@
 
 use serde::{Serialize, Deserialize};
 
-use crate::gitr_errors::GitrError;
+use crate::{gitr_errors::GitrError, file_manager};
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -74,6 +74,13 @@ impl PullRequest {
 
     pub fn get_status(&self) -> &String {
         &self.status
+    }
+
+    pub fn close(&mut self, path: String) -> Result<(), GitrError> {
+        self.status = String::from("closed");
+        let data = self.to_string()?;
+        file_manager::write_file(path, data)?;
+        Ok(())
     }
 
 }

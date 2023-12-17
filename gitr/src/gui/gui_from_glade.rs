@@ -24,14 +24,18 @@ fn get_commits(cliente: String) -> String {
     let mut fecha_actual = "-1";
     for mut commit in commits.split("\n\n\n").collect::<Vec<&str>>() {
         //println!("\x1b[34mCommit: \x1b[0m {:?}",commit);
+        let corrimiento_merge = if commit.contains("Merge") {
+            1
+        } else {
+            0
+        };
         commit = commit.trim_start();
-        let hash = commit.split('\n').collect::<Vec<&str>>()[0].split_at(8).1;
-        let author = commit.split('\n').collect::<Vec<&str>>()[1].split_at(7).1;
-        let date = commit.split('\n').collect::<Vec<&str>>()[2]
-            .split_at(5)
-            .1
-            .trim_start();
-        let message = commit.split('\n').collect::<Vec<&str>>()[3].trim_start();
+        let hash = commit.split('\n').collect::<Vec<&str>>()[0 + corrimiento_merge].split_at(8).1;
+        println!("Hash: {:?}", hash);
+        let author = commit.split('\n').collect::<Vec<&str>>()[1 + corrimiento_merge].split_at(7).1;
+        let date = commit.split('\n').collect::<Vec<&str>>()[2 + corrimiento_merge].split_at(5).1.trim_start();
+        let message = commit.split('\n').collect::<Vec<&str>>()[3 + corrimiento_merge*2].trim_start();
+       
 
         let day = date.split(' ').collect::<Vec<&str>>()[2];
         let time = date.split(' ').collect::<Vec<&str>>()[3];
@@ -505,6 +509,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
 
         }
     });
+
     let creation_pr_clone = creation_pr.clone();
     let base_branch_clone = base_branch.clone();
     let cliente_clone = cliente.clone();
@@ -526,7 +531,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         if title == "" || description == "" || base == "" || compare == ""{
             return;
         }
-        let vec_pr = vec![title.to_string(),description.to_string(),base.to_string(),compare.to_string()];
+        let vec_pr = vec![title.to_string(),description.to_string(),compare.to_string(),base.to_string()];
         _create_pr(vec_pr,cliente_clone.clone()).unwrap();
         //crear el pr
         creation_pr_clone.hide();
@@ -547,8 +552,9 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 pr_list_clone.remove(row);
             });
             let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
+            let sv_url = remote.split("/").collect::<Vec<&str>>()[0].replace("localhost:", "server");
             let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
-            let dir = "server9418/repos/".to_string() + &sv_name;
+            let dir = sv_url + "/repos/" + sv_name;
             let prs = match file_manager::get_pull_requests(dir){
                 Ok(prs) => prs,
                 Err(e) => {
@@ -576,8 +582,9 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 pr_list_clone.remove(row);
             });
             let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
+            let sv_url = remote.split("/").collect::<Vec<&str>>()[0].replace("localhost:", "server");
             let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
-            let dir = "server9418/repos/".to_string() + &sv_name;
+            let dir = sv_url + "/repos/" + sv_name;
             let prs = match file_manager::get_pull_requests(dir){
                 Ok(prs) => prs,
                 Err(e) => {
@@ -624,7 +631,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     });
 
     window.set_application(Some(application));
-    window.set_title("HOLA");
     window.show_all();
     Some("Ok".to_string())
 }

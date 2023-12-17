@@ -1932,14 +1932,15 @@ pub fn _ls_tree(
 pub fn _create_pr(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     println!("create-pr");
     let remote = file_manager::get_remote(cliente.clone())?;
-    let remote = remote.split("/").collect::<Vec<&str>>()[1];
+    let sv_url = remote.split("/").collect::<Vec<&str>>()[0];
+    let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
     let title = flags[0].clone();
     let description = flags[1].clone();
     let head = flags[2].clone();
     let base = flags[3].clone();
     let body = format!("{{\"id\":1,\"title\":\"{}\",\"description\":\"{}\",\"head\":\"{}\",\"base\":\"{}\",\"status\":\"open\"}}", title, description, head, base);
-    let _server_addr = format!("/repos/{}/pulls HTTP/1.1\n", remote);
-    let path = format!("localhost:9418/repos/{}/pulls", remote);
+    let _server_addr = format!("/repos/{}/pulls HTTP/1.1\n", sv_name);
+    let path = format!("{}/repos/{}/pulls", sv_url, sv_name);
     let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
