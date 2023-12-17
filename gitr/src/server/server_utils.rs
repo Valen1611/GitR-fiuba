@@ -543,6 +543,16 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
                 return Err(Error::new(std::io::ErrorKind::Other,"Error al cerrar PR (aux)"));
             }
         };
+        let merge_commit_hash = match file_manager::get_current_commit(cliente.clone()) {
+            Ok(merge_commit_hash) => merge_commit_hash,
+            Err(e) => {
+                stream.write("HTTP/1.1 422 Error al obtener el hash del commit\r\n\r\n".as_bytes())?;
+                println!("Error al obtener el hash del commit (AUX): {:?}",e);
+                return Err(Error::new(std::io::ErrorKind::Other,"Error al obtener el hash del commit (aux)"));
+            }
+        };
+        
+        let response = format!("HTTP/1.1 200 OK\r\n\r\n{{\"sha\": \"{}\",\"merged\": true,\"message\": \"Pull Request successfully merged\"}}\"", merge_commit_hash);
 
         if remove_dir_all(cliente.clone()).is_err(){
             return Err(Error::new(std::io::ErrorKind::Other,"Error al borrar el aux"));
@@ -552,7 +562,7 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
         //2. merge dentro del cliente aux
         //3. commiteo y pusheo
         //4. borro el aux.
-        stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
+        stream.write(response.as_bytes())?;
     }
     
     //========fin parseo input
