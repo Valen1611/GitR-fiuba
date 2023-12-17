@@ -2,7 +2,7 @@ extern crate flate2;
 use std::collections::HashSet;
 use std::fs;
 use std::fs::File;
-use std::fs::remove_dir;
+
 use std::fs::remove_dir_all;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -26,7 +26,7 @@ use crate::git_transport::pack_file::PackFile;
 use crate::git_transport::ref_discovery;
 use crate::gitr_errors::GitrError;
 use crate::logger::log_error;
-use crate::objects::commit;
+
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
 

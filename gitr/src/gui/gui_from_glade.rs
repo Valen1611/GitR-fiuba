@@ -3,7 +3,7 @@ use std::fs;
 use gtk::gio::ApplicationFlags;
 use gtk::{prelude::*, Application, ComboBoxText, Dialog, Entry, Label, TextBuffer, TextView, ListBox, ListBoxRow, Orientation};
 
-use gtk::{Builder, Button, FileChooserButton, Window, Box, StackSidebar};
+use gtk::{Builder, Button, FileChooserButton, Window};
 
 use crate::commands::command_utils::_create_pr;
 use crate::commands::commands_fn::{self};

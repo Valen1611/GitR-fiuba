@@ -1,5 +1,5 @@
 use crate::{
-    commands::{commands_fn, command_utils},
+    commands::{commands_fn},
     diff::Diff,
     file_manager::{
         self, get_commit, get_current_commit, get_current_repo, get_head, read_index,
@@ -23,7 +23,7 @@ use crate::{
 };
 use flate2::write::ZlibEncoder;
 use flate2::Compression;
-use serde_json::json;
+
 use sha1::{Digest, Sha1};
 use std::{
     collections::{HashMap, HashSet},
@@ -1938,7 +1938,7 @@ pub fn _create_pr(flags: Vec<String>, cliente: String) -> Result<(), GitrError> 
     let head = flags[2].clone();
     let base = flags[3].clone();
     let body = format!("{{\"id\":1,\"title\":\"{}\",\"description\":\"{}\",\"head\":\"{}\",\"base\":\"{}\",\"status\":\"open\"}}", title, description, head, base);
-    let server_addr = format!("/repos/{}/pulls HTTP/1.1\n", remote.clone());
+    let _server_addr = format!("/repos/{}/pulls HTTP/1.1\n", remote);
     let path = format!("localhost:9418/repos/{}/pulls", remote);
     let child = Command::new("curl")
             .arg("-isS")
@@ -1951,7 +1951,7 @@ pub fn _create_pr(flags: Vec<String>, cliente: String) -> Result<(), GitrError> 
             .spawn()
             .expect("failed to execute curl");
         
-    let output = child.wait_with_output().expect("failed to wait on child");
+    let _output = child.wait_with_output().expect("failed to wait on child");
 
     Ok(())
 }
