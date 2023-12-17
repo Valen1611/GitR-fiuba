@@ -1,7 +1,0 @@
-este archivo
-aca avanzamos con master
-tener conflicts con otras ramas
-
-porque la branch1 escribe aca
-
-porque la branch1 escribe aca

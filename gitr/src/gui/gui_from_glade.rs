@@ -20,7 +20,7 @@ fn get_commits(cliente: String) -> String {
 
     let mut res = String::new();
     let max_string_len = 60;
-
+    
     let mut fecha_actual = "-1";
     for mut commit in commits.split("\n\n\n").collect::<Vec<&str>>() {
         //println!("\x1b[34mCommit: \x1b[0m {:?}",commit);
@@ -35,8 +35,7 @@ fn get_commits(cliente: String) -> String {
         let author = commit.split('\n').collect::<Vec<&str>>()[1 + corrimiento_merge].split_at(7).1;
         let date = commit.split('\n').collect::<Vec<&str>>()[2 + corrimiento_merge].split_at(5).1.trim_start();
         let message = commit.split('\n').collect::<Vec<&str>>()[3 + corrimiento_merge*2].trim_start();
-       
-
+        
         let day = date.split(' ').collect::<Vec<&str>>()[2];
         let time = date.split(' ').collect::<Vec<&str>>()[3];
         let hash_digits = hash.split_at(8).0;
