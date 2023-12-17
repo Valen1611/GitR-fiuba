@@ -617,7 +617,7 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
     let host = request.split('\n').collect::<Vec<&str>>()[1];
     println!("==========host: {}", host);
     if host.starts_with("Host:"){
-        ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+"/"+request.split(' ').collect::<Vec<&str>>()[1].trim_start();
+        ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+request.split(' ').collect::<Vec<&str>>()[1].trim_start();
     }
     println!("==========ruta_full: {}, request: {}", ruta_full, request);
     if request.split('\n').collect::<Vec<&str>>().len() < 8 {
@@ -631,20 +631,26 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
-    match check_branches_exist(&PullRequest::from_string(file_manager::read_file(ruta_full.clone()).unwrap()).unwrap(), &ruta_full, &mut stream) {
-        Ok(_) => {}
-        Err(_) => {
-            println!("Error al validar branches");
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-            return Ok(());
-        }
-    };
+    
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
     let pull_request: PullRequest = match serde_json::from_str(&body) {
         Ok(pull_request) => pull_request,
         Err(_) => {
             println!("Error al parsear el body");
             println!("body: {}", body);
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+    if pull_request.get_status() != "closed" && pull_request.get_status() != "open"{
+        println!("El status del pull request debe ser open o closed");
+        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
+    match check_branches_exist(&PullRequest::from_string(body.to_string().clone()).unwrap(), &ruta_full, &mut stream) {
+        Ok(_) => {}
+        Err(_) => {
+            println!("Error al validar branches");
             stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
