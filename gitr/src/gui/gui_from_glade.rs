@@ -30,7 +30,7 @@ fn get_commits(cliente: String) -> String {
             0
         };
         commit = commit.trim_start();
-        let hash = commit.split('\n').collect::<Vec<&str>>()[0 + corrimiento_merge].split_at(8).1;
+        let hash = commit.split('\n').collect::<Vec<&str>>()[corrimiento_merge].split_at(8).1;
         println!("Hash: {:?}", hash);
         let author = commit.split('\n').collect::<Vec<&str>>()[1 + corrimiento_merge].split_at(7).1;
         let date = commit.split('\n').collect::<Vec<&str>>()[2 + corrimiento_merge].split_at(5).1.trim_start();
@@ -554,8 +554,8 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 pr_list_clone.remove(row);
             });
             let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
-            let sv_url = remote.split("/").collect::<Vec<&str>>()[0].replace("localhost:", "server");
-            let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
+            let sv_url = remote.split('/').collect::<Vec<&str>>()[0].replace("localhost:", "server");
+            let sv_name = remote.split('/').collect::<Vec<&str>>()[1];
             let dir = sv_url + "/repos/" + sv_name;
             let prs = match file_manager::get_pull_requests(dir){
                 Ok(prs) => prs,
@@ -584,8 +584,8 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 pr_list_clone.remove(row);
             });
             let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
-            let sv_url = remote.split("/").collect::<Vec<&str>>()[0].replace("localhost:", "server");
-            let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
+            let sv_url = remote.split('/').collect::<Vec<&str>>()[0].replace("localhost:", "server");
+            let sv_name = remote.split('/').collect::<Vec<&str>>()[1];
             let dir = sv_url + "/repos/" + sv_name;
             let prs = match file_manager::get_pull_requests(dir){
                 Ok(prs) => prs,

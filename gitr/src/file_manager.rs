@@ -748,11 +748,7 @@ pub fn get_main_tree(commit: String, cliente: String) -> Result<String, GitrErro
 
 //receives a commit and returns its parent commit hash
 pub fn get_parent_commit(commit: String, cliente: String) -> Result<Vec<String>, GitrError> {
-    let add_gitr = if cliente.contains('/') {
-        false
-    } else {
-        true
-    };
+    let add_gitr = !cliente.contains('/');
     let commit = read_object(
         &commit,
         file_manager::get_current_repo(cliente.clone())?,
@@ -1148,8 +1144,5 @@ pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
 
 pub fn pull_request_exist(path: &str) -> bool {
     let data = read_file(path.to_string());
-    match data {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    data.is_ok()
 }

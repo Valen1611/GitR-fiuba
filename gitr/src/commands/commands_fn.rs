@@ -334,7 +334,7 @@ pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Re
             )?;
             if !hubo_conflict {
                 println!("no hubo conflictos");
-                if cliente.contains("/"){
+                if cliente.contains('/'){
                     return Ok((hubo_conflict, branch_commits[0].clone(), archivos_conflict));
                 }
                 add(vec![".".to_string()], cliente.clone())?;
@@ -357,7 +357,7 @@ pub fn remote(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
         let remote = file_manager::read_file(get_current_repo(cliente.clone())? + "/gitr/remote")?;
         println!("remote: {}", remote);
     } else {
-        let parts: Vec<&str> = flags[0].split("/").collect();
+        let parts: Vec<&str> = flags[0].split('/').collect();
         if parts.len() != 2 {
             return Err(GitrError::InvalidArgumentError(
                 flags.join(" "),

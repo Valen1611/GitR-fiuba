@@ -763,7 +763,7 @@ fn comparar_diffs(
     for (index, flag, string, tag) in result.clone() {
         if flag {
             map.entry(index)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push((string, tag.to_string()));
         }
     }
@@ -936,12 +936,10 @@ pub fn three_way_merge(
                     path.to_string() + "_mergeado",
                     archivo_reconstruido.concat().to_string(),
                 )?;
+            } else if cliente.contains('/') {
+                _aplicar_diffs(origin_file_data.clone(), union_diffs)?;
             } else {
-                if cliente.contains('/') {
-                    _aplicar_diffs(origin_file_data.clone(), union_diffs)?;
-                } else {
-                    aplicar_diffs(path.clone(), union_diffs)?;
-                }
+                aplicar_diffs(path.clone(), union_diffs)?;
             }
         } else {
             continue;
@@ -1548,7 +1546,7 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8]) -> Result<(), Gitr
 pub fn handshake(orden: String, cliente: String) -> Result<TcpStream, GitrError> {
 
     let remote = file_manager::get_remote(cliente.clone())?;
-    let url_n_name = remote.split("/").collect::<Vec<&str>>();
+    let url_n_name = remote.split('/').collect::<Vec<&str>>();
     if url_n_name.len() != 2 {
         return Err(GitrError::InvalidArgumentError(
             "<no se recibio un remote>".to_string(),
@@ -1932,8 +1930,8 @@ pub fn _ls_tree(
 pub fn _create_pr(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     println!("create-pr");
     let remote = file_manager::get_remote(cliente.clone())?;
-    let sv_url = remote.split("/").collect::<Vec<&str>>()[0];
-    let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
+    let sv_url = remote.split('/').collect::<Vec<&str>>()[0];
+    let sv_name = remote.split('/').collect::<Vec<&str>>()[1];
     let title = flags[0].clone();
     let description = flags[1].clone();
     let head = flags[2].clone();
