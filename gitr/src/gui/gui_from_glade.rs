@@ -31,7 +31,6 @@ fn get_commits(cliente: String) -> String {
         };
         commit = commit.trim_start();
         let hash = commit.split('\n').collect::<Vec<&str>>()[corrimiento_merge].split_at(8).1;
-        println!("Hash: {:?}", hash);
         let author = commit.split('\n').collect::<Vec<&str>>()[1 + corrimiento_merge].split_at(7).1;
         let date = commit.split('\n').collect::<Vec<&str>>()[2 + corrimiento_merge].split_at(5).1.trim_start();
         let message = commit.split('\n').collect::<Vec<&str>>()[3 + corrimiento_merge*2].trim_start();
@@ -74,7 +73,6 @@ fn get_commits(cliente: String) -> String {
         ));
         res.push_str("█    ╚══════════════════════════════════════════════════════════════╝\n");
     }
-    println!("{}", res);
     res
 }
 

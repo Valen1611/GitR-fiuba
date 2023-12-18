@@ -356,8 +356,6 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
     let dir = repo + "/objects/";
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name + "/" + &file_name;
-    println!("path: {}", path);
-    println!("folder_dir: {}", folder_dir);
     if fs::metadata(folder_dir).is_err() {
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
@@ -467,7 +465,6 @@ pub fn get_head(cliente: String) -> Result<String, GitrError> {
 pub fn update_head(head: &String, cliente: String) -> Result<(), GitrError> {
     let repo = get_current_repo(cliente.clone())?;
     let path = repo + "/gitr/HEAD";
-    println!("HEAD en path: {} actualizado a {}", path, head);
     write_file(path.clone(), format!("ref: {}", head))?;
     Ok(())
 }
