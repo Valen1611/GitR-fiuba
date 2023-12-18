@@ -179,6 +179,7 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 
 //reads and object and returns raw data
 pub fn read_object(object: &String, path: String, add_gitr: bool) -> Result<String, GitrError> {
+    println!("\x1b[32m soy read_object y voy a leer en path: {}/{} \x1b[0m", path, object);
     let path = parse_object_hash(object, path, add_gitr)?;
     let bytes = deflate_file(path.clone())?;
     let object_data: Vec<u8> = get_object_data_with_bytes(bytes)?;
@@ -447,7 +448,12 @@ pub fn add_to_index(path: &String, hash: &String, cliente: String) -> Result<(),
 ///returns the path of the head branch
 pub fn get_head(cliente: String) -> Result<String, GitrError> {
     let repo = get_current_repo(cliente.clone())?;
-    let path = repo + "/gitr/HEAD";
+    let mut path = repo + "/gitr/HEAD";
+
+    if cliente.contains('/') {
+        path = path.replace("/gitr/", "/")
+    }
+
     if fs::metadata(path.clone()).is_err() {
         write_file(path.clone(), String::from("ref: refs/heads/master"))?;
         return Ok("None".to_string());
@@ -603,8 +609,12 @@ pub fn get_current_commit(cliente: String) -> Result<String, GitrError> {
     if head_path == "None" {
         return Err(GitrError::NoHead);
     }
-    let repo = get_current_repo(cliente)?;
-    let path = repo + "/gitr/" + &head_path;
+    let repo = get_current_repo(cliente.clone())?;
+    let mut path = repo + "/gitr/" + &head_path;
+
+    if cliente.contains('/') {
+        path = path.replace("/gitr/", "/")
+    }
 
     let head = read_file(path)?;
     Ok(head)

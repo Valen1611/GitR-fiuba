@@ -14,7 +14,7 @@ pub struct Commit {
     data: Vec<u8>,
     hash: String,
     tree: String,
-    parents: Vec<String>,
+    pub parents: Vec<String>,
 }
 
 impl Commit {

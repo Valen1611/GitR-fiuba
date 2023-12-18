@@ -496,7 +496,23 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
     };
     println!("conflict en archivos: {:?}", archivos_conflict);
 
-    if hubo_conflict == true {
+    let commit_hash = match file_manager::get_current_commit(ruta_repo_server.clone()) {
+        Ok(commit_hash) => commit_hash,
+        Err(e) => {
+            println!("Error al obtener el hash del commit: {:?}",e);
+            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
+
+    
+    let commit_data = file_manager::read_object(&commit_hash, ruta_repo_server.clone(), false);
+    let commit = Commit::new_commit_from_data(commit_data.unwrap()).unwrap();
+    
+    let es_tipo_merge = commit.parents.len() > 1;
+
+    if hubo_conflict == true && es_tipo_merge == false /*falta chequear que la tip de branch sea parent, sino se hace merge normal*/{
         let archivos = archivos_conflict.join(",");
         let response_body = format!("HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{{\"conflicting_files\":[{}]}}",archivos);
         stream.write(response_body.as_bytes())?;

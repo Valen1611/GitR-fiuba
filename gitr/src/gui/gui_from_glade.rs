@@ -289,8 +289,9 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         };
         let message = format!("\"{}\"", commit_message.text());
         let cm_msg = vec!["-m".to_string(), message];
-        match commands_fn::commit(cm_msg, "None".to_string(), cliente_.clone()) {
-            Ok(_) => (),
+        let parent = file_manager::read_file("parent".to_string()).unwrap();
+        match commands_fn::commit(cm_msg, parent, cliente_.clone()) {
+            Ok(_) => fs::remove_file("parent").unwrap(),
             Err(e) => {
                 println!("Error al hacer commit: {:?}", e);
                 return;
@@ -463,6 +464,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     let remote_error_label_clone = remote_error_label.clone();
 
     let cliente_ = cliente.clone();
+
     merge_button_clone.connect_clicked(move|_|{
         let branch = match merge_branch_selector_clone.clone().active_text(){
             Some(branch) => branch,
@@ -470,19 +472,20 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         };
         let flags = vec![branch.to_string()];
         match commands_fn::merge(flags,cliente_.clone()){
-            Ok((hubo_conflict, _, _)) => {
+            Ok((hubo_conflict, parent, _)) => {
                 if !hubo_conflict{
                     return;
                 }
                 remote_error_label_clone.set_text("Surgieron conflicts al hacer merge, por favor arreglarlos y commitear el resultado.");
                 remote_error_dialog_clone.show();
-            },
+                file_manager::write_file("parent".to_string(),parent).unwrap();           },
             Err(e) => {
                 println!("Error al hacer merge: {:?}",e);
             },
         }
     });
-
+    
+    
     // ====PULL REQUESTS====
     let cliente_clone = cliente.clone();
     let clone_error = remote_error_dialog.clone();
