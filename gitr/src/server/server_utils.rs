@@ -368,11 +368,9 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
 fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()>{
     let mut ruta_full = "".to_string();
     let host = request.split('\n').collect::<Vec<&str>>()[1];
-    println!("==========host: {}", host);
     if host.starts_with("Host:"){
         ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+ruta;
     }
-    println!("==========ruta_full: {}, request: {}", ruta_full, request);
     let _ = fs::create_dir(ruta_full.clone());
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
     let id = match contar_archivos_y_directorios(&ruta_full){
@@ -437,22 +435,22 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
     //========parseo input
     let route = request.split(' ').collect::<Vec<&str>>()[1];
     let route_vec = route.split('/').collect::<Vec<&str>>();
-    println!("route_vec: {:?}", route_vec);
+
     let ruta_repo_pr = route_vec[1..=4].join("/");
-    let path = Path::new(&ruta_repo_pr);
-    println!("path: {:?}", path);
     let mut ruta_full = "".to_string();
+
     let host = request.split('\n').collect::<Vec<&str>>()[1];
-    println!("==========host: {}", host);
     if host.starts_with("Host:"){
         ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+"/"+ruta_repo_pr.as_str();
     }
-    println!("==========ruta_full: {}, request: {}", ruta_full, request);
+
+    
     if !Path::new(&ruta_full).exists() {
         println!("No existe el PR en ese path. (esto puede fallar porque cambiamos el path del server)");
         stream.write_all("HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n".as_bytes())?;
         return Ok(())
     }
+
     let pr_content = match file_manager::read_file(ruta_full.clone()) {
         Ok(pr_content) => pr_content,
         Err(_) => {
@@ -482,7 +480,6 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
     let branch_name = pr.get_branch_name();
     
     let ruta_repo_server = ruta_full.split('/').collect::<Vec<&str>>()[..=2].join("/");
-    println!("ruta_repo_server: {:?}", ruta_repo_server);
 
     let (hubo_conflict, _ , archivos_conflict) = match commands_fn::merge_(master_name.clone(), branch_name.clone(), ruta_repo_server.clone()) {
         Ok((hubo_conflict, a,archivos_conflict)) => (hubo_conflict,a, archivos_conflict),
@@ -492,7 +489,6 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
             return Ok(());
         }
     };
-    println!("conflict en archivos: {:?}", archivos_conflict);
 
     let commit_hash = match file_manager::get_current_commit(ruta_repo_server.clone()) {
         Ok(commit_hash) => commit_hash,
@@ -517,10 +513,13 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
     } else {
         let cliente = "lado_server".to_string();
         let _ = file_manager::create_directory(&cliente);
+
         let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", "test@gmail.com", "aux");
         file_manager::write_file(cliente.clone() + "/gitrconfig", config_file_data).unwrap();
+
         let remote_url = host.split(' ').collect::<Vec<&str>>()[1].trim_end().to_string();
-        println!("remote_url: {:?}", remote_url);
+        
+        
         match commands_fn::clone(vec![remote_url + "/" +route_vec[2].trim_end() ,"repo_clonado".to_string()], cliente.clone()){
             Ok(_) => (),
             Err(e) =>{
@@ -571,41 +570,8 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
         if remove_dir_all(cliente.clone()).is_err(){
             return Err(Error::new(std::io::ErrorKind::Other,"Error al borrar el aux"));
         }
-
-        //1. clono el server
-        //2. merge dentro del cliente aux
-        //3. commiteo y pusheo
-        //4. borro el aux.
         stream.write_all(response.as_bytes())?;
     }
-    
-    //========fin parseo input
-
-    // let res = match commands::merge_(master_name, branch_name, ruta_repo_server.clone()) {
-    //     Ok(res) => res,
-    //     Err(_) => {
-    //         println!("Error al hacer merge");
-    //         stream.write_all("HTTP/1.1 405 Validation failed\r\n\r\n".as_bytes())?; /////////////////////// REVISAR ERROR
-    //         return Ok(());
-    //     }
-    // };
-    
-
-
-    /*
-    parsear input
-
-    PUT /repos/{repo}/pulls/{pull_number}/merge
-
-
-    res = merge(master, branch)
-
-    if res == Ok:
-        stream.write_all("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?; y tmb devolver el hash del nuevo commit creado
-    else:
-        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?; o algo as
-    
-     */
     Ok(())
 }
 
@@ -636,17 +602,20 @@ fn check_branches_exist(pull_request: &PullRequest, ruta: &str, stream: &mut Tcp
 
 fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result<()>{
     let mut ruta_full = "".to_string();
+
     let host = request.split('\n').collect::<Vec<&str>>()[1];
-    println!("==========host: {}", host);
     if host.starts_with("Host:"){
         ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+request.split(' ').collect::<Vec<&str>>()[1].trim_start();
     }
-    println!("==========ruta_full: {}, request: {}", ruta_full, request);
+
+
     if request.split('\n').collect::<Vec<&str>>().len() < 8 {
         println!("Error al parsear el body");
         stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
+
+
     let _id = ruta_full.split('/').collect::<Vec<&str>>()[2];
     if !file_manager::pull_request_exist(&ruta_full){
         println!("No existe el pull request solicitado");
@@ -664,11 +633,15 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
             return Ok(());
         }
     };
+
+
     if pull_request.get_status() != "closed" && pull_request.get_status() != "open"{
         println!("El status del pull request debe ser open o closed");
         stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
+
+
     match check_branches_exist(&PullRequest::from_string(body.to_string().clone()).unwrap(), &ruta_full, &mut stream) {
         Ok(_) => {}
         Err(_) => {
@@ -677,6 +650,7 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
             return Ok(());
         }
     };
+
     match file_manager::create_pull_request(&ruta_full, pull_request) {
         Ok(_) => println!("PR creado"),
         Err(_) => {
@@ -686,15 +660,16 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
         }
           
     };
+
     stream.write_all("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
     Ok(())
 
 }
 
 fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()> {
-    
     let guardados_id: HashSet<String>;
     let refs_string: String;
+
     match is_valid_pkt_line(&request) {
         Ok(_) => {}
         Err(_) => {
@@ -706,13 +681,16 @@ fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()
             ));
         }
     }
+
     let elems = split_n_validate_elems(&request)?;
     let direc = elems[2].split_once(':').unwrap_or(("",elems[2])).1;
     let r_path = format!("server{direc}/repos/{}",elems[1]);
     create_dirs(&r_path)?;
+
     // ########## REFERENCE DISCOVERY ##########
     (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
     stream.write_all(refs_string.as_bytes())?;
+
     // ########## ELECCION DE COMANDO ##########
     match elems[0] {
         "git-upload-pack" => {
@@ -729,6 +707,7 @@ fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()
             ));
         }
     }
+    
     Ok(())
 }
 

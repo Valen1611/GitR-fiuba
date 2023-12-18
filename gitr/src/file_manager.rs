@@ -481,6 +481,7 @@ fn find_new_path(hash: String, sec_vec: Vec<(String, String)>) -> String {
     }
     "".to_string()
 }
+
 // recibe el vector de los hashes de las referencias que sacas del ref discovery, y actualiza el gitr en base a eso
 pub fn update_client_refs(
     hash_n_refs: Vec<(String, String)>,

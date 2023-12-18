@@ -9,10 +9,9 @@ pub struct PullRequest {
     pub id: u8,
     pub title: String,
     pub description: String,
-    pub head: String, // branch name (feature)
-    pub base: String, // branch name (master casi siempre)
-    pub status: String, // open, closed
-    //commits: Vec<String>,
+    pub head: String, 
+    pub base: String, 
+    pub status: String,
 }
 
 impl PullRequest {
