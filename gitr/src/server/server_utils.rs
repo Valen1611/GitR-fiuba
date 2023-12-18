@@ -515,7 +515,7 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
         let response_body = format!("HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{{\"conflicting_files\":[{}]}}",archivos);
         stream.write_all(response_body.as_bytes())?;
     } else {
-        let cliente = "cliente_aux".to_string();
+        let cliente = "lado_server".to_string();
         let _ = file_manager::create_directory(&cliente);
         let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", "test@gmail.com", "aux");
         file_manager::write_file(cliente.clone() + "/gitrconfig", config_file_data).unwrap();
@@ -1519,8 +1519,8 @@ mod http_tests{
         let output_esperado = "HTTP/1.1 201 Created\r\n\r\n";
 
         assert_eq!(output, output_esperado);
-        // fs::remove_dir_all("cliente").unwrap();
-        // fs::remove_dir_all("server9418").unwrap();
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
 

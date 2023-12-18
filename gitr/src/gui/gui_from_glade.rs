@@ -289,9 +289,16 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         };
         let message = format!("\"{}\"", commit_message.text());
         let cm_msg = vec!["-m".to_string(), message];
-        let parent = file_manager::read_file("parent".to_string()).unwrap();
+        let parent = match file_manager::read_file("parent".to_string()){
+            Ok(parent) => parent,
+            Err(_) => "None".to_string(),
+        };
         match commands_fn::commit(cm_msg, parent, cliente_.clone()) {
-            Ok(_) => fs::remove_file("parent").unwrap(),
+            Ok(_) => {
+                if fs::remove_file("parent").is_err(){
+                    ()
+                }
+            },
             Err(e) => {
                 println!("Error al hacer commit: {:?}", e);
                 return;
