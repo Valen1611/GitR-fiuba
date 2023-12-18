@@ -301,13 +301,13 @@ pub fn merge(_flags: Vec<String>, cliente: String) -> Result<(bool, String, Vec<
         .collect::<Vec<&str>>()[2]
         .to_string();
 
-    match merge_(&origin_name, &branch_name, cliente.clone()) {
+    match merge_(origin_name, branch_name, cliente.clone()) {
         Ok((hubo_conflict_res, branch_hash_res, archivos_conflict_res)) => Ok((hubo_conflict_res, branch_hash_res, archivos_conflict_res)),
         Err(e) => Err(e),
     }
 }
 
-pub fn merge_(origin_name: &String, branch_name: &String, cliente: String) -> Result<(bool, String, Vec<String>), GitrError> {
+pub fn merge_(origin_name: String, branch_name: String, cliente: String) -> Result<(bool, String, Vec<String>), GitrError> {
     let mut hubo_conflict = false;
     let mut archivos_conflict = vec![];
     

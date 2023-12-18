@@ -64,12 +64,12 @@ impl PullRequest {
         }    
     }
 
-    pub fn get_branch_name(&self) -> &String {
-        &self.head
+    pub fn get_branch_name(&self) -> String {
+        self.head.clone()
     }
 
-    pub fn get_base_name(&self) -> &String {
-        &self.base
+    pub fn get_base_name(&self) -> String {
+        self.base.clone()
     }
 
     pub fn get_status(&self) -> &String {

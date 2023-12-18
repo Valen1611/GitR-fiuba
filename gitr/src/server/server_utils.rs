@@ -485,7 +485,7 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
     let ruta_repo_server = ruta_full.split('/').collect::<Vec<&str>>()[..=2].join("/");
     println!("ruta_repo_server: {:?}", ruta_repo_server);
 
-    let (hubo_conflict, _ , archivos_conflict) = match commands_fn::merge_(master_name, branch_name, ruta_repo_server.clone()) {
+    let (hubo_conflict, _ , archivos_conflict) = match commands_fn::merge_(master_name.clone(), branch_name.clone(), ruta_repo_server.clone()) {
         Ok((hubo_conflict, a,archivos_conflict)) => (hubo_conflict,a, archivos_conflict),
         Err(e) => {
             println!("Error al hacer merge: {:?}",e);
@@ -622,12 +622,12 @@ fn check_branches_exist(pull_request: &PullRequest, ruta: &str, stream: &mut Tcp
             return Err(GitrError::BranchNotFound);
         }
     };
-    if !branches.contains(branch_name) {
+    if !branches.contains(&branch_name) {
         println!("No existe la branch head");
         stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
         return Err(GitrError::BranchNotFound);
     }
-    if !branches.contains(base_name) {
+    if !branches.contains(&base_name) {
         println!("No existe la branch base");
         stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
         return Err(GitrError::BranchNotFound);
