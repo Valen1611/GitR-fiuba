@@ -267,16 +267,11 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
     println!("PRs: {:?}", prs);
     
     let route_vec = ruta.split('/').collect::<Vec<&str>>();
-    println!("rut vec: {:?}", route_vec);
     
     let last_dentry = route_vec[route_vec.len()-1];
     let mut response_body = String::new();
     for dentry in route_vec {
-        println!("dentry: {}", dentry);
-
         if dentry == "pulls" && last_dentry == "pulls" {
-            println!("estoy en el caso de listar todos los PRs");
-
             response_body.push('[');
             for pr in prs {
                 let pr_str = match pr.to_string() {
@@ -297,7 +292,6 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
         }
 
         if dentry.parse::<u8>().is_ok() {
-            println!("estoy en el caso de obtener un PR");
             let mut route_provisoria_corrected = ruta;
             if last_dentry == "commits" {
                 route_provisoria_corrected = ruta.trim_end_matches("/commits");
@@ -312,10 +306,8 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
                 }
             };
             if last_dentry == "commits" {
-                println!("estoy en el caso de listar los commits de un PR");
                 let pr = PullRequest::from_string(response_body.clone()).unwrap();
                 let branch_name = pr.get_branch_name();
-                println!("ruta_repo_server: {:?}", ruta_repo_server);
                 let commits = match command_utils::branch_commits_list(branch_name.to_string(), ruta_repo_server.clone()) {
                     Ok(commits) => commits,
                     Err(_) => {
