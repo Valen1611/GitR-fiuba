@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::fmt::Write;
 
 use super::blob::TreeEntry;
 use crate::gitr_errors::GitrError;
@@ -70,8 +71,10 @@ impl Tree {
 
         let hashed_file_str = hashed_file2
             .iter()
-            .map(|b| format!("{:02x}", b))
-            .collect::<String>();
+            .fold(String::new(),|mut output,b| {
+                let _ =write!(output,"{b:02x}");
+                output
+            });
 
         let mut format_data = String::new();
         let init = format!("tree {}\0", entries.len());
@@ -90,8 +93,10 @@ impl Tree {
         let hash = commands::command_utils::sha1hashing2(tree_raw_file.clone());
         let tree_hash = hash
             .iter()
-            .map(|b| format!("{:02x}", b))
-            .collect::<String>();
+            .fold(String::new(),|mut output,b| {
+                let _ =write!(output,"{b:02x}");
+                output
+            });
 
         let tree = Tree {
             /*entries: vec![],*/ data: compressed_data,

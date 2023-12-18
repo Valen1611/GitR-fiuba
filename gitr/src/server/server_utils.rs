@@ -2,7 +2,7 @@ extern crate flate2;
 use std::collections::HashSet;
 use std::fs;
 use std::fs::File;
-use std::fs::remove_dir;
+
 use std::fs::remove_dir_all;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -26,7 +26,7 @@ use crate::git_transport::pack_file::PackFile;
 use crate::git_transport::ref_discovery;
 use crate::gitr_errors::GitrError;
 use crate::logger::log_error;
-use crate::objects::commit;
+
 use crate::objects::commit::Commit;
 use crate::objects::pull_request::PullRequest;
 
@@ -117,38 +117,29 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         
         if request.starts_with("GET") {
             let mut ruta_full = "".to_string();
-            println!("request: {:?}", request);
-            let host = request.split("\n").collect::<Vec<&str>>()[1];
-            println!("==========host: {}", host);
+            let host = request.split('\n').collect::<Vec<&str>>()[1];
             if host.starts_with("Host:"){
                 ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+ruta;
             }
-            println!("==========ruta_full: {}, request: {}", ruta_full, request);
 
             match handler_get_request(&ruta_full, &stream) {
                 Ok(_) => return Ok(()),
                 Err(e) => {
                     println!("Error al manejar el GET: {:?}", e);
-                    stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                    stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
                     return Ok(());
                 }
              };
         }
         if request.starts_with("POST") {
-            println!("[SERVER]: POST request recieved:");
             println!("\x1b[34m{:?}\x1b[0m", request);
             /*
             Ejemplo para mandar con curl:
             curl -X POST -H "Content-Type: application/json" -d '{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"TestBranch2","base":"master","status":"open"}' localhost:9418/repos/sv/pulls
             */
-            return handle_post_request(&ruta, &request, stream);
+            return handle_post_request(ruta, &request, stream);
         }
         if request.starts_with("PUT") {
-            println!("[SERVER]: PUT request recieved");
-            /*
-            Hacer el merge 💀💀💀
-            PUT /repos/{repo}/pulls/{pull_number}/merge
-            */
             match handle_put_request(&request, stream){
                 Ok(_) => println!("Merge realizado"),
                 Err(e)=>{
@@ -160,21 +151,19 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         }
 
         if request.starts_with("PATCH"){
-            println!("[SERVER]: PATCH request recieved");
             return handle_patch_request(&request, stream);
         }
         
         
         //            PACKETLINE
         // ########## HANDSHAKE ##########
-        println!("request: {:?}", request);
         match handle_pkt_line(request, stream.try_clone()?) {
-            Ok(_) => {println!("Conexion finalizada con exito"); return Ok(());}
+            Ok(_) => Ok(()),
             Err(e) => {
                 let err = format!("Error: {e}");
                 println!("{}",err);
-                stream.write(err.as_bytes())?;
-                return Ok(());
+                stream.write_all(err.as_bytes())?;
+                Ok(())
             }
         }
        
@@ -247,57 +236,47 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
     let ruta_vec = ruta.split('/').collect::<Vec<&str>>();
     if ruta_vec.len() < 3 {
         println!("Error al parsear la ruta");
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok("".to_string());
     }
     let ruta_pulls = ruta_vec[..3].join("/");
     let ruta_repo_server = ruta_vec[..=2].join("/");
 
-
-    println!("route: {}", ruta); // ruta entera (sin el /repos)
-    println!("route pulls: {}", ruta_pulls); // sv/pulls para obtener todos los PRs
     let prs: Vec<PullRequest> = match file_manager::get_pull_requests(ruta_pulls.clone()) {
         Ok(prs) => prs,
         Err(e) => {
             println!("Error al obtener PRs, {:?}",e);
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok("".to_string());
         }
     };
-    println!("PRs: {:?}", prs);
     
     let route_vec = ruta.split('/').collect::<Vec<&str>>();
-    println!("rut vec: {:?}", route_vec);
     
     let last_dentry = route_vec[route_vec.len()-1];
     let mut response_body = String::new();
     for dentry in route_vec {
-        println!("dentry: {}", dentry);
-
         if dentry == "pulls" && last_dentry == "pulls" {
-            println!("estoy en el caso de listar todos los PRs");
-
-            response_body.push_str("[");
+            response_body.push('[');
             for pr in prs {
                 let pr_str = match pr.to_string() {
                     Ok(pr_str) => pr_str,
                     Err(_) => {
                         println!("Error al parsear PR");
-                        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
                         return Ok("".to_string());
                     }
                 }; 
 
                 response_body.push_str(&pr_str);
-                response_body.push_str(",");
+                response_body.push(',');
             }
             response_body.pop(); // saco la ultima coma
-            response_body.push_str("]");
+            response_body.push(']');
             break;
         }
 
         if dentry.parse::<u8>().is_ok() {
-            println!("estoy en el caso de obtener un PR");
             let mut route_provisoria_corrected = ruta;
             if last_dentry == "commits" {
                 route_provisoria_corrected = ruta.trim_end_matches("/commits");
@@ -307,20 +286,18 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
                 Ok(response_body) => response_body,
                 Err(e) => {
                     println!("Error al obtener PR, {:?}",e);
-                    stream.write("HTTP/1.1 404 Resource not found\r\n\r\n".as_bytes())?;
+                    stream.write_all("HTTP/1.1 404 Resource not found\r\n\r\n".as_bytes())?;
                     return Ok("".to_string());
                 }
             };
             if last_dentry == "commits" {
-                println!("estoy en el caso de listar los commits de un PR");
                 let pr = PullRequest::from_string(response_body.clone()).unwrap();
                 let branch_name = pr.get_branch_name();
-                println!("ruta_repo_server: {:?}", ruta_repo_server);
                 let commits = match command_utils::branch_commits_list(branch_name.to_string(), ruta_repo_server.clone()) {
                     Ok(commits) => commits,
                     Err(_) => {
                         println!("Error al obtener commits");
-                        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
                         return Ok("".to_string());
                     }
                 };
@@ -328,13 +305,13 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
                 
 
                 response_body = String::new();
-                response_body.push_str("[");
+                response_body.push('[');
                 for commit in commits {
                     let commit_data = match file_manager::read_object(&commit, ruta_repo_server.clone(), false) {
                         Ok(commit_data) => commit_data,
                         Err(_) => {
                             println!("Error al obtener commit data");
-                            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
                             return Ok("".to_string());
                         }
                     };
@@ -343,7 +320,7 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
                         Ok(json_message) => json_message,
                         Err(e) => {
                             println!("Error al obtener json message = {:?}",e);
-                            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+                            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
                             return Ok("".to_string());
                         }
                     };
@@ -351,37 +328,33 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
                     
 
                     response_body.push_str(&json_message);
-                    response_body.push_str(",");
+                    response_body.push(',');
                 }
                 response_body.pop(); // saco la ultima coma
-                response_body.push_str("]");
+                response_body.push(']');
             }
         }
     
     }
     let response = format!("HTTP/1.1 200 application/json\r\n\r\n{}", response_body);
-    stream.write(response.as_bytes())?;
-    return Ok(response_body);
+   
+    stream.write_all(response.as_bytes())?;
+    Ok(response_body)
 }
 
 fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std::io::Result<()>{
     let mut ruta_full = "".to_string();
     let host = request.split('\n').collect::<Vec<&str>>()[1];
-    println!("==========host: {}", host);
     if host.starts_with("Host:"){
         ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+ruta;
     }
-    println!("==========ruta_full: {}, request: {}", ruta_full, request);
-    match fs::create_dir(ruta_full.clone()){
-        Ok(_) => {}
-        Err(_) => {}
-    }
+    let _ = fs::create_dir(ruta_full.clone());
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
     let id = match contar_archivos_y_directorios(&ruta_full){
         Ok(id) => id,
         Err(e) => {
             println!("Error al contar archivos y directorios: {:?}", e);
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
@@ -389,17 +362,17 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
     // Parseamos el body a un struct PullRequest 
     if request.split('\n').collect::<Vec<&str>>().len() < 8 {
         println!("Error al parsear el body");
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
 
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
-    let mut pull_request: PullRequest = match serde_json::from_str(&body) {
+    let mut pull_request: PullRequest = match serde_json::from_str(body) {
         Ok(pull_request) => pull_request,
         Err(e) => {
             println!("Error al parsear el body: {:?}", e);
             println!("body: {}", body);
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
@@ -408,13 +381,14 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         Ok(_) => {}
         Err(_) => {
             println!("Error al validar branches");
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
 
     // A la ruta le agregamos el id del PR
     let ruta_full = ruta_full.to_string() + "/" + id.to_string().as_str();
+
     
     // Le asignamos el id al PR
     pull_request.id = id as u8;
@@ -424,166 +398,157 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         Ok(_) => println!("PR creado"),
         Err(_) => {
             println!("Error al crear PR");
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
           
     };
-
-    stream.write("HTTP/1.1 201 Created\r\n\r\n".as_bytes())?;
+    
+    stream.write_all("HTTP/1.1 201 Created\r\n\r\n".as_bytes())?;
     Ok(())
 }
 
 fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<()> {
-    
-    println!("===estoy en el handle_put_request");
-
-    // Mepa que no tiene sentido pasar el pr_str si nadie lo manipula antes, llega un string vacío.
-    // if pr_str.is_empty() {
-    //     println!("Error al parsear el body");
-    //     stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-    //     return Ok(());
-    // }
-
-    // let pr = match PullRequest::from_string(pr_str.to_string()) {
-    //     Ok(pr) => pr,
-    //     Err(_) => {
-    //         println!("Error al parsear el body");
-    //         stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
-    //         return Ok(());
-    //     }
-    // };
-
-    // let master_name = pr.get_base_name();
-    // let branch_name = pr.get_branch_name();
-    
     //========parseo input
     let route = request.split(' ').collect::<Vec<&str>>()[1];
     let route_vec = route.split('/').collect::<Vec<&str>>();
-    println!("route_vec: {:?}", route_vec);
+
     let ruta_repo_pr = route_vec[1..=4].join("/");
-    let path = Path::new(&ruta_repo_pr);
-    println!("path: {:?}", path);
     let mut ruta_full = "".to_string();
+
     let host = request.split('\n').collect::<Vec<&str>>()[1];
-    println!("==========host: {}", host);
     if host.starts_with("Host:"){
         ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+"/"+ruta_repo_pr.as_str();
     }
-    println!("==========ruta_full: {}, request: {}", ruta_full, request);
+
+    
     if !Path::new(&ruta_full).exists() {
         println!("No existe el PR en ese path. (esto puede fallar porque cambiamos el path del server)");
-        stream.write("HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n".as_bytes())?;
+        stream.write_all("HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n".as_bytes())?;
         return Ok(())
     }
+
     let pr_content = match file_manager::read_file(ruta_full.clone()) {
         Ok(pr_content) => pr_content,
         Err(_) => {
             println!("Error al obtener PR");
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
 
-    let pr = match PullRequest::from_string(pr_content) {
+    let mut pr = match PullRequest::from_string(pr_content) {
         Ok(pr) => pr,
         Err(_) => {
             println!("Error al parsear el PR");
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
+
+    if pr.status != "open"{
+        println!("El PR no esta abierto");
+        stream.write_all("HTTP/1.1 422 Validation failed: El PR no está abierto\r\n\r\n".as_bytes())?;
+        return Ok(());
+    }
 
     
     let master_name = pr.get_base_name();
     let branch_name = pr.get_branch_name();
     
     let ruta_repo_server = ruta_full.split('/').collect::<Vec<&str>>()[..=2].join("/");
-    println!("ruta_repo_server: {:?}", ruta_repo_server);
 
-    let (hubo_conflict, _ , archivos_conflict) = match commands_fn::merge_(master_name, branch_name, ruta_repo_server.clone()) {
+    let (hubo_conflict, _ , archivos_conflict) = match commands_fn::merge_(master_name.clone(), branch_name.clone(), ruta_repo_server.clone()) {
         Ok((hubo_conflict, a,archivos_conflict)) => (hubo_conflict,a, archivos_conflict),
         Err(e) => {
             println!("Error al hacer merge: {:?}",e);
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
-    println!("conflict en archivos: {:?}", archivos_conflict);
 
-    if hubo_conflict == true {
+    let commit_hash = match file_manager::get_current_commit(ruta_repo_server.clone()) {
+        Ok(commit_hash) => commit_hash,
+        Err(e) => {
+            println!("Error al obtener el hash del commit: {:?}",e);
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            return Ok(());
+        }
+    };
+
+
+    
+    let commit_data = file_manager::read_object(&commit_hash, ruta_repo_server.clone(), false);
+    let commit = Commit::new_commit_from_data(commit_data.unwrap()).unwrap();
+    
+    let es_tipo_merge = commit.parents.len() > 1;
+
+    if hubo_conflict && !es_tipo_merge /*falta chequear que la tip de branch sea parent, sino se hace merge normal*/{
         let archivos = archivos_conflict.join(",");
         let response_body = format!("HTTP/1.1 405 Method not allowed. Merge cannot be perfomed due to existing conflicts.\r\n\r\n{{\"conflicting_files\":[{}]}}",archivos);
-        stream.write(response_body.as_bytes())?;
+        stream.write_all(response_body.as_bytes())?;
     } else {
-        let cliente = "cliente_aux".to_string();
+        let cliente = "lado_server".to_string();
         let _ = file_manager::create_directory(&cliente);
-        let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", "test@gmail.com".to_string(), "aux".to_string());
+
+        let config_file_data = format!("[user]\n\temail = {}\n\tname = {}\n", "test@gmail.com", "aux");
         file_manager::write_file(cliente.clone() + "/gitrconfig", config_file_data).unwrap();
+
         let remote_url = host.split(' ').collect::<Vec<&str>>()[1].trim_end().to_string();
-        println!("remote_url: {:?}", remote_url);
-        match commands_fn::clone(vec![remote_url + "/server_test" ,"repo_clonado".to_string()], cliente.clone()){
+        
+        
+        match commands_fn::clone(vec![remote_url + "/" +route_vec[2].trim_end() ,"repo_clonado".to_string()], cliente.clone()){
             Ok(_) => (),
             Err(e) =>{
-                stream.write("HTTP/1.1 422 Error clone\r\n\r\n".as_bytes())?;
+                stream.write_all("HTTP/1.1 422 Error clone\r\n\r\n".as_bytes())?;
                 println!("Error al clonar(AUX): {:?}",e);
                 return Err(Error::new(std::io::ErrorKind::Other,e.to_string()));
             }
         };
+
         if commands_fn::checkout(vec![master_name.to_string()], cliente.clone()).is_err(){
-            stream.write("HTTP/1.1 422 Error checkout\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Error checkout\r\n\r\n".as_bytes())?;
             return Err(Error::new(std::io::ErrorKind::Other,"Error checkout a master (aux)"));
         };
+
         if commands_fn::merge(vec![branch_name.to_string()], cliente.clone()).is_err(){
-            stream.write("HTTP/1.1 422 Error merge\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Error merge\r\n\r\n".as_bytes())?;
             return Err(Error::new(std::io::ErrorKind::Other,"Error merge (aux)"));
         };
-        // if commands_fn::remote(vec!["server_test".to_string()], cliente.clone()).is_err(){ //aca esta hardcodeado el primer parametro, habria que buscarlo en el pr
-        //     return Err(Error::new(std::io::ErrorKind::Other,"Error al setear remote (aux)"));
-        // }
-        if commands_fn::push(vec![], cliente.clone()).is_err(){
-            stream.write("HTTP/1.1 422 Error push\r\n\r\n".as_bytes())?;
-            return Err(Error::new(std::io::ErrorKind::Other,"Error al pushear (aux)"));
+
+        match commands_fn::push(vec![], cliente.clone()){
+            Ok(_) => (),
+            Err(e) => {
+                stream.write_all("HTTP/1.1 422 Error push\r\n\r\n".as_bytes())?;
+                println!("Error al PUSHEAR (AUX): {:?}",e);
+                return Err(Error::new(std::io::ErrorKind::Other,"Error al pushear (aux)"));
+            }
         }
+
+        match pr.close(ruta_full.clone()){
+            Ok(_) => (),
+            Err(e) => {
+                stream.write_all("HTTP/1.1 422 Error al cerrar el PR\r\n\r\n".as_bytes())?;
+                println!("Error al cerrar PR (AUX): {:?}",e);
+                return Err(Error::new(std::io::ErrorKind::Other,"Error al cerrar PR (aux)"));
+            }
+        };
+        let merge_commit_hash = match file_manager::get_current_commit(cliente.clone()) {
+            Ok(merge_commit_hash) => merge_commit_hash,
+            Err(e) => {
+                stream.write_all("HTTP/1.1 422 Error al obtener el hash del commit\r\n\r\n".as_bytes())?;
+                println!("Error al obtener el hash del commit (AUX): {:?}",e);
+                return Err(Error::new(std::io::ErrorKind::Other,"Error al obtener el hash del commit (aux)"));
+            }
+        };
         
+        let response = format!("HTTP/1.1 200 OK\r\n\r\n{{\"sha\": \"{}\",\"merged\": true,\"message\": \"Pull Request successfully merged\"}}\"", merge_commit_hash);
+
         if remove_dir_all(cliente.clone()).is_err(){
             return Err(Error::new(std::io::ErrorKind::Other,"Error al borrar el aux"));
         }
-
-        //1. clono el server
-        //2. merge dentro del cliente aux
-        //3. commiteo y pusheo
-        //4. borro el aux.
-        stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?;
+        stream.write_all(response.as_bytes())?;
     }
-    
-    //========fin parseo input
-
-    // let res = match commands::merge_(master_name, branch_name, ruta_repo_server.clone()) {
-    //     Ok(res) => res,
-    //     Err(_) => {
-    //         println!("Error al hacer merge");
-    //         stream.write("HTTP/1.1 405 Validation failed\r\n\r\n".as_bytes())?; /////////////////////// REVISAR ERROR
-    //         return Ok(());
-    //     }
-    // };
-    
-
-
-    /*
-    parsear input
-
-    PUT /repos/{repo}/pulls/{pull_number}/merge
-
-
-    res = merge(master, branch)
-
-    if res == Ok:
-        stream.write("HTTP/1.1 200 OK\r\n\r\n".as_bytes())?; y tmb devolver el hash del nuevo commit creado
-    else:
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?; o algo as
-    
-     */
     Ok(())
 }
 
@@ -595,18 +560,18 @@ fn check_branches_exist(pull_request: &PullRequest, ruta: &str, stream: &mut Tcp
         Ok(branches) => branches,
         Err(e) => {
             println!("Error al obtener branches: {:?}",e);
-            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+            stream.write_all("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
             return Err(GitrError::BranchNotFound);
         }
     };
     if !branches.contains(&branch_name) {
         println!("No existe la branch head");
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
         return Err(GitrError::BranchNotFound);
     }
     if !branches.contains(&base_name) {
         println!("No existe la branch base");
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
+        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes()).map_err(|_| GitrError::BranchNotFound)?;
         return Err(GitrError::BranchNotFound);
     }
     Ok(())
@@ -614,69 +579,78 @@ fn check_branches_exist(pull_request: &PullRequest, ruta: &str, stream: &mut Tcp
 
 fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result<()>{
     let mut ruta_full = "".to_string();
+
     let host = request.split('\n').collect::<Vec<&str>>()[1];
-    println!("==========host: {}", host);
     if host.starts_with("Host:"){
         ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+request.split(' ').collect::<Vec<&str>>()[1].trim_start();
     }
-    println!("==========ruta_full: {}, request: {}", ruta_full, request);
+
+
     if request.split('\n').collect::<Vec<&str>>().len() < 8 {
         println!("Error al parsear el body");
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
+
+
     let _id = ruta_full.split('/').collect::<Vec<&str>>()[2];
     if !file_manager::pull_request_exist(&ruta_full){
         println!("No existe el pull request solicitado");
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
     
     let body = request.split('\n').collect::<Vec<&str>>()[7]; 
-    let pull_request: PullRequest = match serde_json::from_str(&body) {
+    let pull_request: PullRequest = match serde_json::from_str(body) {
         Ok(pull_request) => pull_request,
         Err(_) => {
             println!("Error al parsear el body");
             println!("body: {}", body);
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
+
+
     if pull_request.get_status() != "closed" && pull_request.get_status() != "open"{
         println!("El status del pull request debe ser open o closed");
-        stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+        stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
         return Ok(());
     }
+
+
     match check_branches_exist(&PullRequest::from_string(body.to_string().clone()).unwrap(), &ruta_full, &mut stream) {
         Ok(_) => {}
         Err(_) => {
             println!("Error al validar branches");
-            stream.write("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
     };
+
     match file_manager::create_pull_request(&ruta_full, pull_request) {
         Ok(_) => println!("PR creado"),
         Err(_) => {
             println!("Error al crear PR");
-            stream.write("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
+            stream.write_all("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;
             return Ok(());
         }
           
     };
-    stream.write("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
+
+    stream.write_all("HTTP/1.1 201 OK\r\n\r\n".as_bytes())?;
     Ok(())
 
 }
 
 fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()> {
-    
     let guardados_id: HashSet<String>;
     let refs_string: String;
+
     match is_valid_pkt_line(&request) {
         Ok(_) => {}
         Err(_) => {
-            stream.write("Error: no se respeta el formato pkt-line".as_bytes())?;
+            stream.write_all("Error: no se respeta el formato pkt-line".as_bytes())?;
             println!("Error: no se respeta el formato pkt-line");
             return Err(Error::new(
                 std::io::ErrorKind::Other,
@@ -684,13 +658,16 @@ fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()
             ));
         }
     }
+
     let elems = split_n_validate_elems(&request)?;
-    let direc = elems[2].split_once(":").unwrap_or(("",elems[2])).1;
+    let direc = elems[2].split_once(':').unwrap_or(("",elems[2])).1;
     let r_path = format!("server{direc}/repos/{}",elems[1]);
     create_dirs(&r_path)?;
+
     // ########## REFERENCE DISCOVERY ##########
     (refs_string, guardados_id) = ref_discovery::ref_discovery(&r_path)?;
-    let _ = stream.write(refs_string.as_bytes())?;
+    stream.write_all(refs_string.as_bytes())?;
+
     // ########## ELECCION DE COMANDO ##########
     match elems[0] {
         "git-upload-pack" => {
@@ -700,14 +677,15 @@ fn handle_pkt_line(request: String, mut stream: TcpStream) -> std::io::Result<()
             gitr_receive_pack(&mut stream, r_path)?;
         } // Recibir del Cliente
         _ => {
-            let _ = stream.write("Error: comando git no reconocido".as_bytes())?;
+            stream.write_all("Error: comando git no reconocido".as_bytes())?;
             return Err(Error::new(
                 std::io::ErrorKind::Other,
                 "comando git no reconocido",
             ));
         }
     }
-    return Ok(());
+    
+    Ok(())
 }
 
 /// Lleva a cabo el protocolo Git Transport para el comando git-upload-pack, En el que se suben nuevos objetos al servidor.
@@ -808,7 +786,7 @@ fn snd_packfile(
         Commit::get_parents(wants_id.clone(), haves_id.clone(), r_path.clone()).unwrap_or(wants_id);
     let wants_id: Vec<String> =
         Commit::get_objects_from_commits(all_commits.clone(), haves_id, r_path.clone())
-            .unwrap_or(vec![]);
+            .unwrap_or_default();
     for id in wants_id.clone() {
         match file_manager::get_object_bytes(id, r_path.clone()) {
             Ok(obj) => contents.push(obj),
@@ -821,7 +799,7 @@ fn snd_packfile(
         }
     }
     if let Ok(pack) = pack_data_bruno(contents) {
-        let _ = stream.write(&pack)?;
+        stream.write_all(&pack)?;
     } else {
         return Err(Error::new(
             std::io::ErrorKind::InvalidInput,
@@ -871,12 +849,12 @@ fn packfile_negotiation(
     for have in haves_id.clone() {
         if guardados_id.contains(&have) && reply == *"0008NAK\n" {
             reply = format!("003aACK {}\n", have.clone());
-            let _ = stream.write(reply.as_bytes())?;
+            stream.write_all(reply.as_bytes())?;
             break;
         }
     }
     if reply == *"0008NAK\n" {
-        let _ = stream.write(reply.as_bytes())?;
+        stream.write_all(reply.as_bytes())?;
     }
     Ok((wants_id, haves_id))
 }
@@ -1497,8 +1475,8 @@ mod http_tests{
         let output_esperado = "HTTP/1.1 201 Created\r\n\r\n";
 
         assert_eq!(output, output_esperado);
-        // fs::remove_dir_all("cliente").unwrap();
-        // fs::remove_dir_all("server9418").unwrap();
+        fs::remove_dir_all("cliente").unwrap();
+        fs::remove_dir_all("server9418").unwrap();
     }
 
 
@@ -1642,7 +1620,7 @@ mod http_tests{
 mod merge_pr_tests{
     /*PUT /repos/{repo}/pulls/{pull_number}/merge */
 
-    use std::{path::Path, fs::{self, remove_dir}};
+    use std::path::Path;
     use crate::file_manager::{self, read_file};
     use crate::commands::commands_fn;
     use std::process::{Command, Stdio};
@@ -1794,7 +1772,7 @@ mod merge_pr_tests{
         let output = String::from_utf8(output.stdout).unwrap();
         println!("Output test02: {}", output);
 
-        assert_eq!(output, "HTTP/1.1 200 OK\r\n\r\n");
+        assert!(output.contains("HTTP/1.1 200 OK\r\n\r\n"));
         let id = read_file("server9418/repos/server_test/refs/heads/master".to_string()).unwrap();
         assert!(
             (file_manager::get_object(id.clone(), "server9418/repos/server_test".to_string()).unwrap().contains("Merge branch 'branch'"))

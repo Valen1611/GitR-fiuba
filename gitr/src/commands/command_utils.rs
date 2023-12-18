@@ -1,5 +1,5 @@
 use crate::{
-    commands::{commands_fn, command_utils},
+    commands::{commands_fn},
     diff::Diff,
     file_manager::{
         self, get_commit, get_current_commit, get_current_repo, get_head, read_index,
@@ -23,7 +23,7 @@ use crate::{
 };
 use flate2::write::ZlibEncoder;
 use flate2::Compression;
-use serde_json::json;
+
 use sha1::{Digest, Sha1};
 use std::{
     collections::{HashMap, HashSet},
@@ -763,7 +763,7 @@ fn comparar_diffs(
     for (index, flag, string, tag) in result.clone() {
         if flag {
             map.entry(index)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push((string, tag.to_string()));
         }
     }
@@ -936,12 +936,10 @@ pub fn three_way_merge(
                     path.to_string() + "_mergeado",
                     archivo_reconstruido.concat().to_string(),
                 )?;
+            } else if cliente.contains('/') {
+                _aplicar_diffs(origin_file_data.clone(), union_diffs)?;
             } else {
-                if cliente.contains('/') {
-                    _aplicar_diffs(origin_file_data.clone(), union_diffs)?;
-                } else {
-                    aplicar_diffs(path.clone(), union_diffs)?;
-                }
+                aplicar_diffs(path.clone(), union_diffs)?;
             }
         } else {
             continue;
@@ -1548,7 +1546,7 @@ pub fn read_socket(socket: &mut TcpStream, buffer: &mut [u8]) -> Result<(), Gitr
 pub fn handshake(orden: String, cliente: String) -> Result<TcpStream, GitrError> {
 
     let remote = file_manager::get_remote(cliente.clone())?;
-    let url_n_name = remote.split("/").collect::<Vec<&str>>();
+    let url_n_name = remote.split('/').collect::<Vec<&str>>();
     if url_n_name.len() != 2 {
         return Err(GitrError::InvalidArgumentError(
             "<no se recibio un remote>".to_string(),
@@ -1932,14 +1930,15 @@ pub fn _ls_tree(
 pub fn _create_pr(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
     println!("create-pr");
     let remote = file_manager::get_remote(cliente.clone())?;
-    let remote = remote.split("/").collect::<Vec<&str>>()[1];
+    let sv_url = remote.split('/').collect::<Vec<&str>>()[0];
+    let sv_name = remote.split('/').collect::<Vec<&str>>()[1];
     let title = flags[0].clone();
     let description = flags[1].clone();
     let head = flags[2].clone();
     let base = flags[3].clone();
     let body = format!("{{\"id\":1,\"title\":\"{}\",\"description\":\"{}\",\"head\":\"{}\",\"base\":\"{}\",\"status\":\"open\"}}", title, description, head, base);
-    let server_addr = format!("/repos/{}/pulls HTTP/1.1\n", remote.clone());
-    let path = format!("localhost:9418/repos/{}/pulls", remote);
+    let _server_addr = format!("/repos/{}/pulls HTTP/1.1\n", sv_name);
+    let path = format!("{}/repos/{}/pulls", sv_url, sv_name);
     let child = Command::new("curl")
             .arg("-isS")
             .arg("-X")
@@ -1951,7 +1950,7 @@ pub fn _create_pr(flags: Vec<String>, cliente: String) -> Result<(), GitrError> 
             .spawn()
             .expect("failed to execute curl");
         
-    let output = child.wait_with_output().expect("failed to wait on child");
+    let _output = child.wait_with_output().expect("failed to wait on child");
 
     Ok(())
 }

@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::fmt::Write;
 
 use chrono::Utc;
 
@@ -14,7 +15,7 @@ pub struct Commit {
     data: Vec<u8>,
     hash: String,
     tree: String,
-    parents: Vec<String>,
+    pub parents: Vec<String>,
 }
 
 impl Commit {
@@ -56,8 +57,10 @@ impl Commit {
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file
             .iter()
-            .map(|b| format!("{:02x}", b))
-            .collect::<String>();
+            .fold(String::new(),|mut output,b| {
+                let _ =write!(output,"{b:02x}");
+                output
+            });
         Ok(Commit {
             data: compressed_file,
             hash: hashed_file_str,
@@ -92,8 +95,10 @@ impl Commit {
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file
             .iter()
-            .map(|b| format!("{:02x}", b))
-            .collect::<String>();
+            .fold(String::new(),|mut output,b| {
+                let _ =write!(output,"{b:02x}");
+                output
+            });
         Ok(Commit {
             data: compressed_file,
             hash: hashed_file_str,

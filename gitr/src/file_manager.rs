@@ -356,8 +356,6 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
     let dir = repo + "/objects/";
     let folder_dir = dir.clone() + &folder_name;
     let path = dir + &folder_name + "/" + &file_name;
-    println!("path: {}", path);
-    println!("folder_dir: {}", folder_dir);
     if fs::metadata(folder_dir).is_err() {
         return Err(GitrError::ObjectNotFound(object.clone()));
     }
@@ -447,7 +445,12 @@ pub fn add_to_index(path: &String, hash: &String, cliente: String) -> Result<(),
 ///returns the path of the head branch
 pub fn get_head(cliente: String) -> Result<String, GitrError> {
     let repo = get_current_repo(cliente.clone())?;
-    let path = repo + "/gitr/HEAD";
+    let mut path = repo + "/gitr/HEAD";
+
+    if cliente.contains('/') {
+        path = path.replace("/gitr/", "/")
+    }
+
     if fs::metadata(path.clone()).is_err() {
         write_file(path.clone(), String::from("ref: refs/heads/master"))?;
         return Ok("None".to_string());
@@ -462,7 +465,6 @@ pub fn get_head(cliente: String) -> Result<String, GitrError> {
 pub fn update_head(head: &String, cliente: String) -> Result<(), GitrError> {
     let repo = get_current_repo(cliente.clone())?;
     let path = repo + "/gitr/HEAD";
-    println!("HEAD en path: {} actualizado a {}", path, head);
     write_file(path.clone(), format!("ref: {}", head))?;
     Ok(())
 }
@@ -476,6 +478,7 @@ fn find_new_path(hash: String, sec_vec: Vec<(String, String)>) -> String {
     }
     "".to_string()
 }
+
 // recibe el vector de los hashes de las referencias que sacas del ref discovery, y actualiza el gitr en base a eso
 pub fn update_client_refs(
     hash_n_refs: Vec<(String, String)>,
@@ -603,8 +606,12 @@ pub fn get_current_commit(cliente: String) -> Result<String, GitrError> {
     if head_path == "None" {
         return Err(GitrError::NoHead);
     }
-    let repo = get_current_repo(cliente)?;
-    let path = repo + "/gitr/" + &head_path;
+    let repo = get_current_repo(cliente.clone())?;
+    let mut path = repo + "/gitr/" + &head_path;
+
+    if cliente.contains('/') {
+        path = path.replace("/gitr/", "/")
+    }
 
     let head = read_file(path)?;
     Ok(head)
@@ -738,11 +745,7 @@ pub fn get_main_tree(commit: String, cliente: String) -> Result<String, GitrErro
 
 //receives a commit and returns its parent commit hash
 pub fn get_parent_commit(commit: String, cliente: String) -> Result<Vec<String>, GitrError> {
-    let add_gitr = if cliente.contains('/') {
-        false
-    } else {
-        true
-    };
+    let add_gitr = !cliente.contains('/');
     let commit = read_object(
         &commit,
         file_manager::get_current_repo(cliente.clone())?,
@@ -1138,8 +1141,5 @@ pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
 
 pub fn pull_request_exist(path: &str) -> bool {
     let data = read_file(path.to_string());
-    match data {
-        Ok(_) => true,
-        Err(_) => false,
-    }
+    data.is_ok()
 }

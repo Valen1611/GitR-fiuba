@@ -1,4 +1,5 @@
 use chrono::Utc;
+use std::fmt::Write;
 
 use crate::{
     commands::command_utils::{
@@ -40,8 +41,10 @@ impl Tag {
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file
             .iter()
-            .map(|b| format!("{:02x}", b))
-            .collect::<String>();
+            .fold(String::new(),|mut output,b| {
+                let _ =write!(output,"{b:02x}");
+                output
+            });
         Ok(Tag {
             data: compressed_file,
             hash: hashed_file_str,
@@ -93,8 +96,10 @@ impl Tag {
         let hashed_file = sha1hashing(format_data_entera.clone());
         let hashed_file_str = hashed_file
             .iter()
-            .map(|b| format!("{:02x}", b))
-            .collect::<String>();
+            .fold(String::new(),|mut output,b| {
+                let _ =write!(output,"{b:02x}");
+                output
+            });
         Ok(Tag {
             data: compressed_file,
             hash: hashed_file_str,

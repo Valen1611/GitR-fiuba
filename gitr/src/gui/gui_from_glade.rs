@@ -3,7 +3,7 @@ use std::fs;
 use gtk::gio::ApplicationFlags;
 use gtk::{prelude::*, Application, ComboBoxText, Dialog, Entry, Label, TextBuffer, TextView, ListBox, ListBoxRow, Orientation};
 
-use gtk::{Builder, Button, FileChooserButton, Window, Box, StackSidebar};
+use gtk::{Builder, Button, FileChooserButton, Window};
 
 use crate::commands::command_utils::_create_pr;
 use crate::commands::commands_fn::{self};
@@ -20,19 +20,21 @@ fn get_commits(cliente: String) -> String {
 
     let mut res = String::new();
     let max_string_len = 60;
-
+    
     let mut fecha_actual = "-1";
     for mut commit in commits.split("\n\n\n").collect::<Vec<&str>>() {
         //println!("\x1b[34mCommit: \x1b[0m {:?}",commit);
+        let corrimiento_merge = if commit.contains("Merge") {
+            1
+        } else {
+            0
+        };
         commit = commit.trim_start();
-        let hash = commit.split('\n').collect::<Vec<&str>>()[0].split_at(8).1;
-        let author = commit.split('\n').collect::<Vec<&str>>()[1].split_at(7).1;
-        let date = commit.split('\n').collect::<Vec<&str>>()[2]
-            .split_at(5)
-            .1
-            .trim_start();
-        let message = commit.split('\n').collect::<Vec<&str>>()[3].trim_start();
-
+        let hash = commit.split('\n').collect::<Vec<&str>>()[corrimiento_merge].split_at(8).1;
+        let author = commit.split('\n').collect::<Vec<&str>>()[1 + corrimiento_merge].split_at(7).1;
+        let date = commit.split('\n').collect::<Vec<&str>>()[2 + corrimiento_merge].split_at(5).1.trim_start();
+        let message = commit.split('\n').collect::<Vec<&str>>()[3 + corrimiento_merge*2].trim_start();
+        
         let day = date.split(' ').collect::<Vec<&str>>()[2];
         let time = date.split(' ').collect::<Vec<&str>>()[3];
         let hash_digits = hash.split_at(8).0;
@@ -71,7 +73,6 @@ fn get_commits(cliente: String) -> String {
         ));
         res.push_str("█    ╚══════════════════════════════════════════════════════════════╝\n");
     }
-    println!("{}", res);
     res
 }
 
@@ -286,8 +287,16 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         };
         let message = format!("\"{}\"", commit_message.text());
         let cm_msg = vec!["-m".to_string(), message];
-        match commands_fn::commit(cm_msg, "None".to_string(), cliente_.clone()) {
-            Ok(_) => (),
+        let parent = match file_manager::read_file("parent".to_string()){
+            Ok(parent) => parent,
+            Err(_) => "None".to_string(),
+        };
+        match commands_fn::commit(cm_msg, parent, cliente_.clone()) {
+            Ok(_) => {
+                if fs::remove_file("parent").is_err(){
+                    ()
+                }
+            },
             Err(e) => {
                 println!("Error al hacer commit: {:?}", e);
                 return;
@@ -460,6 +469,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     let remote_error_label_clone = remote_error_label.clone();
 
     let cliente_ = cliente.clone();
+
     merge_button_clone.connect_clicked(move|_|{
         let branch = match merge_branch_selector_clone.clone().active_text(){
             Some(branch) => branch,
@@ -467,19 +477,20 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         };
         let flags = vec![branch.to_string()];
         match commands_fn::merge(flags,cliente_.clone()){
-            Ok((hubo_conflict, _, _)) => {
+            Ok((hubo_conflict, parent, _)) => {
                 if !hubo_conflict{
                     return;
                 }
                 remote_error_label_clone.set_text("Surgieron conflicts al hacer merge, por favor arreglarlos y commitear el resultado.");
                 remote_error_dialog_clone.show();
-            },
+                file_manager::write_file("parent".to_string(),parent).unwrap();           },
             Err(e) => {
                 println!("Error al hacer merge: {:?}",e);
             },
         }
     });
-
+    
+    
     // ====PULL REQUESTS====
     let cliente_clone = cliente.clone();
     let clone_error = remote_error_dialog.clone();
@@ -505,6 +516,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
 
         }
     });
+
     let creation_pr_clone = creation_pr.clone();
     let base_branch_clone = base_branch.clone();
     let cliente_clone = cliente.clone();
@@ -526,7 +538,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         if title == "" || description == "" || base == "" || compare == ""{
             return;
         }
-        let vec_pr = vec![title.to_string(),description.to_string(),base.to_string(),compare.to_string()];
+        let vec_pr = vec![title.to_string(),description.to_string(),compare.to_string(),base.to_string()];
         _create_pr(vec_pr,cliente_clone.clone()).unwrap();
         //crear el pr
         creation_pr_clone.hide();
@@ -547,8 +559,9 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 pr_list_clone.remove(row);
             });
             let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
-            let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
-            let dir = "server9418/repos/".to_string() + &sv_name;
+            let sv_url = remote.split('/').collect::<Vec<&str>>()[0].replace("localhost:", "server");
+            let sv_name = remote.split('/').collect::<Vec<&str>>()[1];
+            let dir = sv_url + "/repos/" + sv_name;
             let prs = match file_manager::get_pull_requests(dir){
                 Ok(prs) => prs,
                 Err(e) => {
@@ -576,8 +589,9 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 pr_list_clone.remove(row);
             });
             let remote = file_manager::get_remote(cliente_clone.clone()).unwrap();
-            let sv_name = remote.split("/").collect::<Vec<&str>>()[1];
-            let dir = "server9418/repos/".to_string() + &sv_name;
+            let sv_url = remote.split('/').collect::<Vec<&str>>()[0].replace("localhost:", "server");
+            let sv_name = remote.split('/').collect::<Vec<&str>>()[1];
+            let dir = sv_url + "/repos/" + sv_name;
             let prs = match file_manager::get_pull_requests(dir){
                 Ok(prs) => prs,
                 Err(e) => {
@@ -624,7 +638,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     });
 
     window.set_application(Some(application));
-    window.set_title("HOLA");
     window.show_all();
     Some("Ok".to_string())
 }
