@@ -1,2 +1,0 @@
-archivo base
-cambios en branch1, para no conflict

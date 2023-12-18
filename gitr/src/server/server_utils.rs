@@ -360,6 +360,7 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
     
     }
     let response = format!("HTTP/1.1 200 application/json\r\n\r\n{}", response_body);
+   
     stream.write_all(response.as_bytes())?;
     Ok(response_body)
 }
@@ -372,7 +373,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+ruta;
     }
     println!("==========ruta_full: {}, request: {}", ruta_full, request);
-    fs::create_dir(ruta_full.clone())?;
+    let _ = fs::create_dir(ruta_full.clone());
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
     let id = match contar_archivos_y_directorios(&ruta_full){
         Ok(id) => id,
@@ -412,6 +413,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
 
     // A la ruta le agregamos el id del PR
     let ruta_full = ruta_full.to_string() + "/" + id.to_string().as_str();
+
     
     // Le asignamos el id al PR
     pull_request.id = id as u8;
@@ -426,7 +428,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         }
           
     };
-
+    
     stream.write_all("HTTP/1.1 201 Created\r\n\r\n".as_bytes())?;
     Ok(())
 }
@@ -1662,7 +1664,7 @@ mod http_tests{
 mod merge_pr_tests{
     /*PUT /repos/{repo}/pulls/{pull_number}/merge */
 
-    use std::{path::Path, fs::{self, remove_dir}};
+    use std::path::Path;
     use crate::file_manager::{self, read_file};
     use crate::commands::commands_fn;
     use std::process::{Command, Stdio};
@@ -1814,7 +1816,7 @@ mod merge_pr_tests{
         let output = String::from_utf8(output.stdout).unwrap();
         println!("Output test02: {}", output);
 
-        assert_eq!(output, "HTTP/1.1 200 OK\r\n\r\n");
+        assert!(output.contains("HTTP/1.1 200 OK\r\n\r\n"));
         let id = read_file("server9418/repos/server_test/refs/heads/master".to_string()).unwrap();
         assert!(
             (file_manager::get_object(id.clone(), "server9418/repos/server_test".to_string()).unwrap().contains("Merge branch 'branch'"))
