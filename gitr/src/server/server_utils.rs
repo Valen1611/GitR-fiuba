@@ -117,13 +117,10 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         
         if request.starts_with("GET") {
             let mut ruta_full = "".to_string();
-            println!("request: {:?}", request);
             let host = request.split('\n').collect::<Vec<&str>>()[1];
-            println!("==========host: {}", host);
             if host.starts_with("Host:"){
                 ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+ruta;
             }
-            println!("==========ruta_full: {}, request: {}", ruta_full, request);
 
             match handler_get_request(&ruta_full, &stream) {
                 Ok(_) => return Ok(()),
@@ -135,7 +132,6 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
              };
         }
         if request.starts_with("POST") {
-            println!("[SERVER]: POST request recieved:");
             println!("\x1b[34m{:?}\x1b[0m", request);
             /*
             Ejemplo para mandar con curl:
@@ -144,11 +140,6 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
             return handle_post_request(ruta, &request, stream);
         }
         if request.starts_with("PUT") {
-            println!("[SERVER]: PUT request recieved");
-            /*
-            Hacer el merge 💀💀💀
-            PUT /repos/{repo}/pulls/{pull_number}/merge
-            */
             match handle_put_request(&request, stream){
                 Ok(_) => println!("Merge realizado"),
                 Err(e)=>{
@@ -160,16 +151,14 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
         }
 
         if request.starts_with("PATCH"){
-            println!("[SERVER]: PATCH request recieved");
             return handle_patch_request(&request, stream);
         }
         
         
         //            PACKETLINE
         // ########## HANDSHAKE ##########
-        println!("request: {:?}", request);
         match handle_pkt_line(request, stream.try_clone()?) {
-            Ok(_) => {println!("Conexion finalizada con exito"); Ok(())}
+            Ok(_) => Ok(()),
             Err(e) => {
                 let err = format!("Error: {e}");
                 println!("{}",err);
@@ -253,9 +242,6 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
     let ruta_pulls = ruta_vec[..3].join("/");
     let ruta_repo_server = ruta_vec[..=2].join("/");
 
-
-    println!("route: {}", ruta); // ruta entera (sin el /repos)
-    println!("route pulls: {}", ruta_pulls); // sv/pulls para obtener todos los PRs
     let prs: Vec<PullRequest> = match file_manager::get_pull_requests(ruta_pulls.clone()) {
         Ok(prs) => prs,
         Err(e) => {
@@ -264,7 +250,6 @@ fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<St
             return Ok("".to_string());
         }
     };
-    println!("PRs: {:?}", prs);
     
     let route_vec = ruta.split('/').collect::<Vec<&str>>();
     

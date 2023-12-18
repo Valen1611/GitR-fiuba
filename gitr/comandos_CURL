@@ -14,4 +14,4 @@ curl -X GET -isS  localhost:9410/repos/demo/pulls/0/commits
 curl -X PUT -isS  localhost:9410/repos/demo/pulls/0/merge
 
 # ==Modificar un PR ==
-curl -X PATCH -isS  -H "Content-Type: application/json" -d '{"id":2,"title":"Lo modifiqué","description":"esta cambiado","head":"branchit","base":"master","status":"open"}' localhost:9410/repos/demo/pulls/2
+curl -X PATCH -isS  -H "Content-Type: application/json" -d '{"id":0,"title":"Lo modifiqué","description":"esta cambiado","head":"branch","base":"master","status":"open"}' localhost:9410/repos/demo/pulls/0
