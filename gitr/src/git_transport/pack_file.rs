@@ -2,6 +2,7 @@ extern crate flate2;
 
 use std::collections::HashMap;
 use std::io::Write;
+use std::fmt::Write as FmtWrite;
 
 use crate::commands::command_utils::*;
 use crate::git_transport::{deltas::*, ref_discovery::*};
@@ -197,8 +198,10 @@ fn delta_ref_from_packfile(
 ) -> Result<(GitObject, usize), GitrError> {
     let hex_string: String = object_content[..20]
         .iter()
-        .map(|b| format!("{:02x}", b))
-        .collect();
+        .fold(String::new(),|mut output,b| {
+            let _ =write!(output,"{b:02x}");
+            output
+        });
     let (delta_decoded, c1) = decode(&object_content[20..])?; // descomprimo el delta
     let (_length, c2) = get_encoded_length(&delta_decoded)?; // despues la longitud del obj base
     let (_length, c3) = get_encoded_length(&delta_decoded[c2..])?; // despues la longitud del obj resultante

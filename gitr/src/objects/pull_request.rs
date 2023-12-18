@@ -36,19 +36,6 @@ impl PullRequest {
         }
     }
 
-    pub fn merge_pr() {
-        // que se mergee head en base
-    }
-
-    pub fn get_commits(&self) -> Vec<String> {
-        let mut commits: Vec<String> = Vec::new();
-        commits.push(String::from("commit1"));
-        commits.push(String::from("commit2"));
-        commits.push(String::from("commit3"));
-        commits
-
-    }
-
     pub fn to_string(&self) -> Result<String, GitrError> {
             
         match serde_json::to_string(&self) {

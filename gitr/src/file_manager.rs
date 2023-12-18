@@ -179,7 +179,6 @@ fn read_compressed_file(path: &str) -> Result<Vec<u8>, GitrError> {
 
 //reads and object and returns raw data
 pub fn read_object(object: &String, path: String, add_gitr: bool) -> Result<String, GitrError> {
-    println!("\x1b[32m soy read_object y voy a leer en path: {}/{} \x1b[0m", path, object);
     let path = parse_object_hash(object, path, add_gitr)?;
     let bytes = deflate_file(path.clone())?;
     let object_data: Vec<u8> = get_object_data_with_bytes(bytes)?;

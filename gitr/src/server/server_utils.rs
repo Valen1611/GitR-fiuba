@@ -372,10 +372,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         ruta_full= "server".to_owned()+host.split(':').collect::<Vec<&str>>()[2].trim()+ruta;
     }
     println!("==========ruta_full: {}, request: {}", ruta_full, request);
-    match fs::create_dir(ruta_full.clone()){
-        Ok(_) => {}
-        Err(_) => {}
-    }
+    fs::create_dir(ruta_full.clone())?;
     // Nos fijamos cuantos PRs hay creados para asignar id al nuevo
     let id = match contar_archivos_y_directorios(&ruta_full){
         Ok(id) => id,
