@@ -565,8 +565,17 @@ pub fn fast_forward_merge(branch_name: String, cliente: String) -> Result<(), Gi
     let commit: String = file_manager::get_commit(branch_name, cliente.clone())?;
     let head = get_head(cliente.clone())?;
     let repo = get_current_repo(cliente.clone())?;
-    let path = format!("{}/gitr/{}", repo, head);
+    let mut path = format!("{}/gitr/{}", repo, head);
+
+    if cliente.contains('/') {
+        path = path.replace("/gitr/", "/");
+    }
+
     file_manager::write_file(path, commit.clone())?;
+    
+    if cliente.contains('/') {
+        return Ok(());
+    }
     update_working_directory(commit, cliente.clone())?;
     Ok(())
 }
