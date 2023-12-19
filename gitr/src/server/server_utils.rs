@@ -132,16 +132,11 @@ fn handle_client(mut stream: TcpStream) -> std::io::Result<()> {
              };
         }
         if request.starts_with("POST") {
-            println!("\x1b[34m{:?}\x1b[0m", request);
-            /*
-            Ejemplo para mandar con curl:
-            curl -X POST -H "Content-Type: application/json" -d '{"id":1,"title":"titulo del pr","description":"descripcion del pr","head":"TestBranch2","base":"master","status":"open"}' localhost:9418/repos/sv/pulls
-            */
             return handle_post_request(ruta, &request, stream);
         }
         if request.starts_with("PUT") {
             match handle_put_request(&request, stream){
-                Ok(_) => println!("Merge realizado"),
+                Ok(_) => (),
                 Err(e)=>{
                     println!("Error al hacer merge: {:?}",e);
                 }
@@ -185,21 +180,17 @@ commit branch
 
 */
 fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo_server: String) -> Result<String, GitrError>{
-    println!("==============commit hash: {:?} +++ commit_raw_data: {:?}",commit_hash, commit_raw_data);
     let commit_vec = commit_raw_data.split('\n').collect::<Vec<&str>>();
     
     let tree = commit_vec[0].split(' ').collect::<Vec<&str>>()[2];
     let date = file_manager::get_commit_date(commit_hash.clone(), ruta_repo_server.clone())?;
     let author = file_manager::get_commit_author(commit_hash.clone(), ruta_repo_server.clone())?;
     let author_mail = file_manager::get_commit_author_mail(commit_hash.clone(), ruta_repo_server.clone())?;
-    println!("\x1b[34m{:?}\x1b[0m", author_mail);
     let message = file_manager::get_commit_message(commit_hash.clone(), ruta_repo_server.clone())?;
     let message = message.trim_end();
     let commiter = file_manager::get_commit_commiter(commit_hash.clone(), ruta_repo_server.clone())?;
     let commiter_mail = file_manager::get_commit_commiter_mail(commit_hash.clone(), ruta_repo_server.clone())?;
-    //let commiter = commiter.trim_start_matches("committer ");
 
-    println!("tree: {:?}, date: {:?}, author: {:?}, commiter: {:?}, message: {:?}", tree, date, author, commiter, message);
 
     let json_message = vec![
         r#"{"commit":{"#,
@@ -215,24 +206,10 @@ fn build_json_from_commit(commit_hash: String, commit_raw_data:String, ruta_repo
             r#""tree":{"#,
                 r#""sha":""#,&tree,r#""}","}"#
     ].concat();
-    println!("++++++++++=====json_message: {}", json_message);
     Ok(json_message)
 }
 
-fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<String> {
-    /*
-    este caso puede ser
-    Listar PRs - GET /repos/{repo}/pulls    ✅
-    Obtener PR - GET /repos/{repo}/pulls/{pull_number}  ✅
-    Listar commits - GET repos/{repo}/pulls/{pull_number}/commits ✅
-    
-    en Curl:
-    curl -X GET localhost:9418/repos/sv/pulls
-    curl -X GET localhost:9418/repos/sv/pulls/1
-    */
-
-    println!("[SERVER]: GET request recieved");
-    
+fn handler_get_request(ruta: &str, mut stream: &TcpStream) -> std::io::Result<String> { 
     let ruta_vec = ruta.split('/').collect::<Vec<&str>>();
     if ruta_vec.len() < 3 {
         println!("Error al parsear la ruta");
@@ -371,7 +348,6 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
         Ok(pull_request) => pull_request,
         Err(e) => {
             println!("Error al parsear el body: {:?}", e);
-            println!("body: {}", body);
             stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
             return Ok(());
         }
@@ -395,7 +371,7 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
 
     // Creamos el PR            
     match file_manager::create_pull_request(&ruta_full, pull_request) {
-        Ok(_) => println!("PR creado"),
+        Ok(_) => (),
         Err(_) => {
             println!("Error al crear PR");
             stream.write_all("HTTP/1.1 422 Validation failed\r\n\r\n".as_bytes())?;
@@ -409,7 +385,6 @@ fn handle_post_request(ruta: &str, request: &str, mut stream: TcpStream) -> std:
 }
 
 fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<()> {
-    //========parseo input
     let route = request.split(' ').collect::<Vec<&str>>()[1];
     let route_vec = route.split('/').collect::<Vec<&str>>();
 
@@ -423,7 +398,7 @@ fn handle_put_request(request: &str, mut stream: TcpStream) -> std::io::Result<(
 
     
     if !Path::new(&ruta_full).exists() {
-        println!("No existe el PR en ese path. (esto puede fallar porque cambiamos el path del server)");
+        println!("No existe el PR en ese path.");
         stream.write_all("HTTP/1.1 404 Resource not found: can't find the requested PR.\r\n\r\n".as_bytes())?;
         return Ok(())
     }
@@ -629,7 +604,7 @@ fn handle_patch_request(request: &str, mut stream: TcpStream) -> std::io::Result
     };
 
     match file_manager::create_pull_request(&ruta_full, pull_request) {
-        Ok(_) => println!("PR creado"),
+        Ok(_) => (),
         Err(_) => {
             println!("Error al crear PR");
             stream.write_all("HTTP/1.1 422 ERROR\r\n\r\n".as_bytes())?;

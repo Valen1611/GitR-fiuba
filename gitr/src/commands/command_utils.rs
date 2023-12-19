@@ -1,5 +1,5 @@
 use crate::{
-    commands::{commands_fn},
+    commands::commands_fn,
     diff::Diff,
     file_manager::{
         self, get_commit, get_current_commit, get_current_repo, get_head, read_index,
@@ -489,8 +489,6 @@ pub fn branch_move_flag(
     file_manager::move_branch(old_path.clone(), new_path.clone())?;
     let head = get_head(cliente.clone())?;
     if branch_origin == head.split('/').collect::<Vec<&str>>()[2] {
-        println!("{}", branch_origin);
-        println!("{}", head.split('/').collect::<Vec<&str>>()[2]);
         let ref_correct = format!("refs/heads/{}", branch_destination);
         file_manager::update_head(&ref_correct, cliente.clone())?;
     }
@@ -924,20 +922,14 @@ pub fn three_way_merge(
             let diff_base_branch = Diff::new(base_file_data.clone(), branch_file_data.clone());
             let union_diffs;
 
-            println!("DIFF base origin: {:?}", diff_base_origin.lineas);
-            println!("DIFF base branch: {:?}", diff_base_branch.lineas);
-
             (union_diffs, hubo_conflict) =
                 comparar_diffs(diff_base_origin, diff_base_branch, len_archivo - 1)?; //une los diffs o da el conflict
-
-            println!("DIFF UNION: {:?}", union_diffs.lineas);
 
             if hubo_conflict {
                 if let Some(nombre_archivo) = path.split('/').last() {
                     archivos_conflict.push(nombre_archivo.to_string().clone());
                 }
             }
-
 
             if base_file_data.is_empty() || base_file_data.is_empty() {
                 let archivo_reconstruido = _aplicar_diffs("".to_string(), union_diffs)?;
@@ -1621,7 +1613,6 @@ pub fn protocol_wants_n_haves(
         }
     };
     if want_message == "0000" {
-        println!("cliente al día");
         return Ok(false);
     }
     let _ = stream.write(&0_usize.to_be_bytes());
@@ -1663,10 +1654,6 @@ pub fn pull_packfile(stream: &mut TcpStream, cliente: String) -> Result<(), Gitr
             GitObject::Tag(tag) => tag.save(cliente.clone())?,
         }
     }
-    println!(
-        "pull of {} objects successfull",
-        pack_file_struct.objects.len()
-    );
     Ok(())
 }
 
@@ -1937,7 +1924,6 @@ pub fn _ls_tree(
  *****************/
 
 pub fn _create_pr(flags: Vec<String>, cliente: String) -> Result<(), GitrError> {
-    println!("create-pr");
     let remote = file_manager::get_remote(cliente.clone())?;
     let sv_url = remote.split('/').collect::<Vec<&str>>()[0];
     let sv_name = remote.split('/').collect::<Vec<&str>>()[1];

@@ -23,7 +23,6 @@ fn get_commits(cliente: String) -> String {
     
     let mut fecha_actual = "-1";
     for mut commit in commits.split("\n\n\n").collect::<Vec<&str>>() {
-        //println!("\x1b[34mCommit: \x1b[0m {:?}",commit);
         let corrimiento_merge = if commit.contains("Merge") {
             1
         } else {
@@ -97,7 +96,6 @@ fn update_branches(branch_selector: &ComboBoxText, cliente: String) {
         Ok(branches) => branches,
         Err(e) => {
             println!("Error al obtener branches: {:?}", e);
-            //TODO WARNING DE QUE LA CARPETA NO ES UN REPO
             return;
         }
     };
@@ -189,8 +187,7 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         let flags = vec![branch_name.to_string()];
         match commands_fn::branch(flags, cliente_.clone()) {
             Ok(_) => (),
-            Err(e) => {
-                println!("Error al crear branch: {:?}", e);
+            Err(_) => {
                 return;
             }
         };
@@ -223,7 +220,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
         .set_text(format!("Hola, {}. Por favor, ingrese su mail", cliente_clon.clone()).as_str());
 
     login_button_clone.connect_clicked(move |_| {
-        println!("Login clicked");
         let mail = mail_entry.text().to_string();
         if !email_valido(mail.clone()) {
             login_dialog_top_label.set_text("Mail inválido. Con formato nombre@xxxxxx.yyy");
@@ -259,7 +255,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     let commit_clone = commit.clone();
     let commit_dialog_clone = commit_dialog.clone();
     commit_clone.connect_clicked(move |_| {
-        println!("Commit button clicked");
         commit_dialog_clone.show();
     });
 
@@ -346,7 +341,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     repo_selector.connect_file_set(move |data| {
         let data_a = data.filename().unwrap();
         let repo_name = data_a.file_name().unwrap().to_str().unwrap();
-        println!("Repo name: {:?}", repo_name);
         file_manager::update_current_repo(&repo_name.to_string(), cliente_.clone()).unwrap();
 
         update_branches(&branch_selector_clon.clone(), cliente_.clone());
@@ -364,7 +358,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
 
     clone_accept_button.connect_clicked(move |_| {
         let url = clone_url.text();
-        println!("Clonando repo: {:?}", url);
         clone_dialog_.hide();
         match commands_fn::clone(
             vec![url.to_string(), "repo_clonado".to_string()],
@@ -375,7 +368,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 println!("Error al clonar: {}", e);
             }
         }
-        //Aca habria que setear el repo actual al recien con el selector y el file explorer
     });
 
     cancel_clone_button.connect_clicked(move |_| {
@@ -397,7 +389,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 return;
             }
         };
-        println!("Push button clicked");
     });
     //====PULL====
     let clone_pull = pull_button.clone();
@@ -414,7 +405,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
                 return;
             }
         };
-        println!("Pull button clicked");
     });
     //====FETCH====
     let clone_fetch = fetch_button.clone();
@@ -427,7 +417,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
             clone_error.show();
             return;
         };
-        println!("Fetch button clicked");
     });
 
     //====REMOTE ERROR DIALOG====
@@ -618,7 +607,6 @@ fn build_ui(application: &gtk::Application, cliente: String) -> Option<String> {
     conflict_file_chooser.connect_file_set(move |data| {
         let filename = data.filename().unwrap().to_str().unwrap().to_string();
         let data_from_file = file_manager::read_file(filename.clone()).unwrap();
-        println!("Data from file: {:?}", data_from_file);
         conf_buffer.set_text(&data_from_file);
     });
 
@@ -657,11 +645,14 @@ fn create_pull_request_row(pull_request: &PullRequest) -> ListBoxRow {
     let id_label = Label::new(Some(&format!("ID: {}", pull_request.id)));
     let title_label = Label::new(Some(&format!("Título: {}", pull_request.title)));
     let description_label = Label::new(Some(&format!("Descripción: {}", pull_request.description)));
+    let branches = Label::new(Some(&format!("{}==>{}", pull_request.head, pull_request.base)));
 
     let row_box = gtk::Box::new(Orientation::Vertical, 5);
     row_box.pack_start(&id_label, false, false, 0);
     row_box.pack_start(&title_label, false, false, 0);
     row_box.pack_start(&description_label, false, false, 0);
+    row_box.pack_start(&branches, false, false, 0);
+
 
     let row = ListBoxRow::new();
     row.add(&row_box);

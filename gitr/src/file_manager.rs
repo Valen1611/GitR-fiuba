@@ -373,9 +373,7 @@ fn parse_object_hash(object: &String, path: String, mut add_gitr: bool) -> Resul
 
 //creates all necessary folder for the repo
 pub fn init_repository(name: &String) -> Result<(), GitrError> {
-    println!("name:{}", name);
     create_directory(name)?;
-    println!("pase create directory");
     create_directory(&(name.clone() + "/gitr"))?;
     create_directory(&(name.clone() + "/gitr/objects"))?;
     create_directory(&(name.clone() + "/gitr/refs"))?;
@@ -472,7 +470,6 @@ pub fn update_head(head: &String, cliente: String) -> Result<(), GitrError> {
 fn find_new_path(hash: String, sec_vec: Vec<(String, String)>) -> String {
     for (h, r) in sec_vec {
         if h == hash && r.clone() != "HEAD" {
-            println!("encontre el path: {} para este hash {}", r, h);
             return r;
         }
     }
@@ -779,8 +776,6 @@ pub fn get_commit_commiter_mail(commit: String, cliente: String) -> Result<Strin
         idx -= 1;
     }
 
-    println!("COMMITTER (mail): {:?}", commit[idx]);
-
     let author = commit[idx].split(' ').collect::<Vec<&str>>()[2];
     Ok(author.to_string())
 }
@@ -799,7 +794,6 @@ pub fn get_commit_commiter(commit: String, cliente: String) -> Result<String, Gi
         idx -= 1;
     }
 
-    println!("COMMITTER (name): {:?}", commit[idx]);
 
     let author = commit[idx].split(' ').collect::<Vec<&str>>()[1];
     Ok(author.to_string())
@@ -1085,12 +1079,6 @@ pub fn decode(input: &[u8]) -> Result<Vec<u8>, GitrError> {
 }
 
 pub fn create_pull_request(server_path: &str, pull_request: PullRequest) -> Result<(), GitrError> {
-    // let remote = get_remote(cliente.to_string())?;
-    // let path = format!("{}/pulls/{}", remote, pull_request.id);
-    
-    // println!("\x1b[32mpath: {}", path);
-    println!("pull_request: {}\x1b[0m", pull_request.to_string()?);
-
     write_file(server_path.to_string(), pull_request.to_string()?)?;
     Ok(())
 }
@@ -1129,13 +1117,11 @@ pub fn get_pull_requests(mut dir: String) -> Result<Vec<PullRequest>, GitrError>
 }
 
 pub fn contar_archivos_y_directorios(ruta: &str) -> Result<usize, GitrError> {
-    println!("contar_archivos_y_directorios: path: {}", ruta);
     let entradas = match fs::read_dir(ruta){
         Ok(entradas) => entradas,
         Err(_) => return Err(GitrError::FileReadError(ruta.to_string())),
     }; 
     let cuenta = entradas.count();
-    println!("cantidad de archivos contados: {}", cuenta);
     Ok(cuenta)
 }
 
